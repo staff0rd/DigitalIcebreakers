@@ -3,7 +3,6 @@ import { Config } from '../config';
 import { Button } from 'react-bootstrap';
 var QRCode = require('qrcode.react');
 
-
 export class Home extends Component {
     static guid() {
         function s4() {
@@ -28,9 +27,19 @@ export class Home extends Component {
 
     handleClick() {
         if (this.state.currentGame) {
+            fetch(`api/Game/${this.state.currentGame}`, { method: 'delete' })
+                .then(response => response.json())
+                .then(() => {
+                    this.setState({ currentGame: undefined });
+                });
             this.setState({ currentGame: undefined });
         } else {
-            this.setState({ currentGame: Home.guid() });
+            const guid = Home.guid();
+            fetch(`api/Game/${guid}`, { method: 'post' })
+                .then(response => response.json())
+                .then(data => {
+                    this.setState({ currentGame: guid });
+                });
         }
     }
 
