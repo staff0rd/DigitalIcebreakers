@@ -10,7 +10,7 @@ namespace DigitalIcebrakers.Controllers
     [Route("api/[controller]")]
     public class GameController : Controller
     {
-        private static List<GameInstance> Games = new List<GameInstance>();
+        public static List<GameInstance> Games = new List<GameInstance>();
 
         [HttpPost("{id}")]
         public HttpStatusCode NewGame(Guid id)

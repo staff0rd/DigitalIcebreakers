@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Config } from '../config';
 import { Button } from 'react-bootstrap';
+import { HubConnectionBuilder } from '@aspnet/signalr';
 var QRCode = require('qrcode.react');
 
 export class Home extends Component {
@@ -15,6 +16,7 @@ export class Home extends Component {
 
     displayName = Home.name
 
+
     constructor(props, context) {
         super(props, context);
 
@@ -23,6 +25,18 @@ export class Home extends Component {
         };
 
         this.handleClick = this.handleClick.bind(this);
+
+        this.connection = new HubConnectionBuilder().withUrl("/gameHub").build();
+        this.connection.on("Joined", (user, count) => {
+            console.log('join', user, count);
+        });
+        this.connection.on("left", (user, count) => {
+            console.log('left', user, count);
+        });
+
+        this.connection.start().catch((err) => {
+            return console.error(err.toString());
+        });
     }
 
     handleClick() {
@@ -48,15 +62,15 @@ export class Home extends Component {
         const buttonText = this.state.currentGame ? "Stop game" : "New game";
         const gameUrl = `${Config.baseUrl}/${this.state.currentGame}`;
         const currentGame = this.state.currentGame ?
-            <div>
+            (<div>
                 <p>{gameUrl}</p>
-                <QRCode value="{gameUrl}" size="512" /> 
-            </div>
+                <QRCode value="{gameUrl}" size="256" /> 
+            </div>)
             : "";
          
         return (
             <div>
-                {currentGame}
+                <QRCode value="{gameUrl}" size="256" /> 
                 <div>
                     <Button bsStyle="primary" bsSize="large" onClick={this.handleClick}>
                         {buttonText}
