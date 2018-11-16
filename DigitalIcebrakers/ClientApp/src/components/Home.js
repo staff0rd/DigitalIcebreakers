@@ -64,13 +64,13 @@ export class Home extends Component {
         const currentGame = this.state.currentGame ?
             (<div>
                 <p>{gameUrl}</p>
-                <QRCode value="{gameUrl}" size="256" /> 
+                <QRCode value={gameUrl} size={256} /> 
             </div>)
             : "";
          
         return (
             <div>
-                <QRCode value="{gameUrl}" size="256" /> 
+                {currentGame}
                 <div>
                     <Button bsStyle="primary" bsSize="large" onClick={this.handleClick}>
                         {buttonText}
