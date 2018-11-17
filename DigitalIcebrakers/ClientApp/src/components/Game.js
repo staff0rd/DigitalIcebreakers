@@ -7,12 +7,17 @@ export class Game extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { name: '' };
+        this.state = { name: '', game: true };
         this.join = this.join.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        const component = this;
         this.connection = new HubConnectionBuilder().withUrl("/gameHub").build();
         this.connection.start().catch((err) => {
             return console.error(err.toString());
+        });
+        this.connection.on("stop", () => {
+            component.setState({ game: false });
+            console.log("game was ended");
         });
     }
 
@@ -36,6 +41,7 @@ export class Game extends Component {
 
     render() {
         return (
+            !this.state.game ? "This game has ended" :
             <div>
                 <form onSubmit={this.join}>
                     <FormGroup

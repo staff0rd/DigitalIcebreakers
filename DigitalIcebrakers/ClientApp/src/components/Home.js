@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Config } from '../config';
-import { Button } from 'react-bootstrap';
+import { Button, Grid, Row, Col, ListGroup, ListGroupItem  } from 'react-bootstrap';
 import { HubConnectionBuilder } from '@aspnet/signalr';
 var QRCode = require('qrcode.react');
 
@@ -16,21 +16,27 @@ export class Home extends Component {
 
     displayName = Home.name
 
-
     constructor(props, context) {
         super(props, context);
 
         this.state = {
-            currentGame: undefined
+            currentGame: undefined,
+            players: []
         };
 
         this.handleClick = this.handleClick.bind(this);
 
         this.connection = new HubConnectionBuilder().withUrl("/gameHub").build();
+        const component = this;
         this.connection.on("Joined", (user, count) => {
+            component.state.players.push(user);
+            component.setState({ players: component.state.players });
             console.log('join', user, count);
         });
         this.connection.on("left", (user, count) => {
+            var players = component.state.players.filter(p => p.id !== user.id);
+            component.setState({ players: players });
+
             console.log('left', user, count);
         });
 
@@ -41,31 +47,47 @@ export class Home extends Component {
 
     handleClick() {
         if (this.state.currentGame) {
-            fetch(`api/Game/${this.state.currentGame}`, { method: 'delete' })
-                .then(response => response.json())
+            this.connection.invoke("stopgame")
                 .then(() => {
                     this.setState({ currentGame: undefined });
                 });
-            this.setState({ currentGame: undefined });
         } else {
             const guid = Home.guid();
-            fetch(`api/Game/${guid}`, { method: 'post' })
-                .then(response => response.json())
-                .then(data => {
+            this.connection.invoke("startgame", guid)
+                .then(() => {
                     this.setState({ currentGame: guid });
                 });
         }
     }
 
+    renderGame() {
+        const gameUrl = `${Config.baseUrl}/game/${this.state.currentGame}`;
+        const players = this.state.players.map((p, ix) => <ListGroupItem key={ix}>{p.name}</ListGroupItem>);
+
+        return (
+            <Grid>
+                <Row>
+                    <Col md={4}>
+                        <p>{gameUrl}</p>
+                        <QRCode value={gameUrl} size={256} renderAs="svg" />
+                    </Col>
+                    <Col md={8}>
+                        <h1>Players</h1>
+                        <ListGroup>
+                            {players}
+                        </ListGroup>
+                    </Col>
+                </Row>
+            </Grid>
+        );
+    }
+
 
     render() {
         const buttonText = this.state.currentGame ? "Stop game" : "New game";
-        const gameUrl = `${Config.baseUrl}/${this.state.currentGame}`;
+        
         const currentGame = this.state.currentGame ?
-            (<div>
-                <p>{gameUrl}</p>
-                <QRCode value={gameUrl} size={256} /> 
-            </div>)
+            this.renderGame()
             : "";
          
         return (

@@ -1,3 +1,3 @@
 ﻿export const Config = {
-    baseUrl: "http://digitalicebreakers.com"
+    baseUrl: window.location.origin
 };
