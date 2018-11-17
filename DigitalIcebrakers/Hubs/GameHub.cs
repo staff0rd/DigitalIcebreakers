@@ -30,15 +30,34 @@ namespace DigitalIcebrakers.Hubs
             }
         }
 
+        public async Task<Player> TryRejoin(Guid id)
+        {
+            var game = Games.SingleOrDefault(g => g.Id == id);
+            if (game != null)
+                return game.Players.SingleOrDefault(p => p.ConnectionId == Context.ConnectionId);
+            await Clients.Caller.SendAsync("Stop");
+            return null;
+        }
+
         public async Task Join(Guid id, string user)
         {
             await Leave();
             var game = Games.SingleOrDefault(p => p.Id == id);
             var player = new Player { ConnectionId = Context.ConnectionId, Name = user, Id = Guid.NewGuid() };
-            game.Players.Add(player);
+            if (game != null)
+            {
+                game.Players.Add(player);
 
-            var admin = Clients.Client(game.Players.Single(p => p.IsAdmin).ConnectionId);
-            await admin.SendAsync("Joined", new Player { Name = player.Name, Id = player.Id }, game.Players.Count);
+                var adminConnectionId = game.Players.SingleOrDefault(p => p.IsAdmin)?.ConnectionId;
+                if (adminConnectionId == null)
+                    await Clients.Caller.SendAsync("Stop");
+                else
+                {
+                    var admin = Clients.Client(adminConnectionId);
+                    await admin.SendAsync("Joined", new Player { Name = player.Name, Id = player.Id }, game.Players.Count);
+                }
+            } else
+                await Clients.Caller.SendAsync("Stop");
         }
 
         public async Task Leave()
@@ -48,15 +67,19 @@ namespace DigitalIcebrakers.Hubs
             {
                 gamePlayer.game.Players.Remove(gamePlayer.player);
                 Console.WriteLine($"{gamePlayer.player.Name} left");
-                var admin = Clients.Client(gamePlayer.game.Players.Single(p => p.IsAdmin).ConnectionId);
-                await admin.SendAsync("Left", new Player { Id = gamePlayer.player.Id });
+                var adminConnectionId = gamePlayer.game.Players.SingleOrDefault(p => p.IsAdmin)?.ConnectionId;
+                if (adminConnectionId != null)
+                {
+                    var admin = Clients.Client(adminConnectionId);
+                    await admin.SendAsync("Left", new Player { Id = gamePlayer.player.Id });
+                }
             }
         }
 
-        public override Task OnDisconnectedAsync(Exception exception)
+        public async override Task OnDisconnectedAsync(Exception exception)
         {
-            Leave().Wait();
-            return base.OnDisconnectedAsync(exception);
+            await Leave();
+            await base.OnDisconnectedAsync(exception);
         }
     }
 }

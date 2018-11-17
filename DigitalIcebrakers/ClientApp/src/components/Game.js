@@ -1,24 +1,40 @@
 ﻿import React, { Component } from 'react';
 import { HubConnectionBuilder } from '@aspnet/signalr';
-import { FormGroup, ControlLabel, FormControl, HelpBlock } from 'react-bootstrap';
+import { FormGroup, ControlLabel, FormControl, HelpBlock, Button } from 'react-bootstrap';
 
 export class Game extends Component {
     displayName = Game.name
 
     constructor(props) {
         super(props);
-        this.state = { name: '', game: true };
-        this.join = this.join.bind(this);
+        this.myStorage = window.localStorage;
+        this.state = { game: true };
+        if (this.myStorage)
+            this.state.name = this.myStorage.getItem('name') || '';
+        this.onSubmit = this.onSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
         const component = this;
         this.connection = new HubConnectionBuilder().withUrl("/gameHub").build();
-        this.connection.start().catch((err) => {
-            return console.error(err.toString());
-        });
+        this.connection.start()
+            .then(() => {
+                this.connection.invoke("tryrejoin", this.props.match.params.id)
+                    .then((response) => {
+                        console.log(response);
+                    });
+            })
+            .catch((err) => {
+                return console.error(err.toString());
+            });
         this.connection.on("stop", () => {
             component.setState({ game: false });
-            console.log("game was ended");
         });
+
+        //fetch(`api/Game/${this.props.match.params.id}`)
+        //    .then(response => response.json())
+        //    .then(data => {
+        //        debugger;
+        //        this.setState({ forecasts: data, loading: false });
+        //    });
     }
 
     getValidationState() {
@@ -28,14 +44,19 @@ export class Game extends Component {
         return null;
     }
 
-    join(e) {
-        console.log(this.state.name);
-        this.connection.invoke("Join", this.props.match.params.id,this.state.name).catch(err => console.error(err.toString()));
+    join() {
+        this.connection.invoke("Join", this.props.match.params.id, this.state.name).catch(err => console.error(err.toString()));
+    }
+
+    onSubmit(e) {
+        this.join();       
         e.preventDefault();
     }
 
     handleChange(e) {
         const change = { [e.target.name]: e.target.value };
+        if (e.target.name === "name" && this.myStorage)
+            this.myStorage.setItem("name", e.target.value);
         this.setState(change);
     }
 
@@ -43,7 +64,7 @@ export class Game extends Component {
         return (
             !this.state.game ? "This game has ended" :
             <div>
-                <form onSubmit={this.join}>
+                <form onSubmit={this.onSubmit}>
                     <FormGroup
                         controlId="formBasicText"
                         validationState={this.getValidationState()}
@@ -52,12 +73,16 @@ export class Game extends Component {
                         <FormControl
                             type="text"
                             placeholder="Enter text"
-                            name = "name"
+                            name="name"
+                            value={this.state.name}
                             onChange={this.handleChange}
                         />
                         <FormControl.Feedback />
                         <HelpBlock>You must enter a name before you can join.</HelpBlock>
-                    </FormGroup>
+                        </FormGroup>
+                        <Button bsStyle="primary" bsSize="large" onClick={this.onSubmit}>
+                            Join
+                        </Button>
                 </form>
             </div>
         );

@@ -49,7 +49,7 @@ export class Home extends Component {
         if (this.state.currentGame) {
             this.connection.invoke("stopgame")
                 .then(() => {
-                    this.setState({ currentGame: undefined });
+                    this.setState({ currentGame: undefined, players: [] });
                 });
         } else {
             const guid = Home.guid();
