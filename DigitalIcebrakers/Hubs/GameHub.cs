@@ -4,12 +4,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using DigitalIcebrakers.Controllers;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 
 namespace DigitalIcebrakers.Hubs
 {
     public class GameHub : Hub
     {
+        private ILogger<GameHub> _logger;
         public static List<GameInstance> Games = new List<GameInstance>();
+
+        public GameHub(ILogger<GameHub> logger)
+        {
+            _logger = logger;
+        }
 
         public void StartGame(Guid id)
         {
@@ -41,6 +48,7 @@ namespace DigitalIcebrakers.Hubs
 
         public async Task Join(Guid id, string user)
         {
+            _logger.LogInformation($"Joined: {Context.ConnectionId}");
             await Leave();
             var game = Games.SingleOrDefault(p => p.Id == id);
             var player = new Player { ConnectionId = Context.ConnectionId, Name = user, Id = Guid.NewGuid() };
