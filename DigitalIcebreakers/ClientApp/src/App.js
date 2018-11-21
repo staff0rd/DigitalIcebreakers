@@ -4,10 +4,61 @@ import { Layout } from './components/Layout';
 import { Home } from './components/Home';
 import { FetchData } from './components/FetchData';
 import { Counter } from './components/Counter';
-import { Game } from './components/Game'
+import { Game } from './components/Game';
+import { HubConnectionBuilder } from '@aspnet/signalr';
+import { guid } from './util/guid';
 
 export default class App extends Component {
-  displayName = App.name
+    displayName = App.name
+
+    constructor(props, context) {
+        super(props, context);
+
+        this.myStorage = window.localStorage;
+
+        if (this.myStorage) {
+            const raw = this.myStorage.getItem("user");
+            if (raw) {
+                this.user = JSON.parse(raw);
+                console.log("found user", this.user);
+            }
+        }
+
+        if (!this.user) {
+            this.user = { id: guid() };
+            if (this.myStorage)
+                this.myStorage.setItem("user", JSON.stringify(this.user));
+        }
+
+        this.configureSignalR();
+    }
+
+    configureSignalR() {
+        this.connection = new HubConnectionBuilder().withUrl("/gameHub").build();
+        const component = this;
+        this.connection.on("Joined", (user, count) => {
+            component.state.players.push(user);
+            component.setState({ players: component.state.players });
+            console.log('join', user, count);
+        });
+        this.connection.on("left", (user, count) => {
+            var players = component.state.players.filter(p => p.id !== user.id);
+            component.setState({ players: players });
+
+            console.log('left', user, count);
+        });
+
+        this.connection.start()
+            .then(() => {
+                this.connection.invoke("connect", this.user)
+                    .then(() => {
+                        console.log('connected');
+                    });
+            })
+            .catch((err) => {
+                return console.error(err.toString());
+        });
+    }
 
   render() {
     return (

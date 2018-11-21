@@ -5,13 +5,18 @@ using System.Threading.Tasks;
 
 namespace DigitalIcebreakers
 {
-    public class Player
+    public class Player : User
     {
-        public Guid Id { get; set; }
-
         public string ConnectionId { get; set; }
 
-        public string Name { get; set; }
         public bool IsAdmin { get; internal set; }
+
+        public bool IsConnected { get; set; }
+    }
+
+    public class User {
+
+        public string Name { get; set; }
+        public Guid Id { get; set; }
     }
 }

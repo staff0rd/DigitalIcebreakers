@@ -20,9 +20,9 @@ namespace DigitalIcebreakers.Controllers
         }
 
         [HttpGet("{id}")]
-        public GameInstance Get(Guid id)
+        public Lobby Get(Guid id)
         {
-            return GameHub.Games.SingleOrDefault(p => p.Id == id) ?? new GameInstance();
+            return GameHub.Lobbys.SingleOrDefault(p => p.Id == id) ?? new Lobby();
         }
     }
 }

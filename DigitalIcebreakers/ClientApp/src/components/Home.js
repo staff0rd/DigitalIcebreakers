@@ -5,14 +5,7 @@ import { HubConnectionBuilder } from '@aspnet/signalr';
 var QRCode = require('qrcode.react');
 
 export class Home extends Component {
-    static guid() {
-        function s4() {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    }
+
 
     displayName = Home.name
 
