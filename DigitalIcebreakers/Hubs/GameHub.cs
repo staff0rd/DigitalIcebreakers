@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DigitalIcebrakers.Controllers;
+using DigitalIcebreakers.Controllers;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
-namespace DigitalIcebrakers.Hubs
+namespace DigitalIcebreakers.Hubs
 {
     public class GameHub : Hub
     {

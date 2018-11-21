@@ -1,4 +1,4 @@
-using DigitalIcebrakers.Hubs;
+using DigitalIcebreakers.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DigitalIcebrakers
+namespace DigitalIcebreakers
 {
     public class Startup
     {
