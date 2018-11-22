@@ -51,17 +51,17 @@ namespace DigitalIcebreakers.Hubs
             var existing = Lobbys.SelectMany(p => p.Players).SingleOrDefault(p => p.Id == user.Id);
             if (existing != null)
             {
-                await Clients.Caller.SendAsync("Reconnect", new Reconnect { Id = existing.Id, Name = existing.Name, LobbyId = Lobbys.SingleOrDefault(p => p.Players.Contains(existing)).Id });
+                await Clients.Caller.SendAsync("Reconnect", new Reconnect { Id = existing.Id, Name = existing.Name, LobbyId = Lobbys.SingleOrDefault(p => p.Players.Contains(existing)).Id, IsAdmin = existing.IsAdmin });
             }
             else
                 await Clients.Caller.SendAsync("Connected");
         }
 
-        public async Task Connect(User user, Guid lobbyId)
+        public async Task ConnectToLobby(User user, Guid lobbyId)
         {
             _logger.LogInformation($"Joined: {Context.ConnectionId}");
             var game = Lobbys.SingleOrDefault(p => p.Id == lobbyId);
-            var player = new Player { ConnectionId = Context.ConnectionId, Name = user, Id = Guid.NewGuid() };
+            var player = new Player { ConnectionId = Context.ConnectionId, Name = user.Name, Id = user.Id };
             if (game != null)
             {
                 game.Players.Add(player);

@@ -10,5 +10,7 @@ namespace DigitalIcebreakers
         public Guid Id { get; set; }
 
         public List<Player> Players = new List<Player>();
+
+        public string Name { get; set; }
     }
 }

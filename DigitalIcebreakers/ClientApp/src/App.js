@@ -36,6 +36,15 @@ export default class App extends Component {
     configureSignalR() {
         this.connection = new HubConnectionBuilder().withUrl("/gameHub").build();
         const component = this;
+
+        this.connection.on("Reconnect", (response) => {
+            console.log("Reconnect", response);
+        });
+
+        this.connection.on("Connected", () => {
+            console.log("Connected");
+        });
+
         this.connection.on("Joined", (user, count) => {
             component.state.players.push(user);
             component.setState({ players: component.state.players });
@@ -52,7 +61,7 @@ export default class App extends Component {
             .then(() => {
                 this.connection.invoke("connect", this.user)
                     .then(() => {
-                        console.log('connected');
+                        
                     });
             })
             .catch((err) => {
