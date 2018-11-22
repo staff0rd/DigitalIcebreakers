@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { Config } from '../config';
 import { Button, Grid, Row, Col, ListGroup, ListGroupItem  } from 'react-bootstrap';
 import { HubConnectionBuilder } from '@aspnet/signalr';
+import { UserContext } from '../contexts/UserContext';
 var QRCode = require('qrcode.react');
+
 
 export class Home extends Component {
 
@@ -85,6 +87,7 @@ export class Home extends Component {
          
         return (
             <div>
+                <p>{this.context.name}</p>
                 {currentGame}
                 <div>
                     <Button bsStyle="primary" bsSize="large" onClick={this.handleClick}>
@@ -95,3 +98,5 @@ export class Home extends Component {
         );
   }
 }
+
+Home.contextType = UserContext;

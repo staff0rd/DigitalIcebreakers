@@ -7,6 +7,7 @@ import { Counter } from './components/Counter';
 import { Game } from './components/Game';
 import { HubConnectionBuilder } from '@aspnet/signalr';
 import { guid } from './util/guid';
+import { UserContext } from './contexts/UserContext'
 
 export default class App extends Component {
     displayName = App.name
@@ -29,6 +30,16 @@ export default class App extends Component {
             if (this.myStorage)
                 this.myStorage.setItem("user", JSON.stringify(this.user));
         }
+
+        this.user.setLobbyId = (id, isAdmin) => {
+            let user = {};
+            Object.assign(user, this.user);
+            user.lobbyId = id;
+            user.isAdmin = isAdmin;
+            this.setState({ user: user });
+        };
+
+        this.state = { user: this.user };
 
         this.configureSignalR();
     }
@@ -70,13 +81,15 @@ export default class App extends Component {
     }
 
   render() {
-    return (
-      <Layout>
-        <Route exact path='/' component={Home} />
-        <Route path='/counter' component={Counter} />
-        <Route path='/fetchdata' component={FetchData} />
-        <Route path='/game/:id' component={Game} />
-      </Layout>
+      return (
+          <UserContext.Provider value={this.state.user}>
+              <Layout>
+                <Route exact path='/' component={Home} />
+                <Route path='/counter' component={Counter} />
+                <Route path='/fetchdata' component={FetchData} />
+                <Route path='/game/:id' component={Game} />
+              </Layout>
+          </UserContext.Provider>
     );
   }
 }
