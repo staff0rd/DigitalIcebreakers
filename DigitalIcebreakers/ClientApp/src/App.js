@@ -2,12 +2,17 @@ import React, { Component } from 'react';
 import { Route } from 'react-router';
 import { Layout } from './components/Layout';
 import { Home } from './components/Home';
+import { LobbyClosed } from './components/LobbyClosed';
 import { FetchData } from './components/FetchData';
+import { CreateLobby } from './components/CreateLobby';
+import { CloseLobby } from './components/CloseLobby';
 import { Counter } from './components/Counter';
 import { Game } from './components/Game';
 import { HubConnectionBuilder } from '@aspnet/signalr';
 import { guid } from './util/guid';
-import { UserContext } from './contexts/UserContext'
+import { UserContext } from './contexts/UserContext';
+import { LobbyContext } from './contexts/LobbyContext';
+import history from './history'
 
 export default class App extends Component {
     displayName = App.name
@@ -31,15 +36,30 @@ export default class App extends Component {
                 this.myStorage.setItem("user", JSON.stringify(this.user));
         }
 
-        this.user.setLobbyId = (id, isAdmin) => {
-            let user = {};
-            Object.assign(user, this.user);
-            user.lobbyId = id;
-            user.isAdmin = isAdmin;
-            this.setState({ user: user });
+        this.state = {
+            user: this.user,
+            lobby: {
+                name: undefined,
+                id: undefined,
+                players: [],
+                isAdmin: false,
+                setLobbyId: (id, name, isAdmin) => {
+                    this.setState({
+                        lobby: {
+                            name: name,
+                            id: id,
+                            isAdmin: isAdmin,
+                            connection: this.connection,
+                            createLobby: this.state.lobby.createLobby
+                        }
+                    });
+                },
+                createLobby: (name) => {
+                    this.connection.invoke("createLobby", guid(), name, this.user);
+                    console.log('create lobby');
+                }
+            }
         };
-
-        this.state = { user: this.user };
 
         this.configureSignalR();
     }
@@ -48,15 +68,35 @@ export default class App extends Component {
         this.connection = new HubConnectionBuilder().withUrl("/gameHub").build();
         const component = this;
 
-        this.connection.on("Reconnect", (response) => {
+        this.connection.on("reconnect", (response) => {
             console.log("Reconnect", response);
+            this.setState({
+                lobby: {
+                    id: response.id,
+                    name: response.name,
+                    isAdmin: response.isAdmin,
+                    connection: this.connection,
+                    createLobby: this.state.lobby.createLobby
+                }
+            });
         });
 
-        this.connection.on("Connected", () => {
+        this.connection.on("closelobby", () => {
+            console.log("dat lobby is closed, son");
+            this.setState({
+                lobby: {
+                    connection: this.connection,
+                    createLobby: this.state.lobby.createLobby
+                }
+            });
+            history.push('/lobbyClosed');
+        });
+
+        this.connection.on("connected", () => {
             console.log("Connected");
         });
 
-        this.connection.on("Joined", (user, count) => {
+        this.connection.on("joined", (user, count) => {
             component.state.players.push(user);
             component.setState({ players: component.state.players });
             console.log('join', user, count);
@@ -72,24 +112,29 @@ export default class App extends Component {
             .then(() => {
                 this.connection.invoke("connect", this.user)
                     .then(() => {
-                        
+
                     });
             })
             .catch((err) => {
                 return console.error(err.toString());
-        });
+            });
     }
 
-  render() {
-      return (
-          <UserContext.Provider value={this.state.user}>
-              <Layout>
-                <Route exact path='/' component={Home} />
-                <Route path='/counter' component={Counter} />
-                <Route path='/fetchdata' component={FetchData} />
-                <Route path='/game/:id' component={Game} />
-              </Layout>
-          </UserContext.Provider>
-    );
-  }
+    render() {
+        return (
+            <UserContext.Provider value={this.state.user}>
+                <LobbyContext.Provider value={this.state.lobby}>
+                    <Layout>
+                        <Route exact path='/' component={Home} />
+                        <Route path='/createLobby' component={CreateLobby} />
+                        <Route path='/closeLobby' component={CloseLobby} />
+                        <Route path='/lobbyClosed' component={LobbyClosed} />
+                        <Route path='/counter' component={Counter} />
+                        <Route path='/fetchdata' component={FetchData} />
+                        <Route path='/game/:id' component={Game} />
+                    </Layout>
+                </LobbyContext.Provider>
+            </UserContext.Provider>
+        );
+    }
 }

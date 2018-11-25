@@ -3,6 +3,8 @@ import { Config } from '../config';
 import { Button, Grid, Row, Col, ListGroup, ListGroupItem  } from 'react-bootstrap';
 import { HubConnectionBuilder } from '@aspnet/signalr';
 import { UserContext } from '../contexts/UserContext';
+
+
 var QRCode = require('qrcode.react');
 
 
@@ -18,8 +20,6 @@ export class Home extends Component {
             currentGame: undefined,
             players: []
         };
-
-        this.handleClick = this.handleClick.bind(this);
 
         this.connection = new HubConnectionBuilder().withUrl("/gameHub").build();
         const component = this;
@@ -38,21 +38,6 @@ export class Home extends Component {
         this.connection.start().catch((err) => {
             return console.error(err.toString());
         });
-    }
-
-    handleClick() {
-        if (this.state.currentGame) {
-            this.connection.invoke("stopgame")
-                .then(() => {
-                    this.setState({ currentGame: undefined, players: [] });
-                });
-        } else {
-            const guid = Home.guid();
-            this.connection.invoke("startgame", guid)
-                .then(() => {
-                    this.setState({ currentGame: guid });
-                });
-        }
     }
 
     renderGame() {
@@ -90,7 +75,7 @@ export class Home extends Component {
                 <p>{this.context.name}</p>
                 {currentGame}
                 <div>
-                    <Button bsStyle="primary" bsSize="large" onClick={this.handleClick}>
+                    <Button bsStyle="primary" bsSize="large">
                         {buttonText}
                     </Button>
                 </div>

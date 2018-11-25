@@ -12,6 +12,13 @@ namespace DigitalIcebreakers
         public bool IsAdmin { get; internal set; }
 
         public bool IsConnected { get; set; }
+
+        public Guid ExternalId { get; private set; }
+
+        public Player()
+        {
+            ExternalId = Guid.NewGuid();
+        }
     }
 
     public class User {

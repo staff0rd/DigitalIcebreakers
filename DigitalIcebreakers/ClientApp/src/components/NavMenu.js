@@ -3,48 +3,77 @@ import { Link } from 'react-router-dom';
 import { Glyphicon, Nav, Navbar, NavItem } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import './NavMenu.css';
-import { UserContext } from '../contexts/UserContext';
+import { LobbyContext } from '../contexts/LobbyContext';
 
 export class NavMenu extends Component {
   displayName = NavMenu.name
 
     render() {
         const createLobby = (
-            <NavItem>
-                <Glyphicon glyph='home' /> Create Lobby
-            </NavItem>
-        );
-        return (
-      <Navbar inverse fixedTop fluid collapseOnSelect>
-        <Navbar.Header>
-          <Navbar.Brand>
-            <Link to={'/'}>Digital Icebreakers</Link>
-          </Navbar.Brand>
-          <Navbar.Toggle />
-        </Navbar.Header>
-        <Navbar.Collapse>
-        <Nav>
-            {this.context.lobbyId ? "" : createLobby}
+            <LinkContainer to={'/createLobby'}>
+                <NavItem>
+                    <Glyphicon glyph='plus' /> Create Lobby
+                </NavItem>
+            </LinkContainer>);
+
+        const lobby = (
             <LinkContainer to={'/'} exact>
-              <NavItem>
-                <Glyphicon glyph='home' /> Home
+                <NavItem>
+                    <Glyphicon glyph='home' /> Lobby
               </NavItem>
             </LinkContainer>
-            <LinkContainer to={'/counter'}>
-              <NavItem>
-                <Glyphicon glyph='education' /> Counter
-              </NavItem>
+        );
+
+        const closeLobby = (
+            <LinkContainer to={'/closeLobby'}>
+                <NavItem>
+                    <Glyphicon glyph='minus' /> Close Lobby
+                </NavItem>
             </LinkContainer>
-            <LinkContainer to={'/fetchdata'}>
-              <NavItem>
-                <Glyphicon glyph='th-list' /> Fetch data
-              </NavItem>
+        );
+
+        const startGame = (
+            <LinkContainer to={'/newGame'}>
+                <NavItem>
+                    <Glyphicon glyph='minus' /> New game
+                </NavItem>
             </LinkContainer>
-          </Nav>
-        </Navbar.Collapse>
-      </Navbar>
-    );
+        );
+
+        const stopGame = (
+            <LinkContainer to={'/'} exact>
+                <NavItem>
+                    <Glyphicon glyph='minus' /> New game
+                </NavItem>
+            </LinkContainer>
+        );
+
+        let gameStopStart;
+
+        if (this.context.id) {
+            gameStopStart = this.context.currentGame ? stopGame : startGame;
+        }
+
+        return (
+            <Navbar inverse fixedTop fluid collapseOnSelect>
+                <Navbar.Header>
+                    <Navbar.Brand>
+                        <Link to={'/'}>Digital Icebreakers</Link>
+                    </Navbar.Brand>
+                    <Navbar.Toggle />
+                </Navbar.Header>
+                <Navbar.Collapse>
+                    <Nav>
+                        {this.context.id ? "" : createLobby}
+                        {this.context.id ? lobby : ""}
+                        {this.context.id ? closeLobby : ""}
+                        {this.context.id ? gameStopStart : ""}
+
+                    </Nav>
+                </Navbar.Collapse>
+            </Navbar>
+        );
   }
 }
-NavMenu.contextType = UserContext;
+NavMenu.contextType = LobbyContext;
 
