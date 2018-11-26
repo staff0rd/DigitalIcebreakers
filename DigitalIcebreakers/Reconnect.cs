@@ -7,14 +7,16 @@ namespace DigitalIcebreakers
 {
     public class Reconnect
     {
-        public Guid Id { get; set; }
+        public Guid PlayerId { get; set; }
 
-        public string Name { get; set; }
+        public string PlayerName { get; set; }
 
         public Guid LobbyId { get; set; }
 
-        public bool IsAdmin { get; internal set; }
-        public object Players { get; internal set; }
         public string LobbyName { get; internal set; }
+
+        public bool IsAdmin { get; internal set; }
+
+        public List<User> Players { get; internal set; }
     }
 }

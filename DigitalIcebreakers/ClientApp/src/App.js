@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router';
 import { Layout } from './components/Layout';
-import { Home } from './components/Home';
+import { Lobby } from './components/Lobby';
 import { LobbyClosed } from './components/LobbyClosed';
 import { FetchData } from './components/FetchData';
 import { CreateLobby } from './components/CreateLobby';
@@ -12,7 +12,7 @@ import { HubConnectionBuilder } from '@aspnet/signalr';
 import { guid } from './util/guid';
 import { UserContext } from './contexts/UserContext';
 import { LobbyContext } from './contexts/LobbyContext';
-import history from './history'
+import history from './history';
 
 export default class App extends Component {
     displayName = App.name
@@ -69,7 +69,6 @@ export default class App extends Component {
         const component = this;
 
         this.connection.on("reconnect", (response) => {
-            console.log("Reconnect", response);
             this.setState({
                 lobby: {
                     id: response.id,
@@ -79,6 +78,7 @@ export default class App extends Component {
                     createLobby: this.state.lobby.createLobby
                 }
             });
+            history.push("/");
         });
 
         this.connection.on("closelobby", () => {
@@ -125,7 +125,7 @@ export default class App extends Component {
             <UserContext.Provider value={this.state.user}>
                 <LobbyContext.Provider value={this.state.lobby}>
                     <Layout>
-                        <Route exact path='/' component={Home} />
+                        <Route exact path='/' component={Lobby} />
                         <Route path='/createLobby' component={CreateLobby} />
                         <Route path='/closeLobby' component={CloseLobby} />
                         <Route path='/lobbyClosed' component={LobbyClosed} />

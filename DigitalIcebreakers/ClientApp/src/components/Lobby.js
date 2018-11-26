@@ -2,20 +2,19 @@ import React, { Component } from 'react';
 import { Config } from '../config';
 import { Button, Grid, Row, Col, ListGroup, ListGroupItem  } from 'react-bootstrap';
 import { HubConnectionBuilder } from '@aspnet/signalr';
-import { UserContext } from '../contexts/UserContext';
+import { LobbyContext } from '../contexts/LobbyContext';
 
 
 var QRCode = require('qrcode.react');
 
 
-export class Home extends Component {
+export class Lobby extends Component {
 
 
-    displayName = Home.name
+    displayName = Lobby.name
 
     constructor(props, context) {
         super(props, context);
-
         this.state = {
             currentGame: undefined,
             players: []
@@ -64,6 +63,7 @@ export class Home extends Component {
 
 
     render() {
+        console.log(this.context);
         const buttonText = this.state.currentGame ? "Stop game" : "New game";
         
         const currentGame = this.state.currentGame ?
@@ -84,4 +84,4 @@ export class Home extends Component {
   }
 }
 
-Home.contextType = UserContext;
+Lobby.contextType = LobbyContext;
