@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { FormGroup, ControlLabel, FormControl, HelpBlock, Button } from 'react-bootstrap';
-import { LobbyContext } from '../contexts/LobbyContext';
 
 export class CreateLobby extends Component {
     displayName = CreateLobby.name
@@ -24,8 +23,7 @@ export class CreateLobby extends Component {
     }
 
     onSubmit = (e) => {
-        this.context.createLobby(this.state.name);
-        e.preventDefault();
+        this.props.createLobby(this.state.name);
     }
 
     handleChange = (e) => {
@@ -38,6 +36,7 @@ export class CreateLobby extends Component {
     render() {
         return (
             <div>
+              <h2>Create lobby</h2>
                 <form onSubmit={this.onSubmit}>
                     <FormGroup
                         controlId="formBasicText"
@@ -62,5 +61,3 @@ export class CreateLobby extends Component {
         );
     }
 }
-
-CreateLobby.contextType = LobbyContext;

@@ -1,22 +1,18 @@
 import React, { Component } from 'react';
 import { Config } from '../config';
 import { Row, Col, ListGroup, ListGroupItem  } from 'react-bootstrap';
-import { LobbyContext } from '../contexts/LobbyContext';
-
 
 var QRCode = require('qrcode.react');
-
 
 export class Lobby extends Component {
     displayName = Lobby.name
 
     render() {
-        console.log(this.context);
-        const joinUrl = `${Config.baseUrl}/join/${this.context.id}`;
-        const players = this.context.players.map((p, ix) => <ListGroupItem key={ix}>{p.name}</ListGroupItem>);
+        const joinUrl = `${Config.baseUrl}/join/${this.props.id}`;
+        const players = this.props.players.map((p, ix) => <ListGroupItem key={ix}>{p.name}</ListGroupItem>);
         return (
             <div>
-                <h2>{this.context.name}</h2>
+                <h2>{this.props.name}</h2>
                 
                     <Row>
                         <Col md={4}>
@@ -35,5 +31,3 @@ export class Lobby extends Component {
         );
     }
 }
-
-Lobby.contextType = LobbyContext;

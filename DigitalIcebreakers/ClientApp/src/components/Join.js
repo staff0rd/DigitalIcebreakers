@@ -34,6 +34,7 @@ export class Join extends Component {
     render() {
         return (
             <div>
+                <h2>Join lobby</h2>
                 <form onSubmit={this.onSubmit}>
                     <FormGroup
                         controlId="formBasicText"

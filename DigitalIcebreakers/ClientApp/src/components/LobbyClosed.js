@@ -6,9 +6,12 @@ export class LobbyClosed extends Component {
 
     render() {
         return (
-            <Alert bsStyle="warning">
-                <strong>This lobby has been closed.</strong> Thanks for playing!
-            </Alert>
+            <div>
+                <h2>Lobby closed</h2>
+                <Alert bsStyle="warning">
+                    <strong>This lobby has been closed.</strong> Thanks for playing!
+                </Alert>
+            </div>
         );
     }
 }

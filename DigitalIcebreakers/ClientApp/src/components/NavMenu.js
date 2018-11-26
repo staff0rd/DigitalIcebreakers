@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { Glyphicon, Nav, Navbar, NavItem } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import './NavMenu.css';
-import { LobbyContext } from '../contexts/LobbyContext';
 
 export class NavMenu extends Component {
   displayName = NavMenu.name
@@ -50,8 +49,8 @@ export class NavMenu extends Component {
 
         let gameStopStart;
 
-        if (this.context.id) {
-            gameStopStart = this.context.currentGame ? stopGame : startGame;
+        if (this.props.lobbyId) {
+            gameStopStart = this.props.currentGame ? stopGame : startGame;
         }
 
         return (
@@ -64,16 +63,13 @@ export class NavMenu extends Component {
                 </Navbar.Header>
                 <Navbar.Collapse>
                     <Nav>
-                        {this.context.id ? "" : createLobby}
-                        {this.context.id ? lobby : ""}
-                        {this.context.id ? closeLobby : ""}
-                        {this.context.id ? gameStopStart : ""}
-
+                        {this.props.lobbyId ? "" : createLobby}
+                        {this.props.lobbyId ? lobby : ""}
+                        {this.props.lobbyId ? closeLobby : ""}
+                        {this.props.lobbyId ? gameStopStart : ""}
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>
         );
   }
 }
-NavMenu.contextType = LobbyContext;
-

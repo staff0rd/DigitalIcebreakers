@@ -75,39 +75,38 @@ namespace DigitalIcebreakers.Hubs
 
         public async Task Connect(User user)
         {
-            var player = _lobbys.SelectMany(p => p.Players).SingleOrDefault(p => p.Id == user.Id);
-            if (player != null)
-            {
-                player.ConnectionId = Context.ConnectionId;
-            }
+            Player player = GetPlayer(user);
+
             var lobby = _lobbys.SingleOrDefault(p => p.Players.Contains(player));
-            if (player != null)
+            await Connect(player, lobby);
+        }
+
+        private async Task Connect(Player player, Lobby lobby)
+        {
+            if (lobby != null)
             {
-                await Clients.Caller.SendAsync("Reconnect", new Reconnect { PlayerId = player.Id, PlayerName = player.Name, LobbyName = lobby.Name, LobbyId = lobby.Id, IsAdmin = player.IsAdmin, Players = lobby.Players.Where(p => !player.IsAdmin).Select(p => new User { Id = p.ExternalId, Name = p.Name }).ToList() });
+                var players = lobby.Players.Where(p => !p.IsAdmin).Select(p => new User { Id = p.ExternalId, Name = p.Name }).ToList();
+                await Clients.Caller.SendAsync("Reconnect", new Reconnect { PlayerId = player.Id, PlayerName = player.Name, LobbyName = lobby.Name, LobbyId = lobby.Id, IsAdmin = player.IsAdmin, Players = players });
             }
             else
                 await Clients.Caller.SendAsync("Connected");
         }
 
+        private Player GetPlayer(User user)
+        {
+            var player = _lobbys.SelectMany(p => p.Players).SingleOrDefault(p => p.Id == user.Id) ?? new Player { Id = user.Id, Name = user.Name };
+            
+            player.ConnectionId = Context.ConnectionId;
+
+            return player;
+        }
+
         public async Task ConnectToLobby(User user, Guid lobbyId)
         {
-            _logger.LogInformation($"Joined: {Context.ConnectionId}");
-            var game = _lobbys.SingleOrDefault(p => p.Id == lobbyId);
-            var player = new Player { ConnectionId = Context.ConnectionId, Name = user.Name, Id = user.Id };
-            if (game != null)
-            {
-                game.Players.Add(player);
-
-                var adminConnectionId = game.Players.SingleOrDefault(p => p.IsAdmin)?.ConnectionId;
-                if (adminConnectionId == null)
-                    await Clients.Caller.SendAsync("Stop");
-                else
-                {
-                    var admin = Clients.Client(adminConnectionId);
-                    await admin.SendAsync("Joined", new Player { Name = player.Name, Id = player.Id }, game.Players.Count);
-                }
-            } else
-                await Clients.Caller.SendAsync("Stop");
+            var player = GetPlayer(user);
+            var lobby = _lobbys.SingleOrDefault(p => p.Id == lobbyId);
+            lobby.Players.Add(player);
+            await Connect(player, lobby);
         }
 
         public async override Task OnDisconnectedAsync(Exception exception)

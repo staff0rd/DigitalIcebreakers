@@ -11,7 +11,6 @@ import { Join } from './components/Join';
 import { HubConnectionBuilder } from '@aspnet/signalr';
 import { guid } from './util/guid';
 import { UserContext } from './contexts/UserContext';
-import { LobbyContext } from './contexts/LobbyContext';
 import history from './history';
 
 export default class App extends Component {
@@ -43,21 +42,6 @@ export default class App extends Component {
                 id: undefined,
                 players: [],
                 isAdmin: false,
-                setLobbyId: (id, name, isAdmin) => {
-                    this.setState({
-                        lobby: {
-                            name: name,
-                            id: id,
-                            isAdmin: isAdmin,
-                            connection: this.connection,
-                            createLobby: this.state.lobby.createLobby
-                        }
-                    });
-                },
-                createLobby: (name) => {
-                    this.connection.invoke("createLobby", guid(), name, this.user);
-                    console.log('create lobby');
-                }
             }
         };
 
@@ -82,25 +66,22 @@ export default class App extends Component {
                     id: response.lobbyId,
                     name: response.lobbyName,
                     isAdmin: response.isAdmin,
-                    connection: this.connection,
-                    createLobby: this.state.lobby.createLobby,
                     players: response.players
                 },
                 user: user
             });
+
             if (this.myStorage)
                 this.myStorage.setItem("user", JSON.stringify(this.state.user));
-            history.push("/");
+
+                history.push("/");
         });
 
         this.connection.on("closelobby", () => {
             console.log("dat lobby is closed, son");
             this.setState((state) => {
                 return {
-                    lobby: {
-                        connection: this.connection,
-                        createLobby: state.lobby.createLobby
-                    }
+                    lobby: {}
                 };
             });
             history.push('/lobbyClosed');
@@ -116,22 +97,18 @@ export default class App extends Component {
                     id: prevState.lobby.lobbyId,
                     name: prevState.lobby.lobbyName,
                     isAdmin: prevState.lobby.isAdmin,
-                    connection: prevState.lobby.connection,
-                    createLobby: prevState.lobby.state.lobby.createLobby,
                     players: [...prevState.lobby.players, user]
                 }
             }));
-
             console.log('join', user, count);
         });
+
         this.connection.on("left", (user, count) => {
             component.setState(prevState => ({
                 lobby: {
                     id: prevState.lobby.lobbyId,
                     name: prevState.lobby.lobbyName,
                     isAdmin: prevState.lobby.isAdmin,
-                    connection: prevState.lobby.connection,
-                    createLobby: prevState.lobby.state.lobby.createLobby,
                     players: prevState.lobby.players.filter(p => p.id !== user.id)
                 }
             }));
@@ -149,27 +126,30 @@ export default class App extends Component {
     }
 
     joinLobby = (id, name) => {
-        console.log('join', id, name);
+        this.user.name = name;
+        this.connection.invoke("connectToLobby", this.user,  id);
     }
 
     closeLobby = () => {
         this.connection.invoke("closelobby");
     }
 
+    createLobby = (name) => {
+        this.connection.invoke("createLobby", guid(), name, this.state.user);
+    }
+
     render() {
         return (
             <UserContext.Provider value={this.state.user}>
-                <LobbyContext.Provider value={this.state.lobby}>
-                    <Layout>
-                        <Route exact path='/' component={Lobby} />
-                        <Route path='/createLobby' component={CreateLobby} />
-                        <Route path='/closeLobby' render={() => <CloseLobby closeLobby={this.closeLobby} /> }  />
-                        <Route path='/lobbyClosed' component={LobbyClosed} />
-                        <Route path='/counter' component={Counter} />
-                        <Route path='/fetchdata' component={FetchData} />
-                        <Route path='/join/:id' render={props => <Join join={this.joinLobby} {...props} /> }  />
-                    </Layout>
-                </LobbyContext.Provider>
+                <Layout currentGame={this.state.lobby.currentGame} lobbyId={this.state.lobby.id}>
+                    <Route exact path='/' render={() => <Lobby id={this.state.lobby.id} players={this.state.lobby.players} name={this.state.lobby.name} /> } />
+                    <Route path='/createLobby' render={() => <CreateLobby createLobby={this.createLobby} /> } />
+                    <Route path='/closeLobby' render={() => <CloseLobby closeLobby={this.closeLobby} /> }  />
+                    <Route path='/lobbyClosed' component={LobbyClosed} />
+                    <Route path='/counter' component={Counter} />
+                    <Route path='/fetchdata' component={FetchData} />
+                    <Route path='/join/:id' render={props => <Join join={this.joinLobby} {...props} /> }  />
+                </Layout>
             </UserContext.Provider>
         );
     }
