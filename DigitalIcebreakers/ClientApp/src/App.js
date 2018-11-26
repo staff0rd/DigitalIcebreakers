@@ -95,11 +95,13 @@ export default class App extends Component {
 
         this.connection.on("closelobby", () => {
             console.log("dat lobby is closed, son");
-            this.setState({
-                lobby: {
-                    connection: this.connection,
-                    createLobby: this.state.lobby.createLobby
-                }
+            this.setState((state) => {
+                return {
+                    lobby: {
+                        connection: this.connection,
+                        createLobby: state.lobby.createLobby
+                    }
+                };
             });
             history.push('/lobbyClosed');
         });
@@ -109,13 +111,30 @@ export default class App extends Component {
         });
 
         this.connection.on("joined", (user, count) => {
-            component.state.players.push(user);
-            component.setState({ players: component.state.players });
+            component.setState(prevState => ({
+                lobby: {
+                    id: prevState.lobby.lobbyId,
+                    name: prevState.lobby.lobbyName,
+                    isAdmin: prevState.lobby.isAdmin,
+                    connection: prevState.lobby.connection,
+                    createLobby: prevState.lobby.state.lobby.createLobby,
+                    players: [...prevState.lobby.players, user]
+                }
+            }));
+
             console.log('join', user, count);
         });
         this.connection.on("left", (user, count) => {
-            var players = component.state.players.filter(p => p.id !== user.id);
-            component.setState({ players: players });
+            component.setState(prevState => ({
+                lobby: {
+                    id: prevState.lobby.lobbyId,
+                    name: prevState.lobby.lobbyName,
+                    isAdmin: prevState.lobby.isAdmin,
+                    connection: prevState.lobby.connection,
+                    createLobby: prevState.lobby.state.lobby.createLobby,
+                    players: prevState.lobby.players.filter(p => p.id !== user.id)
+                }
+            }));
 
             console.log('left', user, count);
         });
@@ -123,9 +142,6 @@ export default class App extends Component {
         this.connection.start()
             .then(() => {
                 this.connection.invoke("connect", this.user)
-                    .then(() => {
-
-                    });
             })
             .catch((err) => {
                 return console.error(err.toString());
