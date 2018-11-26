@@ -152,6 +152,10 @@ export default class App extends Component {
         console.log('join', id, name);
     }
 
+    closeLobby = () => {
+        this.connection.invoke("closelobby");
+    }
+
     render() {
         return (
             <UserContext.Provider value={this.state.user}>
@@ -159,7 +163,7 @@ export default class App extends Component {
                     <Layout>
                         <Route exact path='/' component={Lobby} />
                         <Route path='/createLobby' component={CreateLobby} />
-                        <Route path='/closeLobby' component={CloseLobby} />
+                        <Route path='/closeLobby' render={() => <CloseLobby closeLobby={this.closeLobby} /> }  />
                         <Route path='/lobbyClosed' component={LobbyClosed} />
                         <Route path='/counter' component={Counter} />
                         <Route path='/fetchdata' component={FetchData} />
