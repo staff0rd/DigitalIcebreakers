@@ -72,7 +72,7 @@ export class Lobby extends Component {
          
         return (
             <div>
-                <p>{this.context.name}</p>
+                <h2>{this.context.name}</h2>
                 {currentGame}
                 <div>
                     <Button bsStyle="primary" bsSize="large">

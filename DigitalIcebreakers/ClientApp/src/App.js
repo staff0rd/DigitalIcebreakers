@@ -69,15 +69,27 @@ export default class App extends Component {
         const component = this;
 
         this.connection.on("reconnect", (response) => {
+            let user = this.user;
+            if (response.playerId) {
+                user = {
+                    id: response.playerId,
+                    name: response.playerName,
+                };
+            }
+
             this.setState({
                 lobby: {
-                    id: response.id,
-                    name: response.name,
+                    id: response.lobbyId,
+                    name: response.lobbyName,
                     isAdmin: response.isAdmin,
                     connection: this.connection,
-                    createLobby: this.state.lobby.createLobby
-                }
+                    createLobby: this.state.lobby.createLobby,
+                    players: response.players
+                },
+                user: user
             });
+            if (this.myStorage)
+                this.myStorage.setItem("user", JSON.stringify(this.state.user));
             history.push("/");
         });
 
