@@ -11,35 +11,35 @@ namespace DigitalIcebreakers.Hubs
     public class GameHub : Hub
     {
         private ILogger<GameHub> _logger;
-        public static List<Lobby> Lobbys = new List<Lobby>();
+        private List<Lobby> _lobbys;
 
-        public GameHub(ILogger<GameHub> logger)
+        public GameHub(ILogger<GameHub> logger, List<Lobby> lobbys)
         {
+            _lobbys = lobbys;
             _logger = logger;
         }
 
         public void StartGame(Guid id)
         {
             var player = new Player { Name = "Admin", IsAdmin = true, ConnectionId = Context.ConnectionId, Id = Guid.NewGuid() };
-            
         }
 
         public async Task StopGame()
         {
-            var games = Lobbys.SelectMany(p => p.Players, (g, p) => new { g, p }).Where(p => p.p.IsAdmin && p.p.ConnectionId == Context.ConnectionId).Select(p => p.g).ToList();
+            var games = _lobbys.SelectMany(p => p.Players, (g, p) => new { g, p }).Where(p => p.p.IsAdmin && p.p.ConnectionId == Context.ConnectionId).Select(p => p.g).ToList();
             foreach (var game in games)
             {
                 foreach (var player in game.Players)
                 {
                     await Clients.Client(player.ConnectionId).SendAsync("stop");
                 }
-                Lobbys.Remove(Lobbys.Single(p => p.Id == game.Id));
+                _lobbys.Remove(_lobbys.Single(p => p.Id == game.Id));
             }
         }
 
         public async Task<Player> TryRejoin(Guid id)
         {
-            var game = Lobbys.SingleOrDefault(g => g.Id == id);
+            var game = _lobbys.SingleOrDefault(g => g.Id == id);
             if (game != null)
                 return game.Players.SingleOrDefault(p => p.ConnectionId == Context.ConnectionId);
             await Clients.Caller.SendAsync("Stop");
@@ -48,7 +48,7 @@ namespace DigitalIcebreakers.Hubs
 
         public async Task CreateLobby(Guid id, string name, User user)
         {
-            Lobbys.Add(new Lobby
+            _lobbys.Add(new Lobby
             {
                 Id = id,
                 Players = new List<Player>
@@ -62,10 +62,10 @@ namespace DigitalIcebreakers.Hubs
 
         public async Task CloseLobby()
         {
-            var lobby = Lobbys.SingleOrDefault(l => l.Players.Any(p => p.IsAdmin && p.ConnectionId == Context.ConnectionId));
+            var lobby = _lobbys.SingleOrDefault(l => l.Players.Any(p => p.IsAdmin && p.ConnectionId == Context.ConnectionId));
             if (lobby != null)
             {
-                Lobbys.Remove(lobby);
+                _lobbys.Remove(lobby);
                 foreach (var player in lobby.Players)
                 {
                     await Clients.Client(player.ConnectionId).SendAsync("closelobby");
@@ -75,15 +75,15 @@ namespace DigitalIcebreakers.Hubs
 
         public async Task Connect(User user)
         {
-            var player = Lobbys.SelectMany(p => p.Players).SingleOrDefault(p => p.Id == user.Id);
+            var player = _lobbys.SelectMany(p => p.Players).SingleOrDefault(p => p.Id == user.Id);
             if (player != null)
             {
                 player.ConnectionId = Context.ConnectionId;
             }
-            var lobby = Lobbys.SingleOrDefault(p => p.Players.Contains(player));
+            var lobby = _lobbys.SingleOrDefault(p => p.Players.Contains(player));
             if (player != null)
             {
-                await Clients.Caller.SendAsync("Reconnect", new Reconnect { Id = player.Id, Name = player.Name, LobbyName = lobby.Name, LobbyId = lobby.Id, IsAdmin = player.IsAdmin, Players = lobby.Players.Where(p => !player.IsAdmin).Select(p => new User { Id = p.ExternalId, Name = p.Name }).ToList() });
+                await Clients.Caller.SendAsync("Reconnect", new Reconnect { PlayerId = player.Id, PlayerName = player.Name, LobbyName = lobby.Name, LobbyId = lobby.Id, IsAdmin = player.IsAdmin, Players = lobby.Players.Where(p => !player.IsAdmin).Select(p => new User { Id = p.ExternalId, Name = p.Name }).ToList() });
             }
             else
                 await Clients.Caller.SendAsync("Connected");
@@ -92,7 +92,7 @@ namespace DigitalIcebreakers.Hubs
         public async Task ConnectToLobby(User user, Guid lobbyId)
         {
             _logger.LogInformation($"Joined: {Context.ConnectionId}");
-            var game = Lobbys.SingleOrDefault(p => p.Id == lobbyId);
+            var game = _lobbys.SingleOrDefault(p => p.Id == lobbyId);
             var player = new Player { ConnectionId = Context.ConnectionId, Name = user.Name, Id = user.Id };
             if (game != null)
             {

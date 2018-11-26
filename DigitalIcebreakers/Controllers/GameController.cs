@@ -14,15 +14,17 @@ namespace DigitalIcebreakers.Controllers
     public class GameController : Controller
     {
         IHubContext<GameHub> _gameHub;
-        public GameController(IHubContext<GameHub> gameHub)
+        List<Lobby> _lobbys;
+        public GameController(IHubContext<GameHub> gameHub, List<Lobby> lobbys)
         {
+            _lobbys = lobbys;
             _gameHub = gameHub;
         }
 
         [HttpGet("{id}")]
         public Lobby Get(Guid id)
         {
-            return GameHub.Lobbys.SingleOrDefault(p => p.Id == id) ?? new Lobby();
+            return _lobbys.SingleOrDefault(p => p.Id == id) ?? new Lobby();
         }
     }
 }
