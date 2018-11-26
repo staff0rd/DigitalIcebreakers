@@ -8,25 +8,7 @@ export class Join extends Component {
     constructor(props, context) {
         super(props, context);
 
-        console.log('props', props);
-
         this.state = { name: this.context.name || "" };
-       
-        //const component = this;
-        // this.connection = new HubConnectionBuilder().withUrl("/gameHub").build();
-        // this.connection.start()
-        //     .then(() => {
-        //         this.connection.invoke("tryrejoin", this.props.match.params.id)
-        //             .then((response) => {
-        //                 console.log(response);
-        //             });
-        //     })
-        //     .catch((err) => {
-        //         return console.error(err.toString());
-        //     });
-        // this.connection.on("stop", () => {
-        //     component.setState({ game: false });
-        // });
     }
 
     getValidationState() {
@@ -37,7 +19,7 @@ export class Join extends Component {
     }
 
     onSubmit = (e) => {
-        if (this.getValidationState() == "success")
+        if (this.getValidationState() === "success")
             this.props.join(this.props.match.params.id, this.state.name);       
         e.preventDefault();
     }
