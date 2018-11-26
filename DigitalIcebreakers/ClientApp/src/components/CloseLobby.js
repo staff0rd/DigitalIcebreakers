@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { HelpBlock, Button } from 'react-bootstrap';
-import { LobbyContext } from '../contexts/LobbyContext';
 
 export class CloseLobby extends Component {
     displayName = CloseLobby.name
@@ -18,5 +17,3 @@ export class CloseLobby extends Component {
         );
     }
 }
-
-CloseLobby.contextType = LobbyContext;
