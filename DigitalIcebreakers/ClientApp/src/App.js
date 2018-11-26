@@ -7,7 +7,7 @@ import { FetchData } from './components/FetchData';
 import { CreateLobby } from './components/CreateLobby';
 import { CloseLobby } from './components/CloseLobby';
 import { Counter } from './components/Counter';
-import { Game } from './components/Game';
+import { Join } from './components/Join';
 import { HubConnectionBuilder } from '@aspnet/signalr';
 import { guid } from './util/guid';
 import { UserContext } from './contexts/UserContext';
@@ -148,6 +148,10 @@ export default class App extends Component {
             });
     }
 
+    joinLobby = (id, name) => {
+        console.log('join', id, name);
+    }
+
     render() {
         return (
             <UserContext.Provider value={this.state.user}>
@@ -159,7 +163,7 @@ export default class App extends Component {
                         <Route path='/lobbyClosed' component={LobbyClosed} />
                         <Route path='/counter' component={Counter} />
                         <Route path='/fetchdata' component={FetchData} />
-                        <Route path='/game/:id' component={Game} />
+                        <Route path='/join/:id' render={props => <Join join={this.joinLobby} {...props} /> }  />
                     </Layout>
                 </LobbyContext.Provider>
             </UserContext.Provider>

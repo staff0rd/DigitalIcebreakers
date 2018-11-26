@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Config } from '../config';
-import { Grid, Row, Col, ListGroup, ListGroupItem  } from 'react-bootstrap';
+import { Row, Col, ListGroup, ListGroupItem  } from 'react-bootstrap';
 import { LobbyContext } from '../contexts/LobbyContext';
 
 

@@ -1,40 +1,32 @@
 ﻿import React, { Component } from 'react';
-import { HubConnectionBuilder } from '@aspnet/signalr';
 import { FormGroup, ControlLabel, FormControl, HelpBlock, Button } from 'react-bootstrap';
+import {UserContext} from '../contexts/UserContext'
 
-export class Game extends Component {
-    displayName = Game.name
+export class Join extends Component {
+    displayName = Join.name
 
-    constructor(props) {
-        super(props);
-        this.myStorage = window.localStorage;
-        this.state = { game: true };
-        if (this.myStorage)
-            this.state.name = this.myStorage.getItem('name') || '';
-        this.onSubmit = this.onSubmit.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-        const component = this;
-        this.connection = new HubConnectionBuilder().withUrl("/gameHub").build();
-        this.connection.start()
-            .then(() => {
-                this.connection.invoke("tryrejoin", this.props.match.params.id)
-                    .then((response) => {
-                        console.log(response);
-                    });
-            })
-            .catch((err) => {
-                return console.error(err.toString());
-            });
-        this.connection.on("stop", () => {
-            component.setState({ game: false });
-        });
+    constructor(props, context) {
+        super(props, context);
 
-        //fetch(`api/Game/${this.props.match.params.id}`)
-        //    .then(response => response.json())
-        //    .then(data => {
-        //        debugger;
-        //        this.setState({ forecasts: data, loading: false });
-        //    });
+        console.log('props', props);
+
+        this.state = { name: this.context.name || "" };
+       
+        //const component = this;
+        // this.connection = new HubConnectionBuilder().withUrl("/gameHub").build();
+        // this.connection.start()
+        //     .then(() => {
+        //         this.connection.invoke("tryrejoin", this.props.match.params.id)
+        //             .then((response) => {
+        //                 console.log(response);
+        //             });
+        //     })
+        //     .catch((err) => {
+        //         return console.error(err.toString());
+        //     });
+        // this.connection.on("stop", () => {
+        //     component.setState({ game: false });
+        // });
     }
 
     getValidationState() {
@@ -44,16 +36,13 @@ export class Game extends Component {
         return null;
     }
 
-    join() {
-        this.connection.invoke("Join", this.props.match.params.id, this.state.name).catch(err => console.error(err.toString()));
-    }
-
-    onSubmit(e) {
-        this.join();       
+    onSubmit = (e) => {
+        if (this.getValidationState() == "success")
+            this.props.join(this.props.match.params.id, this.state.name);       
         e.preventDefault();
     }
 
-    handleChange(e) {
+    handleChange = (e) => {
         const change = { [e.target.name]: e.target.value };
         if (e.target.name === "name" && this.myStorage)
             this.myStorage.setItem("name", e.target.value);
@@ -62,7 +51,6 @@ export class Game extends Component {
 
     render() {
         return (
-            !this.state.game ? "This game has ended" :
             <div>
                 <form onSubmit={this.onSubmit}>
                     <FormGroup
@@ -88,3 +76,5 @@ export class Game extends Component {
         );
     }
 }
+
+Join.contextType = UserContext;
