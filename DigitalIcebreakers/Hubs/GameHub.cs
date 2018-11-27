@@ -87,6 +87,10 @@ namespace DigitalIcebreakers.Hubs
             {
                 var players = lobby.Players.Where(p => !p.IsAdmin).Select(p => new User { Id = p.ExternalId, Name = p.Name }).ToList();
                 await Clients.Caller.SendAsync("Reconnect", new Reconnect { PlayerId = player.Id, PlayerName = player.Name, LobbyName = lobby.Name, LobbyId = lobby.Id, IsAdmin = player.IsAdmin, Players = players });
+                if (!player.IsAdmin)
+                {
+                    await Clients.Client(lobby.Admin.ConnectionId).SendAsync("joined", new User { Id = player.ExternalId, Name = player.Name });
+                }
             }
             else
                 await Clients.Caller.SendAsync("Connected");
@@ -101,6 +105,11 @@ namespace DigitalIcebreakers.Hubs
             return player;
         }
 
+        private Player GetPlayerByConnectionId()
+        {
+            return _lobbys.SelectMany(p => p.Players).SingleOrDefault(p => p.ConnectionId == Context.ConnectionId);
+        }
+
         public async Task ConnectToLobby(User user, Guid lobbyId)
         {
             var player = GetPlayer(user);
@@ -111,6 +120,16 @@ namespace DigitalIcebreakers.Hubs
 
         public async override Task OnDisconnectedAsync(Exception exception)
         {
+            var player = GetPlayerByConnectionId();
+            if (player != null)
+            {
+                var admin = _lobbys.Where(p => p.Players.Contains(player)).SelectMany(p => p.Players).SingleOrDefault(p => p.IsAdmin);
+                if (admin != null)
+                {
+                    await Clients.Client(admin.ConnectionId).SendAsync("left", new User { Id = player.ExternalId, Name = player.Name });
+                }
+            }
+
             await base.OnDisconnectedAsync(exception);
         }
     }

@@ -79,11 +79,7 @@ export default class App extends Component {
 
         this.connection.on("closelobby", () => {
             console.log("dat lobby is closed, son");
-            this.setState((state) => {
-                return {
-                    lobby: {}
-                };
-            });
+            this.setState({ lobby: {} });
             history.push('/lobbyClosed');
         });
 
@@ -91,34 +87,34 @@ export default class App extends Component {
             console.log("Connected");
         });
 
-        this.connection.on("joined", (user, count) => {
+        this.connection.on("joined", (user) => {
             component.setState(prevState => ({
                 lobby: {
-                    id: prevState.lobby.lobbyId,
-                    name: prevState.lobby.lobbyName,
+                    id: prevState.lobby.id,
+                    name: prevState.lobby.name,
                     isAdmin: prevState.lobby.isAdmin,
                     players: [...prevState.lobby.players, user]
                 }
             }));
-            console.log('join', user, count);
+            console.log('join', user);
         });
 
-        this.connection.on("left", (user, count) => {
+        this.connection.on("left", (user) => {
             component.setState(prevState => ({
                 lobby: {
-                    id: prevState.lobby.lobbyId,
-                    name: prevState.lobby.lobbyName,
+                    id: prevState.lobby.id,
+                    name: prevState.lobby.name,
                     isAdmin: prevState.lobby.isAdmin,
                     players: prevState.lobby.players.filter(p => p.id !== user.id)
                 }
             }));
 
-            console.log('left', user, count);
+            console.log('left', user);
         });
 
         this.connection.start()
             .then(() => {
-                this.connection.invoke("connect", this.user)
+                this.connection.invoke("connect", this.user);
             })
             .catch((err) => {
                 return console.error(err.toString());

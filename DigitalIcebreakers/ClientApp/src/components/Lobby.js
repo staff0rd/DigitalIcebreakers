@@ -9,7 +9,7 @@ export class Lobby extends Component {
 
     render() {
         const joinUrl = `${Config.baseUrl}/join/${this.props.id}`;
-        const players = this.props.players.map((p, ix) => <ListGroupItem key={ix}>{p.name}</ListGroupItem>);
+        const players = (this.props.players || []).map((p, ix) => <ListGroupItem key={ix}>{p.name}</ListGroupItem>);
         return (
             <div>
                 <h2>{this.props.name}</h2>
