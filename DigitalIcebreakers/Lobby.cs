@@ -14,5 +14,7 @@ namespace DigitalIcebreakers
         public string Name { get; set; }
 
         internal Player Admin => Players.SingleOrDefault(p => p.IsAdmin);
+
+        public string CurrentGame { get; internal set; }
     }
 }

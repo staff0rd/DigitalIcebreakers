@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using DigitalIcebreakers.Controllers;
@@ -86,7 +87,7 @@ namespace DigitalIcebreakers.Hubs
             if (lobby != null)
             {
                 var players = lobby.Players.Where(p => !p.IsAdmin).Select(p => new User { Id = p.ExternalId, Name = p.Name }).ToList();
-                await Clients.Caller.SendAsync("Reconnect", new Reconnect { PlayerId = player.Id, PlayerName = player.Name, LobbyName = lobby.Name, LobbyId = lobby.Id, IsAdmin = player.IsAdmin, Players = players });
+                await Clients.Caller.SendAsync("Reconnect", new Reconnect { PlayerId = player.Id, PlayerName = player.Name, LobbyName = lobby.Name, LobbyId = lobby.Id, IsAdmin = player.IsAdmin, Players = players, CurrentGame = lobby.CurrentGame });
                 if (!player.IsAdmin)
                 {
                     await Clients.Client(lobby.Admin.ConnectionId).SendAsync("joined", new User { Id = player.ExternalId, Name = player.Name });
@@ -103,6 +104,36 @@ namespace DigitalIcebreakers.Hubs
             player.ConnectionId = Context.ConnectionId;
 
             return player;
+        }
+
+        public void NewGame(string name)
+        {
+            var player = GetPlayerByConnectionId();
+            var lobby = GetLobby();
+
+            if (lobby != null && player.IsAdmin)
+            {
+                lobby.CurrentGame = name;
+                Clients.Clients(lobby.Players.Select(p => p.ConnectionId).ToList()).SendAsync("newgame", name);
+            }
+        }
+
+        public void EndGame()
+        {
+            var player = GetPlayerByConnectionId();
+            var lobby = GetLobby();
+
+            if (lobby != null && player.IsAdmin)
+            {
+                lobby.CurrentGame = null;
+                Clients.Clients(lobby.Players.Select(p => p.ConnectionId).ToList()).SendAsync("endgame");
+            }
+        }
+
+        private Lobby GetLobby()
+        {
+            var player = GetPlayerByConnectionId();
+            return _lobbys.SingleOrDefault(p => p.Players.Contains(player));
         }
 
         private Player GetPlayerByConnectionId()

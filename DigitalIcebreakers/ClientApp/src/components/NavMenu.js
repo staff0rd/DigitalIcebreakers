@@ -65,8 +65,8 @@ export class NavMenu extends Component {
                     <Nav>
                         {this.props.lobbyId ? "" : createLobby}
                         {this.props.lobbyId ? lobby : ""}
-                        {this.props.lobbyId ? closeLobby : ""}
-                        {this.props.lobbyId ? gameStopStart : ""}
+                        {this.props.lobbyId && this.props.isAdmin  ? gameStopStart : ""}
+                        {this.props.lobbyId && this.props.isAdmin ? closeLobby : ""}
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>

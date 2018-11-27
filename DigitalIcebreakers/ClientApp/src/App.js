@@ -3,6 +3,8 @@ import { Route } from 'react-router';
 import { Layout } from './components/Layout';
 import { Lobby } from './components/Lobby';
 import { LobbyClosed } from './components/LobbyClosed';
+import { NewGame } from './components/NewGame';
+import { Game } from './components/Game';
 import { FetchData } from './components/FetchData';
 import { CreateLobby } from './components/CreateLobby';
 import { CloseLobby } from './components/CloseLobby';
@@ -66,7 +68,8 @@ export default class App extends Component {
                     id: response.lobbyId,
                     name: response.lobbyName,
                     isAdmin: response.isAdmin,
-                    players: response.players
+                    players: response.players,
+                    currentGame: response.currentGame
                 },
                 user: user
             });
@@ -93,7 +96,8 @@ export default class App extends Component {
                     id: prevState.lobby.id,
                     name: prevState.lobby.name,
                     isAdmin: prevState.lobby.isAdmin,
-                    players: [...prevState.lobby.players, user]
+                    players: [...prevState.lobby.players, user],
+                    currentGame: prevState.currentGame
                 }
             }));
             console.log('join', user);
@@ -105,11 +109,20 @@ export default class App extends Component {
                     id: prevState.lobby.id,
                     name: prevState.lobby.name,
                     isAdmin: prevState.lobby.isAdmin,
-                    players: prevState.lobby.players.filter(p => p.id !== user.id)
+                    players: prevState.lobby.players.filter(p => p.id !== user.id),
+                    currentGame: prevState.currentGame
                 }
             }));
 
             console.log('left', user);
+        });
+
+        this.connection.on("newGame", (name) => {
+            console.log("newGame", name);
+        });
+
+        this.connection.on("endGame", () => {
+            console.log("game ended");
         });
 
         this.connection.start()
@@ -134,16 +147,26 @@ export default class App extends Component {
         this.connection.invoke("createLobby", guid(), name, this.state.user);
     }
 
+    newGame = (name) => {
+        this.connection.invoke("newGame", name);
+    }
+
+    endGame = () => {
+        this.connection.invoke("endGame");
+    }
+
     render() {
         return (
             <UserContext.Provider value={this.state.user}>
-                <Layout currentGame={this.state.lobby.currentGame} lobbyId={this.state.lobby.id}>
+                <Layout currentGame={this.state.lobby.currentGame} lobbyId={this.state.lobby.id} isAdmin={this.state.lobby.isAdmin}>
                     <Route exact path='/' render={() => <Lobby id={this.state.lobby.id} players={this.state.lobby.players} name={this.state.lobby.name} /> } />
                     <Route path='/createLobby' render={() => <CreateLobby createLobby={this.createLobby} /> } />
                     <Route path='/closeLobby' render={() => <CloseLobby closeLobby={this.closeLobby} /> }  />
                     <Route path='/lobbyClosed' component={LobbyClosed} />
                     <Route path='/counter' component={Counter} />
                     <Route path='/fetchdata' component={FetchData} />
+                    <Route path='/game/:name' component={Game} />
+                    <Route path='/newGame' render={() => <NewGame newGame={this.newGame} />} />
                     <Route path='/join/:id' render={props => <Join join={this.joinLobby} {...props} /> }  />
                 </Layout>
             </UserContext.Provider>

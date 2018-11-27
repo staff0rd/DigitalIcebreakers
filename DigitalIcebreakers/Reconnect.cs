@@ -18,5 +18,6 @@ namespace DigitalIcebreakers
         public bool IsAdmin { get; internal set; }
 
         public List<User> Players { get; internal set; }
+        public string CurrentGame { get; internal set; }
     }
 }
