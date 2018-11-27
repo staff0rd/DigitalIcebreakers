@@ -4,8 +4,8 @@ import { Row, Col, ListGroup, ListGroupItem  } from 'react-bootstrap';
 export class NewGame extends Component {
     displayName = NewGame.name
 
-    newGame = (gameName) => {
-        console.log(gameName);
+    newGame = (name) => {
+        this.props.newGame(name);
     }
 
     render() {

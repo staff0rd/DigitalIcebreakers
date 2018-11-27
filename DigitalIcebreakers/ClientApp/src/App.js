@@ -118,7 +118,7 @@ export default class App extends Component {
         });
 
         this.connection.on("newGame", (name) => {
-            console.log("newGame", name);
+           history.push(`/game/${name}`);
         });
 
         this.connection.on("endGame", () => {
