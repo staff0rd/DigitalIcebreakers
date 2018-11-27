@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using DigitalIcebreakers.Controllers;
+using DigitalIcebreakers.Games;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
@@ -162,6 +163,11 @@ namespace DigitalIcebreakers.Hubs
             }
 
             await base.OnDisconnectedAsync(exception);
+        }
+
+        public async void GameMessage(string gameName, string payload)
+        {
+
         }
     }
 }

@@ -1,18 +1,21 @@
 import React, { Component } from 'react';
-import { Row, Col, ListGroup, ListGroupItem  } from 'react-bootstrap';
+import {DoggosVsKittehs} from '../games/DoggosVsKittehs/DoggosVsKittehs';
 
 export class Game extends Component {
     displayName = Game.name
 
-    newGame = (name) => {
-        this.props.newGame(name);
+    getGame() {
+        switch (this.props.match.params.name) {
+            case "doggos-vs-kittehs": return <DoggosVsKittehs {...this.props} />;
+            default: return;
+        }
     }
 
     render() {
         return (
-            <div>
-                
-            </div>
-        );
+        <div>
+            {this.getGame()}
+        </div>
+        )
     }
 }

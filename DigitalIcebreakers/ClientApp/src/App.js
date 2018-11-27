@@ -165,7 +165,7 @@ export default class App extends Component {
                     <Route path='/lobbyClosed' component={LobbyClosed} />
                     <Route path='/counter' component={Counter} />
                     <Route path='/fetchdata' component={FetchData} />
-                    <Route path='/game/:name' component={Game} />
+                    <Route path='/game/:name' render={props => <Game isAdmin={this.state.lobby.isAdmin} connection={this.connection} {...props} /> } />
                     <Route path='/newGame' render={() => <NewGame newGame={this.newGame} />} />
                     <Route path='/join/:id' render={props => <Join join={this.joinLobby} {...props} /> }  />
                 </Layout>
