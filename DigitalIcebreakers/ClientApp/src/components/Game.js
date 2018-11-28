@@ -13,9 +13,9 @@ export class Game extends Component {
 
     render() {
         return (
-        <div>
-            {this.getGame()}
-        </div>
-        )
+            <div>
+                {this.getGame()}
+            </div>
+        );
     }
 }

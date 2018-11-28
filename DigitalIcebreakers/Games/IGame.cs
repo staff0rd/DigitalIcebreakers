@@ -8,6 +8,8 @@ namespace DigitalIcebreakers.Games
 {
     public interface IGame
     {
-        void Message(string payload, GameHub hub);
+        Task Message(string payload, GameHub hub);
+
+        string Name { get; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DigitalIcebreakers.Games;
 using System.Threading.Tasks;
 
 namespace DigitalIcebreakers
@@ -15,6 +16,6 @@ namespace DigitalIcebreakers
 
         internal Player Admin => Players.SingleOrDefault(p => p.IsAdmin);
 
-        public string CurrentGame { get; internal set; }
+        public IGame CurrentGame { get; internal set; }
     }
 }

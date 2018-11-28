@@ -3,14 +3,35 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DigitalIcebreakers.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 namespace DigitalIcebreakers.Games
 {
     public class DoggosVsKittehs : IGame
     {
-        public void Message(string payload, GameHub hub)
+        public string Name => "doggos-vs-kittehs";
+
+        Dictionary<string, int> _results = new Dictionary<string, int>();
+
+        public async Task Message(string payload, GameHub hub)
         {
-            throw new NotImplementedException();
+            // 1 = kittehs
+            // 0 = doggos
+
+            _results[hub.Context.ConnectionId] = int.Parse(payload);
+            var totalPlayers = hub.GetLobby().Players.Count(p => !p.IsAdmin);
+            var result = new Result { Doggos = _results.Where(p => p.Value == 0).Count(), Kittehs = _results.Where(p => p.Value == 1).Count() };
+            result.Undecided = totalPlayers - result.Kittehs - result.Doggos;
+            await hub.Clients.Client(hub.GetAdmin().ConnectionId).SendAsync("gameUpdate", result);
+        }
+
+        public class Result
+        {
+            public int Doggos { get; set; }
+
+            public int Kittehs { get; set; }
+
+            public int Undecided { get; set; }
         }
     }
 }

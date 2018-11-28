@@ -88,7 +88,7 @@ namespace DigitalIcebreakers.Hubs
             if (lobby != null)
             {
                 var players = lobby.Players.Where(p => !p.IsAdmin).Select(p => new User { Id = p.ExternalId, Name = p.Name }).ToList();
-                await Clients.Caller.SendAsync("Reconnect", new Reconnect { PlayerId = player.Id, PlayerName = player.Name, LobbyName = lobby.Name, LobbyId = lobby.Id, IsAdmin = player.IsAdmin, Players = players, CurrentGame = lobby.CurrentGame });
+                await Clients.Caller.SendAsync("Reconnect", new Reconnect { PlayerId = player.Id, PlayerName = player.Name, LobbyName = lobby.Name, LobbyId = lobby.Id, IsAdmin = player.IsAdmin, Players = players, CurrentGame = lobby.CurrentGame?.Name });
                 if (!player.IsAdmin)
                 {
                     await Clients.Client(lobby.Admin.ConnectionId).SendAsync("joined", new User { Id = player.ExternalId, Name = player.Name });
@@ -114,8 +114,17 @@ namespace DigitalIcebreakers.Hubs
 
             if (lobby != null && player.IsAdmin)
             {
-                lobby.CurrentGame = name;
+                lobby.CurrentGame = GetGame(name);
                 Clients.Clients(lobby.Players.Select(p => p.ConnectionId).ToList()).SendAsync("newgame", name);
+            }
+        }
+
+        private static IGame GetGame(string name)
+        {
+            switch (name)
+            {
+                case "doggos-vs-kittehs": return new DoggosVsKittehs();
+                default: throw new ArgumentOutOfRangeException("Unknown game");
             }
         }
 
@@ -131,7 +140,12 @@ namespace DigitalIcebreakers.Hubs
             }
         }
 
-        private Lobby GetLobby()
+        public Player GetAdmin()
+        {
+            return GetLobby().Admin;
+        }
+
+        public Lobby GetLobby()
         {
             var player = GetPlayerByConnectionId();
             return _lobbys.SingleOrDefault(p => p.Players.Contains(player));
@@ -165,9 +179,10 @@ namespace DigitalIcebreakers.Hubs
             await base.OnDisconnectedAsync(exception);
         }
 
-        public async void GameMessage(string gameName, string payload)
+        public async void GameMessage(string payload)
         {
-
+            var lobby = GetLobby();
+            await lobby.CurrentGame.Message(payload, this);
         }
     }
 }
