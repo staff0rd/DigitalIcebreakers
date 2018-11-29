@@ -18,7 +18,13 @@ namespace DigitalIcebreakers.Games
             // 1 = kittehs
             // 0 = doggos
 
-            _results[hub.Context.ConnectionId] = int.Parse(payload);
+            if (!string.IsNullOrWhiteSpace(payload))
+            {
+                int value;
+                if (int.TryParse(payload, out value))
+                    _results[hub.Context.ConnectionId] = value;
+            }
+            
             var totalPlayers = hub.GetLobby().Players.Count(p => !p.IsAdmin);
             var result = new Result { Doggos = _results.Where(p => p.Value == 0).Count(), Kittehs = _results.Where(p => p.Value == 1).Count() };
             result.Undecided = totalPlayers - result.Kittehs - result.Doggos;

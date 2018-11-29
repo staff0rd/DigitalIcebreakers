@@ -77,6 +77,9 @@ export default class App extends Component {
             if (this.myStorage)
                 this.myStorage.setItem("user", JSON.stringify(this.state.user));
 
+            if (response.currentGame)
+                history.push(`/game/${response.currentGame}`);
+            else
                 history.push("/");
         });
 

@@ -39,19 +39,16 @@ export class NavMenu extends Component {
             </LinkContainer>
         );
 
-        const stopGame = (
-            <LinkContainer to={'/'} exact>
+        const currentGame = (
+            <LinkContainer to={`/game/${this.props.currentGame}`} exact>
                 <NavItem>
-                    <Glyphicon glyph='minus' /> New game
+                    <Glyphicon glyph='game' /> Game
                 </NavItem>
             </LinkContainer>
         );
 
-        let gameStopStart;
 
-        if (this.props.lobbyId) {
-            gameStopStart = this.props.currentGame ? stopGame : startGame;
-        }
+        console.log(this.props);
 
         return (
             <Navbar inverse fixedTop fluid collapseOnSelect>
@@ -65,7 +62,8 @@ export class NavMenu extends Component {
                     <Nav>
                         {this.props.lobbyId ? "" : createLobby}
                         {this.props.lobbyId ? lobby : ""}
-                        {this.props.lobbyId && this.props.isAdmin  ? gameStopStart : ""}
+                        {this.props.lobbyId && this.props.currentGame ? currentGame : ""}
+                        {this.props.lobbyId && this.props.isAdmin ? startGame : ""}
                         {this.props.lobbyId && this.props.isAdmin ? closeLobby : ""}
                     </Nav>
                 </Navbar.Collapse>

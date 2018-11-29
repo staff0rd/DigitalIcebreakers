@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Row, Col, ListGroup, ListGroupItem  } from 'react-bootstrap';
 import doggo from './doggo.jpeg';
 import kitteh from './kitteh.jpg';
+import { Bar } from 'react-chartjs-2';
 
 export class DoggosVsKittehs extends Component {
     displayName = DoggosVsKittehs.name
@@ -19,9 +20,9 @@ export class DoggosVsKittehs extends Component {
         });
         console.log(props);
         this.state = {
-            doggos: undefined,
-            kittehs: undefined,
-            undecided: undefined
+            doggos: 0,
+            kittehs: 0,
+            undecided: 0
         };
     }
 
@@ -33,25 +34,32 @@ export class DoggosVsKittehs extends Component {
         }
     }
 
-
     renderAdmin() {
+        if (this.state.doggos + this.state.kittehs + this.state.undecided === 0)
+            this.props.connection.invoke("gameMessage", "");
+
+        const data = {
+            labels: ["Doggos", "Undecided", "Kittehs"],
+            datasets: [{
+                label: "Doggos vs Kittehs",
+                data: [this.state.doggos, this.state.undecided, this.state.kittehs],
+                backgroundColor: ['#845EC2', '#B0A8B9', '#FF8066']
+            }],
+            
+        };
+
+        const options = { 
+            legend: {display: false },
+            scales: { 
+                xAxes: [{ gridLines: { display:false}}],
+                yAxes: [{ gridLines: { display:false}}]
+            }
+        };
+
         return (
             <div>
                 <h2>Doggos vs Kittehs</h2>
-                <Row>
-                    <Col md={4}>
-                        <h3>Doggos</h3>
-                        {this.state.doggos}
-                    </Col>
-                    <Col md={4}>
-                        <h3>Undecided</h3>
-                        {this.state.undecided}
-                    </Col>
-                    <Col md={4}>
-                        <h3>Kittehs</h3>
-                        {this.state.kittehs}
-                    </Col>
-                </Row>
+                <Bar data={data} options={options} />
             </div>
         );
     }
