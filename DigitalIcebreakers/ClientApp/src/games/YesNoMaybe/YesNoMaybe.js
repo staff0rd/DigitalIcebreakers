@@ -64,15 +64,15 @@ export class YesNoMaybe extends Component {
     renderPlayer() {
         return (
             <div>
-                <h2>Choose one</h2>
-                <ListGroup>
-                    <ListGroupItem onClick={() => this.choose("0")}>
-                        Yes
-                    </ListGroupItem>
-                    <ListGroupItem onClick={() => this.choose("1")}>
-                        No
-                    </ListGroupItem>
-                </ListGroup>
+                <br />
+                <Button onClick={() => this.choose("0")} bsSize="large">
+                    Yes
+                </Button>
+                <br />
+                <br />
+                <Button onClick={() => this.choose("1")} bsSize="large">
+                    No
+                </Button>
             </div>
         );
     }

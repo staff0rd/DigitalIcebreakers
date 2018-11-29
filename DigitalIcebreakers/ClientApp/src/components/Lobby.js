@@ -10,10 +10,11 @@ export class Lobby extends Component {
     render() {
         const joinUrl = `${Config.baseUrl}/join/${this.props.id}`;
         const players = (this.props.players || []).map((p, ix) => <ListGroupItem key={ix}>{p.name}</ListGroupItem>);
-        return (
-            <div>
-                <h2>{this.props.name}</h2>
-                
+        if (this.props.id)
+            return (
+                <div>
+                    <h2>{this.props.name}</h2>
+
                     <Row>
                         <Col md={4}>
                             <p>{joinUrl}</p>
@@ -26,8 +27,13 @@ export class Lobby extends Component {
                             </ListGroup>
                         </Col>
                     </Row>
-                
-            </div>
-        );
+
+                </div>
+            ); else return (
+                <div>
+                    <h1>Digital Icebreakers</h1>
+                    <h3><a href="mailto:stafford@atqu.in">stafford@atqu.in</a></h3>
+                </div>
+            );
     }
 }
