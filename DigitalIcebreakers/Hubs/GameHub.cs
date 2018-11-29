@@ -124,6 +124,7 @@ namespace DigitalIcebreakers.Hubs
             switch (name)
             {
                 case "doggos-vs-kittehs": return new DoggosVsKittehs();
+                case "yes-no-maybe": return new YesNoMaybe();
                 default: throw new ArgumentOutOfRangeException("Unknown game");
             }
         }

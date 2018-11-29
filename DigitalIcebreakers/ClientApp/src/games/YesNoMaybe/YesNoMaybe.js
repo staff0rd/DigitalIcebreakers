@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { ListGroup, ListGroupItem  } from 'react-bootstrap';
-import doggo from './doggo.jpeg';
-import kitteh from './kitteh.jpg';
+import { ListGroup, ListGroupItem, Button  } from 'react-bootstrap';
 import { Bar } from 'react-chartjs-2';
 
-export class DoggosVsKittehs extends Component {
-    displayName = DoggosVsKittehs.name
+export class YesNoMaybe extends Component {
+    displayName = YesNoMaybe.name
 
     constructor(props, context) {
         super(props,context);
@@ -13,39 +11,37 @@ export class DoggosVsKittehs extends Component {
         props.connection.on("gameUpdate", (result) => {
             console.log(result);
             this.setState({
-                doggos: result.doggos,
-                kittehs: result.kittehs,
-                undecided: result.undecided
+                yes: result.yes,
+                no: result.no,
+                maybe: result.maybe
             });
         });
         console.log(props);
         this.state = {
-            doggos: 0,
-            kittehs: 0,
-            undecided: 0
+            yes: 0,
+            no: 0,
+            maybe: 0
         };
     }
 
     choose = (choice) => {
-        if (choice !== this.choice) {
-            this.choice = choice;
-            console.log("congrats on making a choice");
-            this.props.connection.invoke("gameMessage", choice);
-        }
+        this.props.connection.invoke("gameMessage", choice);
+    }
+
+    reset = () => {
+        this.props.connection.invoke("gameMessage", "reset");
     }
 
     renderAdmin() {
-        if (this.state.doggos + this.state.kittehs + this.state.undecided === 0)
+        if (this.state.yes + this.state.no+ this.state.maybe=== 0)
             this.props.connection.invoke("gameMessage", "");
 
         const data = {
-            labels: ["Doggos", "Undecided", "Kittehs"],
+            labels: ["Yes", "No", "Maybe"],
             datasets: [{
-                label: "Doggos vs Kittehs",
-                data: [this.state.doggos, this.state.undecided, this.state.kittehs],
+                data: [this.state.yes, this.state.no, this.state.maybe],
                 backgroundColor: ['#845EC2', '#B0A8B9', '#FF8066']
-            }],
-            
+            }]
         };
 
         const options = { 
@@ -58,8 +54,9 @@ export class DoggosVsKittehs extends Component {
 
         return (
             <div>
-                <h2>Doggos vs Kittehs</h2>
+                <h2>Yes, No, Maybe</h2>
                 <Bar data={data} options={options} />
+                <Button onClick={this.reset} bsSize="large">Reset</Button>
             </div>
         );
     }
@@ -69,11 +66,11 @@ export class DoggosVsKittehs extends Component {
             <div>
                 <h2>Choose one</h2>
                 <ListGroup>
-                    <ListGroupItem onClick={() => this.choose("1")}>
-                        <img src={kitteh} alt="kitteh" width={320} />
-                    </ListGroupItem>
                     <ListGroupItem onClick={() => this.choose("0")}>
-                        <img src={doggo} alt="doggo" width={320} />
+                        Yes
+                    </ListGroupItem>
+                    <ListGroupItem onClick={() => this.choose("1")}>
+                        No
                     </ListGroupItem>
                 </ListGroup>
             </div>
