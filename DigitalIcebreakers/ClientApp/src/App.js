@@ -138,6 +138,7 @@ export default class App extends Component {
 
         this.connection.on("newGame", (name) => {
             ReactAI.ai().trackEvent("Joining new game");
+            this.connection.off("gameUpdate");
             history.push(`/game/${name}`);
         });
 
