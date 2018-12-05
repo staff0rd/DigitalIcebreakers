@@ -14,6 +14,9 @@ import { HubConnectionBuilder } from '@aspnet/signalr';
 import { guid } from './util/guid';
 import { UserContext } from './contexts/UserContext';
 import history from './history';
+import ReactAI from 'react-appinsights';
+
+const connectionRetrySeconds = [0, 1, 4, 9, 16, 25, 36, 49]
 
 export default class App extends Component {
     displayName = App.name
@@ -22,6 +25,8 @@ export default class App extends Component {
         super(props, context);
 
         this.myStorage = window.localStorage;
+
+        this.connectionTimeout = 0;
 
         if (this.myStorage) {
             const raw = this.myStorage.getItem("user");
@@ -44,8 +49,11 @@ export default class App extends Component {
                 id: undefined,
                 players: [],
                 isAdmin: false,
-            }
+            },
+            connected: 0
         };
+
+        ReactAI.setAppContext({ userId: this.user.id });
 
         this.configureSignalR();
     }
@@ -55,6 +63,7 @@ export default class App extends Component {
         const component = this;
 
         this.connection.on("reconnect", (response) => {
+            ReactAI.ai().trackEvent("Reconnect");
             let user = this.user;
             if (response.playerId) {
                 user = {
@@ -83,14 +92,21 @@ export default class App extends Component {
                 history.push("/");
         });
 
+        this.connection.onclose(() => {
+            ReactAI.ai().trackEvent("Connection closed");
+            this.setState({connected: 0});
+        })
+
         this.connection.on("closelobby", () => {
-            console.log("dat lobby is closed, son");
+            ReactAI.ai().trackEvent("Lobby closed");
             this.setState({ lobby: {} });
             history.push('/lobbyClosed');
         });
 
+
         this.connection.on("connected", () => {
-            console.log("Connected");
+            ReactAI.ai().trackMetric("userConnected", new Date() - this.connectionStarted);
+            this.setState({connected: 2});
         });
 
         this.connection.on("joined", (user) => {
@@ -121,24 +137,42 @@ export default class App extends Component {
         });
 
         this.connection.on("newGame", (name) => {
-           history.push(`/game/${name}`);
+            ReactAI.ai().trackEvent("Joining new game");
+            history.push(`/game/${name}`);
         });
 
         this.connection.on("endGame", () => {
-            console.log("game ended");
+            ReactAI.ai().trackEvent("Game ended");
         });
 
-        this.connection.start()
-            .then(() => {
-                this.connection.invoke("connect", this.user);
-            })
-            .catch((err) => {
-                return console.error(err.toString());
-            });
+        this.connect();
+    }
+
+    connect() {
+        setTimeout(() => {
+            this.connectionTimeout = connectionRetrySeconds.filter(s => s > this.connectionTimeout)[0];
+            if (!this.connectionTimeout)
+                this.connectionTimeout = connectionRetrySeconds[connectionRetrySeconds.length-1];
+            this.connectionStarted = new Date();
+            this.setState({connected: 1});
+            this.connection.start()
+           .then(() => {
+               this.connectionTimeout = 0;
+               ReactAI.ai().trackMetric("connected", new Date() - this.connectionStarted);
+               this.connection.invoke("connect", this.user).catch(() => {
+                   this.connect();
+               });
+           })
+           .catch((err) => {
+               this.connect();
+               return console.error(err.toString());
+           });
+        }, this.connectionTimeout);
     }
 
     joinLobby = (id, name) => {
         this.user.name = name;
+        debugger;
         this.connection.invoke("connectToLobby", this.user,  id);
     }
 
@@ -147,7 +181,8 @@ export default class App extends Component {
     }
 
     createLobby = (name) => {
-        this.connection.invoke("createLobby", guid(), name, this.state.user);
+        this.connection.invoke("createLobby", guid(), name, this.state.user)
+            .catch((err) => console.log(err));
     }
 
     newGame = (name) => {
@@ -161,7 +196,7 @@ export default class App extends Component {
     render() {
         return (
             <UserContext.Provider value={this.state.user}>
-                <Layout currentGame={this.state.lobby.currentGame} lobbyId={this.state.lobby.id} isAdmin={this.state.lobby.isAdmin}>
+                <Layout currentGame={this.state.lobby.currentGame} lobbyId={this.state.lobby.id} isAdmin={this.state.lobby.isAdmin} connected={this.state.connected}>
                     <Route exact path='/' render={() => <Lobby id={this.state.lobby.id} players={this.state.lobby.players} name={this.state.lobby.name} /> } />
                     <Route path='/createLobby' render={() => <CreateLobby createLobby={this.createLobby} /> } />
                     <Route path='/closeLobby' render={() => <CloseLobby closeLobby={this.closeLobby} /> }  />

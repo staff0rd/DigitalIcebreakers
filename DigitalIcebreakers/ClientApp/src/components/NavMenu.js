@@ -7,6 +7,15 @@ import './NavMenu.css';
 export class NavMenu extends Component {
   displayName = NavMenu.name
 
+    getConnectionIcon() {
+        switch (this.props.connected) {
+            case 0: return (<Glyphicon glyph="remove-sign" />);
+            case 1: return (<Glyphicon glyph="question-sign" />);
+            case 2: return (<Glyphicon glyph="ok-sign" />);
+            default: return "";
+        }
+    }
+
     render() {
         const createLobby = (
             <LinkContainer to={'/createLobby'}>
@@ -51,10 +60,12 @@ export class NavMenu extends Component {
         console.log(this.props);
 
         return (
+
             <Navbar inverse fixedTop fluid collapseOnSelect>
                 <Navbar.Header>
                     <Navbar.Brand>
                         <Link to={'/'}>Digital Icebreakers</Link>
+                        
                     </Navbar.Brand>
                     <Navbar.Toggle />
                 </Navbar.Header>
@@ -65,6 +76,9 @@ export class NavMenu extends Component {
                         {this.props.lobbyId && this.props.currentGame ? currentGame : ""}
                         {this.props.lobbyId && this.props.isAdmin ? startGame : ""}
                         {this.props.lobbyId && this.props.isAdmin ? closeLobby : ""}
+                        <NavItem disabled={true}>
+                            {this.getConnectionIcon()} Connection status
+                        </NavItem>
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>
