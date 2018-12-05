@@ -63,7 +63,8 @@ export default class App extends Component {
         const component = this;
 
         this.connection.on("reconnect", (response) => {
-            ReactAI.ai().trackEvent("Reconnect");
+            ReactAI.ai().trackMetric("userReconnected", new Date() - this.connectionStarted);
+            this.setState({connected: 2});
             let user = this.user;
             if (response.playerId) {
                 user = {
