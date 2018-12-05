@@ -148,11 +148,17 @@ export default class App extends Component {
         this.connect();
     }
 
+    bumpConnectionTimeout() {
+        this.connectionTimeout = connectionRetrySeconds.filter(s => s > this.connectionTimeout)[0];
+        if (!this.connectionTimeout)
+            this.connectionTimeout = connectionRetrySeconds[connectionRetrySeconds.length-1];
+    }
+
     connect() {
         setTimeout(() => {
-            this.connectionTimeout = connectionRetrySeconds.filter(s => s > this.connectionTimeout)[0];
-            if (!this.connectionTimeout)
-                this.connectionTimeout = connectionRetrySeconds[connectionRetrySeconds.length-1];
+            if (this.state.connected > 0)
+                return;
+            this.bumpConnectionTimeout();
             this.connectionStarted = new Date();
             this.setState({connected: 1});
             this.connection.start()
@@ -164,10 +170,11 @@ export default class App extends Component {
                });
            })
            .catch((err) => {
+               this.setState({connected: 0});
                this.connect();
                return console.error(err.toString());
            });
-        }, this.connectionTimeout);
+        }, this.connectionTimeout * 1000);
     }
 
     joinLobby = (id, name) => {

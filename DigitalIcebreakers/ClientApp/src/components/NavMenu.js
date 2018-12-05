@@ -56,9 +56,6 @@ export class NavMenu extends Component {
             </LinkContainer>
         );
 
-
-        console.log(this.props);
-
         return (
 
             <Navbar inverse fixedTop fluid collapseOnSelect>
