@@ -95,6 +95,7 @@ export default class App extends Component {
         this.connection.onclose(() => {
             ReactAI.ai().trackEvent("Connection closed");
             this.setState({connected: 0});
+            this.connect();
         })
 
         this.connection.on("closelobby", () => {
@@ -102,7 +103,6 @@ export default class App extends Component {
             this.setState({ lobby: {} });
             history.push('/lobbyClosed');
         });
-
 
         this.connection.on("connected", () => {
             ReactAI.ai().trackMetric("userConnected", new Date() - this.connectionStarted);
