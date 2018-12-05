@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ListGroup, ListGroupItem, Button  } from 'react-bootstrap';
+import { Button  } from 'react-bootstrap';
 import { Bar } from 'react-chartjs-2';
 
 export class YesNoMaybe extends Component {
