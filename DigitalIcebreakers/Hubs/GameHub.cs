@@ -50,6 +50,10 @@ namespace DigitalIcebreakers.Hubs
 
         public async Task CreateLobby(Guid id, string name, User user)
         {
+            _lobbys.Where(p => p.Admin != null && p.Admin.Id == user.Id)
+                .ToList()
+                .ForEach(async l => await CloseLobby(l));
+
             _lobbys.Add(new Lobby
             {
                 Id = id,
@@ -65,6 +69,11 @@ namespace DigitalIcebreakers.Hubs
         public async Task CloseLobby()
         {
             var lobby = _lobbys.SingleOrDefault(l => l.Players.Any(p => p.IsAdmin && p.ConnectionId == Context.ConnectionId));
+            await CloseLobby(lobby);
+        }
+
+        private async Task CloseLobby(Lobby lobby)
+        {
             if (lobby != null)
             {
                 _lobbys.Remove(lobby);

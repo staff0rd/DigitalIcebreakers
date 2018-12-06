@@ -9,7 +9,7 @@ namespace DigitalIcebreakers
     {
         public string ConnectionId { get; set; }
 
-        public bool IsAdmin { get; internal set; }
+        public bool IsAdmin { get; set; }
 
         public bool IsConnected { get; set; }
 
@@ -21,9 +21,18 @@ namespace DigitalIcebreakers
         }
     }
 
-    public class User {
-
+    public class User
+    {
         public string Name { get; set; }
+
         public Guid Id { get; set; }
+
+        public User() { }
+
+        public User(Guid id, string name)
+        {
+            Name = name;
+            Id = id;
+        }
     }
 }
