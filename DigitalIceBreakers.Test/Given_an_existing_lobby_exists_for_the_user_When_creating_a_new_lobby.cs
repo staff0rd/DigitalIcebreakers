@@ -1,6 +1,7 @@
 using DigitalIcebreakers;
 using DigitalIcebreakers.Hubs;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.SignalR.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -19,13 +20,20 @@ namespace DigitalIceBreakers.Test
 
             var playerId = Guid.NewGuid();
             _lobbys = new List<Lobby> { new Lobby { Id = Guid.NewGuid(), Players = new List<Player> { new Player { Id = playerId, IsAdmin = true } } } };
-            var gameHub = new GameHub(new Mock<ILogger<GameHub>>().Object, _lobbys);
 
+            var gameHub = GetMockGameHub(playerId, _lobbys);
+            gameHub.CreateLobby(Guid.NewGuid(), null, new User(playerId, "")).Wait();
+        }
+
+        static GameHub GetMockGameHub(Guid playerId, List<Lobby> lobbys)
+        {
+            var gameHub = new GameHub(new Mock<ILogger<GameHub>>().Object, lobbys);
             gameHub.Context = new Mock<HubCallerContext>().Object;
             var clients = new Mock<IHubCallerClients>();
-            clients.Setup(p => p.Clients(It.IsAny<string>())).Returns(new Mock<IClientProxy>().Object);
+            clients.Setup(p => p.Client(It.IsAny<string>())).Returns(new Mock<IClientProxy>().Object);
+            clients.SetupGet(p => p.Caller).Returns(new Mock<IClientProxy>().Object);
             gameHub.Clients = clients.Object;
-            gameHub.CreateLobby(Guid.NewGuid(), null, new User(playerId, "")).Wait();
+            return gameHub;
         }
 
         [TestMethod]
