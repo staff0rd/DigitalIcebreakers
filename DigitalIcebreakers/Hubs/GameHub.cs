@@ -169,6 +169,13 @@ namespace DigitalIcebreakers.Hubs
         public async Task ConnectToLobby(User user, Guid lobbyId)
         {
             var player = GetPlayer(user);
+            var existingLobby = GetLobby();
+            if (existingLobby != null)
+            {
+                await Clients.Client(existingLobby.Admin.ConnectionId).SendAsync("left", new User { Id = player.ExternalId, Name = player.Name });
+                existingLobby.Players.Remove(player);
+            }
+
             var lobby = _lobbys.SingleOrDefault(p => p.Id == lobbyId);
             lobby.Players.Add(player);
             await Connect(player, lobby);

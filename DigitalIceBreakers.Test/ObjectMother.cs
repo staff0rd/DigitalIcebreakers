@@ -13,7 +13,9 @@ namespace DigitalIceBreakers.Test
         public static GameHub GetMockGameHub(Guid playerId, List<Lobby> lobbys)
         {
             var gameHub = new GameHub(new Mock<ILogger<GameHub>>().Object, lobbys);
-            gameHub.Context = new Mock<HubCallerContext>().Object;
+            var context = new Mock<HubCallerContext>();
+            context.Setup(p => p.ConnectionId).Returns(playerId.ToString());
+            gameHub.Context = context.Object;
             var clients = new Mock<IHubCallerClients>();
             clients.Setup(p => p.Client(It.IsAny<string>())).Returns(new Mock<IClientProxy>().Object);
             clients.SetupGet(p => p.Caller).Returns(new Mock<IClientProxy>().Object);

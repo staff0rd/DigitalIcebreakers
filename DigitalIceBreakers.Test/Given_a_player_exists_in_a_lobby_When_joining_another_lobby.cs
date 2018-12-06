@@ -24,12 +24,13 @@ namespace DigitalIceBreakers.Test
         {
             var playerId = Guid.NewGuid();
             _lobbys = new List<Lobby> {
-                new Lobby { Id = _lobbyIdOld, Players = new List<Player> { new Player { Id = playerId, IsAdmin = true }, new Player { Id = playerId } } },
-                new Lobby { Id = _lobbyIdNew, Players = new List<Player> { new Player { Id = playerId, IsAdmin = true } } }
+                new Lobby { Id = _lobbyIdOld, Players = new List<Player> { new Player { Id = Guid.NewGuid(), IsAdmin = true }, new Player { Id = playerId } } },
+                new Lobby { Id = _lobbyIdNew, Players = new List<Player> { new Player { Id = Guid.NewGuid(), IsAdmin = true } } }
             };
 
             var gameHub = ObjectMother.GetMockGameHub(playerId, _lobbys);
-            gameHub.CreateLobby(Guid.NewGuid(), null, new User(playerId, "")).Wait();
+
+            gameHub.ConnectToLobby(new User { Id = playerId }, _lobbyIdNew).Wait();
         }
 
         [TestMethod]
