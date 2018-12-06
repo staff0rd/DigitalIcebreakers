@@ -1,32 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <IsPackable>false</IsPackable>
     <SpaRoot>ClientApp\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
     <UserSecretsId>ecc4f397-7305-4476-9838-39cc3e515cbc</UserSecretsId>
-    <ApplicationInsightsResourceId>/subscriptions/4fe23ab6-0527-480c-8239-9015fe52f80d/resourcegroups/DigitalIcebreakers/providers/microsoft.insights/components/DigitalIcebrakers20181115063039</ApplicationInsightsResourceId>
-    <ApplicationInsightsAnnotationResourceId>/subscriptions/4fe23ab6-0527-480c-8239-9015fe52f80d/resourcegroups/DigitalIcebreakers/providers/microsoft.insights/components/DigitalIcebrakers20181115063039</ApplicationInsightsAnnotationResourceId>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.5.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="2.1.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
     <Content Remove="$(SpaRoot)**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
