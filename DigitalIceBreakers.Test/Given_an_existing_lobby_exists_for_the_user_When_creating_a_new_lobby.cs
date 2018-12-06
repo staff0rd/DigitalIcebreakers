@@ -17,7 +17,6 @@ namespace DigitalIceBreakers.Test
         List<Lobby> _lobbys;
         public Given_an_existing_lobby_exists_for_the_user_When_creating_a_new_lobby()
         {
-
             var playerId = Guid.NewGuid();
             _lobbys = new List<Lobby> { new Lobby { Id = Guid.NewGuid(), Players = new List<Player> { new Player { Id = playerId, IsAdmin = true } } } };
 
