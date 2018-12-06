@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
-import { DoggosVsKittehs } from '../games/DoggosVsKittehs/DoggosVsKittehs';
-import { YesNoMaybe } from '../games/YesNoMaybe/YesNoMaybe';
+import Games from '../games/Games';
 
 export class Game extends Component {
     displayName = Game.name
 
     getGame() {
-        switch (this.props.match.params.name) {
-            case "doggos-vs-kittehs": return <DoggosVsKittehs {...this.props} />;
-            case "yes-no-maybe": return <YesNoMaybe {...this.props} />;
-            default: return;
-        }
+        var game = Games(this.props).games.filter(g => g.name === this.props.match.params.name)[0];
+        if (game)
+            return game.component;
+        var app = Games(this.props).apps.filter(g => g.name === this.props.match.params.name)[0];
+        if (app)
+            return app.component;
     }
 
     render() {

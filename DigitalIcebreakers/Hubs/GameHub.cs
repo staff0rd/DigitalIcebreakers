@@ -134,6 +134,7 @@ namespace DigitalIcebreakers.Hubs
             {
                 case "doggos-vs-kittehs": return new DoggosVsKittehs();
                 case "yes-no-maybe": return new YesNoMaybe();
+                case "buzzer": return new Buzzer();
                 default: throw new ArgumentOutOfRangeException("Unknown game");
             }
         }
@@ -161,7 +162,7 @@ namespace DigitalIcebreakers.Hubs
             return _lobbys.SingleOrDefault(p => p.Players.Contains(player));
         }
 
-        private Player GetPlayerByConnectionId()
+        public Player GetPlayerByConnectionId()
         {
             return _lobbys.SelectMany(p => p.Players).SingleOrDefault(p => p.ConnectionId == Context.ConnectionId);
         }

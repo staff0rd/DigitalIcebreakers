@@ -48,7 +48,7 @@ export default class App extends Component {
                 name: undefined,
                 id: undefined,
                 players: [],
-                isAdmin: false,
+                isAdmin: false
             },
             connected: 0
         };
@@ -78,9 +78,9 @@ export default class App extends Component {
                     id: response.lobbyId,
                     name: response.lobbyName,
                     isAdmin: response.isAdmin,
-                    players: response.players,
                     currentGame: response.currentGame
                 },
+                players: response.players,
                 user: user
             });
 
@@ -95,9 +95,9 @@ export default class App extends Component {
 
         this.connection.onclose(() => {
             ReactAI.ai().trackEvent("Connection closed");
-            this.setState({connected: 0});
+            this.setState({ connected: 0 });
             this.connect();
-        })
+        });
 
         this.connection.on("closelobby", () => {
             ReactAI.ai().trackEvent("Lobby closed");
@@ -112,26 +112,14 @@ export default class App extends Component {
 
         this.connection.on("joined", (user) => {
             component.setState(prevState => ({
-                lobby: {
-                    id: prevState.lobby.id,
-                    name: prevState.lobby.name,
-                    isAdmin: prevState.lobby.isAdmin,
-                    players: [...prevState.lobby.players, user],
-                    currentGame: prevState.currentGame
-                }
+                players: [...prevState.players, user]
             }));
             console.log('join', user);
         });
 
         this.connection.on("left", (user) => {
             component.setState(prevState => ({
-                lobby: {
-                    id: prevState.lobby.id,
-                    name: prevState.lobby.name,
-                    isAdmin: prevState.lobby.isAdmin,
-                    players: prevState.lobby.players.filter(p => p.id !== user.id),
-                    currentGame: prevState.currentGame
-                }
+                players: prevState.players.filter(p => p.id !== user.id)
             }));
 
             console.log('left', user);
@@ -206,7 +194,7 @@ export default class App extends Component {
         return (
             <UserContext.Provider value={this.state.user}>
                 <Layout currentGame={this.state.lobby.currentGame} lobbyId={this.state.lobby.id} isAdmin={this.state.lobby.isAdmin} connected={this.state.connected}>
-                    <Route exact path='/' render={() => <Lobby id={this.state.lobby.id} players={this.state.lobby.players} name={this.state.lobby.name} /> } />
+                    <Route exact path='/' render={() => <Lobby id={this.state.lobby.id} players={this.state.players} name={this.state.lobby.name} /> } />
                     <Route path='/createLobby' render={() => <CreateLobby createLobby={this.createLobby} /> } />
                     <Route path='/closeLobby' render={() => <CloseLobby closeLobby={this.closeLobby} /> }  />
                     <Route path='/lobbyClosed' component={LobbyClosed} />
