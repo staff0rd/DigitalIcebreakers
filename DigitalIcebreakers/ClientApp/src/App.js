@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router';
-import { Layout } from './components/Layout';
+import Layout from './components/Layout';
 import { Lobby } from './components/Lobby';
 import { LobbyClosed } from './components/LobbyClosed';
 import { NewGame } from './components/NewGame';
@@ -16,7 +16,7 @@ import { UserContext } from './contexts/UserContext';
 import history from './history';
 import ReactAI from 'react-appinsights';
 
-const connectionRetrySeconds = [0, 1, 4, 9, 16, 25, 36, 49]
+const connectionRetrySeconds = [0, 1, 4, 9, 16, 25, 36, 49];
 
 export default class App extends Component {
     displayName = App.name
@@ -32,7 +32,7 @@ export default class App extends Component {
             const raw = this.myStorage.getItem("user");
             if (raw) {
                 this.user = JSON.parse(raw);
-                console.log("found user", this.user);
+                console.log("User joined", this.user);
             }
         }
 
@@ -69,18 +69,18 @@ export default class App extends Component {
             if (response.playerId) {
                 user = {
                     id: response.playerId,
-                    name: response.playerName,
+                    name: response.playerName
                 };
             }
-
+            console.log('reconnect response', response);
             this.setState({
                 lobby: {
                     id: response.lobbyId,
                     name: response.lobbyName,
-                    isAdmin: response.isAdmin,
-                    currentGame: response.currentGame
+                    isAdmin: response.isAdmin
                 },
                 players: response.players,
+                currentGame: response.currentGame,
                 user: user
             });
 
@@ -128,6 +128,7 @@ export default class App extends Component {
         this.connection.on("newGame", (name) => {
             ReactAI.ai().trackEvent("Joining new game");
             this.connection.off("gameUpdate");
+            this.setState({ currentGame: name });
             history.push(`/game/${name}`);
         });
 
@@ -193,7 +194,7 @@ export default class App extends Component {
     render() {
         return (
             <UserContext.Provider value={this.state.user}>
-                <Layout currentGame={this.state.lobby.currentGame} lobbyId={this.state.lobby.id} isAdmin={this.state.lobby.isAdmin} connected={this.state.connected}>
+                <Layout currentGame={this.state.currentGame} lobbyId={this.state.lobby.id} isAdmin={this.state.lobby.isAdmin} connected={this.state.connected}>
                     <Route exact path='/' render={() => <Lobby id={this.state.lobby.id} players={this.state.players} name={this.state.lobby.name} /> } />
                     <Route path='/createLobby' render={() => <CreateLobby createLobby={this.createLobby} /> } />
                     <Route path='/closeLobby' render={() => <CloseLobby closeLobby={this.closeLobby} /> }  />
