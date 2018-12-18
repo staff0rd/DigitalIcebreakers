@@ -20,11 +20,13 @@ export class YesNoMaybe extends Component {
         this.state = {
             yes: 0,
             no: 0,
-            maybe: 0
+            maybe: 0,
+            choice: undefined
         };
     }
 
     choose = (choice) => {
+        this.setState({ choice: choice });
         this.props.connection.invoke("gameMessage", choice);
     }
 
@@ -62,15 +64,16 @@ export class YesNoMaybe extends Component {
     }
 
     renderPlayer() {
+        const style = { height: '100px', width: '300px' };
         return (
             <div>
                 <br />
-                <Button onClick={() => this.choose("0")} bsSize="large">
+                <Button onClick={() => this.choose("0")} bsSize="large" style={style} active={this.state.choice === "0"}>
                     Yes
                 </Button>
                 <br />
                 <br />
-                <Button onClick={() => this.choose("1")} bsSize="large">
+                <Button onClick={() => this.choose("1")} bsSize="large" style={style} active={this.state.choice === "1"}>
                     No
                 </Button>
             </div>
