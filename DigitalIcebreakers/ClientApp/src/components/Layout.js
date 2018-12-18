@@ -19,7 +19,7 @@ class Layout extends Component {
             return this.props.children;
         else
             return (
-                <Grid fluid>
+                <Grid fluid className="navPad">
                     <Row>
                         <Col sm={3}>
                             <NavMenu {...this.props} />
