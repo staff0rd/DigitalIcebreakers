@@ -11,7 +11,7 @@ namespace DigitalIcebreakers.Games
     {
         public string Name => "yes-no-maybe";
 
-        Dictionary<string, int> _results = new Dictionary<string, int>();
+        Dictionary<Guid, int> _results = new Dictionary<Guid, int>();
 
         public async Task Message(string payload, GameHub hub)
         {
@@ -28,7 +28,7 @@ namespace DigitalIcebreakers.Games
                 {
                     int value;
                     if (int.TryParse(payload, out value))
-                        _results[hub.Context.ConnectionId] = value;
+                        _results[hub.GetPlayerByConnectionId().Id] = value;
                 }
             }
             
