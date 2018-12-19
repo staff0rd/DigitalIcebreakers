@@ -13,7 +13,7 @@ namespace DigitalIcebreakers
 
         public bool IsConnected { get; set; }
 
-        public Guid ExternalId { get; private set; }
+        public Guid ExternalId { get; set; }
 
         public Player()
         {

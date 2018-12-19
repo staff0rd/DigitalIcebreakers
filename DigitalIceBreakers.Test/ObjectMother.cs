@@ -1,4 +1,5 @@
 ﻿using DigitalIcebreakers;
+using DigitalIcebreakers.Games;
 using DigitalIcebreakers.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
@@ -21,6 +22,18 @@ namespace DigitalIceBreakers.Test
             clients.SetupGet(p => p.Caller).Returns(new Mock<IClientProxy>().Object);
             gameHub.Clients = clients.Object;
             return gameHub;
+        }
+
+        public static GameHub GetMockGameHub(Guid adminId, IGame game)
+        {
+            var lobby = new Lobby
+            {
+                CurrentGame = game,
+                Id = Guid.NewGuid(),
+                Players = new List<Player> { new Player { ConnectionId = adminId.ToString(), Id = adminId, ExternalId = adminId, IsAdmin = true } }
+            };
+
+            return GetMockGameHub(adminId, new List<Lobby> { lobby });
         }
     }
 }

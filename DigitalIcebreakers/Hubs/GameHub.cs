@@ -101,6 +101,7 @@ namespace DigitalIcebreakers.Hubs
                 if (!player.IsAdmin)
                 {
                     await Clients.Client(lobby.Admin.ConnectionId).SendAsync("joined", new User { Id = player.ExternalId, Name = player.Name });
+                    await GameMessage("join");
                 }
             }
             else
@@ -135,6 +136,7 @@ namespace DigitalIcebreakers.Hubs
                 case "doggos-vs-kittehs": return new DoggosVsKittehs();
                 case "yes-no-maybe": return new YesNoMaybe();
                 case "buzzer": return new Buzzer();
+                case "pong": return new Pong();
                 default: throw new ArgumentOutOfRangeException("Unknown game");
             }
         }
@@ -184,10 +186,11 @@ namespace DigitalIcebreakers.Hubs
 
         public async override Task OnDisconnectedAsync(Exception exception)
         {
+            await GameMessage("leave");
             var player = GetPlayerByConnectionId();
             if (player != null)
-            {
-                var admin = _lobbys.Where(p => p.Players.Contains(player)).SelectMany(p => p.Players).SingleOrDefault(p => p.IsAdmin);
+            {          
+                var admin = GetAdmin();
                 if (admin != null)
                 {
                     await Clients.Client(admin.ConnectionId).SendAsync("left", new User { Id = player.ExternalId, Name = player.Name });
@@ -197,10 +200,10 @@ namespace DigitalIcebreakers.Hubs
             await base.OnDisconnectedAsync(exception);
         }
 
-        public async void GameMessage(string payload)
+        public async Task GameMessage(string payload)
         {
             var lobby = GetLobby();
-            await lobby.CurrentGame.Message(payload, this);
+            await lobby.CurrentGame?.Message(payload, this);
         }
     }
 }

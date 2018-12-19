@@ -16,6 +16,6 @@ namespace DigitalIcebreakers
 
         internal Player Admin => Players.SingleOrDefault(p => p.IsAdmin);
 
-        public IGame CurrentGame { get; internal set; }
+        public IGame CurrentGame { get; set; }
     }
 }
