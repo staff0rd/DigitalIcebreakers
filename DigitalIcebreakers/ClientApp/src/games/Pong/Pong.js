@@ -3,17 +3,19 @@ import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import * as PIXI from "pixi.js";
 import { Button } from '../pixi/Button';
 
-export class Buzzer extends Component {
-    displayName = Buzzer.name
+export class Pong extends Component {
+    displayName = Pong.name
 
     constructor(props, context) {
-        super(props,context);
+        super(props, context);
 
         this.app = new PIXI.Application({ width: window.innerWidth, height: window.innerHeight, backgroundColor: 0xFF0000 });
 
-        this.button = new Button(this.up, this.down);
-        
-        this.app.stage.addChild(this.button);
+        this.topButton = new Button(this.release, this.up);
+        this.bottomButton = new Button(this.release, this.down);
+
+        this.app.stage.addChild(this.topButton);
+        this.app.stage.addChild(this.bottomButton);
 
         this.pixiElement = null;
 
@@ -21,24 +23,8 @@ export class Buzzer extends Component {
             players: []
         };
 
-        this.props.connection.on("gameUpdate", (id, name, state) => {
-            var user = {
-                id: id,
-                name: name,
-                state: state
-            };
-
-            this.setState(prevState => {
-                const players = prevState.players.map(p => p);
-                if (!players.filter(p => p.id === user.id).length) {
-                    players.push(user);
-                }
-                players.forEach(p => {
-                    if (p.id === user.id)
-                        p.state = user.state;
-                });
-                return { players: players };
-            });
+        this.props.connection.on("gameUpdate", (response) => {
+            console.log(response);
         });
     }
 
@@ -58,8 +44,12 @@ export class Buzzer extends Component {
         this.props.connection.invoke("gameMessage", "up");
     }
 
+    release = () => {
+        this.props.connection.invoke("gameMessage", "release");
+    }
+
     renderAdmin() {
-      
+
         const players = (this.state.players || []).map((p, ix) => {
             if (p.state === "down")
                 return <ListGroupItem key={ix} active>{p.name}</ListGroupItem>;
@@ -69,7 +59,7 @@ export class Buzzer extends Component {
 
         return (
             <div>
-                <h2>Buzzer</h2>
+                <h2>Pong</h2>
                 <ListGroup>
                     {players}
                 </ListGroup>
@@ -78,9 +68,13 @@ export class Buzzer extends Component {
     }
 
     renderPlayer() {
-        this.button.x = this.app.renderer.width / 4;
-        this.button.y = this.app.renderer.height / 4;
-        this.button.render(0x00FF00, 0x0000FF, 0, 0, this.app.renderer.width / 2, this.app.renderer.height / 2);
+        this.topButton.x = this.app.renderer.width / 4;
+        this.topButton.y = this.app.renderer.height / 8;
+        this.topButton.render(0x00FF00, 0x0000FF, 0, 0, this.app.renderer.width / 2, this.app.renderer.height / 16 * 5);
+
+        this.bottomButton.x = this.app.renderer.width / 4;
+        this.bottomButton.y = this.app.renderer.height / 16 * 9;
+        this.bottomButton.render(0x00FF00, 0x0000FF, 0, 0, this.app.renderer.width / 2, this.app.renderer.height / 16 * 5);
 
         return (
             <div ref={this.pixiUpdate} />

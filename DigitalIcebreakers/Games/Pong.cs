@@ -34,12 +34,12 @@ namespace DigitalIcebreakers.Games
                 case "join": Join(hub.GetPlayerByConnectionId().ExternalId); break;
                 default: return;
             }
-            await hub.Clients.Client(hub.GetAdmin().ConnectionId).SendAsync("gameUpdate", new Result(Speed(), _rightTeam.Sum(p => p.Value)));
+            await hub.Clients.Client(hub.GetAdmin().ConnectionId).SendAsync("gameUpdate", new Result(Speed(_leftTeam), Speed(_rightTeam)));
         }
 
-        private int Speed()
+        private decimal Speed(Dictionary<Guid, int> team)
         {
-            return _leftTeam.Sum(p => p.Value);
+            return ((decimal)team.Sum(p => p.Value)) / team.Count();
         }
 
         private void PerformOnDictionary(Guid id, Action<Dictionary<Guid, int>> action)
@@ -76,7 +76,7 @@ namespace DigitalIcebreakers.Games
 
         public class Result
         {
-            public Result(int left, int right)
+            public Result(decimal left, decimal right)
             {
                 Left = left;
                 Right = right;

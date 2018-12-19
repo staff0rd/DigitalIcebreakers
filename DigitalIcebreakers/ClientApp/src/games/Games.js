@@ -2,6 +2,7 @@ import React from 'react';
 import { DoggosVsKittehs } from './DoggosVsKittehs/DoggosVsKittehs';
 import { YesNoMaybe } from './YesNoMaybe/YesNoMaybe';
 import { Buzzer } from './Buzzer/Buzzer';
+import { Pong } from './Pong/Pong'
 
 export default function (props) {
     return [{
@@ -18,5 +19,11 @@ export default function (props) {
         component: <Buzzer {...props} />,
         title: "Buzzer",
         fullscreen: true
+    }, {
+        name: "pong",
+        component: <Pong {...props} />,
+        title: "Pong",
+        fullscreen: true,
+        isGame: true
     }];
 }
