@@ -7,13 +7,17 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace DigitalIcebreakers.Games
 {
-    public class DoggosVsKittehs : IGame
+    public class DoggosVsKittehs : Game, IGame
     {
         public string Name => "doggos-vs-kittehs";
 
         Dictionary<Guid, int> _results = new Dictionary<Guid, int>();
 
-        public async Task Message(string payload, GameHub hub)
+        public DoggosVsKittehs(GameHub hub) : base(hub)
+        {
+        }
+
+        public async Task Message(string payload)
         {
             // 1 = kittehs
             // 0 = doggos
@@ -22,13 +26,13 @@ namespace DigitalIcebreakers.Games
             {
                 int value;
                 if (int.TryParse(payload, out value))
-                    _results[hub.GetPlayerByConnectionId().Id] = value;
+                    _results[_hub.GetPlayerByConnectionId().Id] = value;
             }
             
-            var totalPlayers = hub.GetLobby().Players.Count(p => !p.IsAdmin);
+            var totalPlayers = _hub.GetLobby().Players.Count(p => !p.IsAdmin);
             var result = new Result { Doggos = _results.Where(p => p.Value == 0).Count(), Kittehs = _results.Where(p => p.Value == 1).Count() };
             result.Undecided = totalPlayers - result.Kittehs - result.Doggos;
-            await hub.Clients.Client(hub.GetAdmin().ConnectionId).SendAsync("gameUpdate", result);
+            await _hub.Clients.Client(_hub.GetAdmin().ConnectionId).SendAsync("gameUpdate", result);
         }
 
         public class Result

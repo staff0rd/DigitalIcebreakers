@@ -128,13 +128,13 @@ namespace DigitalIcebreakers.Hubs
             }
         }
 
-        private static IGame GetGame(string name)
+        private IGame GetGame(string name)
         {
             switch (name)
             {
-                case "doggos-vs-kittehs": return new DoggosVsKittehs();
-                case "yes-no-maybe": return new YesNoMaybe();
-                case "buzzer": return new Buzzer();
+                case "doggos-vs-kittehs": return new DoggosVsKittehs(this);
+                case "yes-no-maybe": return new YesNoMaybe(this);
+                case "buzzer": return new Buzzer(this);
                 default: throw new ArgumentOutOfRangeException("Unknown game");
             }
         }
@@ -200,7 +200,7 @@ namespace DigitalIcebreakers.Hubs
         public async void GameMessage(string payload)
         {
             var lobby = GetLobby();
-            await lobby.CurrentGame.Message(payload, this);
+            await lobby.CurrentGame.Message(payload);
         }
     }
 }

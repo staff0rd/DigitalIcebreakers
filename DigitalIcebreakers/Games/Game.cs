@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 
 namespace DigitalIcebreakers.Games
 {
-    public interface IGame
+    public abstract class Game
     {
-        Task Message(string payload);
+        protected GameHub _hub;
 
-        string Name { get; }
+        public Game(GameHub hub)
+        {
+            _hub = hub;
+        }
     }
 }

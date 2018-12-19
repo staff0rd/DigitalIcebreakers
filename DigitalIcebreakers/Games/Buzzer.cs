@@ -7,17 +7,19 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace DigitalIcebreakers.Games
 {
-    public class Buzzer : IGame
+    public class Buzzer : Game, IGame
     {
+        public Buzzer(GameHub hub) : base(hub) {}
+
         public string Name => "buzzer";
 
-        public async Task Message(string payload, GameHub hub)
+        public async Task Message(string payload)
         {
-            var player = hub.GetPlayerByConnectionId();
+            var player = _hub.GetPlayerByConnectionId();
             switch(payload)
             {
-                case "up": await hub.Clients.Client(hub.GetAdmin().ConnectionId).SendAsync("gameUpdate", player.ExternalId, player.Name, "up"); break;
-                case "down": await hub.Clients.Client(hub.GetAdmin().ConnectionId).SendAsync("gameUpdate", player.ExternalId, player.Name, "down"); break;
+                case "up": await _hub.Clients.Client(_hub.GetAdmin().ConnectionId).SendAsync("gameUpdate", player.ExternalId, player.Name, "up"); break;
+                case "down": await _hub.Clients.Client(_hub.GetAdmin().ConnectionId).SendAsync("gameUpdate", player.ExternalId, player.Name, "down"); break;
                 default: break;
             }
         }
