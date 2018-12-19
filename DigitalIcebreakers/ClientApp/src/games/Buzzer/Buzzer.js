@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import * as PIXI from "pixi.js";
+import { Button } from '../pixi/Button';
 
 export class Buzzer extends Component {
     displayName = Buzzer.name
@@ -8,25 +9,13 @@ export class Buzzer extends Component {
     constructor(props, context) {
         super(props,context);
 
-        console.log('isAdmin', props.isAdmin)
-
         this.app = new PIXI.Application({ width: window.innerWidth, height: window.innerHeight, backgroundColor: 0xFF0000 });
 
-        this.container = new PIXI.Container();
-        this.container.interactive = true;
-        this.container.buttonMode = true;
-        this.g1 = new PIXI.Graphics();
-        this.g2 = new PIXI.Graphics();
-        this.container.addChild(this.g1);
-        this.container.addChild(this.g2);
-        this.app.stage.addChild(this.container);
+        this.button = new Button(this.up, this.down);
+        
+        this.app.stage.addChild(this.button);
 
-        this.container.on('pointerdown', () => this.down());
-        this.container.on('pointerup', () => this.up());
-        this.container.on('pointerupoutside', () => this.up());
-        console.log("construct");
-
-        this.pixi = null;
+        this.pixiElement = null;
 
         this.state = {
             players: []
@@ -50,35 +39,23 @@ export class Buzzer extends Component {
                         p.state = user.state;
                 });
                 return { players: players };
-
-
-
-
             });
-
-            //switch (state) {
-            //    case "up": this.setState(prevState => { return { players: [...prevState.players.filter(p => p.id !== user.id), user] }; }); break;
-            //    case "down": this.setState(prevState => { return { players: [user, ...prevState.players.filter(p => p.id !== user.id)] }; }); break;
-            //    default: break;
-            //}
         });
     }
 
     pixiUpdate = (element) => {
-        this.pixi = element;
+        this.pixiElement = element;
 
-        if (this.pixi && this.pixi.children.length <= 0) {
-            this.pixi.appendChild(this.app.view);
+        if (this.pixiElement && this.pixiElement.children.length <= 0) {
+            this.pixiElement.appendChild(this.app.view);
         }
     }
 
     down = () => {
-        this.g2.alpha = 0;
         this.props.connection.invoke("gameMessage", "down");
     }
 
     up = () => {
-        this.g2.alpha = 1;
         this.props.connection.invoke("gameMessage", "up");
     }
 
@@ -102,20 +79,9 @@ export class Buzzer extends Component {
     }
 
     renderPlayer() {
-
-        this.container.x = this.app.renderer.width / 4;
-        this.container.y = this.app.renderer.height / 4;
-        
-        this.g1.clear();
-        this.g1.beginFill(0x00FF00);
-        this.g1.drawRect(0, 0, this.app.renderer.width / 2, this.app.renderer.height / 2);
-        this.g1.endFill();
-        this.g2.clear();
-        this.g2.beginFill(0x0000FF);
-        this.g2.drawRect(0, 0, this.app.renderer.width / 2, this.app.renderer.height / 2);
-        this.g2.endFill();
-
-        console.log('render');
+        this.button.x = this.app.renderer.width / 4;
+        this.button.y = this.app.renderer.height / 4;
+        this.button.render(0x00FF00, 0x0000FF, 0, 0, this.app.renderer.width / 2, this.app.renderer.height / 2);
 
         return (
             <div ref={this.pixiUpdate} />
