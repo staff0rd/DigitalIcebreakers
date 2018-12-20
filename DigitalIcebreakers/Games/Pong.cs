@@ -39,6 +39,8 @@ namespace DigitalIcebreakers.Games
 
         private decimal Speed(Dictionary<Guid, int> team)
         {
+            if (team.Count() == 0)
+                return 0;
             return ((decimal)team.Sum(p => p.Value)) / team.Count();
         }
 
@@ -72,6 +74,21 @@ namespace DigitalIcebreakers.Games
             else
                 _rightTeam[id] = 0;
             PerformOnDictionary(id, (d) => d[id] = 0);
+        }
+
+        public async Task Start(GameHub hub)
+        {
+            var players = hub.GetLobby().Players.Where(p => !p.IsAdmin).ToList();
+
+            players.ForEach(p => Join(p.ExternalId));
+
+            foreach (var player in players)
+            {
+                if (_leftTeam.ContainsKey(player.ExternalId))
+                    await hub.Clients.Client(player.ConnectionId).SendAsync("gameUpdate", "team:0");
+                else if (_rightTeam.ContainsKey(player.ExternalId))
+                    await hub.Clients.Client(player.ConnectionId).SendAsync("gameUpdate", "team:1");
+            }
         }
 
         public class Result

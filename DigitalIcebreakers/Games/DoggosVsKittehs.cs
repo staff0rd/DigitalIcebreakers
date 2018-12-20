@@ -31,6 +31,11 @@ namespace DigitalIcebreakers.Games
             await hub.Clients.Client(hub.GetAdmin().ConnectionId).SendAsync("gameUpdate", result);
         }
 
+        public Task Start(GameHub hub)
+        {
+            return Task.CompletedTask;
+        }
+
         public class Result
         {
             public int Doggos { get; set; }

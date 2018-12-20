@@ -21,5 +21,10 @@ namespace DigitalIcebreakers.Games
                 default: break;
             }
         }
+
+        public Task Start(GameHub hub)
+        {
+            return Task.CompletedTask;
+        }
     }
 }

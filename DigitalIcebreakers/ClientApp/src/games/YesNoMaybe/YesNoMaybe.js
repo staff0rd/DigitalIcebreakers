@@ -16,7 +16,7 @@ export class YesNoMaybe extends Component {
                 maybe: result.maybe
             });
         });
-        console.log(props);
+        console.log("constructed yesnomaybe");
         this.state = {
             yes: 0,
             no: 0,

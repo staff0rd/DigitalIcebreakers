@@ -170,7 +170,6 @@ export default class App extends Component {
 
     joinLobby = (id, name) => {
         this.user.name = name;
-        debugger;
         this.connection.invoke("connectToLobby", this.user,  id);
     }
 

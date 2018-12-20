@@ -10,6 +10,8 @@ namespace DigitalIcebreakers.Games
     {
         Task Message(string payload, GameHub hub);
 
+        Task Start(GameHub hub);
+
         string Name { get; }
     }
 }
