@@ -9,6 +9,7 @@
     "pixi.js": "^4.8.3",
     "qrcode.react": "^0.8.0",
     "react": "^16.0.0",
+    "react-animation-frame": "^1.0.2",
     "react-appinsights": "^2.0.0",
     "react-bootstrap": "^0.31.5",
     "react-chartjs-2": "^2.7.4",

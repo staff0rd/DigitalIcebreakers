@@ -5799,6 +5799,10 @@ rc@^1.0.1, rc@^1.1.6, rc@^1.1.7, rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
+react-animation-frame@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/react-animation-frame/-/react-animation-frame-1.0.2.tgz#d36b7c7b6b734334d4c25d113dfee1c90507d106"
+
 react-appinsights@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/react-appinsights/-/react-appinsights-2.0.0.tgz#9345195a5b8e105677ee8f67bdbd4787647bf179"
