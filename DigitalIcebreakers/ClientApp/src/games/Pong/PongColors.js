@@ -8,5 +8,5 @@ export const PongColors = {
     RightPaddleDown: Colors.Red.C900,
     RightPaddleOver: Colors.Red.C400,
     Background: Colors.BlueGrey.C800,
-    Ball: Colors.Teal.C500
+    Ball: Colors.Teal.C400
 };
