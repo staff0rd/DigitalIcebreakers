@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import { Form, FormGroup, ControlLabel, FormControl } from "react-bootstrap";
 import { PongColors as Colors } from './PongColors';
 import * as PIXI from "pixi.js";
+import ReactAnimationFrame from 'react-animation-frame';
 
-const defaultSpeed = 10;
-const defaultHeight = 7;
+const defaultSpeed = 200;
+const defaultHeight = 3;
 const defaultWidth = 30;
 
-export class PongPresenter extends Component {
-    displayName = PongPresenter.name
+class Presenter extends Component {
+    displayName = Presenter.name
 
     constructor(props, context) {
         super(props, context);
@@ -26,8 +27,15 @@ export class PongPresenter extends Component {
         };
 
         this.props.connection.on("gameUpdate", (response) => {
+            console.log(response);
             this.setState(response);
         });
+    }
+
+    onAnimationFrame(time, lastTime) {
+        const delta = (time - lastTime) / 1000;
+        this.leftPaddle.y -= this.state.speed * delta * this.state.left;
+        this.rightPaddle.y -= this.state.speed * delta * this.state.right;
     }
 
     pixiUpdate = (element) => {
@@ -104,8 +112,10 @@ export class PongPresenter extends Component {
                         <ControlLabel>Speed</ControlLabel>{' '}
                         <FormControl type="text" placeholder="Speed" value={this.state.speed} onChange={this.updateSpeed} />
                     </FormGroup>{' '}
-                    </Form>;
+                    </Form>
             </div>
         );
     }
 }
+
+export default ReactAnimationFrame(Presenter);

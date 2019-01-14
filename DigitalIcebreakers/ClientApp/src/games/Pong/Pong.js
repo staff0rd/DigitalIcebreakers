@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { PongClient } from './PongClient';
-import { PongPresenter } from './PongPresenter';
+import PongPresenter from './PongPresenter';
 
 export class Pong extends Component {
     displayName = Pong.name
