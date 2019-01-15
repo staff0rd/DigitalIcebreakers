@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router';
+import { Route, Redirect } from 'react-router';
 import Layout from './components/Layout';
 import { Lobby } from './components/Lobby';
 import { LobbyClosed } from './components/LobbyClosed';
 import { NewGame } from './components/NewGame';
 import { Game } from './components/Game';
-import { FetchData } from './components/FetchData';
 import { CreateLobby } from './components/CreateLobby';
 import { CloseLobby } from './components/CloseLobby';
-import { Counter } from './components/Counter';
 import { Join } from './components/Join';
 import { HubConnectionBuilder } from '@aspnet/signalr';
 import { guid } from './util/guid';
@@ -23,6 +21,8 @@ export default class App extends Component {
 
     constructor(props, context) {
         super(props, context);
+
+        this.isDebug = true;
 
         this.myStorage = window.localStorage;
 
@@ -58,11 +58,18 @@ export default class App extends Component {
         this.configureSignalR();
     }
 
+    debug() {
+        if (this.isDebug)
+            console.log('[app]', ...arguments);
+    }
+
     configureSignalR() {
         this.connection = new HubConnectionBuilder().withUrl("/gameHub").build();
         const component = this;
 
         this.connection.on("reconnect", (response) => {
+            this.debug("reconnect", response);
+            
             ReactAI.ai().trackMetric("userReconnected", new Date() - this.connectionStarted);
             this.setState({connected: 2});
             let user = this.user;
@@ -72,7 +79,7 @@ export default class App extends Component {
                     name: response.playerName
                 };
             }
-            console.log('reconnect', response);
+            
             this.setState({
                 lobby: {
                     id: response.lobbyId,
@@ -94,18 +101,21 @@ export default class App extends Component {
         });
 
         this.connection.onclose(() => {
+            this.debug("connection closed");
             ReactAI.ai().trackEvent("Connection closed");
             this.setState({ connected: 0 });
             this.connect();
         });
 
         this.connection.on("closelobby", () => {
+            this.debug("lobby closed");
             ReactAI.ai().trackEvent("Lobby closed");
             this.setState({ lobby: {} });
             history.push('/lobbyClosed');
         });
 
         this.connection.on("connected", () => {
+            this.debug("connected");
             ReactAI.ai().trackMetric("userConnected", new Date() - this.connectionStarted);
             this.setState({connected: 2});
         });
@@ -114,7 +124,7 @@ export default class App extends Component {
             component.setState(prevState => ({
                 players: [...prevState.players, user]
             }));
-            console.log('join', user);
+            console.log('joined', user);
         });
 
         this.connection.on("left", (user) => {
@@ -122,17 +132,21 @@ export default class App extends Component {
                 players: prevState.players.filter(p => p.id !== user.id)
             }));
 
-            console.log('left', user);
+            this.debug("left", user);
         });
 
         this.connection.on("newGame", (name) => {
+            this.debug("newGame", name);
             ReactAI.ai().trackEvent("Joining new game");
             this.connection.off("gameUpdate");
-            this.setState({ currentGame: name });
-            history.push(`/game/${name}`);
+            this.setState({ currentGame: name }, () => {
+                history.push(`/game/${name}`);
+            });
+            
         });
 
         this.connection.on("endGame", () => {
+            this.debug("endGame");
             ReactAI.ai().trackEvent("Game ended");
         });
 
@@ -190,18 +204,28 @@ export default class App extends Component {
         this.connection.invoke("endGame");
     }
 
+    redirect(condition, component) {
+        if (condition)
+            return component;
+        else
+            return () => <Redirect to="/" />
+    }
+
     render() {
+        var connected = this.state.connected === 2;
+        var game = this.redirect(connected, (props) => <Game isAdmin={this.state.lobby.isAdmin} connection={this.connection} {...props} />);
+        var newGame = this.redirect(connected, () => <NewGame newGame={this.newGame} />);
+        var closeLobby = this.redirect(connected, () => <CloseLobby closeLobby={this.closeLobby} />);
+
         return (
             <UserContext.Provider value={this.state.user}>
                 <Layout currentGame={this.state.currentGame} lobbyId={this.state.lobby.id} isAdmin={this.state.lobby.isAdmin} connected={this.state.connected}>
                     <Route exact path='/' render={() => <Lobby id={this.state.lobby.id} players={this.state.players} name={this.state.lobby.name} /> } />
                     <Route path='/createLobby' render={() => <CreateLobby createLobby={this.createLobby} /> } />
-                    <Route path='/closeLobby' render={() => <CloseLobby closeLobby={this.closeLobby} /> }  />
+                    <Route path='/closeLobby' render={closeLobby }  />
                     <Route path='/lobbyClosed' component={LobbyClosed} />
-                    <Route path='/counter' component={Counter} />
-                    <Route path='/fetchdata' component={FetchData} />
-                    <Route path='/game/:name' render={props => <Game isAdmin={this.state.lobby.isAdmin} connection={this.connection} {...props} /> } />
-                    <Route path='/newGame' render={() => <NewGame newGame={this.newGame} />} />
+                    <Route path='/game/:name' render={game} />
+                    <Route path='/newGame' render={newGame} />
                     <Route path='/join/:id' render={props => <Join join={this.joinLobby} {...props} /> }  />
                 </Layout>
             </UserContext.Provider>
