@@ -32,7 +32,7 @@ export default class App extends Component {
             const raw = this.myStorage.getItem("user");
             if (raw) {
                 this.user = JSON.parse(raw);
-                console.log("User joined", this.user);
+                console.log("User retrieved", this.user);
             }
         }
 
@@ -72,7 +72,7 @@ export default class App extends Component {
                     name: response.playerName
                 };
             }
-            console.log('reconnect response', response);
+            console.log('reconnect', response);
             this.setState({
                 lobby: {
                     id: response.lobbyId,
