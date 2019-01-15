@@ -125,8 +125,8 @@ namespace DigitalIcebreakers.Hubs
             if (lobby != null && player.IsAdmin)
             {
                 lobby.CurrentGame = GetGame(name);
-                lobby.CurrentGame.Start(this);
                 Clients.Clients(lobby.Players.Select(p => p.ConnectionId).ToList()).SendAsync("newgame", name);
+                lobby.CurrentGame.Start(this);
             }
         }
 
