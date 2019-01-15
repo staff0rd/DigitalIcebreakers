@@ -1,21 +1,15 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Button  } from 'react-bootstrap';
 import { Bar } from 'react-chartjs-2';
+import { BaseGame } from '../BaseGame';
 
-export class YesNoMaybe extends Component {
+export class YesNoMaybe extends BaseGame {
     displayName = YesNoMaybe.name
 
     constructor(props, context) {
         super(props,context);
         this.choice = undefined;
-        props.connection.on("gameUpdate", (result) => {
-            console.log(result);
-            this.setState({
-                yes: result.yes,
-                no: result.no,
-                maybe: result.maybe
-            });
-        });
+        
         console.log("constructed yesnomaybe");
         this.state = {
             yes: 0,
@@ -23,6 +17,18 @@ export class YesNoMaybe extends Component {
             maybe: 0,
             choice: undefined
         };
+    }
+
+    componentDidMount() {
+        super.componentDidMount();
+        this.props.connection.on("gameUpdate", (result) => {
+            console.log(result);
+            this.setState({
+                yes: result.yes,
+                no: result.no,
+                maybe: result.maybe
+            });
+        });
     }
 
     choose = (choice) => {

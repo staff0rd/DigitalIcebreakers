@@ -25,13 +25,14 @@ namespace DigitalIcebreakers.Games
         public async Task Message(string payload, GameHub hub)
         {
             var player = hub.GetPlayerByConnectionId();
+            var externalId = player.ExternalId;
             switch (payload)
             {
-                case "up": Move(1, hub.GetPlayerByConnectionId().ExternalId); break;
-                case "down": Move(-1, hub.GetPlayerByConnectionId().ExternalId); break;
-                case "release": Move(0, hub.GetPlayerByConnectionId().ExternalId); break;
-                case "leave": Leave(hub.GetPlayerByConnectionId().ExternalId); break;
-                case "join": Join(hub.GetPlayerByConnectionId().ExternalId); break;
+                case "up": Move(1, externalId); break;
+                case "down": Move(-1, externalId); break;
+                case "release": Move(0, externalId); break;
+                case "leave": Leave(externalId); break;
+                case "join": await Join(hub, player); break;
                 default: return;
             }
             await hub.Clients.Client(hub.GetAdmin().ConnectionId).SendAsync("gameUpdate", new Result(Speed(_leftTeam), Speed(_rightTeam)));
@@ -67,28 +68,40 @@ namespace DigitalIcebreakers.Games
             PerformOnDictionary(id, (d) => d.Remove(id));
         }
 
-        internal void Join(Guid id)
+        internal async Task Join(GameHub hub, Player player)
         {
-            if (_leftTeam.Count == _rightTeam.Count)
-                _leftTeam[id] = 0;
-            else
-                _rightTeam[id] = 0;
-            PerformOnDictionary(id, (d) => d[id] = 0);
+            if (!player.IsAdmin)
+            {
+                var id = player.ExternalId;
+
+                if (_leftTeam.Count == _rightTeam.Count)
+                    _leftTeam[id] = 0;
+                else
+                    _rightTeam[id] = 0;
+                PerformOnDictionary(id, (d) => d[id] = 0);
+
+                await hub.Clients.Client(player.ConnectionId).SendAsync("gameUpdate", GetGameData(player));
+            }
         }
 
         public async Task Start(GameHub hub)
         {
-            var players = hub.GetLobby().Players.Where(p => !p.IsAdmin).ToList();
-
-            players.ForEach(p => Join(p.ExternalId));
+            var players = hub.GetLobby().Players.ToList();
 
             foreach (var player in players)
             {
-                if (_leftTeam.ContainsKey(player.ExternalId))
-                    await hub.Clients.Client(player.ConnectionId).SendAsync("gameUpdate", "team:0");
-                else if (_rightTeam.ContainsKey(player.ExternalId))
-                    await hub.Clients.Client(player.ConnectionId).SendAsync("gameUpdate", "team:1");
+                await Join(hub, player);
             }
+        }
+
+        public string GetGameData(Player player)
+        {
+            if (_leftTeam.ContainsKey(player.ExternalId))
+                return "team:0";
+            else if (_rightTeam.ContainsKey(player.ExternalId))
+                return "team:1";
+
+            return null;
         }
 
         public class Result

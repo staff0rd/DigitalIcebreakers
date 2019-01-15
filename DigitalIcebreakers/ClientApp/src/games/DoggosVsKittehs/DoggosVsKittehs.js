@@ -1,15 +1,27 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { ListGroup, ListGroupItem  } from 'react-bootstrap';
 import doggo from './doggo.jpeg';
 import kitteh from './kitteh.jpg';
 import { Bar } from 'react-chartjs-2';
+import { BaseGame } from '../BaseGame'
 
-export class DoggosVsKittehs extends Component {
+export class DoggosVsKittehs extends BaseGame {
     displayName = DoggosVsKittehs.name
 
     constructor(props, context) {
         super(props,context);
-        props.connection.on("gameUpdate", (result) => {
+        
+        this.state = {
+            doggos: 0,
+            kittehs: 0,
+            undecided: 0,
+            choice: undefined
+        };
+    }
+
+    componentDidMount() {
+        super.componentDidMount();
+        this.props.connection.on("gameUpdate", (result) => {
             console.log(result);
             this.setState({
                 doggos: result.doggos,
@@ -17,13 +29,6 @@ export class DoggosVsKittehs extends Component {
                 undecided: result.undecided
             });
         });
-        console.log(props);
-        this.state = {
-            doggos: 0,
-            kittehs: 0,
-            undecided: 0,
-            choice: undefined
-        };
     }
 
     choose = (choice) => {

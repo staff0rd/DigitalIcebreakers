@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import * as PIXI from "pixi.js";
 import { Button } from '../pixi/Button';
+import { BaseGame } from '../BaseGame'
 
-export class Buzzer extends Component {
+export class Buzzer extends BaseGame {
     displayName = Buzzer.name
 
     constructor(props, context) {
@@ -20,7 +21,10 @@ export class Buzzer extends Component {
         this.state = {
             players: []
         };
+    }
 
+    componentDidMount() {
+        super.componentDidMount();
         this.props.connection.on("gameUpdate", (id, name, state) => {
             var user = {
                 id: id,

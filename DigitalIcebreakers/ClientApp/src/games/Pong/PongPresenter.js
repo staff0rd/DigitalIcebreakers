@@ -1,14 +1,15 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Form, FormGroup, ControlLabel, FormControl } from "react-bootstrap";
 import { PongColors as Colors } from './PongColors';
 import * as PIXI from "pixi.js";
 import ReactAnimationFrame from 'react-animation-frame';
+import { BaseGame } from '../BaseGame'
 
 const defaultSpeed = 200;
 const defaultHeight = 3;
 const defaultWidth = 30;
 
-class Presenter extends Component {
+class Presenter extends BaseGame {
     displayName = Presenter.name
 
     constructor(props, context) {
@@ -25,9 +26,11 @@ class Presenter extends Component {
             paddleHeight: defaultHeight,
             speed: defaultSpeed
         };
+    }
 
+    componentDidMount() {
+        super.componentDidMount();
         this.props.connection.on("gameUpdate", (response) => {
-            console.log(response);
             this.setState(response);
         });
     }
