@@ -204,7 +204,8 @@ namespace DigitalIcebreakers.Hubs
         public async Task GameMessage(string payload)
         {
             var lobby = GetLobby();
-            await lobby.CurrentGame?.Message(payload, this);
+            if (lobby != null && lobby.CurrentGame != null)
+                await lobby.CurrentGame.Message(payload, this);
         }
     }
 }
