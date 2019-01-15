@@ -181,8 +181,15 @@ namespace DigitalIcebreakers.Hubs
             }
 
             var lobby = _lobbys.SingleOrDefault(p => p.Id == lobbyId);
-            lobby.Players.Add(player);
-            await Connect(player, lobby);
+            if (lobby == null)
+            {
+                await Clients.Caller.SendAsync("closelobby");
+            }
+            else
+            {
+                lobby.Players.Add(player);
+                await Connect(player, lobby);
+            }
         }
 
         public async override Task OnDisconnectedAsync(Exception exception)
