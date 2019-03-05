@@ -8,6 +8,12 @@ import { BaseGame } from '../BaseGame'
 const defaultSpeed = 200;
 const defaultHeight = 3;
 const defaultWidth = 30;
+const defaultMaxBounceAngle = 45;
+const defaultBallSpeed = 3;
+
+function intersects(x1, y1, w1, h1, x2, y2, w2, h2) {
+    return x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + h2 && y1 + h1 > y2;
+}
 
 class Presenter extends BaseGame {
     displayName = Presenter.name
@@ -24,7 +30,10 @@ class Presenter extends BaseGame {
             right: 0,
             paddleWidth: defaultWidth,
             paddleHeight: defaultHeight,
-            speed: defaultSpeed
+            speed: defaultSpeed,
+            ballDx: defaultBallSpeed,
+            ballDy: 0,
+            gameOver: false
         };
     }
 
@@ -42,13 +51,52 @@ class Presenter extends BaseGame {
             paddle.y = this.app.renderer.height - paddle.height / 2 - paddle.width / 2;
     }
 
+    intersects(paddle) {
+        //console.log(paddle.worldTransform.tx, paddle.worldTransform.ty, paddle.width, paddle.height, this.ball.worldTransform.tx, this.ball.worldTransform.ty, this.ball.width, this.ball.height)
+        return intersects(paddle.worldTransform.tx, paddle.worldTransform.ty, paddle.width, paddle.height, this.ball.worldTransform.tx, this.ball.worldTransform.ty, this.ball.width, this.ball.height);
+    }
+
+    paddleHit(paddle, direction) {
+        var relativeIntersect = paddle.y - this.ball.y;
+        var normalizedRelativeIntersect = relativeIntersect / (paddle.height / 2);
+        var bounceAngle = normalizedRelativeIntersect * defaultMaxBounceAngle;
+        this.state.ballDx = defaultBallSpeed * Math.cos(bounceAngle) * direction;
+        this.state.ballDy = defaultBallSpeed * Math.sin(bounceAngle);
+        this.ball.x = paddle.x + this.ball.width * direction;
+        console.log('hit', relativeIntersect, normalizedRelativeIntersect, bounceAngle, this.state.ballDx, this.state.ballDy);
+    }
+
+    checkHit() {
+        if (this.ball.y > this.app.renderer.height - this.ball.height / 2) {
+            this.ball.y = this.app.renderer.height - this.ball.height / 2;
+            this.state.ballDy *= -1;
+        } else if (this.ball.y < this.ball.height / 2) {
+            this.ball.y = this.ball.height / 2;
+            this.state.ballDy *= -1;
+        }
+
+        if (this.intersects(this.leftPaddle)) {
+            this.paddleHit(this.leftPaddle, 1);
+        } else if (this.intersects(this.rightPaddle)) {
+            this.paddleHit(this.rightPaddle, -1);
+        }
+    }
+
     onAnimationFrame(time, lastTime) {
         const delta = (time - lastTime) / 1000;
-        this.leftPaddle.y -= this.state.speed * delta * this.state.left;
-        this.rightPaddle.y -= this.state.speed * delta * this.state.right;
 
-        this.clampPaddle(this.leftPaddle);
-        this.clampPaddle(this.rightPaddle);
+        this.ball.y += this.state.ballDy;
+        this.ball.x += this.state.ballDx;
+
+        if (!this.state.gameOver) {
+            this.leftPaddle.y -= this.state.speed * delta * this.state.left;
+            this.rightPaddle.y -= this.state.speed * delta * this.state.right;
+
+            this.clampPaddle(this.leftPaddle);
+            this.clampPaddle(this.rightPaddle);
+
+            this.checkHit();
+        }
     }
 
     pixiUpdate = (element) => {
