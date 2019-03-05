@@ -35,10 +35,20 @@ class Presenter extends BaseGame {
         });
     }
 
+    clampPaddle(paddle) {
+        if (paddle.y < paddle.width / 2 + paddle.height / 2)
+            paddle.y = paddle.width / 2 + paddle.height / 2;
+        else if (paddle.y > this.app.renderer.height - paddle.height / 2 - paddle.width / 2)
+            paddle.y = this.app.renderer.height - paddle.height / 2 - paddle.width / 2;
+    }
+
     onAnimationFrame(time, lastTime) {
         const delta = (time - lastTime) / 1000;
         this.leftPaddle.y -= this.state.speed * delta * this.state.left;
         this.rightPaddle.y -= this.state.speed * delta * this.state.right;
+
+        this.clampPaddle(this.leftPaddle);
+        this.clampPaddle(this.rightPaddle);
     }
 
     pixiUpdate = (element) => {
