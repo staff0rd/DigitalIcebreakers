@@ -3,17 +3,77 @@ import { Form, FormGroup, ControlLabel, FormControl } from "react-bootstrap";
 import { PongColors as Colors } from './PongColors';
 import * as PIXI from "pixi.js";
 import ReactAnimationFrame from 'react-animation-frame';
-import { BaseGame } from '../BaseGame'
+import { BaseGame } from '../BaseGame';
+import * as gsap from "gsap";
+import * as random from '../../Random';
+import * as intersects from "intersects";
 
 const defaultSpeed = 200;
 const defaultHeight = 3;
 const defaultWidth = 30;
-const defaultMaxBounceAngle = 45;
-const defaultBallSpeed = 3;
+const largestAngle = 60;
 
-function intersects(x1, y1, w1, h1, x2, y2, w2, h2) {
-    return x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + h2 && y1 + h1 > y2;
+function getPointFromAngleDistance(x, y, angle, distance) {
+    return { x: Math.cos(angle) * distance + x, y: Math.sin(angle) * distance + y };
 }
+
+function getRadians(degrees) {
+    return degrees * Math.PI / 180;
+}
+
+function distance(p1, p2) {
+    return Math.sqrt(distanceSquared(p1, p2))
+}
+
+function distanceSquared(p1, p2)
+{
+    return Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2);
+}
+
+function getRectangleIntersection(startX, startY, endX, endY, rect) {
+    return getIntersection(startX, startY, endX, endY, rect.left, rect.top, rect.right, rect.top) ||
+        getIntersection(startX, startY, endX, endY, rect.right, rect.top, rect.right, rect.bottom) ||
+        getIntersection(startX, startY, endX, endY, rect.left, rect.bottom, rect.right, rect.bottom) ||
+        getIntersection(startX, startY, endX, endY, rect.left, rect.top, rect.left, rect.bottom);
+}
+
+function getIntersection(line1StartX, line1StartY, line1EndX, line1EndY, 
+                            line2StartX, line2StartY, line2EndX, line2EndY, determinePoint = true) {
+        var result = { x: 0, y: 0 };
+
+        var a1 = line1EndY - line1StartY;
+        var a2 = line2EndY - line2StartY;
+        var b1 = line1StartX - line1EndX;
+        var b2 = line2StartX - line2EndX;
+        var c1 = (line1EndX * line1StartY) - (line1StartX * line1EndY);
+        var c2 = (line2EndX * line2StartY) - (line2StartX * line2EndY);
+        var denom = (a1 * b2) - (a2 * b1);
+
+        if (denom === 0)
+        {
+            return null;
+        }
+
+        result.x = ((b1 * c2) - (b2 * c1)) / denom;
+        result.y = ((a2 * c1) - (a1 * c2)) / denom;
+
+        if (determinePoint)
+        {
+            var uc = ((line2EndY - line2StartY) * (line1EndX - line1StartX) - (line2EndX - line2StartX) * (line1EndY - line1StartY));
+            var ua = (((line2EndX - line2StartX) * (line1StartY - line2StartY)) - (line2EndY - line2StartY) * (line1StartX - line2StartX)) / uc;
+            var ub = (((line1EndX - line1StartX) * (line1StartY - line2StartY)) - ((line1EndY - line1StartY) * (line1StartX - line2StartX))) / uc;
+
+            if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1)
+            {
+                return result;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        return result;
+    }
 
 class Presenter extends BaseGame {
     displayName = Presenter.name
@@ -25,14 +85,14 @@ class Presenter extends BaseGame {
 
         this.pixiElement = null;
 
+        this.ballBounds = null;
+
         this.state = {
             left: 0,
             right: 0,
             paddleWidth: defaultWidth,
             paddleHeight: defaultHeight,
             speed: defaultSpeed,
-            ballDx: defaultBallSpeed,
-            ballDy: 0,
             gameOver: false
         };
     }
@@ -51,42 +111,8 @@ class Presenter extends BaseGame {
             paddle.y = this.app.renderer.height - paddle.height / 2 - paddle.width / 2;
     }
 
-    intersects(paddle) {
-        //console.log(paddle.worldTransform.tx, paddle.worldTransform.ty, paddle.width, paddle.height, this.ball.worldTransform.tx, this.ball.worldTransform.ty, this.ball.width, this.ball.height)
-        return intersects(paddle.worldTransform.tx, paddle.worldTransform.ty, paddle.width, paddle.height, this.ball.worldTransform.tx, this.ball.worldTransform.ty, this.ball.width, this.ball.height);
-    }
-
-    paddleHit(paddle, direction) {
-        var relativeIntersect = paddle.y - this.ball.y;
-        var normalizedRelativeIntersect = relativeIntersect / (paddle.height / 2);
-        var bounceAngle = normalizedRelativeIntersect * defaultMaxBounceAngle;
-        this.state.ballDx = defaultBallSpeed * Math.cos(bounceAngle) * direction;
-        this.state.ballDy = defaultBallSpeed * Math.sin(bounceAngle);
-        this.ball.x = paddle.x + this.ball.width * direction;
-        console.log('hit', relativeIntersect, normalizedRelativeIntersect, bounceAngle, this.state.ballDx, this.state.ballDy);
-    }
-
-    checkHit() {
-        if (this.ball.y > this.app.renderer.height - this.ball.height / 2) {
-            this.ball.y = this.app.renderer.height - this.ball.height / 2;
-            this.state.ballDy *= -1;
-        } else if (this.ball.y < this.ball.height / 2) {
-            this.ball.y = this.ball.height / 2;
-            this.state.ballDy *= -1;
-        }
-
-        if (this.intersects(this.leftPaddle)) {
-            this.paddleHit(this.leftPaddle, 1);
-        } else if (this.intersects(this.rightPaddle)) {
-            this.paddleHit(this.rightPaddle, -1);
-        }
-    }
-
     onAnimationFrame(time, lastTime) {
         const delta = (time - lastTime) / 1000;
-
-        this.ball.y += this.state.ballDy;
-        this.ball.x += this.state.ballDx;
 
         if (!this.state.gameOver) {
             this.leftPaddle.y -= this.state.speed * delta * this.state.left;
@@ -94,8 +120,6 @@ class Presenter extends BaseGame {
 
             this.clampPaddle(this.leftPaddle);
             this.clampPaddle(this.rightPaddle);
-
-            this.checkHit();
         }
     }
 
@@ -133,6 +157,33 @@ class Presenter extends BaseGame {
         this.ball.position.set(element.clientWidth/2, element.clientHeight/2);
 
         this.app.stage.addChild(this.leftPaddle, this.rightPaddle, this.ball);
+
+        this.start();
+    }
+
+    start() {
+        const sideMargin = this.leftPaddle.x + this.leftPaddle.width / 2 + this.ball.width / 2;
+
+        this.ballBounds = new PIXI.Rectangle(sideMargin, this.ball.height / 2, this.app.renderer.width - 2*sideMargin, this.app.renderer.height - this.ball.height);
+
+        const direction = (random.between(1, 2) - 1) * 180;
+
+        const angle = random.between(0, largestAngle * 2) - largestAngle + direction;
+
+        const outOfBoundsEnd = getPointFromAngleDistance(this.ball.x, this.ball.y, getRadians(angle), this.app.renderer.width + this.app.renderer.height);
+
+        const intersection =  getRectangleIntersection(this.ball.x, this.ball.y, outOfBoundsEnd.x, outOfBoundsEnd.y, this.ballBounds);
+
+        var g = new PIXI.Graphics();
+        this.app.stage.addChild(g);
+        
+        g.lineStyle(2, 0xff0000);
+        g.moveTo(this.ball.x, this.ball.y);
+        g.lineTo(intersection.x, intersection.y);
+
+        const time = distance({x: this.ball.x, y: this.ball.y}, {x: intersection.x, y: intersection.y}) / this.state.speed;
+        console.log(time);
+        gsap.TimelineMax.to(this.ball.position, time, {x: intersection.x, y: intersection.y, ease:gsap.Linear.easeNone, force3D:false});
     }
 
     getBlock(color, width, height) {

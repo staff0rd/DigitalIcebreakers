@@ -6,6 +6,8 @@
     "@aspnet/signalr": "^1.0.4",
     "bootstrap": "^3.3.7",
     "chart.js": "^2.7.3",
+    "gsap": "^2.1.2",
+    "intersects": "^2.5.1",
     "pixi.js": "^4.8.3",
     "qrcode.react": "^0.8.0",
     "react": "^16.0.0",
