@@ -80,6 +80,9 @@ class Presenter extends BaseGame {
         } else if (this.intersects(this.rightPaddle)) {
             this.paddleHit(this.rightPaddle, -1);
         }
+
+        if (this.ball.x < 0 || this.ball.x > this.app.renderer.width)
+            this.init();
     }
 
     onAnimationFrame(time, lastTime) {
