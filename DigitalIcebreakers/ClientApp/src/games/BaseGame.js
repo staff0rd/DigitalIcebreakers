@@ -6,7 +6,7 @@ export class BaseGame extends Component {
     constructor(props, context, debug) {
         super(props, context);
 
-        this.debug = true;
+        this.debug = false;
         if (this.debug)
             console.log('constructed');
     }
