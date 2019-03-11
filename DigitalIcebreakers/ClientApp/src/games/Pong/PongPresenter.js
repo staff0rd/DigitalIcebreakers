@@ -157,12 +157,12 @@ class Presenter extends BaseGame {
     }
 
     setSpeed() {
-        const direction = (between(1, 2) - 1) * 180;
+        const direction = between(1,2)-1 || -1;
 
-        const angle = between(0, defaultMaxBounceAngle * 2) - defaultMaxBounceAngle + direction;
+        const angle = between(defaultMaxBounceAngle, defaultMaxBounceAngle * 3) * direction;
 
-        this.state.ballDx = defaultBallSpeed * Math.sin(angle);
-        this.state.ballDy = defaultBallSpeed * Math.cos(angle);
+        this.state.ballDx = defaultBallSpeed * Math.sin(getRadians(angle));
+        this.state.ballDy = defaultBallSpeed * Math.cos(getRadians(angle));
 
         const speed = Math.sqrt(Math.pow(this.state.ballDx, 2) + Math.pow(this.state.ballDy, 2));
         console.log(this.state.ballDx, this.state.ballDy, `This is a speed of ${speed}, angle: ${angle}`);
