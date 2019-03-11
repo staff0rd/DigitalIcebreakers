@@ -11,8 +11,16 @@ const defaultWidth = 30;
 const defaultMaxBounceAngle = 45;
 const defaultBallSpeed = 3;
 
-function intersects(x1, y1, w1, h1, x2, y2, w2, h2) {
-    return x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + h2 && y1 + h1 > y2;
+function getPointFromAngleDistance(x, y, angle, distance) {
+    return { x: Math.cos(angle) * distance + x, y: Math.sin(angle) * distance + y };
+}
+
+function between(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function getRadians(degrees) {
+    return degrees * Math.PI / 180;
 }
 
 class Presenter extends BaseGame {
@@ -51,18 +59,19 @@ class Presenter extends BaseGame {
             paddle.y = this.app.renderer.height - paddle.height / 2 - paddle.width / 2;
     }
 
-    intersects(paddle) {
-        //console.log(paddle.worldTransform.tx, paddle.worldTransform.ty, paddle.width, paddle.height, this.ball.worldTransform.tx, this.ball.worldTransform.ty, this.ball.width, this.ball.height)
-        return intersects(paddle.worldTransform.tx, paddle.worldTransform.ty, paddle.width, paddle.height, this.ball.worldTransform.tx, this.ball.worldTransform.ty, this.ball.width, this.ball.height);
-    }
-
     paddleHit(paddle, direction) {
         var relativeIntersect = paddle.y - this.ball.y;
         var normalizedRelativeIntersect = relativeIntersect / (paddle.height / 2);
-        var bounceAngle = normalizedRelativeIntersect * defaultMaxBounceAngle;
-        this.state.ballDx = defaultBallSpeed * Math.cos(bounceAngle) * direction;
+        var bounceAngle = getRadians(normalizedRelativeIntersect * defaultMaxBounceAngle + 180 * direction);
+        
+        this.state.ballDx = defaultBallSpeed * Math.cos(bounceAngle);
         this.state.ballDy = defaultBallSpeed * Math.sin(bounceAngle);
-        this.ball.x = paddle.x + this.ball.width * direction;
+
+        if (direction === 0)
+            this.state.ballDy *= -1;
+        
+        this.ball.x = paddle.x + this.ball.width * (direction === 0 ? 1 : -1); // immediately move ball off paddle - protects from double hit
+
         console.log('hit', relativeIntersect, normalizedRelativeIntersect, bounceAngle, this.state.ballDx, this.state.ballDy);
     }
 
@@ -75,14 +84,25 @@ class Presenter extends BaseGame {
             this.state.ballDy *= -1;
         }
 
-        if (this.intersects(this.leftPaddle)) {
-            this.paddleHit(this.leftPaddle, 1);
-        } else if (this.intersects(this.rightPaddle)) {
-            this.paddleHit(this.rightPaddle, -1);
+        if (this.ball.x < this.leftPaddle.x + this.leftPaddle.width) { // we've reached the left bounds
+            if (this.paddleIntersection(this.leftPaddle))
+                this.paddleHit(this.leftPaddle, 0);
+            else {
+                console.log("death to blue");
+                this.init();
+            }
+        } else if (this.ball.x > this.rightPaddle.x - this.rightPaddle.width) { // we've reached the right bounds
+            if (this.paddleIntersection(this.rightPaddle)) {
+                this.paddleHit(this.rightPaddle, -1);
+            } else {
+                console.log("death to red");
+                this.init();
+            }
         }
+    }
 
-        if (this.ball.x < 0 || this.ball.x > this.app.renderer.width)
-            this.init();
+    paddleIntersection(paddle) {
+        return this.ball.y > paddle.y - paddle.height / 2 - this.ball.height / 2 && this.ball.y < paddle.y + paddle.height / 2 + this.ball.height /2;
     }
 
     onAnimationFrame(time, lastTime) {
@@ -136,6 +156,20 @@ class Presenter extends BaseGame {
         this.ball.position.set(element.clientWidth/2, element.clientHeight/2);
 
         this.app.stage.addChild(this.leftPaddle, this.rightPaddle, this.ball);
+
+        this.setSpeed();
+    }
+
+    setSpeed() {
+        const direction = (between(1, 2) - 1) * 180;
+
+        const angle = between(0, defaultMaxBounceAngle * 2) - defaultMaxBounceAngle + direction;
+
+        this.state.ballDx = defaultBallSpeed * Math.sin(angle);
+        this.state.ballDy = defaultBallSpeed * Math.cos(angle);
+
+        const speed = Math.sqrt(Math.pow(this.state.ballDx, 2) + Math.pow(this.state.ballDy, 2));
+        console.log(this.state.ballDx, this.state.ballDy, `This is a speed of ${speed}, angle: ${angle}`);
     }
 
     getBlock(color, width, height) {
