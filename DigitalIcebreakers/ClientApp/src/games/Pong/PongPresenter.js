@@ -11,10 +11,6 @@ const defaultWidth = 30;
 const defaultMaxBounceAngle = 45;
 const defaultBallSpeed = 3;
 
-function getPointFromAngleDistance(x, y, angle, distance) {
-    return { x: Math.cos(angle) * distance + x, y: Math.sin(angle) * distance + y };
-}
-
 function between(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
