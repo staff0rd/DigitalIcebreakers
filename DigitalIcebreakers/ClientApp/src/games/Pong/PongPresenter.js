@@ -58,10 +58,10 @@ class Presenter extends BaseGame {
     paddleHit(paddle, direction) {
         var relativeIntersect = paddle.y - this.ball.y;
         var normalizedRelativeIntersect = relativeIntersect / (paddle.height / 2);
-        var bounceAngle = getRadians(normalizedRelativeIntersect * defaultMaxBounceAngle + 180 * direction);
+        var bounceAngle = normalizedRelativeIntersect * defaultMaxBounceAngle + 180 * direction;
         
-        this.state.ballDx = defaultBallSpeed * Math.cos(bounceAngle);
-        this.state.ballDy = defaultBallSpeed * Math.sin(bounceAngle);
+        this.state.ballDx = defaultBallSpeed * Math.cos(getRadians(bounceAngle));
+        this.state.ballDy = defaultBallSpeed * Math.sin(getRadians(bounceAngle));
 
         if (direction === 0)
             this.state.ballDy *= -1;
