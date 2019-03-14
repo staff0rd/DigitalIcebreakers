@@ -12,6 +12,7 @@ namespace DigitalIcebreakers.Hubs
 {
     public class GameHub : Hub
     {
+        static int lobbyNumber = 0;
         private ILogger<GameHub> _logger;
         private List<Lobby> _lobbys;
 
@@ -19,11 +20,6 @@ namespace DigitalIcebreakers.Hubs
         {
             _lobbys = lobbys;
             _logger = logger;
-        }
-
-        public void StartGame(Guid id)
-        {
-            var player = new Player { Name = "Admin", IsAdmin = true, ConnectionId = Context.ConnectionId, Id = Guid.NewGuid() };
         }
 
         public async Task StopGame()
@@ -54,15 +50,21 @@ namespace DigitalIcebreakers.Hubs
                 .ToList()
                 .ForEach(async l => await CloseLobby(l));
 
-            _lobbys.Add(new Lobby
+            var lobby = new Lobby
             {
                 Id = id,
+                Number = ++lobbyNumber,
                 Players = new List<Player>
                 {
                     new Player { ConnectionId = Context.ConnectionId, Id = user.Id, IsAdmin = true, IsConnected = true, Name = user.Name }
                 },
                 Name = name
-            });
+            };
+
+            _lobbys.Add(lobby);
+
+            _logger.LogInformation($"Created lobby {lobby} for {id}");
+
             await Connect(user);
         }
 
@@ -76,6 +78,7 @@ namespace DigitalIcebreakers.Hubs
         {
             if (lobby != null)
             {
+                _logger.LogInformation($"Lobby {lobby.Label} has been closed");
                 _lobbys.Remove(lobby);
                 foreach (var player in lobby.Players)
                 {
@@ -87,7 +90,6 @@ namespace DigitalIcebreakers.Hubs
         public async Task Connect(User user)
         {
             Player player = GetPlayer(user);
-
             var lobby = _lobbys.SingleOrDefault(p => p.Players.Contains(player));
             await Connect(player, lobby);
         }
@@ -96,6 +98,7 @@ namespace DigitalIcebreakers.Hubs
         {
             if (lobby != null)
             {
+                _logger.LogInformation($"{player.Name} re-connected to lobby {lobby.Label}");
                 var players = lobby.Players.Where(p => !p.IsAdmin).Select(p => new User { Id = p.ExternalId, Name = p.Name }).ToList();
                 await Clients.Caller.SendAsync("Reconnect", new Reconnect { PlayerId = player.Id, PlayerName = player.Name, LobbyName = lobby.Name, LobbyId = lobby.Id, IsAdmin = player.IsAdmin, Players = players, CurrentGame = lobby.CurrentGame?.Name });
                 if (!player.IsAdmin)
@@ -104,8 +107,10 @@ namespace DigitalIcebreakers.Hubs
                     await GameMessage("join");
                 }
             }
-            else
+            else {
+                _logger.LogInformation($"{player.Name} connected");
                 await Clients.Caller.SendAsync("Connected");
+            }
         }
 
         private Player GetPlayer(User user)
@@ -124,6 +129,7 @@ namespace DigitalIcebreakers.Hubs
 
             if (lobby != null && player.IsAdmin)
             {
+                _logger.LogInformation($"Lobby {lobby.Label} is now playing {name}");
                 lobby.CurrentGame = GetGame(name);
                 Clients.Clients(lobby.Players.Select(p => p.ConnectionId).ToList()).SendAsync("newgame", name);
                 lobby.CurrentGame.Start(this);
@@ -176,6 +182,7 @@ namespace DigitalIcebreakers.Hubs
             var existingLobby = GetLobby();
             if (existingLobby != null)
             {
+                _logger.LogInformation($"{player.Name} has left lobby {existingLobby.Label}");
                 await Clients.Client(existingLobby.Admin.ConnectionId).SendAsync("left", new User { Id = player.ExternalId, Name = player.Name });
                 existingLobby.Players.Remove(player);
             }
@@ -187,6 +194,7 @@ namespace DigitalIcebreakers.Hubs
             }
             else
             {
+                _logger.LogInformation($"{player.Name} has joined lobby {lobby.Label}");
                 lobby.Players.Add(player);
                 await Connect(player, lobby);
             }
@@ -198,6 +206,7 @@ namespace DigitalIcebreakers.Hubs
             var player = GetPlayerByConnectionId();
             if (player != null)
             {          
+                _logger.LogInformation($"{player.Name} disconnected");
                 var admin = GetAdmin();
                 if (admin != null)
                 {

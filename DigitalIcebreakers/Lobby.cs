@@ -14,8 +14,12 @@ namespace DigitalIcebreakers
 
         public string Name { get; set; }
 
+        public string Label => $"{Name} (#{Number})";
+
         internal Player Admin => Players.SingleOrDefault(p => p.IsAdmin);
 
         public IGame CurrentGame { get; set; }
+        
+        public int Number { get; internal set; }
     }
 }

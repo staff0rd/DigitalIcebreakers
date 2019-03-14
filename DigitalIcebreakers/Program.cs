@@ -12,24 +12,25 @@ namespace DigitalIcebreakers
         public static void Main(string[] args)
         {
             var config = new LoggerConfiguration()
-                .MinimumLevel.Debug()
+                .MinimumLevel.Information()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
                 .Enrich.FromLogContext()
                 .WriteTo.Console()
-                .WriteTo.Trace()
-                .WriteTo.ApplicationInsights(TelemetryConfiguration.Active, TelemetryConverter.Traces);
+                .WriteTo.Trace();
 
             var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             var isDevelopment = environment == EnvironmentName.Development;
             
             if (!isDevelopment)
             {
-                config = config.WriteTo.File(
-                    @"D:\home\LogFiles\Application\myapp.txt",
-                fileSizeLimitBytes: 1_000_000,
-                rollOnFileSizeLimit: true,
-                shared: true,
-                flushToDiskInterval: TimeSpan.FromSeconds(1));
+                config = config
+                    .WriteTo.File(
+                        @"D:\home\LogFiles\Application\myapp.txt",
+                        fileSizeLimitBytes: 1_000_000,
+                        rollOnFileSizeLimit: true,
+                        shared: true,
+                        flushToDiskInterval: TimeSpan.FromSeconds(1))
+                    .WriteTo.ApplicationInsights(TelemetryConfiguration.Active, TelemetryConverter.Traces);
             }
 
             Log.Logger = config.CreateLogger();
