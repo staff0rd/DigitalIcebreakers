@@ -14,7 +14,7 @@ namespace DigitalIcebreakers
 
         public string Name { get; set; }
 
-        public string Label => $"{Name} (#{Number})";
+        public string Label => $"{Name} (#{Number}, {Players.Count} players)";
 
         internal Player Admin => Players.SingleOrDefault(p => p.IsAdmin);
 
