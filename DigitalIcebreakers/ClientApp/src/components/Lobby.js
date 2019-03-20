@@ -18,6 +18,7 @@ export class Lobby extends Component {
                     <Row>
                         <Col md={4}>
                             <a href={joinUrl}>{joinUrl}</a>
+                            <br />
                             <QRCode value={joinUrl} size={256} renderAs="svg" />
                         </Col>
                         <Col md={8}>
