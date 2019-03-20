@@ -24,7 +24,7 @@ namespace DigitalIcebreakers
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddSignalR();
+            services.AddSignalR().AddAzureSignalR();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -52,7 +52,7 @@ namespace DigitalIcebreakers
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
-            app.UseSignalR(routes =>
+            app.UseAzureSignalR(routes =>
             {
                 routes.MapHub<GameHub>("/gameHub");
             });
@@ -65,7 +65,7 @@ namespace DigitalIcebreakers
             });
 
             app.UseSpa(spa =>
-            {
+        {
                 spa.Options.SourcePath = "ClientApp";
 
                 if (env.IsDevelopment())
