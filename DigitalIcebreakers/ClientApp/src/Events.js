@@ -10,6 +10,6 @@ export const Events = {
         Events.handlers.push({event: event, label: label, handler: handler});
     },
     remove: (event, label) => {
-        Events.handlers = Events.handlers.filter((e) => e.event !== event && e.label !== label);
+        Events.handlers = Events.handlers.filter((e) => !(e.label === label && e.event === event));
     }
 }
