@@ -3,6 +3,11 @@ import { Link } from 'react-router-dom';
 import { Glyphicon, Nav, Navbar, NavItem } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import './NavMenu.css';
+import { Config } from '../config';
+import { NavSubMenu } from './NavSubMenu'
+import Games from '../games/Games';
+
+var QRCode = require('qrcode.react');
 
 export class NavMenu extends Component {
   displayName = NavMenu.name
@@ -16,7 +21,13 @@ export class NavMenu extends Component {
         }
     }
 
+    qrContainer = (e) => {
+        this.qrContainerElement = e;      
+    }
+
     render() {
+        const joinUrl = `${Config.baseUrl}/join/${this.props.lobbyId}`;
+
         const createLobby = (
             <LinkContainer to={'/createLobby'}>
                 <NavItem>
@@ -48,14 +59,16 @@ export class NavMenu extends Component {
             </LinkContainer>
         );
 
+        const gameName = Games().filter((game) => game.name === this.props.currentGame).map((game) => game.title);
+
         const currentGame = (
             <LinkContainer to={`/game/${this.props.currentGame}`} exact>
                 <NavItem>
-                    <Glyphicon glyph='game' /> Game
+                    <Glyphicon glyph='minus' /> {gameName}
                 </NavItem>
             </LinkContainer>
         );
-
+        
         return (
 
             <Navbar inverse fixedTop fluid collapseOnSelect>
@@ -71,6 +84,10 @@ export class NavMenu extends Component {
                         {this.props.lobbyId ? "" : createLobby}
                         {this.props.lobbyId ? lobby : ""}
                         {this.props.lobbyId && this.props.currentGame ? currentGame : ""}
+                        <NavSubMenu menuItems={this.props.menuItems} />
+                        <NavItem ref={this.qrContainer}>
+                            <QRCode value={joinUrl} size={256} renderAs="svg" />
+                        </NavItem>
                         {this.props.lobbyId && this.props.isAdmin ? startGame : ""}
                         {this.props.lobbyId && this.props.isAdmin ? closeLobby : ""}
                         <NavItem disabled={true}>

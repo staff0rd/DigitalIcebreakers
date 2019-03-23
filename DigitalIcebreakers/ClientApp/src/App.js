@@ -51,7 +51,8 @@ export default class App extends Component {
                 players: [],
                 isAdmin: false
             },
-            connected: 0
+            connected: 0,
+            menuItems: []
         };
 
         ReactAI.setAppContext({ userId: this.user.id });
@@ -216,13 +217,17 @@ export default class App extends Component {
 
     render() {
         var connected = this.state.connected === 2;
-        var game = this.redirect(connected, (props) => <Game isAdmin={this.state.lobby.isAdmin} connection={this.connection} {...props} />);
+        var setMenuItems = (items) => {
+            this.setState({menuItems: items});
+        }
+
+        var game = this.redirect(connected, (props) => <Game isAdmin={this.state.lobby.isAdmin} setMenuItems={setMenuItems} connection={this.connection} {...props} />);
         var newGame = this.redirect(connected, () => <NewGame newGame={this.newGame} />);
         var closeLobby = this.redirect(connected, () => <CloseLobby closeLobby={this.closeLobby} />);
 
         return (
             <UserContext.Provider value={this.state.user}>
-                <Layout currentGame={this.state.currentGame} lobbyId={this.state.lobby.id} isAdmin={this.state.lobby.isAdmin} connected={this.state.connected}>
+                <Layout menuItems={this.state.menuItems} currentGame={this.state.currentGame} lobbyId={this.state.lobby.id} isAdmin={this.state.lobby.isAdmin} connected={this.state.connected}>
                     <Route exact path='/' render={() => <Lobby id={this.state.lobby.id} players={this.state.players} name={this.state.lobby.name} /> } />
                     <Route path='/createLobby' render={() => <CreateLobby createLobby={this.createLobby} /> } />
                     <Route path='/closeLobby' render={closeLobby }  />

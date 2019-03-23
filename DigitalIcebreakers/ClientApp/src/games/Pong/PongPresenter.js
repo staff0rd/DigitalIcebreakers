@@ -1,14 +1,16 @@
-import React from 'react';
-import { Form, FormGroup, ControlLabel, FormControl } from "react-bootstrap";
+import React, { Fragment } from 'react';
+import { Navbar } from 'react-bootstrap';
 import { PongColors as Colors } from './PongColors';
 import * as PIXI from "pixi.js";
 import ReactAnimationFrame from 'react-animation-frame';
 import { BaseGame } from '../BaseGame'
 import { Events } from '../../Events';
+import { Stepper } from '../../components/Stepper'
+import { clamp } from '../../util/clamp'
 
 const defaultPaddleSpeed = 200;
-const defaultHeight = 3;
-const defaultWidth = 30;
+const defaultHeight = 5;
+const defaultWidth = 55;
 const defaultMaxBounceAngle = 45;
 const defaultBallSpeed = 3;
 
@@ -48,6 +50,21 @@ class Presenter extends BaseGame {
             ballSpeed: defaultBallSpeed,
             gameOver: false
         };
+    }
+
+    setMenuItems() {
+        const header = (
+            <Fragment>
+                <Navbar.Form>
+                    <Stepper label="Paddle height" step={1} value={this.state.paddleHeight} onChange={this.updatePaddleHeight} />
+                    <Stepper label="Paddle width" step={-5} value={this.state.paddleWidth} onChange={this.updatePaddleWidth} />
+                    <Stepper label="Paddle speed" step={25} value={this.state.paddleSpeed} onChange={this.updatePaddleSpeed} />
+                    <Stepper label="Ball speed" step={1} value={this.state.ballSpeed} onChange={this.updateBallSpeed} />
+                </Navbar.Form>
+            </Fragment>
+        );
+
+        this.props.setMenuItems([header]);
     }
 
     componentDidMount() {
@@ -163,6 +180,8 @@ class Presenter extends BaseGame {
         this.app.stage.addChild(this.leftPaddle, this.rightPaddle, this.ball);
 
         this.setSpeed();
+
+        this.setMenuItems();
     }
 
     setSpeed() {
@@ -173,8 +192,8 @@ class Presenter extends BaseGame {
         this.state.ballDx = this.state.ballSpeed * Math.sin(getRadians(angle));
         this.state.ballDy = this.state.ballSpeed * Math.cos(getRadians(angle));
 
-        const speed = Math.sqrt(Math.pow(this.state.ballDx, 2) + Math.pow(this.state.ballDy, 2));
-        console.log(this.state.ballDx, this.state.ballDy, `This is a speed of ${speed}, angle: ${angle}`);
+        //const speed = Math.sqrt(Math.pow(this.state.ballDx, 2) + Math.pow(this.state.ballDy, 2));
+        //console.log(this.state.ballDx, this.state.ballDy, `This is a speed of ${speed}, angle: ${angle}`);
     }
 
     getBlock(color, width, height) {
@@ -185,47 +204,24 @@ class Presenter extends BaseGame {
         return g;
     }
 
-    updateHeight = (e) => {
-        this.setState({paddleHeight: e.target.value}, this.init);
+    updatePaddleHeight = (value) => {
+        this.setState({paddleHeight: clamp(value, 2, 20)}, this.init);
     }
 
-    updateWidth = (e) => {
-        this.setState({paddleWidth: e.target.value}, this.init);
+    updatePaddleWidth = (value) => {
+        this.setState({paddleWidth: value}, this.init);
     }
 
-    updatePaddleSpeed = (e) => {
-        this.setState({paddleSpeed: e.target.value}, this.init);
+    updatePaddleSpeed = (value) => {
+        this.setState({paddleSpeed: value}, this.init);
     }
 
-    updateBallSpeed = (e) => {
-        this.setState({ballSpeed: e.target.value}, this.init);
+    updateBallSpeed = (value)  => {
+        this.setState({ballSpeed: value}, this.init);
     }
  
     render() {
-        return (
-            <div>
-                <h2>Pong</h2>
-                <div ref={this.pixiUpdate} />
-                <Form inline>
-                    <FormGroup>
-                        <ControlLabel>Width</ControlLabel>{' '}
-                        <FormControl type="number" step="5" placeholder="Paddle width" value={this.state.paddleWidth} onChange={this.updateWidth} />
-                    </FormGroup>{' '}
-                    <FormGroup>
-                        <ControlLabel>Height</ControlLabel>{' '}
-                        <FormControl type="number" placeholder="Paddle height" value={this.state.paddleHeight} onChange={this.updateHeight} />
-                    </FormGroup>{' '}
-                    <FormGroup>
-                        <ControlLabel>Paddle Speed</ControlLabel>{' '}
-                        <FormControl type="number" step="10" placeholder="Paddle Speed" value={this.state.paddleSpeed} onChange={this.updatePaddleSpeed} />
-                    </FormGroup>{' '}
-                    <FormGroup>
-                        <ControlLabel>Ball Speed</ControlLabel>{' '}
-                        <FormControl type="number" placeholder="Ball Speed" value={this.state.ballSpeed} onChange={this.updateBallSpeed} />
-                    </FormGroup>{' '}
-                    </Form>
-            </div>
-        );
+        return <div ref={this.pixiUpdate} />;
     }
 }
 
