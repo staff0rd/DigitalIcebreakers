@@ -4,6 +4,7 @@ import { PongColors as Colors } from './PongColors';
 import * as PIXI from "pixi.js";
 import ReactAnimationFrame from 'react-animation-frame';
 import { BaseGame } from '../BaseGame'
+import { Events } from '../../Events';
 
 const defaultPaddleSpeed = 200;
 const defaultHeight = 3;
@@ -26,6 +27,13 @@ class Presenter extends BaseGame {
         super(props, context);
 
         this.app = new PIXI.Application({ autoResize: true, backgroundColor: Colors.Background });
+        const resize = () => {
+            const parent = this.app.view.parentNode;
+            this.app.renderer.resize(parent.clientWidth, parent.clientHeight);
+            this.init();
+        }
+
+        Events.add('onresize', 'pongpresenter', resize);
 
         this.pixiElement = null;
 

@@ -13,6 +13,7 @@ import { guid } from './util/guid';
 import { UserContext } from './contexts/UserContext';
 import history from './history';
 import ReactAI from 'react-appinsights';
+import { Events } from './Events';
 
 const connectionRetrySeconds = [0, 1, 4, 9, 16, 25, 36, 49];
 
@@ -56,6 +57,8 @@ export default class App extends Component {
         ReactAI.setAppContext({ userId: this.user.id });
 
         this.configureSignalR();
+
+        window.onresize = () => Events.handle('onresize');
     }
 
     debug() {
