@@ -29,15 +29,10 @@ class Presenter extends BaseGame {
         super(props, context);
 
         this.app = new PIXI.Application({ autoResize: true, backgroundColor: Colors.Background });
-        const resize = () => {
-            const parent = this.app.view.parentNode;
-            this.app.renderer.resize(parent.clientWidth, parent.clientHeight);
-            this.init();
-        }
-
-        Events.add('onresize', 'pongpresenter', resize);
-
+        
         this.pixiElement = null;
+
+        this.blueScore = new PIXI.Text("0", { fill: Colors.LeftPaddleUp, fontSize: this.app.renderer.width * 2})
 
         this.state = {
             left: 0,
@@ -72,6 +67,19 @@ class Presenter extends BaseGame {
         this.props.connection.on("gameUpdate", (response) => {
             this.setState(response);
         });
+
+        const resize = () => {
+            const parent = this.app.view.parentNode;
+            this.app.renderer.resize(parent.clientWidth, parent.clientHeight);
+            this.init();
+        }
+
+        Events.add('onresize', 'pongpresenter', resize);
+    }
+
+    componentWillUnmount() {
+        super.componentWillUnmount();
+        Events.remove('onresize', 'pongpresenter');
     }
 
     clampPaddle(paddle) {
@@ -221,7 +229,7 @@ class Presenter extends BaseGame {
     }
  
     render() {
-        return <div ref={this.pixiUpdate} />;
+        return <div className='main full-height' ref={this.pixiUpdate} />;
     }
 }
 

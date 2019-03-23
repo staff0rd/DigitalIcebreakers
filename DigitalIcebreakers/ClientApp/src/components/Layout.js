@@ -20,11 +20,11 @@ class Layout extends Component {
         else
             return (
                 <Grid fluid className="navPad">
-                    <Row>
+                    <Row className="full-height">
                         <Col sm={3}>
                             <NavMenu {...this.props} />
                         </Col>
-                        <Col sm={9}>
+                        <Col className="full-height" sm={9}>
                             {this.props.children}
                         </Col>
                     </Row>

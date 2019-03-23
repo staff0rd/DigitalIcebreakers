@@ -12,7 +12,7 @@ export class Game extends Component {
 
     render() {
         return (
-            <div>
+            <div className="full-height">
                 {this.getGame()}
             </div>
         );

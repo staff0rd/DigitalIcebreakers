@@ -201,6 +201,7 @@ export default class App extends Component {
     }
 
     newGame = (name) => {
+        this.setMenuItems([]);
         this.connection.invoke("newGame", name);
     }
 
@@ -215,13 +216,13 @@ export default class App extends Component {
             return () => <Redirect to="/" />
     }
 
+    setMenuItems = (items) => {
+        this.setState({menuItems: items});
+    }
+
     render() {
         var connected = this.state.connected === 2;
-        var setMenuItems = (items) => {
-            this.setState({menuItems: items});
-        }
-
-        var game = this.redirect(connected, (props) => <Game isAdmin={this.state.lobby.isAdmin} setMenuItems={setMenuItems} connection={this.connection} {...props} />);
+        var game = this.redirect(connected, (props) => <Game isAdmin={this.state.lobby.isAdmin} setMenuItems={this.setMenuItems} connection={this.connection} {...props} />);
         var newGame = this.redirect(connected, () => <NewGame newGame={this.newGame} />);
         var closeLobby = this.redirect(connected, () => <CloseLobby closeLobby={this.closeLobby} />);
 

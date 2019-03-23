@@ -6,11 +6,31 @@ import './NavMenu.css';
 import { Config } from '../config';
 import { NavSubMenu } from './NavSubMenu'
 import Games from '../games/Games';
+import { Events } from '../Events';
 
 var QRCode = require('qrcode.react');
 
 export class NavMenu extends Component {
   displayName = NavMenu.name
+
+    constructor(props, context) {
+        super(props, context);
+        this.state = {
+            qrCodeWidth: 256
+        };
+    }
+
+    componentDidMount() {
+        const resize = () => {
+            this.setState({qrCodeWidth: window.innerWidth / 4 - 60});
+        }
+        resize();
+        Events.add('onresize', 'qrcode', resize);
+    }
+
+    componentWillUnmount() {
+        Events.remove('onresize', 'qrcode');
+    }
 
     getConnectionIcon() {
         switch (this.props.connected) {
@@ -46,7 +66,7 @@ export class NavMenu extends Component {
         const closeLobby = (
             <LinkContainer to={'/closeLobby'}>
                 <NavItem>
-                    <Glyphicon glyph='minus' /> Close Lobby
+                    <Glyphicon glyph='remove' /> Close Lobby
                 </NavItem>
             </LinkContainer>
         );
@@ -54,7 +74,7 @@ export class NavMenu extends Component {
         const startGame = (
             <LinkContainer to={'/newGame'}>
                 <NavItem>
-                    <Glyphicon glyph='minus' /> New game
+                    <Glyphicon glyph='play' /> New game
                 </NavItem>
             </LinkContainer>
         );
@@ -64,11 +84,23 @@ export class NavMenu extends Component {
         const currentGame = (
             <LinkContainer to={`/game/${this.props.currentGame}`} exact>
                 <NavItem>
-                    <Glyphicon glyph='minus' /> {gameName}
+                    <Glyphicon glyph='king' /> {gameName}
                 </NavItem>
             </LinkContainer>
         );
-        
+
+        const qrCode = (
+            <NavItem ref={this.qrContainer}>
+                <QRCode value={joinUrl} size={this.state.qrCodeWidth} renderAs="svg" />
+            </NavItem>
+        );
+
+        const isGameScreen = this.props.history.location.pathname === `/game/${this.props.currentGame}`;
+
+        const subMenu = !isGameScreen ? "" : (
+            <NavSubMenu menuItems={this.props.menuItems} />
+        );
+
         return (
 
             <Navbar inverse fixedTop fluid collapseOnSelect>
@@ -81,13 +113,11 @@ export class NavMenu extends Component {
                 </Navbar.Header>
                 <Navbar.Collapse>
                     <Nav>
+                        {this.props.lobbyId ? qrCode : ""}
                         {this.props.lobbyId ? "" : createLobby}
                         {this.props.lobbyId ? lobby : ""}
                         {this.props.lobbyId && this.props.currentGame ? currentGame : ""}
-                        <NavSubMenu menuItems={this.props.menuItems} />
-                        <NavItem ref={this.qrContainer}>
-                            <QRCode value={joinUrl} size={256} renderAs="svg" />
-                        </NavItem>
+                        {subMenu}
                         {this.props.lobbyId && this.props.isAdmin ? startGame : ""}
                         {this.props.lobbyId && this.props.isAdmin ? closeLobby : ""}
                         <NavItem disabled={true}>
