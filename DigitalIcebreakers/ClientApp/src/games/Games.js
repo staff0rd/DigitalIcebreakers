@@ -2,26 +2,31 @@ import React from 'react';
 import { DoggosVsKittehs } from './DoggosVsKittehs/DoggosVsKittehs';
 import { YesNoMaybe } from './YesNoMaybe/YesNoMaybe';
 import { Buzzer } from './Buzzer/Buzzer';
-import { Pong } from './Pong/Pong'
+import PongPresenter from './Pong/PongPresenter';
+import { PongClient } from './Pong/PongClient';
 
 export default function (props) {
     return [{
         name: "doggos-vs-kittehs",
-        component: <DoggosVsKittehs {...props} />,
+        client: <DoggosVsKittehs {...props} />,
+        presenter: <DoggosVsKittehs {...props} />,
         title: "Doggos vs Kittehs",
         isGame: true
     }, {
         name: "yes-no-maybe",
-        component: <YesNoMaybe {...props} />,
+        client: <YesNoMaybe {...props} />,
+        presenter: <YesNoMaybe {...props} />,
         title: "Yes, No, Maybe"
     }, {
         name: "buzzer",
-        component: <Buzzer {...props} />,
+        client: <Buzzer {...props} />,
+        presenter: <Buzzer {...props} />,
         title: "Buzzer",
         fullscreen: true
     }, {
         name: "pong",
-        component: <Pong {...props} />,
+        client: <PongClient {...props} />,
+        presenter: <PongPresenter {...props} />,
         title: "Pong",
         fullscreen: true,
         isGame: true
