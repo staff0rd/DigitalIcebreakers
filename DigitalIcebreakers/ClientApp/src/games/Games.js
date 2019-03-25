@@ -1,6 +1,7 @@
 import React from 'react';
 import { DoggosVsKittehs } from './DoggosVsKittehs/DoggosVsKittehs';
-import { YesNoMaybe } from './YesNoMaybe/YesNoMaybe';
+import { YesNoMaybePresenter } from './YesNoMaybe/YesNoMaybePresenter';
+import { YesNoMaybeClient } from './YesNoMaybe/YesNoMaybeClient';
 import { Buzzer } from './Buzzer/Buzzer';
 import PongPresenter from './Pong/PongPresenter';
 import { PongClient } from './Pong/PongClient';
@@ -14,8 +15,8 @@ export default function (props) {
         isGame: true
     }, {
         name: "yes-no-maybe",
-        client: <YesNoMaybe {...props} />,
-        presenter: <YesNoMaybe {...props} />,
+        client: <YesNoMaybeClient {...props} />,
+        presenter: <YesNoMaybePresenter {...props} />,
         title: "Yes, No, Maybe"
     }, {
         name: "buzzer",

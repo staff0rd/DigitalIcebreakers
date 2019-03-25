@@ -3,19 +3,16 @@ import { Button  } from 'react-bootstrap';
 import { Bar } from 'react-chartjs-2';
 import { BaseGame } from '../BaseGame';
 
-export class YesNoMaybe extends BaseGame {
-    displayName = YesNoMaybe.name
+export class YesNoMaybePresenter extends BaseGame {
+    displayName = YesNoMaybePresenter.name
 
     constructor(props, context) {
         super(props,context);
-        this.choice = undefined;
         
-        console.log("constructed yesnomaybe");
         this.state = {
             yes: 0,
             no: 0,
-            maybe: 0,
-            choice: undefined
+            maybe: 0
         };
     }
 
@@ -31,16 +28,11 @@ export class YesNoMaybe extends BaseGame {
         });
     }
 
-    choose = (choice) => {
-        this.setState({ choice: choice });
-        this.props.connection.invoke("gameMessage", choice);
-    }
-
     reset = () => {
         this.props.connection.invoke("gameMessage", "reset");
     }
 
-    renderAdmin() {
+    render() {
         if (this.state.yes + this.state.no+ this.state.maybe=== 0)
             this.props.connection.invoke("gameMessage", "");
 
@@ -67,26 +59,5 @@ export class YesNoMaybe extends BaseGame {
                 <Button onClick={this.reset} bsSize="large">Reset</Button>
             </div>
         );
-    }
-
-    renderPlayer() {
-        const style = { height: '100px', width: '300px' };
-        return (
-            <div>
-                <br />
-                <Button onClick={() => this.choose("0")} bsSize="large" style={style} active={this.state.choice === "0"}>
-                    Yes
-                </Button>
-                <br />
-                <br />
-                <Button onClick={() => this.choose("1")} bsSize="large" style={style} active={this.state.choice === "1"}>
-                    No
-                </Button>
-            </div>
-        );
-    }
-
-    render() {
-        return this.props.isAdmin ? this.renderAdmin() : this.renderPlayer();
     }
 }
