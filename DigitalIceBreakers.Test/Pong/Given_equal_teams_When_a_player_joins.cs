@@ -14,8 +14,11 @@ namespace DigitalIceBreakers.Test.Pong
 
         public Given_equal_teams_When_a_player_joins()
         {
+            var playerId = Guid.NewGuid();
             var game = new DigitalIcebreakers.Games.Pong(_leftTeam, _rightTeam);
-            var gameHub = ObjectMother.GetMockGameHub(Guid.NewGuid(), game);
+            var lobby = ObjectMother.GetLobby(Guid.NewGuid(), game);
+            lobby.Players.Add(ObjectMother.GetPlayer(playerId));
+            var gameHub = ObjectMother.GetMockGameHub(playerId, lobby);
             game.Message("join", gameHub).Wait();
         }
 

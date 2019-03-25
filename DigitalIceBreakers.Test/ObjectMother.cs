@@ -11,11 +11,11 @@ namespace DigitalIceBreakers.Test
 {
     public static class ObjectMother
     {
-        public static GameHub GetMockGameHub(Guid playerId, List<Lobby> lobbys)
+        public static GameHub GetMockGameHub(Guid contextId, List<Lobby> lobbys)
         {
             var gameHub = new GameHub(new Mock<ILogger<GameHub>>().Object, lobbys);
             var context = new Mock<HubCallerContext>();
-            context.Setup(p => p.ConnectionId).Returns(playerId.ToString());
+            context.Setup(p => p.ConnectionId).Returns(contextId.ToString());
             gameHub.Context = context.Object;
             var clients = new Mock<IHubCallerClients>();
             clients.Setup(p => p.Client(It.IsAny<string>())).Returns(new Mock<IClientProxy>().Object);
@@ -24,16 +24,21 @@ namespace DigitalIceBreakers.Test
             return gameHub;
         }
 
-        public static GameHub GetMockGameHub(Guid adminId, IGame game)
-        {
-            var lobby = new Lobby
+        public static GameHub GetMockGameHub(Guid contextId, Lobby lobby) {
+            return GetMockGameHub(contextId, new List<Lobby> { lobby });
+        }
+
+        public static Lobby GetLobby(Guid adminId, IGame game) {
+            return new Lobby
             {
                 CurrentGame = game,
                 Id = Guid.NewGuid(),
-                Players = new List<Player> { new Player { ConnectionId = adminId.ToString(), Id = adminId, ExternalId = adminId, IsAdmin = true } }
+                Players = new List<Player> { GetPlayer(adminId, true) }
             };
+        }
 
-            return GetMockGameHub(adminId, new List<Lobby> { lobby });
+        public static Player GetPlayer(Guid id, bool isAdmin = false) {
+            return new Player { ConnectionId = id.ToString(), Id = id, ExternalId = id, IsAdmin = isAdmin };
         }
     }
 }

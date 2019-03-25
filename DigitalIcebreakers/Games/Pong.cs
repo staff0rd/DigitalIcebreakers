@@ -74,7 +74,7 @@ namespace DigitalIcebreakers.Games
             {
                 var id = player.ExternalId;
 
-                if (_leftTeam.Count == _rightTeam.Count)
+                if (_leftTeam.Count <= _rightTeam.Count)
                     _leftTeam[id] = 0;
                 else
                     _rightTeam[id] = 0;
