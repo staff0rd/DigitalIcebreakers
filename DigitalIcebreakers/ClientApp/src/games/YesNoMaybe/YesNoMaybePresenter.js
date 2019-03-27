@@ -4,12 +4,6 @@ import { PixiPresenter } from '../pixi/PixiPresenter';
 import { Colors } from '../../Colors';
 import { Graph } from '../pixi/Graph';
 
-Array.prototype.sum = function(predicate) {
-    var result = 0;
-    this.map(predicate).forEach( (val) => result+= val);
-    return result;
-};
-
 export class YesNoMaybePresenter extends PixiPresenter {
     displayName = YesNoMaybePresenter.name
 

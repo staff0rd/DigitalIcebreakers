@@ -1,5 +1,6 @@
 import React from 'react';
-import { DoggosVsKittehs } from './DoggosVsKittehs/DoggosVsKittehs';
+import { DoggosVsKittehsClient } from './DoggosVsKittehs/DoggosVsKittehsClient';
+import { DoggosVsKittehsPresenter } from './DoggosVsKittehs/DoggosVsKittehsPresenter';
 import { YesNoMaybePresenter } from './YesNoMaybe/YesNoMaybePresenter';
 import { YesNoMaybeClient } from './YesNoMaybe/YesNoMaybeClient';
 import { Buzzer } from './Buzzer/Buzzer';
@@ -9,8 +10,8 @@ import { PongClient } from './Pong/PongClient';
 export default function (props) {
     return [{
         name: "doggos-vs-kittehs",
-        client: <DoggosVsKittehs {...props} />,
-        presenter: <DoggosVsKittehs {...props} />,
+        client: <DoggosVsKittehsClient {...props} />,
+        presenter: <DoggosVsKittehsPresenter {...props} />,
         title: "Doggos vs Kittehs",
         isGame: true
     }, {

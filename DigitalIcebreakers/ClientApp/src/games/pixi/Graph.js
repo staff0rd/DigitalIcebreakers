@@ -1,6 +1,12 @@
 import { Colors } from '../../Colors';
 import * as PIXI from "pixi.js";
 
+// function sum(array, predicate) {
+//     var result = 0;
+//     array.map(predicate).forEach( (val) => result+= val);
+//     return result;
+// };
+
 export class Graph {
     constructor(app, data) {
         this.app = app;
@@ -19,7 +25,7 @@ export class Graph {
         const value = this.data[position].value;
         const color = this.data[position].color;
         const label = this.data[position].label;
-        const total = this.data.sum(p => p.value);
+        //const total = sum(this.data, p => p.value);
 
         const outline = Colors.BlueGrey.C500;
         
