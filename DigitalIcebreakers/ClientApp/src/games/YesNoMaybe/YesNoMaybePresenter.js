@@ -1,63 +1,68 @@
-import React from 'react';
-import { Button  } from 'react-bootstrap';
-import { Bar } from 'react-chartjs-2';
-import { BaseGame } from '../BaseGame';
+import React, { Fragment } from 'react';
+import { Button, Navbar, FormGroup } from 'react-bootstrap';
+import { PixiPresenter } from '../pixi/PixiPresenter';
+import { Colors } from '../../Colors';
+import { Graph } from '../pixi/Graph';
 
-export class YesNoMaybePresenter extends BaseGame {
+Array.prototype.sum = function(predicate) {
+    var result = 0;
+    this.map(predicate).forEach( (val) => result+= val);
+    return result;
+};
+
+export class YesNoMaybePresenter extends PixiPresenter {
     displayName = YesNoMaybePresenter.name
 
     constructor(props, context) {
-        super(props,context);
+        super(0xFFFFFF, props,context);
         
         this.state = {
             yes: 0,
             no: 0,
             maybe: 0
         };
+
+        this.init();
+    }
+
+    init() {
+        var data = [
+            {label: "Yes", value: this.state.yes, color: Colors.Red.C500},
+            {label: "No", value: this.state.no, color: Colors.Blue.C500},
+            {label: "Maybe", value: this.state.maybe, color: Colors.Grey.C500}
+        ]
+
+        this.graph = new Graph(this.app, data);
+
+        this.setMenuItems();
+    }
+
+    setMenuItems() {
+        const header = (
+            <Fragment>
+                <Navbar.Form>
+                    <FormGroup>
+                        <Button bsStyle="primary" onClick={this.reset}>Reset</Button>
+                    </FormGroup>
+                </Navbar.Form>
+            </Fragment>
+        );
+
+        this.props.setMenuItems([header]);
     }
 
     componentDidMount() {
         super.componentDidMount();
         this.props.connection.on("gameUpdate", (result) => {
-            console.log(result);
             this.setState({
                 yes: result.yes,
                 no: result.no,
                 maybe: result.maybe
-            });
+            }, this.init);
         });
     }
 
     reset = () => {
         this.props.connection.invoke("gameMessage", "reset");
-    }
-
-    render() {
-        if (this.state.yes + this.state.no+ this.state.maybe=== 0)
-            this.props.connection.invoke("gameMessage", "");
-
-        const data = {
-            labels: ["Yes", "No", "Maybe"],
-            datasets: [{
-                data: [this.state.yes, this.state.no, this.state.maybe],
-                backgroundColor: ['#845EC2', '#B0A8B9', '#FF8066']
-            }]
-        };
-
-        const options = { 
-            legend: {display: false },
-            scales: { 
-                xAxes: [{ gridLines: { display:false}}],
-                yAxes: [{ gridLines: { display:false}}]
-            }
-        };
-
-        return (
-            <div>
-                <h2>Yes, No, Maybe</h2>
-                <Bar data={data} options={options} />
-                <Button onClick={this.reset} bsSize="large">Reset</Button>
-            </div>
-        );
     }
 }
