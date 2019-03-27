@@ -198,10 +198,6 @@ class PongPresenter extends PixiPresenter {
     updateBallSpeed = (value)  => {
         this.setState({ballSpeed: value}, this.init);
     }
- 
-    render() {
-        return <div className='main full-height' ref={this.pixiUpdate} />;
-    }
-}
+ }
 
 export default ReactAnimationFrame(PongPresenter);

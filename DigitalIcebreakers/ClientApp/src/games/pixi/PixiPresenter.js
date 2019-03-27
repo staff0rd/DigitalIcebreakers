@@ -1,6 +1,7 @@
 import { BaseGame } from '../BaseGame'
 import { Events } from '../../Events';
 import * as PIXI from "pixi.js";
+import React from 'react';
 
 export class PixiPresenter extends BaseGame {
     constructor(backgroundColor, props, context) {
@@ -37,5 +38,9 @@ export class PixiPresenter extends BaseGame {
     componentWillUnmount() {
         super.componentWillUnmount();
         Events.remove('onresize', 'presenter');
+    }
+
+    render() {
+        return <div className='main full-height' ref={this.pixiUpdate} />;
     }
 }
