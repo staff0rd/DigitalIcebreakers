@@ -3,10 +3,9 @@ import { Navbar } from 'react-bootstrap';
 import { PongColors as Colors } from './PongColors';
 import * as PIXI from "pixi.js";
 import ReactAnimationFrame from 'react-animation-frame';
-import { BaseGame } from '../BaseGame'
-import { Events } from '../../Events';
-import { Stepper } from '../../components/Stepper'
-import { clamp } from '../../util/clamp'
+import { PixiPresenter } from '../pixi/PixiPresenter';
+import { Stepper } from '../../components/Stepper';
+import { clamp } from '../../util/clamp';
 
 const defaultPaddleSpeed = 200;
 const defaultHeight = 5;
@@ -22,15 +21,11 @@ function getRadians(degrees) {
     return degrees * Math.PI / 180;
 }
 
-class Presenter extends BaseGame {
-    displayName = Presenter.name
+class PongPresenter extends PixiPresenter {
+    displayName = PongPresenter.name
 
     constructor(props, context) {
-        super(props, context);
-
-        this.app = new PIXI.Application({ autoResize: true, backgroundColor: Colors.Background });
-        
-        this.pixiElement = null;
+        super(Colors.Background, props, context);
 
         this.blueScore = new PIXI.Text("0", { fill: Colors.LeftPaddleUp, fontSize: this.app.renderer.width * 2})
 
@@ -67,19 +62,6 @@ class Presenter extends BaseGame {
         this.props.connection.on("gameUpdate", (response) => {
             this.setState(response);
         });
-
-        const resize = () => {
-            const parent = this.app.view.parentNode;
-            this.app.renderer.resize(parent.clientWidth, parent.clientHeight);
-            this.init();
-        }
-
-        Events.add('onresize', 'pongpresenter', resize);
-    }
-
-    componentWillUnmount() {
-        super.componentWillUnmount();
-        Events.remove('onresize', 'pongpresenter');
     }
 
     clampPaddle(paddle) {
@@ -149,17 +131,6 @@ class Presenter extends BaseGame {
             this.clampPaddle(this.rightPaddle);
 
             this.checkHit();
-        }
-    }
-
-    pixiUpdate = (element) => {
-        this.pixiElement = element;
-
-        if (this.pixiElement && this.pixiElement.children.length <= 0) {
-            this.pixiElement.appendChild(this.app.view);
-            this.app.renderer.resize(element.clientWidth, element.clientHeight);
-
-            this.init(element);    
         }
     }
 
@@ -233,4 +204,4 @@ class Presenter extends BaseGame {
     }
 }
 
-export default ReactAnimationFrame(Presenter);
+export default ReactAnimationFrame(PongPresenter);
