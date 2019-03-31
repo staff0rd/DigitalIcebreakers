@@ -96,7 +96,6 @@ namespace DigitalIcebreakers.Hubs
 
         public async Task Connect(User user)
         {
-            
             Player player = GetPlayer(user);
             var lobby = _lobbys.SingleOrDefault(p => p.Players.Contains(player));
             await Connect(player, lobby);
