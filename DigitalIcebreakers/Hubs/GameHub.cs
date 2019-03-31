@@ -151,6 +151,7 @@ namespace DigitalIcebreakers.Hubs
                 case "yes-no-maybe": return new YesNoMaybe();
                 case "buzzer": return new Buzzer();
                 case "pong": return new Pong();
+                case "ideawall": return new IdeaWall();
                 default: throw new ArgumentOutOfRangeException("Unknown game");
             }
         }
