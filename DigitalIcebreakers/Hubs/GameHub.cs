@@ -5,6 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using DigitalIcebreakers.Controllers;
 using DigitalIcebreakers.Games;
+using Microsoft.AspNetCore.Http.Connections;
+using Microsoft.AspNetCore.Http.Connections.Features;
+using Microsoft.AspNetCore.Http.Connections.Internal;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
@@ -87,8 +90,13 @@ namespace DigitalIcebreakers.Hubs
             }
         }
 
+        private HttpTransportType? GetTransportType() {
+            return Context.Features.Get<IHttpTransportFeature>()?.TransportType;
+        }
+
         public async Task Connect(User user)
         {
+            
             Player player = GetPlayer(user);
             var lobby = _lobbys.SingleOrDefault(p => p.Players.Contains(player));
             await Connect(player, lobby);
@@ -108,7 +116,7 @@ namespace DigitalIcebreakers.Hubs
                 }
             }
             else {
-                _logger.LogInformation($"{player.Name} connected");
+                _logger.LogInformation($"{player.Name} connected ({this.GetTransportType()})");
                 await Clients.Caller.SendAsync("Connected");
             }
         }
