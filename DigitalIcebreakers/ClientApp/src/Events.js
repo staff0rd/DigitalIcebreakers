@@ -1,7 +1,6 @@
 export const Events = {
     handlers: [],
     handle: (event) => {
-        console.log('handle ', event, Events.handlers);
         Events.handlers
             .filter((e) => e.event === event)
             .forEach((e) => { e.handler(); });
