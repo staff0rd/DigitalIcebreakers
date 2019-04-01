@@ -36,7 +36,7 @@ export default function (props) {
         isGame: true
     }, {
         name: "ideawall",
-        client: <IdeaWallClient {... props} />,
+        client: <IdeaWallClient {...props} />,
         presenter: <IdeaWallPresenter {...props} />,
         title: "Idea Wall",
         fullscreen: true,
