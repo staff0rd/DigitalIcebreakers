@@ -2,7 +2,6 @@ import React, { Fragment } from 'react';
 import { Button, Navbar, FormGroup } from 'react-bootstrap';
 import { PixiPresenter } from '../pixi/PixiPresenter';
 import { Colors } from '../../Colors';
-import { Graph } from '../pixi/Graph';
 
 export class IdeaWallPresenter extends PixiPresenter {
     displayName = IdeaWallPresenter.name
