@@ -34,5 +34,9 @@ namespace DigitalIcebreakers
             Name = name;
             Id = id;
         }
+
+        public override string ToString() {
+            return $"{Name} ({Id.ToString().Split('-')[0]})";
+        }
     }
 }

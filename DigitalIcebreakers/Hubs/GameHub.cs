@@ -106,7 +106,7 @@ namespace DigitalIcebreakers.Hubs
             player.IsConnected = true;
             if (lobby != null)
             {
-                _logger.LogInformation($"{player.Name} re-connected to lobby {lobby.Label}");
+                _logger.LogInformation($"{player} re-connected to lobby {lobby.Label}");
                 var players = lobby.Players.Where(p => !p.IsAdmin).Select(p => new User { Id = p.ExternalId, Name = p.Name }).ToList();
                 await Clients.Caller.SendAsync("Reconnect", new Reconnect { PlayerId = player.Id, PlayerName = player.Name, LobbyName = lobby.Name, LobbyId = lobby.Id, IsAdmin = player.IsAdmin, Players = players, CurrentGame = lobby.CurrentGame?.Name });
                 if (!player.IsAdmin)
@@ -116,7 +116,7 @@ namespace DigitalIcebreakers.Hubs
                 }
             }
             else {
-                _logger.LogInformation($"{player.Name} connected ({this.GetTransportType()})");
+                _logger.LogInformation($"{player} connected ({this.GetTransportType()})");
                 await Clients.Caller.SendAsync("Connected");
             }
         }
@@ -191,7 +191,7 @@ namespace DigitalIcebreakers.Hubs
             var existingLobby = GetLobby();
             if (existingLobby != null)
             {
-                _logger.LogInformation($"{player.Name} has left lobby {existingLobby.Label}");
+                _logger.LogInformation($"{player} has left lobby {existingLobby.Label}");
                 await Clients.Client(existingLobby.Admin.ConnectionId).SendAsync("left", new User { Id = player.ExternalId, Name = player.Name });
                 existingLobby.Players.Remove(player);
             }
@@ -203,7 +203,7 @@ namespace DigitalIcebreakers.Hubs
             }
             else
             {
-                _logger.LogInformation($"{player.Name} has joined lobby {lobby.Label}");
+                _logger.LogInformation($"{player} has joined lobby {lobby.Label}");
                 lobby.Players.Add(player);
                 await Connect(player, lobby);
             }
@@ -215,7 +215,7 @@ namespace DigitalIcebreakers.Hubs
             var player = GetPlayerByConnectionId();
             if (player != null)
             {          
-                _logger.LogInformation($"{player.Name} disconnected");
+                _logger.LogInformation($"{player} disconnected");
                 player.IsConnected = false;
                 var admin = GetAdmin();
                 if (admin != null)
