@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { Config } from '../config';
 import { Row, Col, ListGroup, ListGroupItem  } from 'react-bootstrap';
 
-var QRCode = require('qrcode.react');
-
 export class Lobby extends Component {
     displayName = Lobby.name
 
