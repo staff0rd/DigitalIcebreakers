@@ -1,6 +1,9 @@
 import React from 'react';
-import { Button, Form } from 'react-bootstrap';
+import { Button, Form, FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
 import { BaseGame } from '../BaseGame';
+import { Colors } from '../../Colors';
+
+const MAX_CHARACTERS = 50;
 
 export class IdeaWallClient extends BaseGame {
     displayName = IdeaWallClient.name
@@ -9,7 +12,7 @@ export class IdeaWallClient extends BaseGame {
         super(props, context);
 
         this.state = {
-            choice: undefined
+            idea: ""
         };
     }
 
@@ -18,14 +21,22 @@ export class IdeaWallClient extends BaseGame {
         this.props.connection.invoke("gameMessage", choice);
     }
 
+    handleChange = (e) => {
+        this.setState({ idea: e.target.value });
+    }
+
     render() {
-        const style = { height: '100px', width: '300px' };
+        const characters = this.state.idea.length;
+        const style = characters >= MAX_CHARACTERS - 5 ? { color: "#D32F2F" } : {};
         return (
             <Form>
-                <Form.Group>
-                    <Form.Label>Your idea</Form.Label>
-                    <Form.Control as="textarea" rows="3" />
-                </Form.Group>
+                <FormGroup>
+                    <ControlLabel>Your idea <span style={style}>({characters}/{MAX_CHARACTERS})</span></ControlLabel>
+                    <FormControl maxLength={MAX_CHARACTERS} componentClass="textarea" rows={3} onChange={this.handleChange} value={this.state.idea} />
+                </FormGroup>
+                <Button type="submit" bsStyle="primary" bsSize="large" style={{margin: "6px"}}>
+                    Submit
+                </Button>
             </Form>
         );
     }
