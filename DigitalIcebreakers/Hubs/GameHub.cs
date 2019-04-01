@@ -103,6 +103,7 @@ namespace DigitalIcebreakers.Hubs
 
         private async Task Connect(Player player, Lobby lobby)
         {
+            player.IsConnected = true;
             if (lobby != null)
             {
                 _logger.LogInformation($"{player.Name} re-connected to lobby {lobby.Label}");
@@ -215,6 +216,7 @@ namespace DigitalIcebreakers.Hubs
             if (player != null)
             {          
                 _logger.LogInformation($"{player.Name} disconnected");
+                player.IsConnected = false;
                 var admin = GetAdmin();
                 if (admin != null)
                 {

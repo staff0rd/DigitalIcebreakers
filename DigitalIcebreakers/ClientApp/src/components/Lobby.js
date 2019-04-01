@@ -16,12 +16,8 @@ export class Lobby extends Component {
                     <h2>{this.props.name}</h2>
 
                     <Row>
-                        <Col md={4}>
+                        <Col md={12}>
                             <a href={joinUrl}>{joinUrl}</a>
-                            <br />
-                            <QRCode value={joinUrl} size={256} renderAs="svg" />
-                        </Col>
-                        <Col md={8}>
                             <h1>Players</h1>
                             <ListGroup>
                                 {players}
