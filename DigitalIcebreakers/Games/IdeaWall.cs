@@ -10,12 +10,8 @@ public class IdeaWall : IGame
     public async Task Message(string payload, GameHub hub)
     {
         var player = hub.GetPlayerByConnectionId();
-        switch(payload)
-        {
-            // case "up": await hub.Clients.Client(hub.GetAdmin().ConnectionId).SendAsync("gameUpdate", player.ExternalId, player.Name, "up"); break;
-            // case "down": await hub.Clients.Client(hub.GetAdmin().ConnectionId).SendAsync("gameUpdate", player.ExternalId, player.Name, "down"); break;
-            default: break;
-        }
+        if (payload.StartsWith("idea:"))
+            await hub.Clients.Client(hub.GetAdmin().ConnectionId).SendAsync("gameUpdate", player.Name, payload.Substring(5));
     }
 
     public Task Start(GameHub hub)

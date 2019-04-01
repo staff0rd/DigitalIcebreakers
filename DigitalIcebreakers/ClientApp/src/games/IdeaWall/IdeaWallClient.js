@@ -16,18 +16,13 @@ export class IdeaWallClient extends BaseGame {
         };
     }
 
-    choose = (choice) => {
-        this.setState({ choice: choice });
-        this.props.connection.invoke("gameMessage", choice);
-    }
-
     onChange = (e) => {
         this.setState({ idea: e.target.value });
     }
 
     onClick = (e) => {
         if (this.state.idea.length) {
-            this.props.connection.invoke("gameMessage", e.target.value);
+            this.props.connection.invoke("gameMessage", `idea:${this.state.idea}`);
             this.setState({idea: ""});
         }
     }
