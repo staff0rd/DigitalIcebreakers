@@ -21,8 +21,15 @@ export class IdeaWallClient extends BaseGame {
         this.props.connection.invoke("gameMessage", choice);
     }
 
-    handleChange = (e) => {
+    onChange = (e) => {
         this.setState({ idea: e.target.value });
+    }
+
+    onClick = (e) => {
+        if (this.state.idea.length) {
+            this.props.connection.invoke("gameMessage", e.target.value);
+            this.setState({idea: ""});
+        }
     }
 
     render() {
@@ -32,9 +39,9 @@ export class IdeaWallClient extends BaseGame {
             <Form>
                 <FormGroup>
                     <ControlLabel>Your idea <span style={style}>({characters}/{MAX_CHARACTERS})</span></ControlLabel>
-                    <FormControl maxLength={MAX_CHARACTERS} componentClass="textarea" rows={3} onChange={this.handleChange} value={this.state.idea} />
+                    <FormControl maxLength={MAX_CHARACTERS} componentClass="textarea" rows={3} onChange={this.onChange} value={this.state.idea} />
                 </FormGroup>
-                <Button type="submit" bsStyle="primary" bsSize="large" style={{margin: "6px"}}>
+                <Button onClick={this.onClick} bsStyle="primary" bsSize="large" style={{margin: "6px"}}>
                     Submit
                 </Button>
             </Form>
