@@ -5,7 +5,8 @@ import { Colors } from '../../Colors';
 import * as PIXI from "pixi.js";
 import * as Random from '../../Random';
 import { Events } from '../../Events';
-import { clamp } from '../../util/clamp';
+import { IdeaContainer } from './IdeaContainer';
+
 
 const TITLE_FONT_SIZE = 20;
 const BODY_FONT_SIZE = 26;
@@ -34,47 +35,11 @@ export class IdeaWallPresenter extends PixiPresenter {
             ideas: []
         };
 
-        this.pointerDragStart = undefined;
-        this.containerDragStart = undefined;
-
-        this.ideaContainer = new PIXI.Container();
-        this.ideaContainerDrag = new PIXI.Graphics();
-        this.ideaContainerDrag.interactive = true;
-        this.ideaContainerDrag.beginFill(0xFF00000, 0)
-        this.ideaContainerDrag.drawRect(0, 0, 1, 1);
-        this.ideaContainerDrag.endFill();
-
-        this.app.stage.addChild(this.ideaContainerDrag, this.ideaContainer);
-
-        this.ideaContainerDrag.interactive = true;
-        this.ideaContainerDrag.buttonMode = true;
-        this.ideaContainerDrag.on('pointerdown', this.onDragStart);
-        this.ideaContainerDrag.on('pointermove', this.onDragMove);
-        this.ideaContainerDrag.on('pointerup', this.onDragEnd);
-        this.ideaContainerDrag.on('pointerupoutside', this.onDragEnd);
+        this.ideaContainer = new IdeaContainer(this.app, WIDTH);
+        this.app.stage.addChild(this.ideaContainer.getDragContainer(), this.ideaContainer);
     }
 
-    onDragStart = (event) => {
-        const point = event.data.getLocalPosition(this.app.stage);
-        this.pointerDragStart = { x: this.ideaContainer.x - point.x, y: this.ideaContainer.y - point.y };
-    }
-
-    onDragEnd = () => {
-        this.pointerDragStart = undefined;
-    }
-
-    onDragMove = (event) => {
-        if (this.pointerDragStart) {
-            const point = event.data.getLocalPosition(this.app.stage);
-            const x = this.pointerDragStart.x + point.x;
-            const y = this.pointerDragStart.y + point.y;
-            const mostTop = Math.min(...this.ideaContainer.children.map(p => this.app.screen.y - p.y))
-            const mostLeft = Math.min(...this.ideaContainer.children.map(p => p.x))
-            const mostRight = Math.max(...this.ideaContainer.children.map(p => this.app.screen.width - p.x - WIDTH));
-            const mostBottom = Math.max(...this.ideaContainer.children.map(p => this.app.screen.height - p.y - WIDTH));
-            this.ideaContainer.position.set(clamp(x, mostLeft, mostRight), clamp(y, mostTop, mostBottom));
-        }
-    }
+    
 
     getRandomColor() {
         return Random.pick(IDEA_COLORS);
@@ -151,8 +116,7 @@ export class IdeaWallPresenter extends PixiPresenter {
         super.componentDidMount();
         
         const resize = () => {
-            this.ideaContainerDrag.width = this.app.screen.width;
-            this.ideaContainerDrag.height = this.app.screen.height;
+            this.ideaContainer.resize();
         }
         
         resize();
