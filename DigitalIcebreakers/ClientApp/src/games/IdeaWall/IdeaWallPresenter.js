@@ -32,7 +32,8 @@ export class IdeaWallPresenter extends PixiPresenter {
         this.myStorage = window.localStorage;
 
         this.state = {
-            ideas: []
+            ideas: [],
+            showNames: false
         };
 
         this.ideaContainer = new IdeaContainer(this.app, WIDTH);
@@ -83,7 +84,8 @@ export class IdeaWallPresenter extends PixiPresenter {
             <Fragment>
                 <Navbar.Form>
                     <FormGroup>
-                        <Button bsStyle="primary" onClick={this.reset}>Reset</Button>
+                        <Button bsStyle="primary" onClick={this.clear}>Clear</Button>{' '}
+                        <Button bsStyle="primary" onClick={this.toggleNames}>Toggle names</Button>
                     </FormGroup>
                 </Navbar.Form>
             </Fragment>
@@ -100,6 +102,7 @@ export class IdeaWallPresenter extends PixiPresenter {
         graphics.endFill();
         const title = new PIXI.Text(idea.playerName, { fontSize: TITLE_FONT_SIZE });
         title.x = MARGIN;
+        title.visible = this.state.showNames;
         const body = new PIXI.Text(idea.idea, { fontSize: BODY_FONT_SIZE, breakWords: true, wordWrap: true, wordWrapWidth: WIDTH - 2*MARGIN, align: "center"});
         body.pivot.set(body.width/2, body.height/2)
         body.position.set(WIDTH / 2, WIDTH / 2);
@@ -140,7 +143,13 @@ export class IdeaWallPresenter extends PixiPresenter {
         Events.remove('onresize', 'ideawall');
     }
 
-    reset = () => {
+    clear = () => {
         this.clearIdeas();
+    }
+
+    toggleNames = () => {
+        this.setState((prevState) => {
+            return { showNames: !prevState.showNames};
+        }, () => this.init());
     }
 }
