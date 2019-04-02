@@ -5,6 +5,7 @@ import { Colors } from '../../Colors';
 import * as PIXI from "pixi.js";
 import * as Random from '../../Random';
 import { Events } from '../../Events';
+import { clamp } from '../../util/clamp';
 
 const TITLE_FONT_SIZE = 20;
 const BODY_FONT_SIZE = 26;
@@ -65,7 +66,13 @@ export class IdeaWallPresenter extends PixiPresenter {
     onDragMove = (event) => {
         if (this.pointerDragStart) {
             const point = event.data.getLocalPosition(this.app.stage);
-            this.ideaContainer.position.set(this.pointerDragStart.x + point.x, this.pointerDragStart.y + point.y);
+            const x = this.pointerDragStart.x + point.x;
+            const y = this.pointerDragStart.y + point.y;
+            const mostTop = Math.min(...this.ideaContainer.children.map(p => this.app.screen.y - p.y))
+            const mostLeft = Math.min(...this.ideaContainer.children.map(p => p.x))
+            const mostRight = Math.max(...this.ideaContainer.children.map(p => this.app.screen.width - p.x - WIDTH));
+            const mostBottom = Math.max(...this.ideaContainer.children.map(p => this.app.screen.height - p.y - WIDTH));
+            this.ideaContainer.position.set(clamp(x, mostLeft, mostRight), clamp(y, mostTop, mostBottom));
         }
     }
 
