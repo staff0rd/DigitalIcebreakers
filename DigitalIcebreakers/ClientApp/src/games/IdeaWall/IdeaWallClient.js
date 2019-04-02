@@ -17,7 +17,8 @@ export class IdeaWallClient extends BaseGame {
     }
 
     onChange = (e) => {
-        this.setState({ idea: e.target.value });
+        if (e.target.value.split('\n').length <= 4)
+            this.setState({ idea: e.target.value });
     }
 
     onClick = (e) => {
