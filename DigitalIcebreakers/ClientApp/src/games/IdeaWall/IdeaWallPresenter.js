@@ -3,10 +3,23 @@ import { Button, Navbar, FormGroup } from 'react-bootstrap';
 import { PixiPresenter } from '../pixi/PixiPresenter';
 import { Colors } from '../../Colors';
 import * as PIXI from "pixi.js";
+import * as Random from '../../Random';
+import { Events } from '../../Events';
 
 const TITLE_FONT_SIZE = 20;
 const BODY_FONT_SIZE = 26;
 const STORAGE_KEY = "ideawall:ideas";
+const WIDTH = 200;
+const MARGIN = 5;
+
+const IDEA_COLORS = [
+    Colors.Amber.A200,
+    Colors.Green.A200,
+    Colors.LightGreen.A200,
+    Colors.LightBlue.A200,
+    Colors.DeepPurple.A100,
+    Colors.Red.A100
+];
 
 export class IdeaWallPresenter extends PixiPresenter {
     displayName = IdeaWallPresenter.name
@@ -19,6 +32,45 @@ export class IdeaWallPresenter extends PixiPresenter {
         this.state = {
             ideas: []
         };
+
+        this.pointerDragStart = undefined;
+        this.containerDragStart = undefined;
+
+        this.ideaContainer = new PIXI.Container();
+        this.ideaContainerDrag = new PIXI.Graphics();
+        this.ideaContainerDrag.interactive = true;
+        this.ideaContainerDrag.beginFill(0xFF00000, 0)
+        this.ideaContainerDrag.drawRect(0, 0, 1, 1);
+        this.ideaContainerDrag.endFill();
+
+        this.app.stage.addChild(this.ideaContainerDrag, this.ideaContainer);
+
+        this.ideaContainerDrag.interactive = true;
+        this.ideaContainerDrag.buttonMode = true;
+        this.ideaContainerDrag.on('pointerdown', this.onDragStart);
+        this.ideaContainerDrag.on('pointermove', this.onDragMove);
+        this.ideaContainerDrag.on('pointerup', this.onDragEnd);
+        this.ideaContainerDrag.on('pointerupoutside', this.onDragEnd);
+    }
+
+    onDragStart = (event) => {
+        const point = event.data.getLocalPosition(this.app.stage);
+        this.pointerDragStart = { x: this.ideaContainer.x - point.x, y: this.ideaContainer.y - point.y };
+    }
+
+    onDragEnd = () => {
+        this.pointerDragStart = undefined;
+    }
+
+    onDragMove = (event) => {
+        if (this.pointerDragStart) {
+            const point = event.data.getLocalPosition(this.app.stage);
+            this.ideaContainer.position.set(this.pointerDragStart.x + point.x, this.pointerDragStart.y + point.y);
+        }
+    }
+
+    getRandomColor() {
+        return Random.pick(IDEA_COLORS);
     }
 
     saveIdeas() {
@@ -46,9 +98,9 @@ export class IdeaWallPresenter extends PixiPresenter {
 
     init() {
         this.setState({ ideas: this.getIdeas() || []}, () => {
-            this.app.stage.removeChildren();
+            this.ideaContainer.removeChildren();
             this.state.ideas.forEach(idea => {
-                this.addIdeaToStage(idea);
+                this.addIdeaToContainer(idea);
             })
         });
         this.setMenuItems();
@@ -68,27 +120,53 @@ export class IdeaWallPresenter extends PixiPresenter {
         this.props.setMenuItems([header]);
     }
 
-    addIdeaToStage(idea) {
+    addIdeaToContainer(idea) {
         const container = new PIXI.Container();
+        const graphics = new PIXI.Graphics();
+        graphics.beginFill(idea.color);
+        graphics.drawRect(0, 0, WIDTH, WIDTH);
+        graphics.endFill();
         const title = new PIXI.Text(idea.playerName, { fontSize: TITLE_FONT_SIZE });
-        const body = new PIXI.Text(idea.idea, { fontSize: BODY_FONT_SIZE });
-        body.y = title.height;
-        container.addChild(title, body);
-        container.y = this.app.stage.height;
-        this.app.stage.addChild(container);
+        title.x = MARGIN;
+        const body = new PIXI.Text(idea.idea, { fontSize: BODY_FONT_SIZE, breakWords: true, wordWrap: true, wordWrapWidth: WIDTH - 2*MARGIN, align: "center"});
+        body.pivot.set(body.width/2, body.height/2)
+        body.position.set(WIDTH / 2, WIDTH / 2);
+        container.addChild(graphics, title, body);
+        container.y = this.ideaContainer.height + (this.ideaContainer.children.length ? MARGIN : 0);
+        this.ideaContainer.addChild(container);
+    }
+
+    getNewIdea(playerName, idea) {
+        return {playerName: playerName, idea: idea, color: this.getRandomColor()};
     }
 
     componentDidMount() {
         super.componentDidMount();
+        
+        const resize = () => {
+            this.ideaContainerDrag.width = this.app.screen.width;
+            this.ideaContainerDrag.height = this.app.screen.height;
+        }
+        
+        resize();
+        Events.add('onresize', 'ideawall', resize);
         this.init();
         this.props.connection.on("gameUpdate", (playerName, idea) => {
-            var newIdea = {playerName: playerName, idea: idea};
-            this.addIdeaToStage(newIdea);
+            const newIdea = this.getNewIdea(playerName, idea);
+            this.addIdeaToContainer(newIdea);
             const ideas = [...this.state.ideas, newIdea];
             this.setState({
                 ideas: ideas
-            }, () => this.saveIdeas());
+            }, () => {
+                this.saveIdeas();
+                this.init;
+            });
         });
+    }
+
+    componentWillUnmount() {
+        super.componentWillUnmount();
+        Events.remove('onresize', 'ideawall');
     }
 
     reset = () => {
