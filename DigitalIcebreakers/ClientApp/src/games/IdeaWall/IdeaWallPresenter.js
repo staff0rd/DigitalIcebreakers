@@ -2,14 +2,11 @@ import React, { Fragment } from 'react';
 import { Button, Navbar, FormGroup } from 'react-bootstrap';
 import { PixiPresenter } from '../pixi/PixiPresenter';
 import { Colors } from '../../Colors';
-import * as PIXI from "pixi.js";
 import * as Random from '../../Random';
 import { Events } from '../../Events';
 import { IdeaContainer } from './IdeaContainer';
+import { IdeaView } from './IdeaView';
 
-
-const TITLE_FONT_SIZE = 20;
-const BODY_FONT_SIZE = 26;
 const STORAGE_KEY = "ideawall:ideas";
 const WIDTH = 200;
 const MARGIN = 5;
@@ -40,8 +37,6 @@ export class IdeaWallPresenter extends PixiPresenter {
         this.app.stage.addChild(this.ideaContainer.getDragContainer(), this.ideaContainer);
     }
 
-    
-
     getRandomColor() {
         return Random.pick(IDEA_COLORS);
     }
@@ -50,7 +45,6 @@ export class IdeaWallPresenter extends PixiPresenter {
         if (this.myStorage) {
             this.myStorage.setItem(STORAGE_KEY, JSON.stringify(this.state.ideas));
         }
-        console.log(this.state.ideas);
     }
 
     getIdeas() {
@@ -67,6 +61,7 @@ export class IdeaWallPresenter extends PixiPresenter {
             this.myStorage.removeItem(STORAGE_KEY);
         }
         this.setState({ideas: []}, () => this.init());
+        this.ideaContainer && this.ideaContainer.position.set(0);
     }
 
     init() {
@@ -94,21 +89,18 @@ export class IdeaWallPresenter extends PixiPresenter {
         this.props.setMenuItems([header]);
     }
 
-    addIdeaToContainer(idea) {
-        const container = new PIXI.Container();
-        const graphics = new PIXI.Graphics();
-        graphics.beginFill(idea.color);
-        graphics.drawRect(0, 0, WIDTH, WIDTH);
-        graphics.endFill();
-        const title = new PIXI.Text(idea.playerName, { fontSize: TITLE_FONT_SIZE });
-        title.x = MARGIN;
-        title.visible = this.state.showNames;
-        const body = new PIXI.Text(idea.idea, { fontSize: BODY_FONT_SIZE, breakWords: true, wordWrap: true, wordWrapWidth: WIDTH - 2*MARGIN, align: "center"});
-        body.pivot.set(body.width/2, body.height/2)
-        body.position.set(WIDTH / 2, WIDTH / 2);
-        container.addChild(graphics, title, body);
-        container.y = this.ideaContainer.height + (this.ideaContainer.children.length ? MARGIN : 0);
-        this.ideaContainer.addChild(container);
+    addIdeaToContainer(idea, isNew) {
+        const view = new IdeaView(idea, WIDTH, MARGIN, this.state.showNames, () => this.saveIdeas());
+        this.ideaContainer.addChild(view);
+        if (isNew) {
+            const total = this.ideaContainer.children.length;
+            const screenWidth = this.app.screen.width;
+            const columns = screenWidth / WIDTH;
+            var row = Math.floor(total / columns) + 1;
+            var column = Math.floor(total % columns) + 1;
+            view.x = column * WIDTH;
+            view.y = row * WIDTH;
+        }
     }
 
     getNewIdea(playerName, idea) {
@@ -127,13 +119,13 @@ export class IdeaWallPresenter extends PixiPresenter {
         this.init();
         this.props.connection.on("gameUpdate", (playerName, idea) => {
             const newIdea = this.getNewIdea(playerName, idea);
-            this.addIdeaToContainer(newIdea);
+            this.addIdeaToContainer(newIdea, true);
             const ideas = [...this.state.ideas, newIdea];
             this.setState({
                 ideas: ideas
             }, () => {
                 this.saveIdeas();
-                this.init;
+                this.init();
             });
         });
     }

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Button, Form, FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
 import { BaseGame } from '../BaseGame';
-import { Colors } from '../../Colors';
 
 const MAX_CHARACTERS = 50;
 

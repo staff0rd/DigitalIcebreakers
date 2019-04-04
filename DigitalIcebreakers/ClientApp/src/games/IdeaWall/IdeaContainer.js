@@ -48,10 +48,10 @@ export class IdeaContainer extends PIXI.Container {
             const x = this.pointerData.x + point.x;
             const y = this.pointerData.y + point.y;
             const mostTop = Math.min(...this.children.map(p => this.app.screen.y - p.y))
-            const mostLeft = Math.min(...this.children.map(p => p.x))
+            let mostLeft = Math.max(...this.children.map(p => p.x))
             const mostRight = Math.max(...this.children.map(p => this.app.screen.width - p.x - this.ideaWidth));
             const mostBottom = Math.max(...this.children.map(p => this.app.screen.height - p.y - this.ideaWidth));
-            this.position.set(clamp(x, mostLeft, mostRight), clamp(y, mostTop, mostBottom));
+            this.position.set(clamp(x, -mostLeft, mostRight), clamp(y, mostTop, mostBottom));
         }
     }
 
