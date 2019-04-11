@@ -2,12 +2,14 @@ import { clamp } from '../../util/clamp';
 import * as PIXI from "pixi.js";
 
 export class IdeaContainer extends PIXI.Container {
-    constructor(app, ideaWidth) {
+    constructor(app, ideaWidth, margin) {
         super();
 
         this.app = app;
         
         this.ideaWidth = ideaWidth;
+
+        this.margin = margin;
 
         this.setupDrag();
 
@@ -58,5 +60,21 @@ export class IdeaContainer extends PIXI.Container {
     resize() {
         this.ideaContainerDrag.width = this.app.screen.width;
         this.ideaContainerDrag.height = this.app.screen.height;
+    }
+
+    arrange() {
+        this.position.set(0);
+        const gap = this.ideaWidth + this.margin;
+        let columns = Math.floor(this.app.screen.width / gap);
+
+        if (columns * gap - this.margin + this.ideaWidth <= this.app.screen.width)
+            columns++;
+
+        this.children.forEach((c, i) => {
+            var row = Math.floor(i / columns)
+            var column = Math.floor(i % columns);
+            c.position.set(column * gap, row * gap);
+            c.onDragEnd(); // saves position
+        })
     }
 }

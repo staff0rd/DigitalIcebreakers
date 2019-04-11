@@ -1,5 +1,4 @@
 import * as PIXI from "pixi.js";
-import { intersects } from '../../util/intersects';
 
 const TITLE_FONT_SIZE = 20;
 const BODY_FONT_SIZE = 26;

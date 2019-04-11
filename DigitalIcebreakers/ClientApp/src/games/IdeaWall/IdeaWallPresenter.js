@@ -39,7 +39,7 @@ export class IdeaWallPresenter extends PixiPresenter {
             }
         };
 
-        this.ideaContainer = new IdeaContainer(this.app, WIDTH);
+        this.ideaContainer = new IdeaContainer(this.app, WIDTH, MARGIN);
         this.app.stage.addChild(this.ideaContainer.getDragContainer(), this.ideaContainer);
     }
 
@@ -84,6 +84,20 @@ export class IdeaWallPresenter extends PixiPresenter {
         this.setState({showModal: false});
     }
 
+    confirmArrange = () => {
+        this.setState({
+            showModal: true,
+            modal: {
+                title: "Arrange ideas?",
+                body: "This will re-arrange all ideas",
+                action: () => {
+                    this.ideaContainer.arrange();
+                    this.closeModal();
+                }
+            }
+        });
+    }
+
     confirmClear = () => {
         this.setState({
             showModal: true,
@@ -110,7 +124,8 @@ export class IdeaWallPresenter extends PixiPresenter {
                 <Navbar.Form>
                     <FormGroup>
                         <Button bsStyle="primary" onClick={this.confirmClear}>Clear</Button>{' '}
-                        <Button bsStyle="primary" onClick={this.toggleNames}>Toggle names</Button>
+                        <Button bsStyle="primary" onClick={this.toggleNames}>Toggle names</Button>{' '}
+                        <Button bsStyle="primary" onClick={this.confirmArrange}>Arrange</Button>
                     </FormGroup>
                 </Navbar.Form>
             </Fragment>
