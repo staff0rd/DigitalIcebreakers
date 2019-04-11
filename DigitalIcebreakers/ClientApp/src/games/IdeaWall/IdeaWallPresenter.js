@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Button, Navbar, FormGroup } from 'react-bootstrap';
+import { Button, Navbar, FormGroup, Modal } from 'react-bootstrap';
 import { PixiPresenter } from '../pixi/PixiPresenter';
 import { Colors } from '../../Colors';
 import * as Random from '../../Random';
@@ -30,7 +30,13 @@ export class IdeaWallPresenter extends PixiPresenter {
 
         this.state = {
             ideas: [],
-            showNames: false
+            showNames: false,
+            showModal: false,
+            modal: {
+                title: "",
+                body: "",
+                action: undefined
+            }
         };
 
         this.ideaContainer = new IdeaContainer(this.app, WIDTH);
@@ -74,12 +80,36 @@ export class IdeaWallPresenter extends PixiPresenter {
         this.setMenuItems();
     }
 
+    closeModal = () => {
+        this.setState({showModal: false});
+    }
+
+    confirmClear = () => {
+        this.setState({
+            showModal: true,
+            modal: {
+                title: "Clear all ideas?",
+                body: "All ideas will be removed!",
+                action: () => {
+                    this.clearIdeas();
+                    this.closeModal();
+                }
+            }
+        });
+    }
+
+    toggleNames = () => {
+        this.setState((prevState) => {
+            return { showNames: !prevState.showNames};
+        }, () => this.init());
+    }
+
     setMenuItems() {
         const header = (
             <Fragment>
                 <Navbar.Form>
                     <FormGroup>
-                        <Button bsStyle="primary" onClick={this.clear}>Clear</Button>{' '}
+                        <Button bsStyle="primary" onClick={this.confirmClear}>Clear</Button>{' '}
                         <Button bsStyle="primary" onClick={this.toggleNames}>Toggle names</Button>
                     </FormGroup>
                 </Navbar.Form>
@@ -135,13 +165,27 @@ export class IdeaWallPresenter extends PixiPresenter {
         Events.remove('onresize', 'ideawall');
     }
 
-    clear = () => {
-        this.clearIdeas();
-    }
-
-    toggleNames = () => {
-        this.setState((prevState) => {
-            return { showNames: !prevState.showNames};
-        }, () => this.init());
+    render() {
+        const pixi = super.render();
+        const clearModal = (
+            <Modal show={this.state.showModal} onHide={this.closeModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>{this.state.modal.title}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p>{this.state.modal.body}</p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button bsStyle='primary' onClick={this.state.modal.action}>Ok</Button>
+                    <Button onClick={this.closeModal}>Cancel</Button>
+                </Modal.Footer>
+            </Modal>
+        );
+        return (
+            <Fragment>
+                {pixi}
+                {clearModal}
+            </Fragment>
+        )
     }
 }
