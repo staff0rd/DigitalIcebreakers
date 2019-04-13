@@ -10,11 +10,45 @@ pool:
   vmImage: 'Ubuntu-16.04'
 
 variables:
-  buildConfiguration: 'Release'
+   # Update Azure.ResourceGroupName value with Azure resource group name.
+  Azure.ResourceGroupName: '{{#toAlphaNumericString repositoryName 50}}{{/toAlphaNumericString}}'
 
-steps:
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
-- script: dotnet publish --output $(Build.ArtifactStagingDirectory)
-  displayName: dotnet publish $(Build.ArtifactStagingDirectory)
-- task: PublishBuildArtifacts@1
+  # Update Azure.ServiceConnectionId value with AzureRm service endpoint.
+  Azure.ServiceConnectionId: '{{ azureServiceConnectionId }}'
+
+  # Update Azure.Location value with Azure Location.
+  Azure.Location: 'australiaeast'
+
+  # Update ACR.Name value with ACR name. Please note ACR names should be all lower-case and alphanumeric only.
+  ACR.Name: 'stafford'
+
+  ACR.ImageName: '$(ACR.Name):$(Build.BuildId)'
+  ACR.FullName: '$(ACR.Name).azurecr.io'
+  Azure.CreateResources: 'true' # Update Azure.CreateResources to false if you have already created resources like resource group and azure container registry.
+  System.Debug: 'false'
+
+- job: BuildImage
+  displayName: Build
+  dependsOn: CreateResources
+  condition: or(succeeded(), ne(variables['Azure.CreateResources'], 'true'))
+
+  pool:
+    vmImage: 'ubuntu-latest'
+
+  steps:
+  - task: Docker@1
+    displayName: 'Build an image'
+    inputs:
+      azureSubscriptionEndpoint: '$(Azure.ServiceConnectionId)'
+      azureContainerRegistry: '$(ACR.FullName)'
+      imageName: '$(ACR.ImageName)'
+      command: build
+      dockerFile: '**/Dockerfile'
+
+  - task: Docker@1
+    displayName: 'Push an image'
+    inputs:
+      azureSubscriptionEndpoint: '$(Azure.ServiceConnectionId)'
+      azureContainerRegistry: '$(ACR.FullName)'
+      imageName: '$(ACR.ImageName)'
+      command: push
