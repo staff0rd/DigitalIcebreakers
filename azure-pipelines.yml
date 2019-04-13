@@ -22,7 +22,7 @@ variables:
   # Update ACR.Name value with ACR name. Please note ACR names should be all lower-case and alphanumeric only.
   ACR.Name: 'stafford'
 
-  ACR.ImageName: '$(ACR.Name):$(Build.BuildId)'
+  ACR.ImageName: 'digitalicebreakers:$(Build.BuildId)'
   ACR.FullName: '$(ACR.Name).azurecr.io'
   Azure.CreateResources: 'true' # Update Azure.CreateResources to false if you have already created resources like resource group and azure container registry.
   System.Debug: 'false'
