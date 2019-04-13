@@ -11,10 +11,10 @@ resources:
 
 variables:
    # Update Azure.ResourceGroupName value with Azure resource group name.
-  Azure.ResourceGroupName: '{{#toAlphaNumericString resourceGroup 50}}{{/toAlphaNumericString}}'
+  Azure.ResourceGroupName: 'digital-icebreakers'
 
   # Update Azure.ServiceConnectionId value with AzureRm service endpoint.
-  Azure.ServiceConnectionId: '{{ azureServiceConnectionId }}'
+  Azure.ServiceConnectionId: 'digital-icebreakers-service-connection'
 
   # Update Azure.Location value with Azure Location.
   Azure.Location: 'australiaeast'
