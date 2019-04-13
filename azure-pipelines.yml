@@ -38,6 +38,12 @@ jobs:
 
   steps:
   - task: Docker@1
+    displayName: Container registry login
+    inputs:
+      command: login
+      azureSubscriptionEndpoint: '$(Azure.ServiceConnectionId)'
+      azureContainerRegistry: $(ACR.FullName)'
+  - task: Docker@1
     displayName: 'Build an image'
     inputs:
       azureSubscriptionEndpoint: '$(Azure.ServiceConnectionId)'
