@@ -195,7 +195,32 @@
               "storageUri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName')), '2016-01-01').primaryEndpoints.blob)]"
             }
           }
-        }
+        },
+        "resources":[
+            {
+                "name": "install-docker",
+                "type": "extensions",
+                "location": "[resourceGroup().location]",
+                "apiVersion": "2018-10-01",
+                "dependsOn": [
+                    "[variables('vmName')]"
+                ],
+                "tags": {
+                  "displayName": "install-docker"
+                },
+                "properties": {
+                  "publisher": "Microsoft.Azure.Extensions",
+                  "type": "CustomScript",
+                  "typeHandlerVersion": "2.0",
+                  "autoUpgradeMinorVersion": true,
+                  "settings": {
+                    },
+                  "protectedSettings": {
+                    "commandToExecute": "sudo apt update && sudo apt install docker.io -y && sudo apt install docker-compose -y"
+                  }
+                }
+              }
+        ]
       }
     ],
     "outputs": {
