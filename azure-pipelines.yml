@@ -38,6 +38,11 @@ jobs:
 
   steps:
   - task: Docker@1
+    displayName: Run image
+    inputs:
+      command: run
+      imageName: hello-world
+  - task: Docker@1
     displayName: Tag image
     inputs:
       command: tag
