@@ -50,6 +50,7 @@ jobs:
     inputs:
       command: tag
       imageName: $(ACR.FullName)/$(ACR.ImageName)
+      arguments: $(ACR.FullName)/digitalicebreakers:latest
   - task: Docker@1
     displayName: 'Push an image'
     inputs:

@@ -1,7 +1,7 @@
 version: "3"
 services:
   web:
-    image: stafford.azurecr.io/digitalicebreakers:latest
+    image: "stafford.azurecr.io/digitalicebreakers:${TAG}"
     environment:
       TZ: "Australia/Sydney"
     ports:
