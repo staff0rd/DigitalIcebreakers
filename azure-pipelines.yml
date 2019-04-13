@@ -37,25 +37,33 @@ jobs:
     vmImage: 'ubuntu-16.04'
 
   steps:
-  - task: Docker@1
-    displayName: Container registry login
-    inputs:
-      command: login
-      azureSubscriptionEndpoint: '$(Azure.ServiceConnectionId)'
-      azureContainerRegistry: $(ACR.FullName)'
-  - task: Docker@1
-    displayName: 'Build an image'
-    inputs:
-      azureSubscriptionEndpoint: '$(Azure.ServiceConnectionId)'
-      azureContainerRegistry: '$(ACR.FullName)'
-      imageName: '$(ACR.ImageName)'
-      command: build
-      dockerFile: '**/Dockerfile'
-
+  # - task: Docker@1
+  #   displayName: Container registry login
+  #   inputs:
+  #     command: login
+  #     azureSubscriptionEndpoint: '$(Azure.ServiceConnectionId)'
+  #     azureContainerRegistry: $(ACR.FullName)'
+  # - task: Docker@1
+  #   displayName: 'Build an image'
+  #   inputs:
+  #     azureSubscriptionEndpoint: '$(Azure.ServiceConnectionId)'
+  #     azureContainerRegistry: '$(ACR.FullName)'
+  #     imageName: '$(ACR.ImageName)'
+  #     command: build
+  #     dockerFile: '**/Dockerfile'
+  # - task: Docker@1
+  #   displayName: 'Push an image'
+  #   inputs:
+  #     azureSubscriptionEndpoint: '$(Azure.ServiceConnectionId)'
+  #     azureContainerRegistry: '$(ACR.FullName)'
+  #     imageName: '$(ACR.ImageName)'
+  #     command: push
+  - bash: echo '$(Azure.ServiceConnectionId)'
+  - bash: echo '$(ACR.FullName)'
   - task: Docker@1
     displayName: 'Push an image'
     inputs:
       azureSubscriptionEndpoint: '$(Azure.ServiceConnectionId)'
       azureContainerRegistry: '$(ACR.FullName)'
-      imageName: '$(ACR.ImageName)'
+      imageName: 'hello-world'
       command: push
