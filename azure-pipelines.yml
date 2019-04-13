@@ -6,8 +6,8 @@
 trigger:
 - master
 
-pool:
-  vmImage: 'Ubuntu-16.04'
+resources:
+- repo: self
 
 variables:
    # Update Azure.ResourceGroupName value with Azure resource group name.
