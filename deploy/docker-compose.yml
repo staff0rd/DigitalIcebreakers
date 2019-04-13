@@ -1,0 +1,8 @@
+version: "3"
+services:
+  web:
+    image: stafford.azurecr.io/digitalicebreakers:latest
+    environment:
+      TZ: "Australia/Sydney"
+    ports:
+      - 80:80

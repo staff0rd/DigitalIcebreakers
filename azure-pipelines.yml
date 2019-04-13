@@ -46,6 +46,13 @@ jobs:
       command: build
       dockerFile: '**/Dockerfile'
   - task: Docker@1
+    displayName: Tag latest
+    inputs:
+      command: tag
+      azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
+      azureContainerRegistry: $(azureContainerRegistry)
+      imageName: $(ACR.FullName)/$(ACR.ImageName)
+  - task: Docker@1
     displayName: 'Push an image'
     inputs:
       azureSubscriptionEndpoint: '$(Azure.ServiceConnectionId)'
