@@ -38,43 +38,24 @@ jobs:
 
   steps:
   - task: Docker@1
-    displayName: Run image
+    displayName: Container registry login
     inputs:
-      command: run
-      imageName: hello-world
+      command: login
+      azureSubscriptionEndpoint: '$(Azure.ServiceConnectionId)'
+      azureContainerRegistry: $(ACR.FullName)'
   - task: Docker@1
-    displayName: Tag image
+    displayName: 'Build an image'
     inputs:
-      command: tag
-      imageName: hello-world
-      arguments: '$(ACR.FullName)/hello-world'
-  # - task: Docker@1
-  #   displayName: Container registry login
-  #   inputs:
-  #     command: login
-  #     azureSubscriptionEndpoint: '$(Azure.ServiceConnectionId)'
-  #     azureContainerRegistry: $(ACR.FullName)'
-  # - task: Docker@1
-  #   displayName: 'Build an image'
-  #   inputs:
-  #     azureSubscriptionEndpoint: '$(Azure.ServiceConnectionId)'
-  #     azureContainerRegistry: '$(ACR.FullName)'
-  #     imageName: '$(ACR.ImageName)'
-  #     command: build
-  #     dockerFile: '**/Dockerfile'
-  # - task: Docker@1
-  #   displayName: 'Push an image'
-  #   inputs:
-  #     azureSubscriptionEndpoint: '$(Azure.ServiceConnectionId)'
-  #     azureContainerRegistry: '$(ACR.FullName)'
-  #     imageName: '$(ACR.ImageName)'
-  #     command: push
-  - bash: echo '$(Azure.ServiceConnectionId)'
-  - bash: echo '$(ACR.FullName)'
+      azureSubscriptionEndpoint: '$(Azure.ServiceConnectionId)'
+      azureContainerRegistry: '$(ACR.FullName)'
+      imageName: '$(ACR.ImageName)'
+      command: build
+      dockerFile: '**/Dockerfile'
   - task: Docker@1
     displayName: 'Push an image'
     inputs:
       azureSubscriptionEndpoint: '$(Azure.ServiceConnectionId)'
       azureContainerRegistry: '$(ACR.FullName)'
-      imageName: 'hello-world'
+      imageName: '$(ACR.ImageName)'
       command: push
+  
