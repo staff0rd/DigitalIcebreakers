@@ -27,6 +27,7 @@ variables:
   Azure.CreateResources: 'true' # Update Azure.CreateResources to false if you have already created resources like resource group and azure container registry.
   System.Debug: 'false'
 
+jobs:
 - job: BuildImage
   displayName: Build
   dependsOn: CreateResources
