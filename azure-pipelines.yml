@@ -11,7 +11,7 @@ resources:
 
 variables:
    # Update Azure.ResourceGroupName value with Azure resource group name.
-  Azure.ResourceGroupName: '{{#toAlphaNumericString repositoryName 50}}{{/toAlphaNumericString}}'
+  Azure.ResourceGroupName: '{{#toAlphaNumericString resourceGroup 50}}{{/toAlphaNumericString}}'
 
   # Update Azure.ServiceConnectionId value with AzureRm service endpoint.
   Azure.ServiceConnectionId: '{{ azureServiceConnectionId }}'
@@ -30,8 +30,8 @@ variables:
 jobs:
 - job: BuildImage
   displayName: Build
-  dependsOn: CreateResources
-  condition: or(succeeded(), ne(variables['Azure.CreateResources'], 'true'))
+#  dependsOn: CreateResources
+#  condition: or(succeeded(), ne(variables['Azure.CreateResources'], 'true'))
 
   pool:
     vmImage: 'ubuntu-16.04'
