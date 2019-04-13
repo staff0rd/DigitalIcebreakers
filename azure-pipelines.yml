@@ -38,11 +38,11 @@ jobs:
 
   steps:
     - task: Docker@1
-    displayName: Tag image
-    inputs:
-      command: tag
-      imageName: hello-world
-      arguments: '$(ACR.FullName)/hello-world'
+      displayName: Tag image
+      inputs:
+        command: tag
+        imageName: hello-world
+        arguments: '$(ACR.FullName)/hello-world'
   # - task: Docker@1
   #   displayName: Container registry login
   #   inputs:
