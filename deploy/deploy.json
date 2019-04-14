@@ -197,7 +197,6 @@
             "osDisk": {
               "name": "digital-icebreakers-vm-disk",
               "createOption": "FromImage",
-              "diskSizeGB": 10,
               "managedDisk": {
                 "storageAccountType": "Standard_LRS"
               }
