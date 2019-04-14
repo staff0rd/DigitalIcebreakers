@@ -16,22 +16,19 @@ echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO 
 sudo apt-get update
 sudo apt-get install azure-cli
 
-# switch to admin user
 sudo -s -u stafford
 
 # Installing vsts-agent
-mkdir ~/vsts-agent
-cd ~/vsts-agent
+mkdir /home/stafford/vsts-agent
+cd /home/stafford/vsts-agent
 curl -fkSL -o vstsagent.tar.gz https://vstsagentpackage.azureedge.net/agent/2.150.0/vsts-agent-linux-x64-2.150.0.tar.gz
-tar -zxvf vstsagent.tar.gz
+tar --overwrite -zxvf vstsagent.tar.gz
 
 echo install vsts-agent dependencies
 sudo ./bin/installdependencies.sh
 
 echo Configuring vsts-agent as ${USER}
 ./config.sh --unattended --deploymentgroup --deploymentgroupname "default" --addDeploymentGroupTags --replace --deploymentGroupTags signalr --acceptteeeula --agent $HOSTNAME --url https://dev.azure.com/staffordwilliams/ --work _work --projectname 'digitalicebreakers' --auth PAT --token ohobqpoqnkq23vgot7otqiyygqyubevh6lwpcvnymfw27cshb6ia --runasservice
-
-exit
 
 # remove existing vsts-agent
 if [ -e /etc/systemd/system/vsts.agent.staffordwilliams.digital-icebreakers-vm.service ]; 
@@ -45,5 +42,5 @@ sudo ./svc.sh install;
 sudo ./svc.sh start; 
 
 # acr login
-az login --identity
+sudo az login --identity
 sudo az acr login --name stafford
