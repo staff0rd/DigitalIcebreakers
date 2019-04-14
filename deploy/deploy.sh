@@ -1,22 +1,31 @@
-sudo apt update
-sudo apt install docker.io -y 
-sudo apt install docker-compose -y
+## this script runs as root
+
+echo user is $USER
+
+apt update
+apt install docker.io -y 
+apt install docker-compose -y
 
 # let $USER use docker without sudo
-sudo gpasswd -a stafford docker
+gpasswd -a stafford docker
 
 # install microsoft signing key
-curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg > /dev/null
+curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg > /dev/null
 
 # add azure cli software repo
 AZ_REPO=$(lsb_release -cs)
-echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
+echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | tee /etc/apt/sources.list.d/azure-cli.list
 
 # install azure cli
-sudo apt-get update
-sudo apt-get install azure-cli
+apt-get update
+apt-get install azure-cli
 
-sudo -s -u stafford
+echo user is $USER
+
+echo switching to user stafford
+-s -u stafford
+
+echo user is $USER
 
 # Installing vsts-agent
 mkdir /home/stafford/vsts-agent
@@ -25,22 +34,19 @@ curl -fkSL -o vstsagent.tar.gz https://vstsagentpackage.azureedge.net/agent/2.15
 tar --overwrite -zxvf vstsagent.tar.gz
 
 echo install vsts-agent dependencies
-sudo ./bin/installdependencies.sh
+./bin/installdependencies.sh
 
-echo Configuring vsts-agent as ${USER}
-./config.sh --unattended --deploymentgroup --deploymentgroupname "default" --addDeploymentGroupTags --replace --deploymentGroupTags signalr --acceptteeeula --agent $HOSTNAME --url https://dev.azure.com/staffordwilliams/ --work _work --projectname 'digitalicebreakers' --auth PAT --token ohobqpoqnkq23vgot7otqiyygqyubevh6lwpcvnymfw27cshb6ia --runasservice
+echo Configuring vsts-agent as $USER
+chown stafford -R ./
+sudo -u stafford ./config.sh --unattended --deploymentgroup --deploymentgroupname "default" --addDeploymentGroupTags --replace --deploymentGroupTags signalr --acceptteeeula --agent $HOSTNAME --url https://dev.azure.com/staffordwilliams/ --work _work --projectname 'digitalicebreakers' --auth PAT --token ohobqpoqnkq23vgot7otqiyygqyubevh6lwpcvnymfw27cshb6ia --runasservice
 
 # remove existing vsts-agent
 if [ -e /etc/systemd/system/vsts.agent.staffordwilliams.digital-icebreakers-vm.service ]; 
 then
-    sudo rm -rf /etc/systemd/system/vsts.agent.staffordwilliams.digital-icebreakers-vm.service
+    rm -rf /etc/systemd/system/vsts.agent.staffordwilliams.digital-icebreakers-vm.service
 fi
 
 # start agent
 echo Starting vsts-agent
-sudo ./svc.sh install;
-sudo ./svc.sh start; 
-
-# acr login
-sudo az login --identity
-sudo az acr login --name stafford
+./svc.sh install;
+./svc.sh start; 
