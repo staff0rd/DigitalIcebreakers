@@ -4,6 +4,7 @@ services:
     image: "stafford.azurecr.io/digitalicebreakers:${TAG}"
     environment:
       TZ: "Australia/Sydney"
+      APPINSIGHTS_INSTRUMENTATIONKEY: "8a86343c-b219-4f26-a94e-836f375fd6fe"
     ports:
       - 80:80
     restart: always
