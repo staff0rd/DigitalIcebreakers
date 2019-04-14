@@ -22,6 +22,7 @@
       },
       "adminPasswordOrKey": {
         "type": "securestring",
+        "defaultValue": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCzX2qnhiN6cO/uDswlceibcwBzUFUIXftykpw151+hCJW+u/grKYa2BdhDkwQxmrtimAtWbQXzWbuzfIPt8I75sDcUhOVmCZeGHVvqJTv5I/3YISGtCosY9g68vZD6cqzlQ5ajZjk25+ECn33863SrDfIXpEUXlk7WUslrCoRECTX2SRJeFd5wPm2ACyXwxE9cyB9pMk84LhbjGqx25yyhx4zg0bEF+FdlJ3VC+ckHSBgWhkkb6W09a1s7buwrh/kzGTRuzUi3zEuGXmDIqfj9W9vM4NPuzLBeDLCgrPkkpwJmtVxxs7tlRSkEEtMZHhbgGe8ZD5TaEkD7quGKo4rMVBzNLxYOD7bD29TQ5saP7yET0+9j0bXBJoLSAqVXOhzGebvih8f2/lXm8S9W1nejsvstuCwDPxpEjQoaX2B9t0ShZCid+s8UYo7vv6Fcgd59Zinu/8fl3Muc3SuADY6LUYmZsYagJo1wS2UvFa5AMKaz17T2wYeQoKLgtBND+oOB/D8az0/ykudbh4YJrjkRfevP982iiiWTF5TzpsZ1S+BuQ35Jv2f66M8fGCbtRiAHryUAAdE/ezL0XoW+pwYMSNby8jb1w12oyzS3fmJnmkVPnuoF3N7BCQ47lEWSC5ybTmb6R8l3KHrdJcuB/GgUpkUsM1kfSLeVvtrF6CaYcw== stafford.williams@gmail.com",
         "metadata": {
           "description": "SSH Key or password for the Virtual Machine. SSH key is recommended."
         }
