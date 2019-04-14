@@ -188,7 +188,7 @@
               "version": "latest"
             },
             "osDisk": {
-              "name": "digital-icebreakers-disk",
+              "name": "digital-icebreakers-vm-disk",
               "createOption": "FromImage"
             }
           },
