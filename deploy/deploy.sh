@@ -3,7 +3,7 @@ sudo apt install docker.io -y
 sudo apt install docker-compose -y
 
 # let $USER use docker without sudo
-sudo gpasswd -a $USER docker
+sudo gpasswd -a stafford docker
 
 # install microsoft signing key
 curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg > /dev/null
