@@ -56,7 +56,7 @@
       }
     },
     "variables": {
-      "storageAccountName": "digital-icebreakers-storage",
+      "storageAccountName": "digitalicebreakersstorage",
       "imagePublisher": "Canonical",
       "imageOffer": "UbuntuServer",
       "nicName": "digital-icebreakers-nic",
