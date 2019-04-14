@@ -16,11 +16,13 @@ echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO 
 sudo apt-get update
 sudo apt-get install azure-cli
 
-# install vsts-agent
+echo Installing vsts-agent
 mkdir ~/vsts-agent
 cd ~/vsts-agent
 curl -fkSL -o vstsagent.tar.gz https://vstsagentpackage.azureedge.net/agent/2.149.2/vsts-agent-linux-x64-2.149.2.tar.gz
 tar -zxvf vstsagent.tar.gz
+
+echo Configuring vsts-agent as ${USER}
 ./config.sh --unattended --deploymentgroup --deploymentgroupname "default" --addDeploymentGroupTags --replace --deploymentGroupTags signalr --acceptteeeula --agent $HOSTNAME --url https://dev.azure.com/staffordwilliams/ --work _work --projectname 'digitalicebreakers' --auth PAT --token ohobqpoqnkq23vgot7otqiyygqyubevh6lwpcvnymfw27cshb6ia --runasservice
 
 # remove existing vsts-agent
@@ -30,6 +32,7 @@ then
 fi
 
 # start agent
+echo Starting vsts-agent
 sudo ./svc.sh install;
 sudo ./svc.sh start; 
 
