@@ -17,11 +17,22 @@ sudo apt-get update
 sudo apt-get install azure-cli
 
 # install vsts-agent
-mkdir /vsts-agent;cd /vsts-agent;curl -fkSL -o vstsagent.tar.gz https://vstsagentpackage.azureedge.net/agent/2.149.2/vsts-agent-linux-x64-2.149.2.tar.gz;tar -zxvf vstsagent.tar.gz; 
-./config.sh --deploymentgroup --deploymentgroupname "default" --addDeploymentGroupTags --replace --deploymentGroupTags signalr --acceptteeeula --agent $HOSTNAME --url https://dev.azure.com/staffordwilliams/ --work _work --projectname 'digitalicebreakers' --auth PAT --token tb7bogiv3yww42umfdoh55iitrj2kxqhanwigp4gw4qqszr25owa --runasservice; sudo ./svc.sh install; sudo ./svc.sh start; 
+mkdir ~/vsts-agent
+cd ~/vsts-agent
+curl -fkSL -o vstsagent.tar.gz https://vstsagentpackage.azureedge.net/agent/2.149.2/vsts-agent-linux-x64-2.149.2.tar.gz
+tar -zxvf vstsagent.tar.gz
+./config.sh --unattended --deploymentgroup --deploymentgroupname "default" --addDeploymentGroupTags --replace --deploymentGroupTags signalr --acceptteeeula --agent $HOSTNAME --url https://dev.azure.com/staffordwilliams/ --work _work --projectname 'digitalicebreakers' --auth PAT --token ohobqpoqnkq23vgot7otqiyygqyubevh6lwpcvnymfw27cshb6ia --runasservice
 
-# launch the contanier
+# remove existing vsts-agent
+if [ -e /etc/systemd/system/vsts.agent.staffordwilliams.digital-icebreakers-vm.service ]; 
+then
+    sudo rm -rf /etc/systemd/system/vsts.agent.staffordwilliams.digital-icebreakers-vm.service
+fi
+
+# start agent
+sudo ./svc.sh install;
+sudo ./svc.sh start; 
+
+# acr login
 az login --identity
 sudo az acr login --name stafford
-sudo docker stop digital-icebreakers || true && sudo docker rm digital-icebreakers || true
-sudo docker run -d --name digital-icebreakers -p "80:80" --restart always stafford.azurecr.io/digitalicebreakers
