@@ -56,7 +56,7 @@
       }
     },
     "variables": {
-      "storageAccountName": "[concat(uniquestring(resourceGroup().id), 'salinuxvm')]",
+      "storageAccountName": "digital-icebreakers-storage",
       "imagePublisher": "Canonical",
       "imageOffer": "UbuntuServer",
       "nicName": "digital-icebreakers-nic",
