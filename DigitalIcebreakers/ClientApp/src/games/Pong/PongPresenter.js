@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Navbar } from 'react-bootstrap';
+import { Navbar, Button } from 'react-bootstrap';
 import { PongColors as Colors } from './PongColors';
 import * as PIXI from "pixi.js";
 import ReactAnimationFrame from 'react-animation-frame';
@@ -27,8 +27,6 @@ class PongPresenter extends PixiPresenter {
     constructor(props, context) {
         super(Colors.Background, props, context);
 
-        this.blueScore = new PIXI.Text("0", { fill: Colors.LeftPaddleUp, fontSize: this.app.renderer.width * 2})
-
         this.state = {
             left: 0,
             right: 0,
@@ -38,7 +36,8 @@ class PongPresenter extends PixiPresenter {
             ballDx: defaultBallSpeed,
             ballDy: 0,
             ballSpeed: defaultBallSpeed,
-            gameOver: false
+            gameOver: false,
+            score: [0, 0]
         };
     }
 
@@ -50,6 +49,9 @@ class PongPresenter extends PixiPresenter {
                     <Stepper label="Paddle width" step={-5} value={this.state.paddleWidth} onChange={this.updatePaddleWidth} />
                     <Stepper label="Paddle speed" step={25} value={this.state.paddleSpeed} onChange={this.updatePaddleSpeed} />
                     <Stepper label="Ball speed" step={1} value={this.state.ballSpeed} onChange={this.updateBallSpeed} />
+                </Navbar.Form>
+                <Navbar.Form>
+                    <Button bsStyle="primary" onClick={this.reset}>Reset</Button>
                 </Navbar.Form>
             </Fragment>
         );
@@ -100,6 +102,7 @@ class PongPresenter extends PixiPresenter {
             if (this.paddleIntersection(this.leftPaddle))
                 this.paddleHit(this.leftPaddle, 0);
             else {
+                this.setState((prevState) => { score: [prevState.score[0], prevState.score[1]++]}, this.updateScore);
                 console.log("death to blue");
                 this.init();
             }
@@ -107,6 +110,7 @@ class PongPresenter extends PixiPresenter {
             if (this.paddleIntersection(this.rightPaddle)) {
                 this.paddleHit(this.rightPaddle, -1);
             } else {
+                this.setState((prevState) => { score: [prevState.score[0]++, prevState.score[1]]}, this.updateScore);
                 console.log("death to red");
                 this.init();
             }
@@ -139,14 +143,7 @@ class PongPresenter extends PixiPresenter {
         const paddleWidth = element.clientWidth/(this.state.paddleWidth || defaultWidth);
         const paddleHeight = element.clientHeight/(this.state.paddleHeight || defaultHeight);
 
-        if (this.leftPaddle)
-            this.app.stage.removeChild(this.leftPaddle);
-
-        if (this.rightPaddle)
-            this.app.stage.removeChild(this.rightPaddle);
-
-        if (this.ball)
-            this.app.stage.removeChild(this.ball);
+        this.app.stage.removeChildren();
 
         this.leftPaddle = this.getBlock(Colors.LeftPaddleUp, paddleWidth, paddleHeight);
         this.rightPaddle = this.getBlock(Colors.RightPaddleUp, paddleWidth, paddleHeight);
@@ -156,11 +153,20 @@ class PongPresenter extends PixiPresenter {
         this.rightPaddle.position.set(element.clientWidth - paddleWidth, element.clientHeight/2);
         this.ball.position.set(element.clientWidth/2, element.clientHeight/2);
 
-        this.app.stage.addChild(this.leftPaddle, this.rightPaddle, this.ball);
+        this.score = new PIXI.Text("", { fontSize: this.app.renderer.width / 15, fill: Colors.Score});
+        this.updateScore();
+
+        this.app.stage.addChild(this.score, this.leftPaddle, this.rightPaddle, this.ball);
 
         this.setSpeed();
 
         this.setMenuItems();
+    }
+
+    updateScore() {
+        this.score.text = `${this.state.score[0]}-${this.state.score[1]}`;
+        this.score.anchor.set(.5, 0);
+        this.score.position.set(this.app.renderer.width / 2, 0);
     }
 
     setSpeed() {
@@ -170,9 +176,6 @@ class PongPresenter extends PixiPresenter {
 
         this.state.ballDx = this.state.ballSpeed * Math.sin(getRadians(angle));
         this.state.ballDy = this.state.ballSpeed * Math.cos(getRadians(angle));
-
-        //const speed = Math.sqrt(Math.pow(this.state.ballDx, 2) + Math.pow(this.state.ballDy, 2));
-        //console.log(this.state.ballDx, this.state.ballDy, `This is a speed of ${speed}, angle: ${angle}`);
     }
 
     getBlock(color, width, height) {
@@ -197,6 +200,10 @@ class PongPresenter extends PixiPresenter {
 
     updateBallSpeed = (value)  => {
         this.setState({ballSpeed: value}, this.init);
+    }
+
+    reset = ()  => {
+        this.setState({score: [0, 0]}, this.init);
     }
  }
 
