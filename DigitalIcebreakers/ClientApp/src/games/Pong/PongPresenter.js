@@ -51,7 +51,7 @@ class PongPresenter extends PixiPresenter {
                     <Stepper label="Ball speed" step={1} value={this.state.ballSpeed} onChange={this.updateBallSpeed} />
                 </Navbar.Form>
                 <Navbar.Form>
-                    <Button bsStyle="primary" onClick={this.reset}>Reset</Button>
+                    <Button bsStyle="primary" onClick={this.resetScore}>Reset score</Button>
                 </Navbar.Form>
             </Fragment>
         );
@@ -110,7 +110,7 @@ class PongPresenter extends PixiPresenter {
             if (this.paddleIntersection(this.rightPaddle)) {
                 this.paddleHit(this.rightPaddle, -1);
             } else {
-                this.setState((prevState) => { score: [prevState.score[0]++, prevState.score[1]]}, this.updateScore);
+                this.setState((prevState) => { score: [prevState.score[0]++, prevState.score[1]] }, this.updateScore);
                 console.log("death to red");
                 this.init();
             }
@@ -202,7 +202,7 @@ class PongPresenter extends PixiPresenter {
         this.setState({ballSpeed: value}, this.init);
     }
 
-    reset = ()  => {
+    resetScore = ()  => {
         this.setState({score: [0, 0]}, this.init);
     }
  }
