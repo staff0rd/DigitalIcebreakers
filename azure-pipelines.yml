@@ -56,6 +56,6 @@ jobs:
     inputs:
       azureSubscriptionEndpoint: '$(Azure.ServiceConnectionId)'
       azureContainerRegistry: '$(ACR.FullName)'
-      imageName: '$(ACR.ImageName)'
+      imageName: $(ACR.FullName)/digitalicebreakers:latest
       command: push
   
