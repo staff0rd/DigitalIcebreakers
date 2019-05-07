@@ -1,6 +1,8 @@
 import React from 'react';
 import { DoggosVsKittehsClient } from './DoggosVsKittehs/DoggosVsKittehsClient';
 import { DoggosVsKittehsPresenter } from './DoggosVsKittehs/DoggosVsKittehsPresenter';
+import { BroadcastClient } from './Broadcast/BroadcastClient';
+import { BroadcastPresenter } from './Broadcast/BroadcastPresenter';
 import { YesNoMaybePresenter } from './YesNoMaybe/YesNoMaybePresenter';
 import { YesNoMaybeClient } from './YesNoMaybe/YesNoMaybeClient';
 import { IdeaWallClient } from './IdeaWall/IdeaWallClient';
@@ -39,6 +41,13 @@ export default function (props) {
         client: <IdeaWallClient {...props} />,
         presenter: <IdeaWallPresenter {...props} />,
         title: "Idea Wall",
+        fullscreen: true,
+        isGame: false
+    }, {
+        name: "broadcast",
+        client: <BroadcastClient {...props} />,
+        presenter: <BroadcastPresenter {...props} />,
+        title: "Broadcast",
         fullscreen: true,
         isGame: false
     }];

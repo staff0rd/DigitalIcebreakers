@@ -153,6 +153,7 @@ namespace DigitalIcebreakers.Hubs
                 case "buzzer": return new Buzzer();
                 case "pong": return new Pong();
                 case "ideawall": return new IdeaWall();
+                case "broadcast": return new Broadcast();
                 default: throw new ArgumentOutOfRangeException("Unknown game");
             }
         }
