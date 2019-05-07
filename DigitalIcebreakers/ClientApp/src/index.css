@@ -19,4 +19,9 @@ body {
     min-height: 100vh;
 }
 
-
+.vcenter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%
+}

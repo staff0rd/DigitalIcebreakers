@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button  } from 'react-bootstrap';
+import { Button, Glyphicon  } from 'react-bootstrap';
 import { BaseGame } from '../BaseGame';
 
 export class BroadcastClient extends BaseGame {
@@ -16,17 +16,27 @@ export class BroadcastClient extends BaseGame {
     componentDidMount() {
         super.componentDidMount();
         this.props.connection.on("gameUpdate", (result) => {
+            console.log(result);
             this.setState({
                 value: result
             }, this.init);
         });
     }
 
+    ding = () => {
+        this.props.connection.invoke("gameMessage", 1);        
+    }
+
     render() {
-        const style = { height: '100px', width: '300px' };
+        const style = { height: '100px', width: '150px' };
         return (
-            <div>
-                {this.state.value}
+            <div className="vcenter">
+                <div style={{textAlign: "center"}}>
+                    <h1>{this.state.value}</h1>
+                    <Button bsStyle="primary" bsSize="large" style={style} onClick={this.ding}>
+                        <Glyphicon glyph="bell" />
+                    </Button>
+                </div>
             </div>
         );
     }

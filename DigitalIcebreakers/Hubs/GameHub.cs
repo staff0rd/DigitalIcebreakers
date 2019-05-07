@@ -183,7 +183,10 @@ namespace DigitalIcebreakers.Hubs
 
         public Player GetPlayerByConnectionId()
         {
-            return _lobbys.SelectMany(p => p.Players).SingleOrDefault(p => p.ConnectionId == Context.ConnectionId);
+            var player = _lobbys.SelectMany(p => p.Players).SingleOrDefault(p => p.ConnectionId == Context.ConnectionId);
+            if (player == null)
+                _logger.LogWarning("Player not found");
+            return player;
         }
 
         public async Task ConnectToLobby(User user, Guid lobbyId)
@@ -208,6 +211,10 @@ namespace DigitalIcebreakers.Hubs
                 lobby.Players.Add(player);
                 await Connect(player, lobby);
             }
+        }
+
+        public async override Task OnConnectedAsync() {
+
         }
 
         public async override Task OnDisconnectedAsync(Exception exception)

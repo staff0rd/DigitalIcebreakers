@@ -12,6 +12,8 @@ public class Broadcast : IGame
         var admin = hub.GetAdmin();
         if (hub.GetPlayerByConnectionId() == admin) {
             await hub.Clients.All.SendAsync("gameUpdate", payload);
+        } else {
+            await hub.Clients.Client(hub.GetAdmin().ConnectionId).SendAsync("gameUpdate", "d");
         }
     }
 

@@ -10,33 +10,40 @@ export class BroadcastPresenter extends BaseGame {
         
         this.state = {
             count: 0,
-            value: undefined
+            value: ""
         };
     }
 
     componentDidMount() {
         super.componentDidMount();
         this.props.connection.on("gameUpdate", (result) => {
-            this.setState(prevState => {
-                count: prevState.count+1
-            });
+            if (result === "d") {
+                this.setState(prevState => {
+                    return {count: prevState.count+1};
+                });
+            }
         });
     }
 
-    updateValue = (value) => {
-        debugger;
-        this.setState({value: value}, () => {
-            debugger;
-            this.props.connection.invoke("gameMessage", value);
+    updateValue = (e) => {
+        this.setState({value: e.target.value}, () => {
+        this.props.connection.invoke("gameMessage", this.state.value);
         });
     }
 
     render() {
         return (
-            <FormGroup>
-                <ControlLabel>Broadcast this</ControlLabel><br />
-                <FormControl type="text" value={this.state.value} onChange={this.updateValue} />
-            </FormGroup>
+            <div className="vcenter">
+                <div>
+                    <h1 style={{fontSize:"100px"}}>
+                        Dings: {this.state.count}
+                    </h1>
+                    <FormGroup>
+                        <ControlLabel>Broadcast this</ControlLabel><br />
+                        <FormControl type="text" value={this.state.value} onChange={this.updateValue} />
+                    </FormGroup>
+                </div>
+            </div>
         );
     }
 }
