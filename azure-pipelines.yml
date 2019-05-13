@@ -39,11 +39,11 @@ jobs:
 
   steps:
   - task: FileTransform@1
-  displayName: 'File Transform: version.json'
-  inputs:
-    folderPath: $(System.DefaultWorkingDirectory)/DigitalIcebreakers/ClientApp/src
-    fileType: json
-    targetFiles: 'version.json'
+    displayName: 'File Transform: version.json'
+    inputs:
+      folderPath: $(System.DefaultWorkingDirectory)/DigitalIcebreakers/ClientApp/src
+      fileType: json
+      targetFiles: 'version.json'
   - task: Docker@1
     displayName: 'Build an image'
     inputs:
