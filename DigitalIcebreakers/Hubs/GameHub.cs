@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http.Connections.Features;
 using Microsoft.AspNetCore.Http.Connections.Internal;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace DigitalIcebreakers.Hubs
 {
@@ -18,11 +19,13 @@ namespace DigitalIcebreakers.Hubs
         static int lobbyNumber = 0;
         private ILogger<GameHub> _logger;
         private List<Lobby> _lobbys;
+        private AppSettings _settings;
 
-        public GameHub(ILogger<GameHub> logger, List<Lobby> lobbys)
+        public GameHub(ILogger<GameHub> logger, List<Lobby> lobbys, IOptions<AppSettings> settings)
         {
             _lobbys = lobbys;
             _logger = logger;
+            _settings = settings.Value;
         }
 
         public async Task StopGame()

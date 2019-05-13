@@ -34,6 +34,8 @@ namespace DigitalIcebreakers
                 configuration.RootPath = "ClientApp/build";
             });
 
+            services.Configure<AppSettings>(Configuration);
+
             services.AddSingleton<List<Lobby>>();
         }
 
