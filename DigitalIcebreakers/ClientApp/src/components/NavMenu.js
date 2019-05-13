@@ -121,7 +121,7 @@ export class NavMenu extends Component {
                         {this.props.lobbyId && this.props.isAdmin ? startGame : ""}
                         {this.props.lobbyId && this.props.isAdmin ? closeLobby : ""}
                         <NavItem disabled={true}>
-                            {this.getConnectionIcon()} Connection status
+                            {this.getConnectionIcon()} Connection - v{this.props.version}
                         </NavItem>
                     </Nav>
                 </Navbar.Collapse>

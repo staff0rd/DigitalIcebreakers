@@ -14,6 +14,7 @@ import { UserContext } from './contexts/UserContext';
 import history from './history';
 import ReactAI from 'react-appinsights';
 import { Events } from './Events';
+import * as Version from './version';
 
 const connectionRetrySeconds = [0, 1, 4, 9, 16, 25, 36, 49];
 
@@ -228,7 +229,7 @@ export default class App extends Component {
 
         return (
             <UserContext.Provider value={this.state.user}>
-                <Layout menuItems={this.state.menuItems} currentGame={this.state.currentGame} lobbyId={this.state.lobby.id} isAdmin={this.state.lobby.isAdmin} connected={this.state.connected}>
+                <Layout menuItems={this.state.menuItems} currentGame={this.state.currentGame} lobbyId={this.state.lobby.id} isAdmin={this.state.lobby.isAdmin} connected={this.state.connected} version={Version.version}>
                     <Route exact path='/' render={() => <Lobby id={this.state.lobby.id} players={this.state.players} name={this.state.lobby.name} /> } />
                     <Route path='/createLobby' render={() => <CreateLobby createLobby={this.createLobby} /> } />
                     <Route path='/closeLobby' render={closeLobby }  />
