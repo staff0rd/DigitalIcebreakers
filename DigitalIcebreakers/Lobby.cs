@@ -14,9 +14,9 @@ namespace DigitalIcebreakers
 
         public string Name { get; set; }
 
-        public string Label => $"{Name} (#{Number}, {Players.Count(p => p.IsConnected)} players)";
-
         internal Player Admin => Players.SingleOrDefault(p => p.IsAdmin);
+
+        public int PlayerCount => Players.Count(p => p.IsConnected && !p.IsAdmin);
 
         public IGame CurrentGame { get; set; }
         

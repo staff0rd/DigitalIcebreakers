@@ -66,7 +66,7 @@ namespace DigitalIcebreakers.Hubs
 
             _lobbys.Add(lobby);
 
-            _logger.LogInformation($"Created lobby {lobby} for {id}");
+            _logger.LogInformation("Created lobby {lobby} for {id}", lobby, id);
 
             await Connect(user);
         }
@@ -81,7 +81,7 @@ namespace DigitalIcebreakers.Hubs
         {
             if (lobby != null)
             {
-                _logger.LogInformation($"Lobby {lobby.Label} has been closed");
+                _logger.LogInformation("Lobby {lobbyName} (#{lobbyNumber}, {lobbyPlayers} players) has been {action}", lobby.Name, lobby.Number, lobby.PlayerCount, "closed");
                 _lobbys.Remove(lobby);
                 foreach (var player in lobby.Players)
                 {
@@ -106,7 +106,7 @@ namespace DigitalIcebreakers.Hubs
             player.IsConnected = true;
             if (lobby != null)
             {
-                _logger.LogInformation($"{player} re-connected to lobby {lobby.Label}");
+                _logger.LogInformation("{player} {action} to lobby {lobbyName} (#{lobbyNumber}, {lobbyPlayers} players)", player, "re-connected", lobby.Name, lobby.Number, lobby.PlayerCount);
                 var players = lobby.Players.Where(p => !p.IsAdmin).Select(p => new User { Id = p.ExternalId, Name = p.Name }).ToList();
                 await Clients.Caller.SendAsync("Reconnect", new Reconnect { PlayerId = player.Id, PlayerName = player.Name, LobbyName = lobby.Name, LobbyId = lobby.Id, IsAdmin = player.IsAdmin, Players = players, CurrentGame = lobby.CurrentGame?.Name });
                 if (!player.IsAdmin)
@@ -116,7 +116,7 @@ namespace DigitalIcebreakers.Hubs
                 }
             }
             else {
-                _logger.LogInformation($"{player} connected ({this.GetTransportType()})");
+                _logger.LogInformation("{player} {action} ({transportType})", player, "connected", this.GetTransportType());
                 await Clients.Caller.SendAsync("Connected");
             }
         }
@@ -137,7 +137,7 @@ namespace DigitalIcebreakers.Hubs
 
             if (lobby != null && player.IsAdmin)
             {
-                _logger.LogInformation($"Lobby {lobby.Label} is now playing {name}");
+                _logger.LogInformation("Lobby {lobbyName} (#{lobbyNumber}, {lobbyPlayers} players) has {action} {game}", lobby.Name, lobby.Number, lobby.PlayerCount, "started", name);
                 lobby.CurrentGame = GetGame(name);
                 Clients.Clients(lobby.Players.Select(p => p.ConnectionId).ToList()).SendAsync("newgame", name);
                 lobby.CurrentGame.Start(this);
@@ -195,7 +195,7 @@ namespace DigitalIcebreakers.Hubs
             var existingLobby = GetLobby();
             if (existingLobby != null)
             {
-                _logger.LogInformation($"{player} has left lobby {existingLobby.Label}");
+                _logger.LogInformation("{player} has left {lobbyName} (#{lobbyNumber}, {lobbyPlayers} players)", player, existingLobby.Name, existingLobby.Number, existingLobby.PlayerCount);
                 await Clients.Client(existingLobby.Admin.ConnectionId).SendAsync("left", new User { Id = player.ExternalId, Name = player.Name });
                 existingLobby.Players.Remove(player);
             }
@@ -207,14 +207,10 @@ namespace DigitalIcebreakers.Hubs
             }
             else
             {
-                _logger.LogInformation($"{player} has joined lobby {lobby.Label}");
+                _logger.LogInformation("{player} has joined {lobbyName} (#{lobbyNumber}, {lobbyPlayers} players)", player, lobby.Name, lobby.Number, lobby.PlayerCount);
                 lobby.Players.Add(player);
                 await Connect(player, lobby);
             }
-        }
-
-        public async override Task OnConnectedAsync() {
-
         }
 
         public async override Task OnDisconnectedAsync(Exception exception)
@@ -223,7 +219,7 @@ namespace DigitalIcebreakers.Hubs
             var player = GetPlayerByConnectionId();
             if (player != null)
             {          
-                _logger.LogInformation($"{player} disconnected");
+                _logger.LogInformation("{player} {action}", player, "disconnected");
                 player.IsConnected = false;
                 var admin = GetAdmin();
                 if (admin != null)
