@@ -25,7 +25,7 @@ namespace DigitalIcebreakers.Hubs
         {
             _lobbys = lobbys;
             _logger = logger;
-            _settings = settings.Value;
+            _settings = settings?.Value;
         }
 
         public async Task StopGame()
