@@ -53,7 +53,8 @@ export default class App extends Component {
                 isAdmin: false
             },
             connected: 0,
-            menuItems: []
+            menuItems: [],
+            players: []
         };
 
         ReactAI.setAppContext({ userId: this.user.id });
