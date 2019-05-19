@@ -102,7 +102,7 @@ class PongPresenter extends PixiPresenter {
             if (this.paddleIntersection(this.leftPaddle))
                 this.paddleHit(this.leftPaddle, 0);
             else {
-                this.setState((prevState) => { score: [prevState.score[0], prevState.score[1]++]}, this.updateScore);
+                this.setState((prevState) => { score: [prevState.score[0], prevState.score[1]++]}, this.updateScore); // eslint-disable-line
                 console.log("death to blue");
                 this.init();
             }
@@ -110,7 +110,7 @@ class PongPresenter extends PixiPresenter {
             if (this.paddleIntersection(this.rightPaddle)) {
                 this.paddleHit(this.rightPaddle, -1);
             } else {
-                this.setState((prevState) => { score: [prevState.score[0]++, prevState.score[1]] }, this.updateScore);
+                this.setState((prevState) => { score: [prevState.score[0]++, prevState.score[1]] }, this.updateScore); // eslint-disable-line
                 console.log("death to red");
                 this.init();
             }
