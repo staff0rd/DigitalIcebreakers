@@ -165,6 +165,11 @@ export default class App extends Component {
     }
 
     connect() {
+        var lobbyId = undefined;
+        if (history.location.pathname.startsWith("/join/")) {
+            lobbyId = history.location.pathname.substr(6);
+        }
+
         setTimeout(() => {
             if (this.state.connected > 0)
                 return;
@@ -175,7 +180,7 @@ export default class App extends Component {
            .then(() => {
                this.connectionTimeout = 0;
                ReactAI.ai().trackMetric("connected", new Date() - this.connectionStarted);
-               this.connection.invoke("connect", this.user).catch(() => {
+               this.connection.invoke("connect", this.user, lobbyId).catch(() => {
                    this.connect();
                });
            })

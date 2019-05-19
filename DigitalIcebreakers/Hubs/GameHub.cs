@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using DigitalIcebreakers.Controllers;
 using DigitalIcebreakers.Games;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.Http.Connections.Features;
-using Microsoft.AspNetCore.Http.Connections.Internal;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -41,15 +38,6 @@ namespace DigitalIcebreakers.Hubs
             }
         }
 
-        public async Task<Player> TryRejoin(Guid id)
-        {
-            var game = _lobbys.SingleOrDefault(g => g.Id == id);
-            if (game != null)
-                return game.Players.SingleOrDefault(p => p.ConnectionId == Context.ConnectionId);
-            await Clients.Caller.SendAsync("Stop");
-            return null;
-        }
-
         public async Task CreateLobby(Guid id, string name, User user)
         {
             _lobbys.Where(p => p.Admin != null && p.Admin.Id == user.Id)
@@ -71,7 +59,7 @@ namespace DigitalIcebreakers.Hubs
 
             _logger.LogInformation("Created lobby {lobby} for {id}", lobby, id);
 
-            await Connect(user);
+            await Connect(user, id);
         }
 
         public async Task CloseLobby()
@@ -97,11 +85,16 @@ namespace DigitalIcebreakers.Hubs
             return Context.Features.Get<IHttpTransportFeature>()?.TransportType;
         }
 
-        public async Task Connect(User user)
+        public async Task Connect(User user, Guid? lobbyId = null)
         {
-            Player player = GetPlayer(user);
-            var lobby = _lobbys.SingleOrDefault(p => p.Players.Contains(player));
-            await Connect(player, lobby);
+            if (lobbyId.HasValue)
+                await ConnectToLobby(user, lobbyId.Value);
+            else
+            {
+                Player player = GetPlayer(user);
+                var lobby = _lobbys.SingleOrDefault(p => p.Players.Contains(player));
+                await Connect(player, lobby);
+            }
         }
 
         private async Task Connect(Player player, Lobby lobby)
@@ -187,8 +180,6 @@ namespace DigitalIcebreakers.Hubs
         public Player GetPlayerByConnectionId()
         {
             var player = _lobbys.SelectMany(p => p.Players).SingleOrDefault(p => p.ConnectionId == Context.ConnectionId);
-            if (player == null)
-                _logger.LogWarning("Player not found");
             return player;
         }
 
@@ -198,21 +189,30 @@ namespace DigitalIcebreakers.Hubs
             var existingLobby = GetLobby();
             if (existingLobby != null)
             {
-                _logger.LogInformation("{player} has left {lobbyName} (#{lobbyNumber}, {lobbyPlayers} players)", player, existingLobby.Name, existingLobby.Number, existingLobby.PlayerCount);
-                await Clients.Client(existingLobby.Admin.ConnectionId).SendAsync("left", new User { Id = player.ExternalId, Name = player.Name });
-                existingLobby.Players.Remove(player);
-            }
-
-            var lobby = _lobbys.SingleOrDefault(p => p.Id == lobbyId);
-            if (lobby == null)
-            {
-                await Clients.Caller.SendAsync("closelobby");
+                if (existingLobby.Id != lobbyId)
+                {
+                    _logger.LogInformation("{player} has left {lobbyName} (#{lobbyNumber}, {lobbyPlayers} players)", player, existingLobby.Name, existingLobby.Number, existingLobby.PlayerCount);
+                    await Clients.Client(existingLobby.Admin.ConnectionId).SendAsync("left", new User { Id = player.ExternalId, Name = player.Name });
+                    existingLobby.Players.Remove(player);
+                }
+                else
+                {
+                    await Connect(player, existingLobby);
+                }
             }
             else
             {
-                _logger.LogInformation("{player} has joined {lobbyName} (#{lobbyNumber}, {lobbyPlayers} players)", player, lobby.Name, lobby.Number, lobby.PlayerCount);
-                lobby.Players.Add(player);
-                await Connect(player, lobby);
+                var lobby = _lobbys.SingleOrDefault(p => p.Id == lobbyId);
+                if (lobby == null)
+                {
+                    await Clients.Caller.SendAsync("closelobby");
+                }
+                else
+                {
+                    _logger.LogInformation("{player} has joined {lobbyName} (#{lobbyNumber}, {lobbyPlayers} players)", player, lobby.Name, lobby.Number, lobby.PlayerCount);
+                    lobby.Players.Add(player);
+                    await Connect(player, lobby);
+                }
             }
         }
 
