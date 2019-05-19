@@ -24,6 +24,7 @@ export class CreateLobby extends Component {
 
     onSubmit = (e) => {
         this.props.createLobby(this.state.name);
+        e.preventDefault();
     }
 
     handleChange = (e) => {
