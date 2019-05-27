@@ -87,12 +87,13 @@ namespace DigitalIcebreakers.Hubs
 
         public async Task Connect(User user, Guid? lobbyId = null)
         {
-            if (lobbyId.HasValue)
-                await ConnectToLobby(user, lobbyId.Value);
+            var player = GetPlayer(user);
+            var lobby = GetLobby();
+
+            if (lobbyId.HasValue && lobby != null && lobbyId.Value != lobby.Id)
+                await LeaveLobby(player, lobby);
             else
             {
-                Player player = GetPlayer(user);
-                var lobby = _lobbys.SingleOrDefault(p => p.Players.Contains(player));
                 await Connect(player, lobby);
             }
         }
@@ -191,9 +192,7 @@ namespace DigitalIcebreakers.Hubs
             {
                 if (existingLobby.Id != lobbyId)
                 {
-                    _logger.LogInformation("{player} has left {lobbyName} (#{lobbyNumber}, {lobbyPlayers} players)", player, existingLobby.Name, existingLobby.Number, existingLobby.PlayerCount);
-                    await Clients.Client(existingLobby.Admin.ConnectionId).SendAsync("left", new User { Id = player.ExternalId, Name = player.Name });
-                    existingLobby.Players.Remove(player);
+                    await LeaveLobby(player, existingLobby);
                 }
                 else
                 {
@@ -214,6 +213,13 @@ namespace DigitalIcebreakers.Hubs
                     await Connect(player, lobby);
                 }
             }
+        }
+
+        private async Task LeaveLobby(Player player, Lobby lobby)
+        {
+            _logger.LogInformation("{player} has left {lobbyName} (#{lobbyNumber}, {lobbyPlayers} players)", player, lobby.Name, lobby.Number, lobby.PlayerCount);
+            await Clients.Client(lobby.Admin.ConnectionId).SendAsync("left", new User { Id = player.ExternalId, Name = player.Name });
+            lobby.Players.Remove(player);
         }
 
         public async override Task OnDisconnectedAsync(Exception exception)

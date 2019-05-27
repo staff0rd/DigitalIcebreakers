@@ -95,15 +95,12 @@ export default class App extends Component {
                 players: response.players,
                 currentGame: response.currentGame,
                 user: user
+            }, () => {
+                if (this.myStorage)
+                    this.myStorage.setItem("user", JSON.stringify(this.state.user));
+
+                this.goToDefaultLocation();
             });
-
-            if (this.myStorage)
-                this.myStorage.setItem("user", JSON.stringify(this.state.user));
-
-            if (response.currentGame)
-                history.push(`/game/${response.currentGame}`);
-            else
-                history.push("/");
         });
 
         this.connection.onclose(() => {
@@ -159,16 +156,31 @@ export default class App extends Component {
         this.connect();
     }
 
+    goToDefaultLocation() {
+        if (this.state.currentGame)
+            history.push(`/game/${this.state.currentGame}`);
+        else
+            history.push("/");
+    }
+
     bumpConnectionTimeout() {
         this.connectionTimeout = connectionRetrySeconds.filter(s => s > this.connectionTimeout)[0];
         if (!this.connectionTimeout)
             this.connectionTimeout = connectionRetrySeconds[connectionRetrySeconds.length-1];
     }
 
+    getCurrentLocation() {
+        return history.location || window.location;
+    }
+
+    currentLocationIsJoin() {
+        return this.getCurrentLocation().pathname.startsWith("/join/");
+    }
+
     connect() {
         var lobbyId = undefined;
-        if (history.location.pathname.startsWith("/join/")) {
-            lobbyId = history.location.pathname.substr(6);
+        if (this.currentLocationIsJoin()) {
+            lobbyId = this.getCurrentLocation().pathname.substr(6);
         }
 
         setTimeout(() => {
