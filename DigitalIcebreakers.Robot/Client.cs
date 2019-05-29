@@ -9,7 +9,6 @@ namespace DigitalIcebreakers.Robot
     public class Client
     {
         private HubConnection _connection;
-        private bool _sendInProgress;
         private volatile ConnectionState _connectionState = ConnectionState.Connecting;
         private User _user;
 
@@ -31,15 +30,39 @@ namespace DigitalIcebreakers.Robot
         public async Task Connect()
         {
             var id = Guid.NewGuid().ToString();
-            await _connection.InvokeAsync("connect", _user, null);
+            await InvokeAsync("connect", _user, null);
         }
 
         public async Task JoinLobby(string lobbyId)
         {
-            await _connection.InvokeAsync("connectToLobby", _user, lobbyId);
+            await InvokeAsync("connectToLobby", _user, lobbyId);
         }
 
-        public async Task CreateAndStartConnectionAsync(string url, HttpTransportType transportType)
+        internal async Task InvokeAsync(string methodName, object arg1)
+        {
+            try
+            {
+                await _connection.InvokeAsync(methodName, arg1);
+            } catch (Exception e)
+            {
+                LogFault(e.Message, e);
+            }
+
+        }
+        internal async Task InvokeAsync(string methodName, object arg1, object arg2)
+        {
+            try
+            {
+                await _connection.InvokeAsync(methodName, arg1, arg2);
+            }
+            catch (Exception e)
+            {
+                LogFault(e.Message, e);
+            }
+
+        }
+
+public async Task CreateAndStartConnectionAsync(string url, HttpTransportType transportType)
         {
             _connection = new HubConnectionBuilder()
                 .WithUrl(url, options => options.Transports = transportType)

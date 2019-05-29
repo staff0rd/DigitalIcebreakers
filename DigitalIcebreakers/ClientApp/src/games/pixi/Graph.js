@@ -1,12 +1,6 @@
 import { Colors } from '../../Colors';
 import * as PIXI from "pixi.js";
 
-// function sum(array, predicate) {
-//     var result = 0;
-//     array.map(predicate).forEach( (val) => result+= val);
-//     return result;
-// };
-
 export class Graph {
     constructor(app, data) {
         this.app = app;
@@ -22,19 +16,17 @@ export class Graph {
 
     getBar(position) {
         const count = this.data.length;
-        const value = this.data[position].value;
+        const value = Math.max(this.data[position].value, 0);
         const color = this.data[position].color;
         const label = this.data[position].label;
-        //const total = sum(this.data, p => p.value);
 
         const outline = Colors.BlueGrey.C500;
         
         const barWidth = this.app.screen.width / ((count + 1) + count * 2) * 2;
         const labelFontSize = barWidth / 5;
         const valueFontSize = barWidth / 3;
-        //const units = Math.max(total / 2, ...this.data.map(p => p.value));
-        const units = this.data.length + 1;
-        const unitHeight = (this.app.screen.height - barWidth) / units;
+        const units = Math.max(...this.data.map(p => p.value));
+        const unitHeight = units > 0 ? (this.app.screen.height - barWidth) / units :  0;
         const bottom = this.app.screen.height - barWidth / 2;
         const leftSideOfBar = barWidth / 2 + barWidth / 2 * position + barWidth * position;
 
@@ -43,7 +35,7 @@ export class Graph {
         const bar = new PIXI.Graphics();
         bar.beginFill(color);
         bar.drawRect(leftSideOfBar, bottom - value * unitHeight, barWidth, value * unitHeight);
-        bar.pivot.set(0, )
+        bar.pivot.set(0);
         bar.endFill();
 
         const line = new PIXI.Graphics();

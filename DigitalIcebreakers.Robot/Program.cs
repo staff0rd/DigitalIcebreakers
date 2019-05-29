@@ -13,6 +13,7 @@ namespace DigitalIcebreakers.Robot
             app.HelpOption("-h|--help");
 
             JoinCommand.Register(app);
+            YesNoMaybeCommand.Register(app);
 
             app.Command("help", cmd =>
             {

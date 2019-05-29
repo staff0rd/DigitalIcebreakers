@@ -2,7 +2,7 @@
   "profiles": {
     "DigitalIcebreakers.Robot": {
       "commandName": "Project",
-      "commandLineArgs": "join --target-url http://192.168.2.20:5000/gameHub --lobbyId dd34df4c-1514-ae71-0b7e-655c6384350b"
+      "commandLineArgs": "yesnomaybe --target-url http://192.168.2.20:5000/gameHub --lobbyId b8ef250c-35c8-495d-3782-0dee155587b7"
     }
   }
 }

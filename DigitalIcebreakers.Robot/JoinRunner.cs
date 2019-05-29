@@ -12,6 +12,7 @@ namespace DigitalIcebreakers.Robot
         private int _numberOfConnections;
         private HttpTransportType _transportType;
         private string _lobbyId;
+        protected List<Client> _clients;
 
         public JoinRunner(string targetUrl, int numberOfConnections, HttpTransportType transportType, string lobbyId)
         {
@@ -21,15 +22,22 @@ namespace DigitalIcebreakers.Robot
             _lobbyId = lobbyId;
         }
 
-        internal async Task RunAsync()
+        internal virtual async Task RunAsync()
         {
-            var clients = new List<Client>();
+            await Join();
+
+            await Task.Delay(TimeSpan.FromSeconds(300));
+        }
+
+        protected async Task Join()
+        {
+            _clients = new List<Client>();
             var tasks = new List<Task>();
 
             for (int i = 0; i < _numberOfConnections; i++)
             {
                 var client = new Client();
-                clients.Add(client);
+                _clients.Add(client);
                 tasks.Add(Task.Run(async () =>
                 {
                     await client.CreateAndStartConnectionAsync(_targetUrl, _transportType);
@@ -41,8 +49,6 @@ namespace DigitalIcebreakers.Robot
             await Task.WhenAll(tasks);
 
             Console.WriteLine("All connected");
-
-            await Task.Delay(TimeSpan.FromSeconds(300));
         }
     }
 }
