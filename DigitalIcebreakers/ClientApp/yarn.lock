@@ -1146,6 +1146,10 @@
   version "12.0.4"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.0.4.tgz#46832183115c904410c275e34cf9403992999c32"
 
+"@types/pixi.js@^4.8.7":
+  version "4.8.7"
+  resolved "https://registry.yarnpkg.com/@types/pixi.js/-/pixi.js-4.8.7.tgz#23cea9ce7aaf6a51223a8fbe3c3d1c89f6048698"
+
 "@types/prop-types@*":
   version "15.7.1"
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.1.tgz#f1a11e7babb0c3cad68100be381d1e064c68f1f6"
