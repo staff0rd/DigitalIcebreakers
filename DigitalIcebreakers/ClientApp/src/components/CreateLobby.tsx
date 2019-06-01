@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
 import { FormGroup, ControlLabel, FormControl, HelpBlock, Button } from 'react-bootstrap';
 
-export class CreateLobby extends Component {
+interface Props {
+    createLobby: (lobbyName: string) => void;
+}
+
+type State = {
+    name: string
+}
+
+export class CreateLobby extends Component<Props, State> {
     displayName = CreateLobby.name
 
-    constructor(props) {
+    constructor(props: Props) {
         super(props);
         this.state = { name: "My Lobby" };
-    }
-
-    componentDidUpdate() {
-        if (this.context.id) {
-            this.props.history.push('/');
-        }
     }
 
     getValidationState() {
@@ -22,16 +24,14 @@ export class CreateLobby extends Component {
         return null;
     }
 
-    onSubmit = (e) => {
+    onSubmit = (e: React.SyntheticEvent<EventTarget>) => {
         this.props.createLobby(this.state.name);
         e.preventDefault();
     }
 
-    handleChange = (e) => {
-        const change = { [e.target.name]: e.target.value };
-        if (e.target.name === "name" && this.myStorage)
-            this.myStorage.setItem("name", e.target.value);
-        this.setState(change);
+    handleChange = (e: React.FormEvent<FormControl>) => {
+        const target = e.target as HTMLInputElement;
+        this.setState({name: target.value});
     }
 
     render() {
