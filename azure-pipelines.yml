@@ -53,13 +53,26 @@ jobs:
       command: build
       dockerFile: '**/Dockerfile'
   - task: Docker@1
+    displayName: Tag $(version)
+    inputs:
+      command: tag
+      imageName: $(ACR.FullName)/$(ACR.ImageName)
+      arguments: $(ACR.FullName)/digitalicebreakers:$(version)
+  - task: Docker@1
     displayName: Tag latest
     inputs:
       command: tag
       imageName: $(ACR.FullName)/$(ACR.ImageName)
       arguments: $(ACR.FullName)/digitalicebreakers:latest
   - task: Docker@1
-    displayName: 'Push an image'
+    displayName: 'Push $(version)'
+    inputs:
+      azureSubscriptionEndpoint: '$(Azure.ServiceConnectionId)'
+      azureContainerRegistry: '$(ACR.FullName)'
+      imageName: $(ACR.FullName)/digitalicebreakers:$(version)
+      command: push
+  - task: Docker@1
+    displayName: 'Push latest'
     inputs:
       azureSubscriptionEndpoint: '$(Azure.ServiceConnectionId)'
       azureContainerRegistry: '$(ACR.FullName)'
