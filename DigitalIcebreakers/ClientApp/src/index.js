@@ -20,4 +20,4 @@ ReactDOM.render(
   </Router>,
   rootElement);
 
-registerServiceWorker();
+//registerServiceWorker();
