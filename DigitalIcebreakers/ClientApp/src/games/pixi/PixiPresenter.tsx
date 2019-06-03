@@ -3,16 +3,20 @@ import { Events } from '../../Events';
 import * as PIXI from "pixi.js";
 import React from 'react';
 
-export class PixiPresenter extends BaseGame {
-    constructor(backgroundColor, props, context) {
+export abstract class PixiPresenter extends BaseGame {
+    app: PIXI.Application;
+    pixiElement: HTMLDivElement | null;
+
+    constructor(backgroundColor: number, props: any, context:any) {
         super(props, context);
 
         this.app = new PIXI.Application({ autoResize: true, backgroundColor: backgroundColor });
-        
         this.pixiElement = null;
     }
 
-    pixiUpdate = (element) => {
+    abstract init(): void;
+
+    pixiUpdate = (element: HTMLDivElement) => {
         this.pixiElement = element;
 
         if (this.pixiElement && this.pixiElement.children.length <= 0) {
@@ -27,7 +31,7 @@ export class PixiPresenter extends BaseGame {
         super.componentDidMount();
 
         const resize = () => {
-            const parent = this.app.view.parentNode;
+            const parent = this.app.view.parentNode as HTMLElement;
             this.app.renderer.resize(parent.clientWidth, parent.clientHeight);
             this.init();
         }
