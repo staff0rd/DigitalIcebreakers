@@ -2,6 +2,7 @@ import { clamp } from '../../util/clamp';
 import * as PIXI from "pixi.js";
 import { IdeaView } from './IdeaView';
 import { Point } from './Point';
+import { Idea } from './Idea';
 
 export class IdeaContainer extends PIXI.Container {
     app: PIXI.Application;
@@ -37,6 +38,32 @@ export class IdeaContainer extends PIXI.Container {
         this.ideaContainerDrag.on('pointermove', this.onDragMove);
         this.ideaContainerDrag.on('pointerup', this.onDragEnd);
         this.ideaContainerDrag.on('pointerupoutside', this.onDragEnd);
+    }
+
+    add(idea: IdeaView, isNew: boolean = false) {
+        this.addChild(idea);
+        if (isNew) {
+            const total = this.children.length;
+            
+            
+            
+            // var row = Math.floor(total / columns) + 1;
+            // var column = Math.floor(total % columns) + 1;
+            idea.x = column * this.ideaWidth;
+            idea.y = row * this.ideaWidth;
+            idea.onDragEnd();
+        }
+    }
+
+    getNextFreeSpot() {
+        const screenWidth = this.app.screen.width;
+        let columns = Math.floor(screenWidth / this.ideaWidth);
+        let row = 0;
+        while(true) {
+            for (let column = 0; column < columns; column++) {
+                
+            }
+        }
     }
 
     getDragContainer() {

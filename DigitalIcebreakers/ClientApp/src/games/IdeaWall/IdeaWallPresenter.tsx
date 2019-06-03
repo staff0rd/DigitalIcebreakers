@@ -158,16 +158,7 @@ export class IdeaWallPresenter extends PixiPresenter<IdeaWallPresenterProps, Ide
 
     addIdeaToContainer(idea: Idea, isNew: boolean = false) {
         const view = new IdeaView(idea, WIDTH, MARGIN, this.state.showNames, () => this.saveIdeas());
-        this.ideaContainer.addChild(view);
-        if (isNew) {
-            const total = this.ideaContainer.children.length;
-            const screenWidth = this.app.screen.width;
-            const columns = screenWidth / WIDTH;
-            var row = Math.floor(total / columns) + 1;
-            var column = Math.floor(total % columns) + 1;
-            view.x = column * WIDTH;
-            view.y = row * WIDTH;
-        }
+        this.ideaContainer.add(view, isNew);
     }
 
     getNewIdea(playerName: string, idea: string) : Idea {
