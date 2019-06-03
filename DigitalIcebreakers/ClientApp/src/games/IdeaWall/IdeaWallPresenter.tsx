@@ -6,6 +6,8 @@ import * as Random from '../../Random';
 import { Events } from '../../Events';
 import { IdeaContainer } from './IdeaContainer';
 import { IdeaView } from './IdeaView';
+import { BaseGameProps } from '../BaseGame'
+import { Idea } from './Idea'
 
 const STORAGE_KEY = "ideawall:ideas";
 const WIDTH = 200;
@@ -20,10 +22,30 @@ const IDEA_COLORS = [
     Colors.Red.A100
 ];
 
-export class IdeaWallPresenter extends PixiPresenter {
-    displayName = IdeaWallPresenter.name
+interface ModalProperties {
+    title: string;
+    body: string;
+    action: ((e: React.SyntheticEvent<EventTarget>) => void) | undefined;
+}
 
-    constructor(props, context) {
+interface IdeaWallPresenterProps extends BaseGameProps {
+    setMenuItems(items: JSX.Element[]): void;
+}
+
+interface IdeaWallPresenterState {
+    ideas: Idea[],
+    showNames: boolean,
+    showModal: boolean,
+    modal: ModalProperties;
+}
+
+
+export class IdeaWallPresenter extends PixiPresenter<IdeaWallPresenterProps, IdeaWallPresenterState> {
+    displayName = IdeaWallPresenter.name
+    myStorage: Storage;
+    ideaContainer: IdeaContainer;
+
+    constructor(props: IdeaWallPresenterProps, context: IdeaWallPresenterState) {
         super(0xFFFFFF, props,context);
         
         this.myStorage = window.localStorage;
@@ -40,7 +62,7 @@ export class IdeaWallPresenter extends PixiPresenter {
         };
 
         this.ideaContainer = new IdeaContainer(this.app, WIDTH, MARGIN);
-        this.app.stage.addChild(this.ideaContainer.getDragContainer(), this.ideaContainer);
+        this.app.stage.addChild(this.ideaContainer.getDragContainer() as PIXI.DisplayObject, this.ideaContainer);
     }
 
     getRandomColor() {
@@ -134,7 +156,7 @@ export class IdeaWallPresenter extends PixiPresenter {
         this.props.setMenuItems([header]);
     }
 
-    addIdeaToContainer(idea, isNew) {
+    addIdeaToContainer(idea: Idea, isNew: boolean = false) {
         const view = new IdeaView(idea, WIDTH, MARGIN, this.state.showNames, () => this.saveIdeas());
         this.ideaContainer.addChild(view);
         if (isNew) {
@@ -148,8 +170,8 @@ export class IdeaWallPresenter extends PixiPresenter {
         }
     }
 
-    getNewIdea(playerName, idea) {
-        return {playerName: playerName, idea: idea, color: this.getRandomColor()};
+    getNewIdea(playerName: string, idea: string) : Idea {
+        return {playerName: playerName, idea: idea, color: this.getRandomColor(), x: undefined, y: undefined};
     }
 
     componentDidMount() {

@@ -1,18 +1,24 @@
 import { Component } from 'react';
+import { HubConnection } from '@aspnet/signalr';
 
-export class BaseGame extends Component {
+export interface BaseGameProps {
+    connection: HubConnection;
+}
+
+export class BaseGame<T extends BaseGameProps, U> extends Component<T, U> {
     displayName = BaseGame.name
+    debug: boolean;
 
-    constructor(props, context, debug) {
+    constructor(props: T, context: U, debug: boolean = false) {
         super(props, context);
 
-        this.debug = false;
+        this.debug = debug;
         if (this.debug)
             console.log('constructed');
     }
     
-    unexpected() {
-        console.error('Unexpected: ', ...arguments);
+    unexpected(arg: any) {
+        console.error('Unexpected: ', arg);
     }
 
     componentWillMount() {
@@ -29,7 +35,7 @@ export class BaseGame extends Component {
         if (this.debug)
             console.log('componentWillReceiveProps');
     }
-    shouldComponentUpdate(nextProps, nextState) {
+    shouldComponentUpdate(nextProps: BaseGameProps, nextState: any) {
         if (this.debug)
             console.log('shouldComponentUpdate', nextProps, nextState);
         return true;

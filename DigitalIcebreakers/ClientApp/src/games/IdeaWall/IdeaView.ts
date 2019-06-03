@@ -1,10 +1,19 @@
 import * as PIXI from "pixi.js";
+import {Idea} from "./Idea";
+import {Point} from "./Point";
 
 const TITLE_FONT_SIZE = 20;
 const BODY_FONT_SIZE = 26;
 
 export class IdeaView extends PIXI.Container {
-    constructor(idea, width, margin, showName, updatePosition) {
+    background: PIXI.Graphics;
+    title: PIXI.Text;
+    body: PIXI.Text;
+    pointerData: Point | undefined;
+    updatePosition: (x: number, y: number) => void;
+    idea: Idea;
+
+    constructor(idea: Idea, width: number, margin: number, showName: boolean, updatePosition: (x: number, y: number) => void) {
         super();
 
         this.idea = idea;
@@ -28,13 +37,13 @@ export class IdeaView extends PIXI.Container {
         this.body = new PIXI.Text(idea.idea, { fontSize: BODY_FONT_SIZE, breakWords: true, wordWrap: true, wordWrapWidth: width - 2*margin, align: "center"});
         this.body.pivot.set(this.body.width/2, this.body.height/2)
         this.body.position.set(width / 2, width / 2);
-        this.addChild(this.background, this.title, this.body);
+        this.addChild(this.background as PIXI.DisplayObject, this.title, this.body);
         this.alpha = .85;
         this.x = idea.x || 0;
         this.y = idea.y || 0;
     }
 
-    onDragStart = (event) => {
+    onDragStart = (event: PIXI.interaction.InteractionEvent) => {
         const point = event.data.getLocalPosition(this.parent);
         this.pointerData = { x: this.x - point.x, y: this.y - point.y };
         this.parent.addChild(this);
@@ -47,7 +56,7 @@ export class IdeaView extends PIXI.Container {
         this.updatePosition(this.x, this.y);
     }
 
-    onDragMove = (event) => {
+    onDragMove = (event: PIXI.interaction.InteractionEvent) => {
         if (this.pointerData) {
             const point = event.data.getLocalPosition(this.parent);
             const x = this.pointerData.x + point.x;

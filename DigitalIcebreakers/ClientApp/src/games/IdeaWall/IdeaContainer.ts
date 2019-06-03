@@ -1,8 +1,16 @@
 import { clamp } from '../../util/clamp';
 import * as PIXI from "pixi.js";
+import { IdeaView } from './IdeaView';
+import { Point } from './Point';
 
 export class IdeaContainer extends PIXI.Container {
-    constructor(app, ideaWidth, margin) {
+    app: PIXI.Application;
+    ideaWidth: number;
+    margin: number;
+    pointerData: Point | undefined;
+    ideaContainerDrag!: PIXI.Graphics;
+
+    constructor(app: PIXI.Application, ideaWidth: number, margin: number) {
         super();
 
         this.app = app;
@@ -35,7 +43,7 @@ export class IdeaContainer extends PIXI.Container {
         return this.ideaContainerDrag;
     }
 
-    onDragStart = (event) => {
+    onDragStart = (event: PIXI.interaction.InteractionEvent)  => {
         const point = event.data.getLocalPosition(this.app.stage);
         this.pointerData = { x: this.x - point.x, y: this.y - point.y };
     }
@@ -44,7 +52,7 @@ export class IdeaContainer extends PIXI.Container {
         this.pointerData = undefined;
     }
 
-    onDragMove = (event) => {
+    onDragMove = (event: PIXI.interaction.InteractionEvent) => {
         if (this.pointerData) {
             const point = event.data.getLocalPosition(this.app.stage);
             const x = this.pointerData.x + point.x;
@@ -70,11 +78,11 @@ export class IdeaContainer extends PIXI.Container {
         if (columns * gap - this.margin + this.ideaWidth <= this.app.screen.width)
             columns++;
 
-        this.children.forEach((c, i) => {
+        this.children.forEach((c,  i) => {
             var row = Math.floor(i / columns)
             var column = Math.floor(i % columns);
             c.position.set(column * gap, row * gap);
-            c.onDragEnd(); // saves position
+            (c as IdeaView).onDragEnd(); // saves position
         })
     }
 }

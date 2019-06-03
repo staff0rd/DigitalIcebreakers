@@ -1,13 +1,17 @@
-import React from 'react';
-import { Button, Form, FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
-import { BaseGame } from '../BaseGame';
+import React, { SyntheticEvent } from 'react';
+import { Button, Form, FormGroup, ControlLabel, FormControl, FormControlProps } from 'react-bootstrap';
+import { BaseGame, BaseGameProps } from '../BaseGame';
 
 const MAX_CHARACTERS = 50;
 
-export class IdeaWallClient extends BaseGame {
+interface IdeaWallClientState {
+    idea: string;
+}
+
+export class IdeaWallClient extends BaseGame<BaseGameProps, IdeaWallClientState> {
     displayName = IdeaWallClient.name
 
-    constructor(props, context) {
+    constructor(props: BaseGameProps, context: IdeaWallClientState) {
         super(props, context);
 
         this.state = {
@@ -15,12 +19,13 @@ export class IdeaWallClient extends BaseGame {
         };
     }
 
-    onChange = (e) => {
-        if (e.target.value.split('\n').length <= 4)
-            this.setState({ idea: e.target.value });
+    onChange = (e: React.FormEvent<FormControl>) => {
+        const target = e.target as HTMLInputElement;
+        if (target.value.split('\n').length <= 4)
+            this.setState({ idea: target.value });
     }
 
-    onClick = (e) => {
+    onClick = (e: React.SyntheticEvent<EventTarget>) => {
         if (this.state.idea.length) {
             this.props.connection.invoke("gameMessage", `idea:${this.state.idea}`);
             this.setState({idea: ""});

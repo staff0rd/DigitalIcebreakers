@@ -1,13 +1,13 @@
-import { BaseGame } from '../BaseGame'
+import { BaseGame, BaseGameProps } from '../BaseGame'
 import { Events } from '../../Events';
 import * as PIXI from "pixi.js";
 import React from 'react';
 
-export abstract class PixiPresenter extends BaseGame {
+export abstract class PixiPresenter<T extends BaseGameProps, U> extends BaseGame<T, U> {
     app: PIXI.Application;
     pixiElement: HTMLDivElement | null;
 
-    constructor(backgroundColor: number, props: any, context:any) {
+    constructor(backgroundColor: number, props: T, context: U) {
         super(props, context);
 
         this.app = new PIXI.Application({ autoResize: true, backgroundColor: backgroundColor });
