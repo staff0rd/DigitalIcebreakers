@@ -44,14 +44,9 @@ export class IdeaContainer extends PIXI.Container {
     add(idea: IdeaView, isNew: boolean = false) {
         this.addChild(idea);
         if (isNew) {
-            const total = this.children.length;
-            
-            
-            
-            // var row = Math.floor(total / columns) + 1;
-            // var column = Math.floor(total % columns) + 1;
-            idea.x = column * this.ideaWidth;
-            idea.y = row * this.ideaWidth;
+            const point = this.getNextFreeSpot();
+            idea.x = point.x
+            idea.y = point.y;
             idea.onDragEnd();
         }
     }
@@ -62,8 +57,13 @@ export class IdeaContainer extends PIXI.Container {
         let row = 0;
         while(true) {
             for (let column = 0; column < columns; column++) {
-                
+                const x = column * this.ideaWidth + this.margin * column - this.x;
+                const y = row * this.ideaWidth + this.margin * row - this.y;
+                if (this.checkIsEmpty(x, y)) {
+                    return {x, y}
+                }
             }
+            row++;
         }
     }
 
