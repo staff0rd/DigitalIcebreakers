@@ -3,6 +3,7 @@ import * as PIXI from "pixi.js";
 import { IdeaView } from './IdeaView';
 import { Point } from './Point';
 import { Idea } from './Idea';
+import { intersects } from '../../util/intersects';
 
 export class IdeaContainer extends PIXI.Container {
     app: PIXI.Application;
@@ -55,7 +56,7 @@ export class IdeaContainer extends PIXI.Container {
         }
     }
 
-    getNextFreeSpot() {
+    getNextFreeSpot() : Point {
         const screenWidth = this.app.screen.width;
         let columns = Math.floor(screenWidth / this.ideaWidth);
         let row = 0;
@@ -64,6 +65,11 @@ export class IdeaContainer extends PIXI.Container {
                 
             }
         }
+    }
+
+    checkIsEmpty(x: number, y: number) {
+        const rect = {x: x, y: y, width: this.ideaWidth, height: this.ideaWidth};
+        return this.children.filter((c) => intersects(c as IdeaView, rect)).length === 0
     }
 
     getDragContainer() {
