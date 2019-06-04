@@ -51,7 +51,7 @@ export class NavMenu extends Component {
         const createLobby = (
             <LinkContainer to={'/createLobby'}>
                 <NavItem>
-                    <Glyphicon glyph='plus' /> Create Lobby
+                    <Glyphicon glyph='plus' /> Host
                 </NavItem>
             </LinkContainer>);
 
