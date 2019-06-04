@@ -42,20 +42,22 @@ export class IdeaContainer extends PIXI.Container {
     }
 
     add(idea: IdeaView, isNew: boolean = false) {
-        this.addChild(idea);
         if (isNew) {
             const point = this.getNextFreeSpot();
             idea.x = point.x
             idea.y = point.y;
+            this.addChild(idea);
             idea.onDragEnd();
         }
+        else 
+            this.addChild(idea);
     }
 
     getNextFreeSpot() : Point {
         const screenWidth = this.app.screen.width;
         let columns = Math.floor(screenWidth / this.ideaWidth);
         let row = 0;
-        while(true) {
+        while(row < 50) {
             for (let column = 0; column < columns; column++) {
                 const x = column * this.ideaWidth + this.margin * column - this.x;
                 const y = row * this.ideaWidth + this.margin * row - this.y;
@@ -65,6 +67,7 @@ export class IdeaContainer extends PIXI.Container {
             }
             row++;
         }
+        return {x: 0, y: 0};
     }
 
     checkIsEmpty(x: number, y: number) {
