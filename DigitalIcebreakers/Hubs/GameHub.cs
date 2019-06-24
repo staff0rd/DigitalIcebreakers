@@ -57,7 +57,7 @@ namespace DigitalIcebreakers.Hubs
 
             _lobbys.Add(lobby);
 
-            _logger.LogInformation("Created lobby {lobbyName} for {id}", lobby.Name, id);
+            _logger.LogInformation("{action} {lobbyName} for {id}", "created", lobby.Name, id);
 
             await Connect(user, id);
         }
