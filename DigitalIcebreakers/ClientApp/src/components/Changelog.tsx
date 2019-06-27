@@ -29,7 +29,6 @@ export class Changelog extends Component<{}, ChangelogState> {
     render() {
         const items: JSX.Element[] = [];
         for (let change of this.state.changelogs) {
-            console.log(change);
             items.push(<li>
                 <span>{change.change}</span> • <Moment fromNow>
                     {change.date.toString()}

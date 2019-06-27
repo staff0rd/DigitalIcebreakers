@@ -17,7 +17,7 @@ public class IdeaWall : IGame
         string idea = payload.idea;
 
         if (!string.IsNullOrWhiteSpace(idea))
-            await gameHub.Clients.Client(gameHub.GetAdmin().ConnectionId).SendAsync("gameUpdate", player.Name, idea);
+            await gameHub.Clients.Client(gameHub.GetAdmin().ConnectionId).SendAsync("gameUpdate", player.Name,  idea);
 
     }
 
