@@ -246,5 +246,12 @@ namespace DigitalIcebreakers.Hubs
             if (lobby != null && lobby.CurrentGame != null)
                 await lobby.CurrentGame.Message(payload, this);
         }
+
+        public async Task HubMessage(string jsonPayload) 
+        {
+            var lobby = GetLobby();
+            if (lobby != null && lobby.CurrentGame != null)
+                await lobby.CurrentGame.JsonMessage(jsonPayload, this);
+        }
     }
 }
