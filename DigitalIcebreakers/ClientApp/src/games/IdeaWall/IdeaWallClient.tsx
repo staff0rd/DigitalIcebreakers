@@ -27,7 +27,11 @@ export class IdeaWallClient extends BaseGame<BaseGameProps, IdeaWallClientState>
 
     onClick = (e: React.SyntheticEvent<EventTarget>) => {
         if (this.state.idea.length) {
-            this.props.connection.invoke("gameMessage", `idea:${this.state.idea}`);
+
+            const payload = JSON.stringify({
+                idea: this.state.idea
+            });
+            this.props.connection.invoke("hubMessage", payload);
             this.setState({idea: ""});
         }
     }
