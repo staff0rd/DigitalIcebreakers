@@ -11,6 +11,8 @@ namespace DigitalIcebreakers.Games
     {
         public string Name => "buzzer";
 
+        public async Task JsonMessage(string jsonPayload, GameHub gameHub) {}
+
         public async Task Message(string payload, GameHub hub)
         {
             var player = hub.GetPlayerByConnectionId();

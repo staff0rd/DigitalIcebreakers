@@ -13,5 +13,7 @@ namespace DigitalIcebreakers.Games
         Task Start(GameHub hub);
 
         string Name { get; }
+
+        Task JsonMessage(string jsonPayload, GameHub gameHub);
     }
 }
