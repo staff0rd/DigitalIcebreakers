@@ -22,20 +22,22 @@ namespace DigitalIcebreakers.Games
         Dictionary<Guid, int> _leftTeam = new Dictionary<Guid, int>();
         Dictionary<Guid, int> _rightTeam = new Dictionary<Guid, int>();
 
-        public async Task JsonMessage(string jsonPayload, GameHub gameHub) {}
-
-        public async Task Message(string payload, GameHub hub)
+        public async Task JsonMessage(dynamic payload, GameHub hub)
         {
             var player = hub.GetPlayerByConnectionId();
             var externalId = player.ExternalId;
-            switch (payload)
+            string system = payload.System;
+            switch (system) {
+                case "leave": Leave(externalId); Move(0, externalId); break;
+                case "join": await Join(hub, player); break;
+            }
+            string client = payload.client;
+            switch (client)
             {
+                case "release": Move(0, externalId); break;
                 case "up": Move(1, externalId); break;
                 case "down": Move(-1, externalId); break;
-                case "release": Move(0, externalId); break;
-                case "leave": Leave(externalId); break;
                 case "join": await Join(hub, player); break;
-                default: return;
             }
             await hub.Clients.Client(hub.GetAdmin().ConnectionId).SendAsync("gameUpdate", new Result(Speed(_leftTeam), Speed(_rightTeam)));
         }
@@ -75,6 +77,8 @@ namespace DigitalIcebreakers.Games
             if (!player.IsAdmin)
             {
                 var id = player.ExternalId;
+
+                Leave(id);
 
                 if (_leftTeam.Count <= _rightTeam.Count)
                     _leftTeam[id] = 0;

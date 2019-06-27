@@ -16,6 +16,16 @@ export class BaseGame<T extends BaseGameProps, U> extends Component<T, U> {
         if (this.debug)
             console.log('constructed');
     }
+
+    clientMessage(message: any) {
+        const payload = JSON.stringify({ client: message });
+        this.props.connection.invoke("hubMessage", payload);
+    };
+
+    adminMessage(message: any) {
+        const payload = JSON.stringify({ admin: message });
+        this.props.connection.invoke("hubMessage", payload);
+    };
     
     unexpected(arg: any) {
         console.error('Unexpected: ', arg);

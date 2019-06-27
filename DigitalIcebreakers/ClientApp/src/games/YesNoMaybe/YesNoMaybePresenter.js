@@ -57,6 +57,6 @@ export class YesNoMaybePresenter extends PixiPresenter {
     }
 
     reset = () => {
-        this.props.connection.invoke("gameMessage", "reset");
+        this.adminMessage("reset");
     }
 }

@@ -8,21 +8,14 @@ public class IdeaWall : IGame
 {
     public string Name => "ideawall";
 
-    public async Task JsonMessage(string jsonPayload, GameHub gameHub)
+    public async Task JsonMessage(dynamic payload, GameHub hub)
     {
-        var player = gameHub.GetPlayerByConnectionId();
-        
-        dynamic payload = JsonConvert.DeserializeObject(jsonPayload);
+        var player = hub.GetPlayerByConnectionId();
 
         string idea = payload.idea;
 
         if (!string.IsNullOrWhiteSpace(idea))
-            await gameHub.Clients.Client(gameHub.GetAdmin().ConnectionId).SendAsync("gameUpdate", player.Name,  idea);
-
-    }
-
-    public async Task Message(string payload, GameHub hub)
-    {
+            await hub.Clients.Client(hub.GetAdmin().ConnectionId).SendAsync("gameUpdate", player.Name,  idea);
     }
 
     public Task Start(GameHub hub)

@@ -55,11 +55,11 @@ export class Buzzer extends BaseGame {
     }
 
     down = () => {
-        this.props.connection.invoke("gameMessage", "down");
+        this.props.connection.invoke("hubMessage", JSON.stringify({client: "down"}));
     }
 
     up = () => {
-        this.props.connection.invoke("gameMessage", "up");
+        this.props.connection.invoke("hubMessage", JSON.stringify({client: "up"}));
     }
 
     renderAdmin() {

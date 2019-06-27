@@ -27,7 +27,7 @@ export class BroadcastPresenter extends BaseGame {
 
     updateValue = (e) => {
         this.setState({value: e.target.value}, () => {
-        this.props.connection.invoke("gameMessage", this.state.value);
+            this.adminMessage(this.state.value);
         });
     }
 

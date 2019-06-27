@@ -34,7 +34,7 @@ namespace DigitalIcebreakers.Robot
                         await Task.Delay(TimeSpan.FromSeconds(wait));
 
                         if (choice != 2)
-                            await client.InvokeAsync("gameMessage", choice);
+                            await client.InvokeAsync("hubMessage", choice);
                     }));
                 }
                 await Task.WhenAll(tasks);

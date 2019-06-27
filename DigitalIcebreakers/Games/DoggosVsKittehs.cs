@@ -13,14 +13,12 @@ namespace DigitalIcebreakers.Games
 
         Dictionary<Guid, int> _results = new Dictionary<Guid, int>();
 
-        public async Task JsonMessage(string jsonPayload, GameHub gameHub) {}
-
-        public async Task Message(string payload, GameHub hub)
+        public async Task JsonMessage(dynamic payload, GameHub hub)
         {
             // 1 = kittehs
             // 0 = doggos
 
-            if (!string.IsNullOrWhiteSpace(payload))
+            if (!string.IsNullOrWhiteSpace(payload.client))
             {
                 int value;
                 if (int.TryParse(payload, out value))

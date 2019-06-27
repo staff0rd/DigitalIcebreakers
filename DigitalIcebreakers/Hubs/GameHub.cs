@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http.Connections.Features;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 
 namespace DigitalIcebreakers.Hubs
 {
@@ -109,7 +110,7 @@ namespace DigitalIcebreakers.Hubs
                 if (!player.IsAdmin)
                 {
                     await Clients.Client(lobby.Admin.ConnectionId).SendAsync("joined", new User { Id = player.ExternalId, Name = player.Name });
-                    await GameMessage("join");
+                    await SystemMessage("join");
                 }
             }
             else {
@@ -178,6 +179,8 @@ namespace DigitalIcebreakers.Hubs
             return _lobbys.SingleOrDefault(p => p.Players.Contains(player));
         }
 
+        public bool IsAdmin => GetAdmin().ConnectionId == Context.ConnectionId;
+
         public Player GetPlayerByConnectionId()
         {
             var player = _lobbys.SelectMany(p => p.Players).SingleOrDefault(p => p.ConnectionId == Context.ConnectionId);
@@ -224,10 +227,10 @@ namespace DigitalIcebreakers.Hubs
 
         public async override Task OnDisconnectedAsync(Exception exception)
         {
-            await GameMessage("leave");
+            await SystemMessage("leave");
             var player = GetPlayerByConnectionId();
             if (player != null)
-            {          
+            {
                 _logger.LogInformation("{player} {action}", player, "disconnected");
                 player.IsConnected = false;
                 var admin = GetAdmin();
@@ -240,18 +243,20 @@ namespace DigitalIcebreakers.Hubs
             await base.OnDisconnectedAsync(exception);
         }
 
-        public async Task GameMessage(string payload)
+        private async Task SystemMessage(string action)
         {
-            var lobby = GetLobby();
-            if (lobby != null && lobby.CurrentGame != null)
-                await lobby.CurrentGame.Message(payload, this);
+            var payload = JsonConvert.SerializeObject(new HubMessage { System = action });
+            await HubMessage(payload);
         }
 
-        public async Task HubMessage(string jsonPayload) 
+        public async Task HubMessage(string json) 
         {
             var lobby = GetLobby();
-            if (lobby != null && lobby.CurrentGame != null)
-                await lobby.CurrentGame.JsonMessage(jsonPayload, this);
+            if (lobby != null && lobby.CurrentGame != null) 
+            {
+                dynamic payload = JsonConvert.DeserializeObject(json);
+                await lobby.CurrentGame.JsonMessage(payload, this);
+            }
         }
     }
 }

@@ -15,7 +15,7 @@ export class YesNoMaybeClient extends BaseGame {
 
     choose = (choice) => {
         this.setState({ choice: choice });
-        this.props.connection.invoke("gameMessage", choice);
+        this.clientMessage(choice);
     }
 
     render() {

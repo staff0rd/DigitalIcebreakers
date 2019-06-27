@@ -18,7 +18,7 @@ export class DoggosVsKittehsClient extends BaseGame {
     choose = (choice) => {
         if (choice !== this.choice) {
             this.setState({ choice: choice });
-            this.props.connection.invoke("gameMessage", choice);
+            this.props.connection.invoke("hubMessage", JSON.stringify({client: choice}));
         }
     }
 

@@ -10,8 +10,6 @@ export class PongClient extends BaseGame {
     constructor(props, context) {
         super(props, context);
 
-        console.log('constructed ' + PongClient.name);
-
         this.app = new PIXI.Application({ width: window.innerWidth, height: window.innerHeight, backgroundColor: Colors.ClientBackground });
 
         this.topButton = new Button(this.release, this.up);
@@ -46,7 +44,7 @@ export class PongClient extends BaseGame {
                 this.unexpected(response);
             }
         });
-        this.props.connection.invoke("gameMessage", "ready:pong");
+        this.clientMessage("join");
     }
 
     pixiUpdate = (element) => {
@@ -58,15 +56,15 @@ export class PongClient extends BaseGame {
     }
 
     down = () => {
-        this.props.connection.invoke("gameMessage", "down");
+        this.clientMessage("down");
     }
 
     up = () => {
-        this.props.connection.invoke("gameMessage", "up");
+        this.clientMessage("up");
     }
 
     release = () => {
-        this.props.connection.invoke("gameMessage", "release");
+        this.clientMessage("release");
     }
 
     render() {

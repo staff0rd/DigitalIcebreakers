@@ -24,7 +24,7 @@ export class BroadcastClient extends BaseGame {
     }
 
     ding = () => {
-        this.props.connection.invoke("gameMessage", 1);        
+        this.clientMessage(1);      
     }
 
     render() {

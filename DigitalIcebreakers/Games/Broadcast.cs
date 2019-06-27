@@ -6,14 +6,14 @@ using Microsoft.AspNetCore.SignalR;
 public class Broadcast : IGame 
 {
     public string Name => "broadcast";
-
-    public async Task JsonMessage(string jsonPayload, GameHub gameHub) {}
-
-    public async Task Message(string payload, GameHub hub)
+    
+    public async Task JsonMessage(dynamic payload, GameHub hub)
     {
         var admin = hub.GetAdmin();
+        string message = payload.admin;
+
         if (hub.GetPlayerByConnectionId() == admin) {
-            await hub.Clients.All.SendAsync("gameUpdate", payload);
+            await hub.Clients.All.SendAsync("gameUpdate", message);
         } else {
             await hub.Clients.Client(hub.GetAdmin().ConnectionId).SendAsync("gameUpdate", "d");
         }

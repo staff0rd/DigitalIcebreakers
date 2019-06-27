@@ -11,12 +11,10 @@ namespace DigitalIcebreakers.Games
     {
         public string Name => "buzzer";
 
-        public async Task JsonMessage(string jsonPayload, GameHub gameHub) {}
-
-        public async Task Message(string payload, GameHub hub)
+        public async Task JsonMessage(dynamic payload, GameHub hub) 
         {
             var player = hub.GetPlayerByConnectionId();
-            switch(payload)
+            switch(payload.client)
             {
                 case "up": await hub.Clients.Client(hub.GetAdmin().ConnectionId).SendAsync("gameUpdate", player.ExternalId, player.Name, "up"); break;
                 case "down": await hub.Clients.Client(hub.GetAdmin().ConnectionId).SendAsync("gameUpdate", player.ExternalId, player.Name, "down"); break;
