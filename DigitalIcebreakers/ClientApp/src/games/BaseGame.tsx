@@ -3,14 +3,15 @@ import { HubConnection } from '@aspnet/signalr';
 
 export interface BaseGameProps {
     connection: HubConnection;
+    setMenuItems: (items: any) => void;
 }
 
 export class BaseGame<T extends BaseGameProps, U> extends Component<T, U> {
     displayName = BaseGame.name
     debug: boolean;
 
-    constructor(props: T, context: U, debug: boolean = false) {
-        super(props, context);
+    constructor(props: T, debug: boolean = false) {
+        super(props);
 
         this.debug = debug;
         if (this.debug)

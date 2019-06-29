@@ -11,22 +11,23 @@ namespace DigitalIcebreakers.Games
     public class YesNoMaybe : IGame
     {
         public string Name => "yes-no-maybe";
-
         Dictionary<Guid, int> _results = new Dictionary<Guid, int>();
-
         public async Task JsonMessage(dynamic payload, GameHub hub)
         {
-            if (!string.IsNullOrEmpty(payload.admin) && hub.IsAdmin) {
-                if (payload.admin == "reset")
+            string admin = payload.admin;
+            string client = payload.client;
+
+            if (!string.IsNullOrEmpty(admin) && hub.IsAdmin) {
+                if (admin == "reset")
                     _results.Clear();
             }
 
-            if (!string.IsNullOrEmpty(payload.client))
+            if (!string.IsNullOrEmpty(client))
             {
                 // 1 = no
                 // 0 = yes
                 int value;
-                if (int.TryParse(payload.client, out value))
+                if (int.TryParse(client, out value))
                     _results[hub.GetPlayerByConnectionId().Id] = value;
             }
             

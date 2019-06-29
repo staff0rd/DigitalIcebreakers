@@ -1,19 +1,24 @@
 import React from 'react';
 import { Button  } from 'react-bootstrap';
-import { BaseGame } from '../BaseGame';
+import { BaseGame, BaseGameProps } from '../BaseGame';
 
-export class YesNoMaybeClient extends BaseGame {
+
+interface YesNoMaybeState {
+    choice: string | undefined;
+}
+
+export class YesNoMaybeClient extends BaseGame<BaseGameProps, YesNoMaybeState> {
     displayName = YesNoMaybeClient.name
 
-    constructor(props, context) {
-        super(props, context);
+    constructor(props: BaseGameProps) {
+        super(props);
 
         this.state = {
             choice: undefined
         };
     }
 
-    choose = (choice) => {
+    choose = (choice: string) => {
         this.setState({ choice: choice });
         this.clientMessage(choice);
     }

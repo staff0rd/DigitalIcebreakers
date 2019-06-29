@@ -2,21 +2,25 @@ import React from 'react';
 import { ListGroup, ListGroupItem  } from 'react-bootstrap';
 import doggo from './doggo.jpeg';
 import kitteh from './kitteh.jpg';
-import { BaseGame } from '../BaseGame'
+import { BaseGame, BaseGameProps } from '../BaseGame'
 
-export class DoggosVsKittehsClient extends BaseGame {
+interface DoggosVsKittehsState {
+    choice: string | undefined;
+}
+
+export class DoggosVsKittehsClient extends BaseGame<BaseGameProps, DoggosVsKittehsState> {
     displayName = DoggosVsKittehsClient.name
 
-    constructor(props, context) {
-        super(props,context);
+    constructor(props: BaseGameProps) {
+        super(props);
         
         this.state = {
             choice: undefined
         };
     }
 
-    choose = (choice) => {
-        if (choice !== this.choice) {
+    choose = (choice: string) => {
+        if (choice !== this.state.choice) {
             this.setState({ choice: choice });
             this.props.connection.invoke("hubMessage", JSON.stringify({client: choice}));
         }

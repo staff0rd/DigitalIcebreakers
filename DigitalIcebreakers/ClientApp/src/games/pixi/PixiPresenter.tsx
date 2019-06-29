@@ -7,8 +7,8 @@ export abstract class PixiPresenter<T extends BaseGameProps, U> extends BaseGame
     app: PIXI.Application;
     pixiElement: HTMLDivElement | null;
 
-    constructor(backgroundColor: number, props: T, context: U) {
-        super(props, context);
+    constructor(backgroundColor: number, props: T) {
+        super(props);
 
         this.app = new PIXI.Application({ autoResize: true, backgroundColor: backgroundColor });
         this.pixiElement = null;

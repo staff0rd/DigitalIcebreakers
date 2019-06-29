@@ -3,12 +3,20 @@ import { Button, Navbar, FormGroup } from 'react-bootstrap';
 import { PixiPresenter } from '../pixi/PixiPresenter';
 import { Colors } from '../../Colors';
 import { Graph } from '../pixi/Graph';
+import { BaseGameProps } from '../BaseGame';
 
-export class YesNoMaybePresenter extends PixiPresenter {
+export interface YesNoMaybeState {
+    yes: number;
+    no: number;
+    maybe: number;
+}
+
+export class YesNoMaybePresenter extends PixiPresenter<BaseGameProps, YesNoMaybeState> {
     displayName = YesNoMaybePresenter.name
+    graph!: Graph;
 
-    constructor(props, context) {
-        super(0xFFFFFF, props,context);
+    constructor(props: BaseGameProps) {
+        super(0xFFFFFF, props);
         
         this.state = {
             yes: 0,

@@ -46,7 +46,7 @@ export class IdeaWallPresenter extends PixiPresenter<IdeaWallPresenterProps, Ide
     ideaContainer: IdeaContainer;
 
     constructor(props: IdeaWallPresenterProps, context: IdeaWallPresenterState) {
-        super(0xFFFFFF, props,context);
+        super(0xFFFFFF, props);
         
         this.myStorage = window.localStorage;
 

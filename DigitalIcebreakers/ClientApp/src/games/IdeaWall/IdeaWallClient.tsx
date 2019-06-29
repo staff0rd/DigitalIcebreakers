@@ -12,7 +12,7 @@ export class IdeaWallClient extends BaseGame<BaseGameProps, IdeaWallClientState>
     displayName = IdeaWallClient.name
 
     constructor(props: BaseGameProps, context: IdeaWallClientState) {
-        super(props, context);
+        super(props);
 
         this.state = {
             idea: ""

@@ -18,10 +18,12 @@ namespace DigitalIcebreakers.Games
             // 1 = kittehs
             // 0 = doggos
 
-            if (!string.IsNullOrWhiteSpace(payload.client))
+            string client = payload.client;
+
+            if (!string.IsNullOrWhiteSpace(client))
             {
                 int value;
-                if (int.TryParse(payload, out value))
+                if (int.TryParse(client, out value))
                     _results[hub.GetPlayerByConnectionId().Id] = value;
             }
             

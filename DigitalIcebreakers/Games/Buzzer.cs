@@ -13,8 +13,9 @@ namespace DigitalIcebreakers.Games
 
         public async Task JsonMessage(dynamic payload, GameHub hub) 
         {
+            string client = payload.client;
             var player = hub.GetPlayerByConnectionId();
-            switch(payload.client)
+            switch(client)
             {
                 case "up": await hub.Clients.Client(hub.GetAdmin().ConnectionId).SendAsync("gameUpdate", player.ExternalId, player.Name, "up"); break;
                 case "down": await hub.Clients.Client(hub.GetAdmin().ConnectionId).SendAsync("gameUpdate", player.ExternalId, player.Name, "down"); break;
