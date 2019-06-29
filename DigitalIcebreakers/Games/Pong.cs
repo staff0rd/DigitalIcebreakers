@@ -22,7 +22,7 @@ namespace DigitalIcebreakers.Games
         Dictionary<Guid, int> _leftTeam = new Dictionary<Guid, int>();
         Dictionary<Guid, int> _rightTeam = new Dictionary<Guid, int>();
 
-        public async Task JsonMessage(dynamic payload, GameHub hub)
+        public async Task Message(dynamic payload, GameHub hub)
         {
             var player = hub.GetPlayerByConnectionId();
             var externalId = player.ExternalId;

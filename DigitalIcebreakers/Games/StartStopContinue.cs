@@ -8,7 +8,7 @@ public class StartStopContinue : IGame
 {
     public string Name => "startstopcontinue";
     
-    public async Task JsonMessage(dynamic payload, GameHub hub)
+    public async Task Message(dynamic payload, GameHub hub)
     {
         var player = hub.GetPlayerByConnectionId();
 

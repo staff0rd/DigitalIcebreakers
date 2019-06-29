@@ -8,7 +8,7 @@ public class IdeaWall : IGame
 {
     public string Name => "ideawall";
 
-    public async Task JsonMessage(dynamic payload, GameHub hub)
+    public async Task Message(dynamic payload, GameHub hub)
     {
         var player = hub.GetPlayerByConnectionId();
 

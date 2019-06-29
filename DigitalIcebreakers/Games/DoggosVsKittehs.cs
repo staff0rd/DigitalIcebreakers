@@ -13,7 +13,7 @@ namespace DigitalIcebreakers.Games
 
         Dictionary<Guid, int> _results = new Dictionary<Guid, int>();
 
-        public async Task JsonMessage(dynamic payload, GameHub hub)
+        public async Task Message(dynamic payload, GameHub hub)
         {
             // 1 = kittehs
             // 0 = doggos

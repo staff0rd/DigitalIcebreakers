@@ -255,7 +255,7 @@ namespace DigitalIcebreakers.Hubs
             if (lobby != null && lobby.CurrentGame != null) 
             {
                 dynamic payload = JsonConvert.DeserializeObject(json);
-                await lobby.CurrentGame.JsonMessage(payload, this);
+                await lobby.CurrentGame.Message(payload, this);
             }
         }
     }

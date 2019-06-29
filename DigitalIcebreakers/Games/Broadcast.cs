@@ -7,7 +7,7 @@ public class Broadcast : IGame
 {
     public string Name => "broadcast";
     
-    public async Task JsonMessage(dynamic payload, GameHub hub)
+    public async Task Message(dynamic payload, GameHub hub)
     {
         var admin = hub.GetAdmin();
         string message = payload.admin;

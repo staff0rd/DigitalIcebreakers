@@ -9,6 +9,6 @@ namespace DigitalIcebreakers.Games
 
         string Name { get; }
 
-        Task JsonMessage(dynamic payload, GameHub hub);
+        Task Message(dynamic payload, GameHub hub);
     }
 }

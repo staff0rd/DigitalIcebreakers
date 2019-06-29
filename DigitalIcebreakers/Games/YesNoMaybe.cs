@@ -12,7 +12,7 @@ namespace DigitalIcebreakers.Games
     {
         public string Name => "yes-no-maybe";
         Dictionary<Guid, int> _results = new Dictionary<Guid, int>();
-        public async Task JsonMessage(dynamic payload, GameHub hub)
+        public async Task Message(dynamic payload, GameHub hub)
         {
             string admin = payload.admin;
             string client = payload.client;
