@@ -7,7 +7,8 @@ import { YesNoMaybePresenter } from './YesNoMaybe/YesNoMaybePresenter';
 import { YesNoMaybeClient } from './YesNoMaybe/YesNoMaybeClient';
 import { IdeaWallClient } from './IdeaWall/IdeaWallClient';
 import { IdeaWallPresenter } from './IdeaWall/IdeaWallPresenter';
-import { Buzzer } from './Buzzer/Buzzer';
+import { BuzzerClient } from './Buzzer/BuzzerClient';
+import { BuzzerPresenter } from './Buzzer/BuzzerPresenter';
 import PongPresenter from './Pong/PongPresenter';
 import { PongClient } from './Pong/PongClient';
 
@@ -25,8 +26,8 @@ export default function (props) {
         title: "Yes, No, Maybe"
     }, {
         name: "buzzer",
-        client: <Buzzer {...props} />,
-        presenter: <Buzzer {...props} />,
+        client: <BuzzerClient {...props} />,
+        presenter: <BuzzerPresenter {...props} />,
         title: "Buzzer",
         fullscreen: true
     }, {

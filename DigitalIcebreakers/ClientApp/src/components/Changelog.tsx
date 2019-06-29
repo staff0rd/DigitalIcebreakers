@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import { HelpBlock, Button } from 'react-bootstrap';
 import { ChangelogItem } from '../ChangelogItem';
-import { RenderTarget } from 'pixi.js';
 import Moment from 'react-moment';
-
 
 interface ChangelogState {
     changelogs: ChangelogItem[]

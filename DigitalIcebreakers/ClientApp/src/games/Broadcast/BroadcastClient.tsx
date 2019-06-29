@@ -1,15 +1,19 @@
 import React from 'react';
 import { Button, Glyphicon  } from 'react-bootstrap';
-import { BaseGame } from '../BaseGame';
+import { BaseGame, BaseGameProps } from '../BaseGame';
 
-export class BroadcastClient extends BaseGame {
+interface BroadcastClientState {
+    value: string;
+}
+
+export class BroadcastClient extends BaseGame<BaseGameProps, BroadcastClientState>  {
     displayName = BroadcastClient.name
 
-    constructor(props, context) {
-        super(props, context);
+    constructor(props: BaseGameProps) {
+        super(props);
 
         this.state = {
-            value: undefined
+            value: ""
         };
     }
 
@@ -19,7 +23,7 @@ export class BroadcastClient extends BaseGame {
             console.log(result);
             this.setState({
                 value: result
-            }, this.init);
+            });
         });
     }
 

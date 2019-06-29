@@ -2,7 +2,10 @@ import { Colors } from '../../Colors';
 import * as PIXI from "pixi.js";
 
 export class Graph {
-    constructor(app, data) {
+    private app: PIXI.Application;
+    private data: any[];
+
+    constructor(app: PIXI.Application, data: any[]) {
         this.app = app;
         this.data = data;
 
@@ -14,7 +17,7 @@ export class Graph {
         });
     }
 
-    getBar(position) {
+    getBar(position: number) {
         const count = this.data.length;
         const value = Math.max(this.data[position].value, 0);
         const color = this.data[position].color;
@@ -47,11 +50,11 @@ export class Graph {
         txtLabel.position.set(leftSideOfBar + barWidth / 2, this.app.screen.height - barWidth / 2);
         txtLabel.pivot.set(txtLabel.width / 2, 0);
 
-        const txtValue = new PIXI.Text(value, { fontSize: valueFontSize });
+        const txtValue = new PIXI.Text(value.toString(), { fontSize: valueFontSize });
         txtValue.position.set(leftSideOfBar + barWidth / 2, bottom - value * unitHeight);
         txtValue.pivot.set(txtValue.width / 2, txtValue.height);
 
-        container.addChild(bar, line, txtLabel, txtValue);
+        container.addChild(bar, line, txtLabel as PIXI.Container, txtValue);
         
         return container;
     }

@@ -1,12 +1,17 @@
 import React from 'react';
 import { FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
-import { BaseGame } from '../BaseGame';
+import { BaseGame, BaseGameProps } from '../BaseGame';
 
-export class BroadcastPresenter extends BaseGame {
+interface BroadcastPresenterState {
+    count: number;
+    value: string;
+}
+
+export class BroadcastPresenter extends BaseGame<BaseGameProps, BroadcastPresenterState> {
     displayName = BroadcastPresenter.name
 
-    constructor(props, context) {
-        super(props,context);
+    constructor(props: BaseGameProps) {
+        super(props);
         
         this.state = {
             count: 0,
@@ -25,8 +30,9 @@ export class BroadcastPresenter extends BaseGame {
         });
     }
 
-    updateValue = (e) => {
-        this.setState({value: e.target.value}, () => {
+    updateValue = (e: React.FormEvent<FormControl>) => {
+        const target = e.target as HTMLInputElement;
+        this.setState({value: target.value}, () => {
             this.adminMessage(this.state.value);
         });
     }
