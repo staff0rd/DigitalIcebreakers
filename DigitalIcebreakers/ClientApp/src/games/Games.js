@@ -11,6 +11,7 @@ import { BuzzerClient } from './Buzzer/BuzzerClient';
 import { BuzzerPresenter } from './Buzzer/BuzzerPresenter';
 import PongPresenter from './Pong/PongPresenter';
 import { PongClient } from './Pong/PongClient';
+import { StartStopContinueClient } from './StartStopContinue/StartStopContinueClient';
 
 export default function (props) {
     return [{
@@ -40,8 +41,15 @@ export default function (props) {
     }, {
         name: "ideawall",
         client: <IdeaWallClient {...props} />,
-        presenter: <IdeaWallPresenter {...props} />,
+        presenter: <IdeaWallPresenter {...props} storageKey="ideawall:ideas" />,
         title: "Idea Wall",
+        fullscreen: true,
+        isGame: false
+    }, {
+        name: "startstopcontinue",
+        client: <StartStopContinueClient {...props} />,
+        presenter: <IdeaWallPresenter {...props} storageKey="startstopcontinue:ideas" />,
+        title: "Start Stop Continue",
         fullscreen: true,
         isGame: false
     }, {

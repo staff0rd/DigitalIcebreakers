@@ -9,7 +9,6 @@ import { IdeaView } from './IdeaView';
 import { BaseGameProps } from '../BaseGame'
 import { Idea } from './Idea'
 
-const STORAGE_KEY = "ideawall:ideas";
 const WIDTH = 200;
 const MARGIN = 5;
 
@@ -30,6 +29,7 @@ interface ModalProperties {
 
 interface IdeaWallPresenterProps extends BaseGameProps {
     setMenuItems(items: JSX.Element[]): void;
+    storageKey: string;
 }
 
 interface IdeaWallPresenterState {
@@ -62,7 +62,7 @@ export class IdeaWallPresenter extends PixiPresenter<IdeaWallPresenterProps, Ide
         };
 
         this.ideaContainer = new IdeaContainer(this.app, WIDTH, MARGIN);
-        this.app.stage.addChild(this.ideaContainer.getDragContainer() as PIXI.DisplayObject, this.ideaContainer);
+        this.app.stage.addChild(this.ideaContainer.getDragContainer() as PIXI.DisplayObject, this.ideaContainer.getIdeaContainer());
     }
 
     getRandomColor() {
@@ -71,13 +71,13 @@ export class IdeaWallPresenter extends PixiPresenter<IdeaWallPresenterProps, Ide
 
     saveIdeas() {
         if (this.myStorage) {
-            this.myStorage.setItem(STORAGE_KEY, JSON.stringify(this.state.ideas));
+            this.myStorage.setItem(this.props.storageKey, JSON.stringify(this.state.ideas));
         }
     }
 
     getIdeas() {
         if (this.myStorage) {
-            const raw = this.myStorage.getItem(STORAGE_KEY);
+            const raw = this.myStorage.getItem(this.props.storageKey);
             if (raw) {
                 return JSON.parse(raw);
             }
@@ -86,15 +86,15 @@ export class IdeaWallPresenter extends PixiPresenter<IdeaWallPresenterProps, Ide
 
     clearIdeas() {
         if (this.myStorage) {
-            this.myStorage.removeItem(STORAGE_KEY);
+            this.myStorage.removeItem(this.props.storageKey);
         }
         this.setState({ideas: []}, () => this.init());
-        this.ideaContainer && this.ideaContainer.position.set(0);
+        this.ideaContainer.reset();
     }
 
     init() {
         this.setState({ ideas: this.getIdeas() || []}, () => {
-            this.ideaContainer.removeChildren();
+            this.ideaContainer.clear();
             this.state.ideas.forEach(idea => {
                 this.addIdeaToContainer(idea);
             })
