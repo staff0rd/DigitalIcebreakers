@@ -25,12 +25,14 @@ export class Changelog extends Component<{}, ChangelogState> {
 
     render() {
         const items: JSX.Element[] = [];
+        let i = 0;
         for (let change of this.state.changelogs) {
-            items.push(<li>
+            items.push(<li key={i}>
                 <span>{change.change}</span> • <Moment fromNow>
                     {change.date.toString()}
                 </Moment>
             </li>);
+            i++;
         }
         return (
             <div>

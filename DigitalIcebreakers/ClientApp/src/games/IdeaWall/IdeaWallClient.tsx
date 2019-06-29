@@ -1,5 +1,5 @@
-import React, { SyntheticEvent } from 'react';
-import { Button, Form, FormGroup, ControlLabel, FormControl, FormControlProps } from 'react-bootstrap';
+import React from 'react';
+import { Button, Form, FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
 import { BaseGame, BaseGameProps } from '../BaseGame';
 
 const MAX_CHARACTERS = 50;

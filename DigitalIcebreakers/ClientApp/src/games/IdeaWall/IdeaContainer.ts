@@ -2,7 +2,6 @@ import { clamp } from '../../util/clamp';
 import * as PIXI from "pixi.js";
 import { IdeaView } from './IdeaView';
 import { Point } from './Point';
-import { Idea } from './Idea';
 import { intersects } from '../../util/intersects';
 
 export class IdeaContainer extends PIXI.Container {
