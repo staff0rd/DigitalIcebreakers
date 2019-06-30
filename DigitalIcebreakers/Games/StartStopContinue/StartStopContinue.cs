@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using DigitalIcebreakers.Games;
 using DigitalIcebreakers.Hubs;
 using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
 
 public class StartStopContinue : IGame 
 {
@@ -11,9 +12,10 @@ public class StartStopContinue : IGame
     {
         var player = hub.GetPlayerByConnectionId();
 
-        string idea = payload.idea;
+        string client = payload.client;
+        Idea idea = JsonConvert.DeserializeObject<Idea>(client);
 
-        if (!string.IsNullOrWhiteSpace(idea))
+        if (idea != null)
             await hub.Clients.Client(hub.GetAdmin().ConnectionId).SendAsync("gameUpdate", player.Name,  idea);
     }
 

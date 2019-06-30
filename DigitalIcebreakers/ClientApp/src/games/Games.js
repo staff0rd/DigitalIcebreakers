@@ -6,7 +6,7 @@ import { BroadcastPresenter } from './Broadcast/BroadcastPresenter';
 import { YesNoMaybePresenter } from './YesNoMaybe/YesNoMaybePresenter';
 import { YesNoMaybeClient } from './YesNoMaybe/YesNoMaybeClient';
 import { IdeaWallClient } from './IdeaWall/IdeaWallClient';
-import { IdeaWallPresenter } from './IdeaWall/IdeaWallPresenter';
+import { IdeaWallPresenter, StartStopContinueLanes } from './IdeaWall/IdeaWallPresenter';
 import { BuzzerClient } from './Buzzer/BuzzerClient';
 import { BuzzerPresenter } from './Buzzer/BuzzerPresenter';
 import PongPresenter from './Pong/PongPresenter';
@@ -48,7 +48,7 @@ export default function (props) {
     }, {
         name: "startstopcontinue",
         client: <StartStopContinueClient {...props} />,
-        presenter: <IdeaWallPresenter {...props} storageKey="startstopcontinue:ideas" />,
+        presenter: <IdeaWallPresenter {...props} storageKey="startstopcontinue:ideas" lanes={StartStopContinueLanes} />,
         title: "Start Stop Continue",
         fullscreen: true,
         isGame: false

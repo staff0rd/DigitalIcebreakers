@@ -4,13 +4,12 @@ import { IdeaView } from './IdeaView';
 import { Point } from './Point';
 import { intersects } from '../../util/intersects';
 
-interface Lane {
+export interface Lane {
     name: string;
     id: number;
 };
 
 export class IdeaContainer {
-    
     private app: PIXI.Application;
     private ideaWidth: number;
     private margin: number;
@@ -18,25 +17,30 @@ export class IdeaContainer {
     private ideaContainerDrag!: PIXI.Graphics;
     private ideaContainer: PIXI.Container;
     private lanes: Lane[];
-    
+    private laneContainer: PIXI.Container;
     
     constructor(app: PIXI.Application, ideaWidth: number, margin: number, lanes: Lane[] = []) {
         this.ideaContainer = new PIXI.Container();
-
+        this.laneContainer = new PIXI.Container();
+        
         this.app = app;
         
         this.ideaWidth = ideaWidth;
-
+        
         this.margin = margin;
-
+        
         this.setupDrag();
-
+        
         this.pointerData = undefined;
-
+        
         this.lanes = lanes;
-
+        
         if (this.lanes.length)
-            this.setupLanes();
+        this.setupLanes();
+    }
+    
+    addToStage(stage: PIXI.Container) {
+        stage.addChild(this.laneContainer, this.ideaContainerDrag as PIXI.DisplayObject, this.ideaContainer);
     }
 
     reset() {
@@ -48,9 +52,21 @@ export class IdeaContainer {
     }
 
     setupLanes() {
+        this.laneContainer.removeChildren();
         this.lanes.forEach((lane, ix) => {
-
+            const label = new PIXI.Text(lane.name);
+            label.anchor.set(.5, 0);
+            label.position.set(ix * this.laneWidth + this.laneWidth/2, this.margin);
+            this.laneContainer!.addChild(label);
         });
+
+        for (let i = 1; i < this.lanes.length; i++) {
+            const g = new PIXI.Graphics();
+            g.lineStyle(3, 0x000000);
+            g.moveTo(i * this.laneWidth, this.margin);
+            g.lineTo(i * this.laneWidth, this.app.screen.height);
+            this.laneContainer.addChild(g);
+        }
     }
 
     private setupDrag() {
@@ -68,9 +84,9 @@ export class IdeaContainer {
         this.ideaContainerDrag.on('pointerupoutside', this.onDragEnd);
     }
 
-    add(idea: IdeaView, isNew: boolean = false, laneId = 0) {
+    add(idea: IdeaView, isNew: boolean = false) {
         if (isNew) {
-            const point = this.getNextFreeSpot(laneId);
+            const point = this.getNextFreeSpot(idea.idea.lane);
             idea.x = point.x
             idea.y = point.y;
             this.ideaContainer.addChild(idea);
@@ -85,11 +101,11 @@ export class IdeaContainer {
     }
 
     private getNextFreeSpot(laneId: number) : Point {
-        let columns = Math.floor(this.laneWidth / this.ideaWidth);
+        let columns = Math.floor(this.laneWidth / this.ideaWidth) || 1;
         let row = 0;
         while(row < 50) {
             for (let column = 0; column < columns; column++) {
-                const x = column * this.ideaWidth + this.margin * column - this.ideaContainer.x;
+                const x = this.laneWidth * laneId + column * this.ideaWidth + this.margin * column - this.ideaContainer.x;
                 const y = row * this.ideaWidth + this.margin * row - this.ideaContainer.y;
                 if (this.checkIsEmpty(x, y)) {
                     return {x, y}
@@ -103,14 +119,6 @@ export class IdeaContainer {
     private checkIsEmpty(x: number, y: number) {
         const rect = {x: x, y: y, width: this.ideaWidth, height: this.ideaWidth};
         return this.ideaContainer.children.filter((c) => intersects(c as IdeaView, rect)).length === 0
-    }
-
-    getDragContainer() {
-        return this.ideaContainerDrag;
-    }
-
-    getIdeaContainer() {
-        return this.ideaContainer;
     }
 
     private onDragStart = (event: PIXI.interaction.InteractionEvent)  => {
@@ -138,6 +146,7 @@ export class IdeaContainer {
     resize() {
         this.ideaContainerDrag.width = this.app.screen.width;
         this.ideaContainerDrag.height = this.app.screen.height;
+        this.setupLanes();
     }
 
     arrange() {

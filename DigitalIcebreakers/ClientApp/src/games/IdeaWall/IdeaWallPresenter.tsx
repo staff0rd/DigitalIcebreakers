@@ -4,7 +4,7 @@ import { PixiPresenter } from '../pixi/PixiPresenter';
 import { Colors } from '../../Colors';
 import * as Random from '../../Random';
 import { Events } from '../../Events';
-import { IdeaContainer } from './IdeaContainer';
+import { IdeaContainer, Lane } from './IdeaContainer';
 import { IdeaView } from './IdeaView';
 import { BaseGameProps } from '../BaseGame'
 import { Idea } from './Idea'
@@ -21,6 +21,17 @@ const IDEA_COLORS = [
     Colors.Red.A100
 ];
 
+export const StartStopContinueLanes: Lane[] = [
+    { name: "Start", id: 0 },
+    { name: "Stop", id: 1 },
+    { name: "Continue", id: 2 },
+]
+
+interface ServerIdea { 
+    Content: string;
+    Lane: number;
+}
+
 interface ModalProperties {
     title: string;
     body: string;
@@ -30,6 +41,7 @@ interface ModalProperties {
 interface IdeaWallPresenterProps extends BaseGameProps {
     setMenuItems(items: JSX.Element[]): void;
     storageKey: string;
+    lanes?: Lane[];
 }
 
 interface IdeaWallPresenterState {
@@ -61,8 +73,8 @@ export class IdeaWallPresenter extends PixiPresenter<IdeaWallPresenterProps, Ide
             }
         };
 
-        this.ideaContainer = new IdeaContainer(this.app, WIDTH, MARGIN);
-        this.app.stage.addChild(this.ideaContainer.getDragContainer() as PIXI.DisplayObject, this.ideaContainer.getIdeaContainer());
+        this.ideaContainer = new IdeaContainer(this.app, WIDTH, MARGIN, this.props.lanes || []);
+        this.ideaContainer.addToStage(this.app.stage);
     }
 
     getRandomColor() {
@@ -161,8 +173,10 @@ export class IdeaWallPresenter extends PixiPresenter<IdeaWallPresenterProps, Ide
         this.ideaContainer.add(view, isNew);
     }
 
-    getNewIdea(playerName: string, idea: string) : Idea {
-        return {playerName: playerName, idea: idea, color: this.getRandomColor(), x: undefined, y: undefined};
+    getNewIdea(playerName: string, idea: string | ServerIdea) : Idea {
+        let content = (idea as ServerIdea).Content || idea as string;
+        let lane = (idea as ServerIdea).Lane || 0;
+        return {playerName: playerName, idea: content, lane: lane, color: this.getRandomColor(), x: undefined, y: undefined};
     }
 
     componentDidMount() {
@@ -175,7 +189,7 @@ export class IdeaWallPresenter extends PixiPresenter<IdeaWallPresenterProps, Ide
         resize();
         Events.add('onresize', 'ideawall', resize);
         this.init();
-        this.props.connection.on("gameUpdate", (playerName, idea) => {
+        this.props.connection.on("gameUpdate", (playerName, idea: string | ServerIdea) => {
             const newIdea = this.getNewIdea(playerName, idea);
             this.addIdeaToContainer(newIdea, true);
             const ideas = [...this.state.ideas, newIdea];
