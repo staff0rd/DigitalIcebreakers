@@ -188,34 +188,25 @@ namespace DigitalIcebreakers.Hubs
             return player;
         }
 
+        // Given_an_existing_lobby_When_player_connects_to_a_new_lobby
+        // Given_an_existing_lobby_When_player_connects_to_the_same_lobby
+        // Given_a_non_exisitng_lobby_When_player_connects
+
         public async Task ConnectToLobby(User user, Guid lobbyId)
         {
             var player = GetPlayer(user);
             var existingLobby = GetLobby();
-            if (existingLobby != null)
-            {
-                if (existingLobby.Id != lobbyId)
-                {
-                    await LeaveLobby(player, existingLobby);
-                }
-                else
-                {
-                    await Connect(player, existingLobby);
-                }
-            }
+            if (existingLobby != null && existingLobby.Id != lobbyId)
+                await LeaveLobby(player, existingLobby);
+           
+            var lobby = _lobbys.SingleOrDefault(p => p.Id == lobbyId);
+            if (lobby == null)            
+                await Clients.Caller.SendAsync("closelobby");
             else
             {
-                var lobby = _lobbys.SingleOrDefault(p => p.Id == lobbyId);
-                if (lobby == null)
-                {
-                    await Clients.Caller.SendAsync("closelobby");
-                }
-                else
-                {
-                    _logger.LogInformation("{player} has joined {lobbyName} (#{lobbyNumber}, {lobbyPlayers} players)", player, lobby.Name, lobby.Number, lobby.PlayerCount);
+                if (!lobby.Players.Any(p => p.Id == player.Id))
                     lobby.Players.Add(player);
-                    await Connect(player, lobby);
-                }
+                await Connect(player, lobby);
             }
         }
 

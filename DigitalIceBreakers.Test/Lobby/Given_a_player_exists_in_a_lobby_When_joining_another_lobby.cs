@@ -1,14 +1,10 @@
 using DigitalIcebreakers;
-using DigitalIcebreakers.Hubs;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.AspNetCore.SignalR.Internal;
-using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using Shouldly;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DigitalIceBreakers.Test
 {
@@ -20,7 +16,8 @@ namespace DigitalIceBreakers.Test
 
         List<Lobby> _lobbys;
 
-        public Given_a_player_exists_in_a_lobby_When_joining_another_lobby()
+        [TestInitialize]
+        public async Task Setup()
         {
             var playerId = Guid.NewGuid();
             _lobbys = new List<Lobby> {
@@ -30,7 +27,7 @@ namespace DigitalIceBreakers.Test
 
             var gameHub = ObjectMother.GetMockGameHub(playerId, _lobbys);
 
-            gameHub.ConnectToLobby(new User { Id = playerId }, _lobbyIdNew).Wait();
+            await gameHub.ConnectToLobby(new User { Id = playerId }, _lobbyIdNew);
         }
 
         [TestMethod]
