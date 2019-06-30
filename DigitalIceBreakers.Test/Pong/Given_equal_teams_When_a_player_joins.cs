@@ -1,8 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
 using Shouldly;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DigitalIceBreakers.Test.Pong
 {
@@ -12,14 +14,19 @@ namespace DigitalIceBreakers.Test.Pong
         Dictionary<Guid, int> _leftTeam = new Dictionary<Guid, int>();
         Dictionary<Guid, int> _rightTeam = new Dictionary<Guid, int>();
 
-        public Given_equal_teams_When_a_player_joins()
+        [TestInitialize]
+        public async Task Setup()
         {
             var playerId = Guid.NewGuid();
             var game = new DigitalIcebreakers.Games.Pong(_leftTeam, _rightTeam);
             var lobby = ObjectMother.GetLobby(Guid.NewGuid(), game);
             lobby.Players.Add(ObjectMother.GetPlayer(playerId));
+            lobby.CurrentGame = game;
             var gameHub = ObjectMother.GetMockGameHub(playerId, lobby);
-            game.Message("join", gameHub).Wait();
+            var payload = JsonConvert.SerializeObject(new {
+                client = "join"
+            });
+            await gameHub.HubMessage(payload);
         }
 
         [TestMethod]
