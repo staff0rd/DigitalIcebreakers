@@ -4,23 +4,26 @@ using DigitalIcebreakers.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 
-public class StartStopContinue : IGame 
+namespace DigitalIcebreakers.Games
 {
-    public string Name => "startstopcontinue";
-    
-    public async Task Message(dynamic payload, GameHub hub)
+    public class StartStopContinue : IGame 
     {
-        var player = hub.GetPlayerByConnectionId();
+        public string Name => "startstopcontinue";
+        
+        public async Task Message(dynamic payload, GameHub hub)
+        {
+            var player = hub.GetPlayerByConnectionId();
 
-        string client = payload.client;
-        Idea idea = JsonConvert.DeserializeObject<Idea>(client);
+            string client = payload.client;
+            Idea idea = JsonConvert.DeserializeObject<Idea>(client);
 
-        if (idea != null)
-            await hub.Clients.Client(hub.GetAdmin().ConnectionId).SendAsync("gameUpdate", player.Name,  idea);
-    }
+            if (idea != null)
+                await hub.SendGameUpdateToAdmin(player.Name,  idea);
+        }
 
-    public Task Start(GameHub hub)
-    {
-        return Task.CompletedTask;
+        public Task Start(GameHub hub)
+        {
+            return Task.CompletedTask;
+        }
     }
 }

@@ -26,6 +26,11 @@ namespace DigitalIcebreakers.Hubs
             _settings = settings?.Value;
         }
 
+        internal async virtual Task SendGameUpdateToAdmin(params object[] parameters)
+        {
+            await Clients.Client(GetAdmin().ConnectionId).SendAsync("gameUpdate", parameters);
+        }
+
         public async Task StopGame()
         {
             var games = _lobbys.SelectMany(p => p.Players, (g, p) => new { g, p }).Where(p => p.p.IsAdmin && p.p.ConnectionId == Context.ConnectionId).Select(p => p.g).ToList();
@@ -169,7 +174,7 @@ namespace DigitalIcebreakers.Hubs
             }
         }
 
-        public Player GetAdmin()
+        private Player GetAdmin()
         {
             return GetLobby().Admin;
         }

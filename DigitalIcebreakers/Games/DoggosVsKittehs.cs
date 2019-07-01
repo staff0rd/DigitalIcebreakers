@@ -30,7 +30,7 @@ namespace DigitalIcebreakers.Games
             var totalPlayers = hub.GetLobby().Players.Count(p => !p.IsAdmin && p.IsConnected);
             var result = new Result { Doggos = _results.Where(p => p.Value == 0).Count(), Kittehs = _results.Where(p => p.Value == 1).Count() };
             result.Undecided = totalPlayers - result.Kittehs - result.Doggos;
-            await hub.Clients.Client(hub.GetAdmin().ConnectionId).SendAsync("gameUpdate", result);
+            await hub.SendGameUpdateToAdmin(result);
         }
 
         public Task Start(GameHub hub)

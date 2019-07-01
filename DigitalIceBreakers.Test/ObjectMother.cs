@@ -3,12 +3,20 @@ using DigitalIcebreakers.Games;
 using DigitalIcebreakers.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moq;
 using System;
 using System.Collections.Generic;
 
 namespace DigitalIceBreakers.Test
 {
+
+    public class MockGamehub : GameHub
+    {
+        public MockGamehub(ILogger<GameHub> logger, List<Lobby> lobbys, IOptions<AppSettings> settings) : base(logger, lobbys, settings)
+        {
+        }
+    }
     public static class ObjectMother
     {
         public static GameHub GetMockGameHub(Guid contextId, List<Lobby> lobbys)
