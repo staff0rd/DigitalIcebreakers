@@ -35,7 +35,6 @@ namespace DigitalIcebreakers.Games
             var result = new Result { Yes = _results.Where(p => p.Value == 0).Count(), No = _results.Where(p => p.Value == 1).Count() };
             result.Maybe = totalPlayers - result.No - result.Yes;
             await hub.SendGameUpdateToAdmin(result);
-
         }
 
         public Task Start(GameHub hub)
