@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DigitalIcebreakers.Hubs;
-using Microsoft.AspNetCore.SignalR;
-using Newtonsoft.Json;
 
 namespace DigitalIcebreakers.Games
 {
