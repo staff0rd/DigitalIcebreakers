@@ -26,7 +26,7 @@ namespace DigitalIcebreakers.Hubs
             _settings = settings?.Value;
         }
 
-        internal async virtual Task SendGameUpdateToAdmin(params object[] parameters)
+        public async virtual Task SendGameUpdateToAdmin(params object[] parameters)
         {
             await Clients.Client(GetAdmin().ConnectionId).SendAsync("gameUpdate", parameters);
         }

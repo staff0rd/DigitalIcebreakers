@@ -9,13 +9,12 @@ public class Broadcast : IGame
     
     public async Task Message(dynamic payload, GameHub hub)
     {
-        var admin = hub.GetAdmin();
         string message = payload.admin;
 
-        if (hub.GetPlayerByConnectionId() == admin) {
+        if (hub.IsAdmin) {
             await hub.Clients.All.SendAsync("gameUpdate", message);
         } else {
-            await hub.Clients.Client(hub.GetAdmin().ConnectionId).SendAsync("gameUpdate", "d");
+            await hub.SendGameUpdateToAdmin("d");
         }
     }
 

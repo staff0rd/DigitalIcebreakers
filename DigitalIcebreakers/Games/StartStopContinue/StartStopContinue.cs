@@ -13,9 +13,7 @@ namespace DigitalIcebreakers.Games
         public async Task Message(dynamic payload, GameHub hub)
         {
             var player = hub.GetPlayerByConnectionId();
-
-            string client = payload.client;
-            Idea idea = JsonConvert.DeserializeObject<Idea>(client);
+            var idea = payload.client.ToObject<Idea>();
 
             if (idea != null)
                 await hub.SendGameUpdateToAdmin(player.Name,  idea);

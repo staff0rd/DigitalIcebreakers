@@ -39,7 +39,7 @@ namespace DigitalIcebreakers.Games
                 case "down": Move(-1, externalId); break;
                 case "join": await Join(hub, player); break;
             }
-            await hub.Clients.Client(hub.GetAdmin().ConnectionId).SendAsync("gameUpdate", new Result(Speed(_leftTeam), Speed(_rightTeam)));
+            await hub.SendGameUpdateToAdmin(new Result(Speed(_leftTeam), Speed(_rightTeam)));
         }
 
         private decimal Speed(Dictionary<Guid, int> team)

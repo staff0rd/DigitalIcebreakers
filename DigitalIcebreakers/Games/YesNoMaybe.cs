@@ -34,7 +34,7 @@ namespace DigitalIcebreakers.Games
             var totalPlayers = hub.GetLobby().Players.Count(p => !p.IsAdmin && p.IsConnected);
             var result = new Result { Yes = _results.Where(p => p.Value == 0).Count(), No = _results.Where(p => p.Value == 1).Count() };
             result.Maybe = totalPlayers - result.No - result.Yes;
-            await hub.Clients.Client(hub.GetAdmin().ConnectionId).SendAsync("gameUpdate", result);
+            await hub.SendGameUpdateToAdmin(result);
 
         }
 
