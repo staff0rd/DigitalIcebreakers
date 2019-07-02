@@ -54,7 +54,7 @@ namespace DigitalIceBreakers.Test
         }
 
         public static Player GetPlayer(Guid id, bool isAdmin = false) {
-            return new Player { ConnectionId = id.ToString(), Id = id, ExternalId = id, IsAdmin = isAdmin };
+            return new Player { ConnectionId = id.ToString(), Id = id, ExternalId = id, IsAdmin = isAdmin, Name = id.ToString() };
         }
     }
 }

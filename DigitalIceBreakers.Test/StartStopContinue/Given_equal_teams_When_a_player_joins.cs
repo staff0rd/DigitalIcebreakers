@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 using Shouldly;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace DigitalIceBreakers.Test
 {
@@ -14,7 +13,7 @@ namespace DigitalIceBreakers.Test
         private MockGamehub _gameHub;
 
         [TestInitialize]
-        public async Task Setup()
+        public void Setup()
         {
             var playerId = Guid.NewGuid();
             var game = new StartStopContinue();
@@ -31,10 +30,10 @@ namespace DigitalIceBreakers.Test
         public void Then_can_reserialize()
         {
             _gameHub.SentToAdmin.Count.ShouldBe(1);
-            _gameHub.SentToAdmin.First().Count().ShouldBe(1);
-            dynamic payload = JsonConvert.DeserializeObject(_gameHub.SentToAdmin.First().ToString());
-            string content = payload.client.content;
-            content.ShouldBe("CONTENT");
+            _gameHub.SentToAdmin.First().Count().ShouldBe(2);
+            var idea = _gameHub.SentToAdmin.First().ElementAt(1) as Idea;
+            idea.ShouldNotBeNull();
+            idea.Content.ShouldBe("CONTENT");
         }
     }
 }
