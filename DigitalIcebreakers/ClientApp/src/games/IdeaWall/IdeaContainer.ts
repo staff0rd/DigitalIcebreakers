@@ -111,7 +111,7 @@ export class IdeaContainer {
             for (let column = 0; column < columns; column++) {
                 const x = this.laneWidth * laneId + column * this.ideaWidth + this.margin * column - this.ideaContainer.x;
                 const y = this.laneLabelBotom + row * this.ideaWidth + this.margin * row - this.ideaContainer.y;
-                if (this.checkIsEmpty(x, y)) {
+                if (this.checkIsEmpty(x, y, laneId)) {
                     return {x, y}
                 }
             }
@@ -120,9 +120,13 @@ export class IdeaContainer {
         return {x: 0, y: 0};
     }
 
-    private checkIsEmpty(x: number, y: number) {
+    private checkIsEmpty(x: number, y: number, laneId: number) {
         const rect = {x: x, y: y, width: this.ideaWidth, height: this.ideaWidth};
-        return this.ideaContainer.children.filter((c) => intersects(c as IdeaView, rect)).length === 0
+        return this.ideaContainer.children
+            .filter((c) => {
+            const iv = c as IdeaView;
+            return intersects(iv, rect) && iv.idea.lane == laneId;
+        }).length === 0
     }
 
     private onDragStart = (event: PIXI.interaction.InteractionEvent)  => {
