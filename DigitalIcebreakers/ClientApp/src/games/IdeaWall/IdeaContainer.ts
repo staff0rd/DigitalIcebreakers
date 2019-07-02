@@ -18,6 +18,7 @@ export class IdeaContainer {
     private ideaContainer: PIXI.Container;
     private lanes: Lane[];
     private laneContainer: PIXI.Container;
+    private laneLabelBotom = 0;
     
     constructor(app: PIXI.Application, ideaWidth: number, margin: number, lanes: Lane[] = []) {
         this.ideaContainer = new PIXI.Container();
@@ -34,6 +35,8 @@ export class IdeaContainer {
         this.pointerData = undefined;
         
         this.lanes = lanes;
+
+
         
         if (this.lanes.length)
         this.setupLanes();
@@ -58,6 +61,7 @@ export class IdeaContainer {
             label.anchor.set(.5, 0);
             label.position.set(ix * this.laneWidth + this.laneWidth/2, this.margin);
             this.laneContainer!.addChild(label);
+            this.laneLabelBotom = label.position.y + label.height + this.margin;
         });
 
         for (let i = 1; i < this.lanes.length; i++) {
@@ -106,7 +110,7 @@ export class IdeaContainer {
         while(row < 50) {
             for (let column = 0; column < columns; column++) {
                 const x = this.laneWidth * laneId + column * this.ideaWidth + this.margin * column - this.ideaContainer.x;
-                const y = row * this.ideaWidth + this.margin * row - this.ideaContainer.y;
+                const y = this.laneLabelBotom + row * this.ideaWidth + this.margin * row - this.ideaContainer.y;
                 if (this.checkIsEmpty(x, y)) {
                     return {x, y}
                 }
@@ -156,12 +160,16 @@ export class IdeaContainer {
 
         if (columns * gap - this.margin + this.ideaWidth <= this.app.screen.width)
             columns++;
+        
+        const ideas = [...this.ideaContainer.children];
+        this.ideaContainer.removeChildren();
 
-        this.ideaContainer.children.forEach((c,  i) => {
-            var row = Math.floor(i / columns)
-            var column = Math.floor(i % columns);
-            c.position.set(column * gap, row * gap);
-            (c as IdeaView).onDragEnd(); // saves position
+        ideas.forEach((c,  i) => {
+            const iv = c as IdeaView;
+            const point = this.getNextFreeSpot(iv.idea.lane);
+            iv.position.set(point.x, point.y);
+            this.ideaContainer.addChild(iv);
+            iv.onDragEnd(); // saves position
         })
     }
 }

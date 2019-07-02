@@ -28,8 +28,8 @@ export const StartStopContinueLanes: Lane[] = [
 ]
 
 interface ServerIdea { 
-    Content: string;
-    Lane: number;
+    content: string;
+    lane: number;
 }
 
 interface ModalProperties {
@@ -174,8 +174,8 @@ export class IdeaWallPresenter extends PixiPresenter<IdeaWallPresenterProps, Ide
     }
 
     getNewIdea(playerName: string, idea: string | ServerIdea) : Idea {
-        let content = (idea as ServerIdea).Content || idea as string;
-        let lane = (idea as ServerIdea).Lane || 0;
+        let content = (idea as ServerIdea).content || idea as string;
+        let lane = (idea as ServerIdea).lane || 0;
         return {playerName: playerName, idea: content, lane: lane, color: this.getRandomColor(), x: undefined, y: undefined};
     }
 

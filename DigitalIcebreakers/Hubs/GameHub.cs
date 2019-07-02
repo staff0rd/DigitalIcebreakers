@@ -28,7 +28,14 @@ namespace DigitalIcebreakers.Hubs
 
         public async virtual Task SendGameUpdateToAdmin(params object[] parameters)
         {
-            await Clients.Client(GetAdmin().ConnectionId).SendAsync("gameUpdate", parameters);
+            var client = Clients.Client(GetAdmin().ConnectionId);
+            var method = "gameUpdate";
+            switch (parameters.Length) {
+                case 1: await client.SendAsync(method, parameters[0]); break;
+                case 2: await client.SendAsync(method, parameters[0], parameters[1]); break;
+                case 3: await client.SendAsync(method, parameters[0], parameters[1], parameters[2]); break;
+                default: throw new NotImplementedException();
+            }
         }
 
         public async Task StopGame()
