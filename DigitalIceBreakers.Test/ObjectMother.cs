@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace DigitalIceBreakers.Test
+namespace DigitalIcebreakers.Test
 {
     public class MockGamehub : GameHub
     {

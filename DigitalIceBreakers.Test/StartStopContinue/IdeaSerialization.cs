@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using Shouldly;
 using DigitalIcebreakers.Games;
 
-namespace DigitalIceBreakers.Test
+namespace DigitalIcebreakers.Test
 {
     [TestClass]
     public class IdeaSerialization

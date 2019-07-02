@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalIcebreakers", "DigitalIcebreakers\DigitalIcebreakers.csproj", "{0995266B-0AEC-4306-9210-22167CECC5B1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalIceBreakers.Test", "DigitalIceBreakers.Test\DigitalIceBreakers.Test.csproj", "{A71AC0CE-2795-4076-AE48-411F6CEA95EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalIcebreakers.Test", "DigitalIcebreakers.Test\DigitalIcebreakers.Test.csproj", "{A71AC0CE-2795-4076-AE48-411F6CEA95EB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalIcebreakers.Robot", "DigitalIcebreakers.Robot\DigitalIcebreakers.Robot.csproj", "{B9160AC6-EDB5-4E7C-A9B1-4768FD80D20C}"
 EndProject

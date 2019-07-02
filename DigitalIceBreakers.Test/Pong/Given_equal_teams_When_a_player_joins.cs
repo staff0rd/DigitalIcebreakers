@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DigitalIceBreakers.Test.Pong
+namespace DigitalIcebreakers.Test.Pong
 {
     [TestClass]
     public class Given_equal_teams_When_a_player_joins

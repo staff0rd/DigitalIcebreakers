@@ -5,7 +5,7 @@ using Shouldly;
 using System;
 using System.Linq;
 
-namespace DigitalIceBreakers.Test
+namespace DigitalIcebreakers.Test
 {
     [TestClass]
     public class Given_an_Admin_message_When_received_by_hub

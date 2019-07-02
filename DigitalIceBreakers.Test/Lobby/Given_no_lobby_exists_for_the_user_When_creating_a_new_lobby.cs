@@ -9,7 +9,7 @@ using Shouldly;
 using System;
 using System.Collections.Generic;
 
-namespace DigitalIceBreakers.Test
+namespace DigitalIcebreakers.Test
 {
     [TestClass]
     public class Given_no_lobby_exists_for_the_user_When_creating_a_new_lobby

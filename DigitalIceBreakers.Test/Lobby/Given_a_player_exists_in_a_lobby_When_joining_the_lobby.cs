@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DigitalIceBreakers.Test
+namespace DigitalIcebreakers.Test
 {
     [TestClass]
     public class Given_a_player_exists_in_a_lobby_When_joining_the_lobby

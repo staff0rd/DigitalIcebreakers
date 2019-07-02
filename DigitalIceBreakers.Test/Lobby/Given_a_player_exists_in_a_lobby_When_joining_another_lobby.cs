@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DigitalIceBreakers.Test
+namespace DigitalIcebreakers.Test
 {
     [TestClass]
     public class Given_a_player_exists_in_a_lobby_When_joining_another_lobby
