@@ -1,3 +1,3 @@
 public class HubMessage {
-    public string System { get; set; }
+    public string system { get; set; }
 }

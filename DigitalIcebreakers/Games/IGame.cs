@@ -9,6 +9,10 @@ namespace DigitalIcebreakers.Games
 
         string Name { get; }
 
-        Task Message(dynamic payload, GameHub hub);
+        Task AdminMessage(dynamic admin, GameHub hub);
+
+        Task ClientMessage(dynamic client, GameHub hub);
+
+        Task SystemMessage(dynamic client, GameHub hub);
     }
 }

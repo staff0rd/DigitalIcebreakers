@@ -6,22 +6,17 @@ using Newtonsoft.Json;
 
 namespace DigitalIcebreakers.Games
 {
-    public class StartStopContinue : IGame 
+    public class StartStopContinue : Game, IGame 
     {
         public string Name => "startstopcontinue";
         
-        public async Task Message(dynamic payload, GameHub hub)
+        public async override Task ClientMessage(dynamic client, GameHub hub)
         {
+            var idea = client.ToObject<Idea>();
             var player = hub.GetPlayerByConnectionId();
-            var idea = payload.client.ToObject<Idea>();
 
             if (idea != null)
                 await hub.SendGameUpdateToAdmin(player.Name,  idea);
-        }
-
-        public Task Start(GameHub hub)
-        {
-            return Task.CompletedTask;
         }
     }
 }

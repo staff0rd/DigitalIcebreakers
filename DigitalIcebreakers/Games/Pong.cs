@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace DigitalIcebreakers.Games
 {
-    public class Pong : IGame
+    public class Pong : Game, IGame
     {
         public string Name => "pong";
 
@@ -22,16 +22,11 @@ namespace DigitalIcebreakers.Games
         Dictionary<Guid, int> _leftTeam = new Dictionary<Guid, int>();
         Dictionary<Guid, int> _rightTeam = new Dictionary<Guid, int>();
 
-        public async Task Message(dynamic payload, GameHub hub)
+        public async override Task ClientMessage(dynamic payload, GameHub hub)
         {
             var player = hub.GetPlayerByConnectionId();
             var externalId = player.ExternalId;
-            string system = payload.System;
-            switch (system) {
-                case "leave": Leave(externalId); Move(0, externalId); break;
-                case "join": await Join(hub, player); break;
-            }
-            string client = payload.client;
+            string client = payload;
             switch (client)
             {
                 case "release": Move(0, externalId); break;
@@ -39,6 +34,24 @@ namespace DigitalIcebreakers.Games
                 case "down": Move(-1, externalId); break;
                 case "join": await Join(hub, player); break;
             }
+            await SendUpdate(hub);
+        }
+
+        public async override Task SystemMessage(dynamic payload, GameHub hub)
+        {
+            var player = hub.GetPlayerByConnectionId();
+            var externalId = player.ExternalId;
+            string system = payload;
+            switch (system)
+            {
+                case "leave": Leave(externalId); Move(0, externalId); break;
+                case "join": await Join(hub, player); break;
+            }
+            await SendUpdate(hub);
+        }
+
+        private async Task SendUpdate(GameHub hub)
+        {
             await hub.SendGameUpdateToAdmin(new Result(Speed(_leftTeam), Speed(_rightTeam)));
         }
 
@@ -90,7 +103,7 @@ namespace DigitalIcebreakers.Games
             }
         }
 
-        public async Task Start(GameHub hub)
+        public override async Task Start(GameHub hub)
         {
             var players = hub.GetLobby().Players.ToList();
 
@@ -100,7 +113,7 @@ namespace DigitalIcebreakers.Games
             }
         }
 
-        public string GetGameData(Player player)
+        private string GetGameData(Player player)
         {
             if (_leftTeam.ContainsKey(player.ExternalId))
                 return "team:0";

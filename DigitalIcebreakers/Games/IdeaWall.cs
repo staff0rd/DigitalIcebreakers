@@ -4,22 +4,17 @@ using DigitalIcebreakers.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 
-public class IdeaWall : IGame 
+public class IdeaWall : Game, IGame 
 {
     public string Name => "ideawall";
 
-    public async Task Message(dynamic payload, GameHub hub)
+    public override async Task ClientMessage(dynamic payload, GameHub hub)
     {
         var player = hub.GetPlayerByConnectionId();
 
-        string idea = payload.idea;
+        string idea = payload;
 
         if (!string.IsNullOrWhiteSpace(idea))
             await hub.SendGameUpdateToAdmin(player.Name, idea);
-    }
-
-    public Task Start(GameHub hub)
-    {
-        return Task.CompletedTask;
     }
 }

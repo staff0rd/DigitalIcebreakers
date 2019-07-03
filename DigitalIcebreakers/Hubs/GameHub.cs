@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace DigitalIcebreakers.Hubs
 {
@@ -249,7 +250,7 @@ namespace DigitalIcebreakers.Hubs
 
         private async Task SystemMessage(string action)
         {
-            var payload = JsonConvert.SerializeObject(new HubMessage { System = action });
+            var payload = JsonConvert.SerializeObject(new HubMessage { system = action });
             await HubMessage(payload);
         }
 
@@ -258,8 +259,16 @@ namespace DigitalIcebreakers.Hubs
             var lobby = GetLobby();
             if (lobby != null && lobby.CurrentGame != null) 
             {
-                dynamic payload = JsonConvert.DeserializeObject(json);
-                await lobby.CurrentGame.Message(payload, this);
+                var message = JObject.Parse(json);
+                
+                JToken b = message.Children().First();
+
+                // switch (message.Properties().First().Name)
+                // {
+                //     case "system": await lobby.CurrentGame.SystemMessage(message.Children().First())
+                // }
+
+                // await lobby.CurrentGame.Message(payload, this);
             }
         }
     }

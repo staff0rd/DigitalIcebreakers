@@ -7,13 +7,13 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace DigitalIcebreakers.Games
 {
-    public class Buzzer : IGame
+    public class Buzzer : Game, IGame
     {
         public string Name => "buzzer";
 
-        public async Task Message(dynamic payload, GameHub hub) 
+        public override async Task ClientMessage(dynamic payload, GameHub hub) 
         {
-            string client = payload.client;
+            string client = payload;
             var player = hub.GetPlayerByConnectionId();
             switch(client)
             {
@@ -21,11 +21,6 @@ namespace DigitalIcebreakers.Games
                 case "down": await hub.SendGameUpdateToAdmin(player.ExternalId, player.Name, "down"); break;
                 default: break;
             }
-        }
-
-        public Task Start(GameHub hub)
-        {
-            return Task.CompletedTask;
         }
     }
 }

@@ -8,7 +8,7 @@ using System.Linq;
 namespace DigitalIcebreakers.Test
 {
     [TestClass]
-    public class Given_an_Admin_message_When_received_by_hub
+    public class Given_a_Client_message_When_received_by_hub
     {
         private MockGamehub _gameHub;
 
@@ -27,7 +27,7 @@ namespace DigitalIcebreakers.Test
         }
 
         [TestMethod]
-        public void Then_can_reserialize()
+        public void Then_is_forwarded_to_admin()
         {
             _gameHub.SentToAdmin.Count.ShouldBe(1);
             _gameHub.SentToAdmin.First().Count().ShouldBe(2);
