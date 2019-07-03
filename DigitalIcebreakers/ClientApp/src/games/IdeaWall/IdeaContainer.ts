@@ -100,7 +100,7 @@ export class IdeaContainer {
             this.ideaContainer.addChild(idea);
     }
 
-    private get laneWidth()  {
+    public get laneWidth()  {
         return this.app.screen.width / (this.lanes.length || 1);
     }
 

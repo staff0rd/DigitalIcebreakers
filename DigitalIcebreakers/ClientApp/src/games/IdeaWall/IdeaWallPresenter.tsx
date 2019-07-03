@@ -42,6 +42,7 @@ interface IdeaWallPresenterProps extends BaseGameProps {
     setMenuItems(items: JSX.Element[]): void;
     storageKey: string;
     lanes?: Lane[];
+    dynamicSize: boolean;
 }
 
 interface IdeaWallPresenterState {
@@ -169,7 +170,7 @@ export class IdeaWallPresenter extends PixiPresenter<IdeaWallPresenterProps, Ide
     }
 
     addIdeaToContainer(idea: Idea, isNew: boolean = false) {
-        const view = new IdeaView(idea, WIDTH, MARGIN, this.state.showNames, () => this.saveIdeas());
+        const view = new IdeaView(idea, this.props.dynamicSize ? 0 : WIDTH, MARGIN, this.state.showNames, this.ideaContainer.laneWidth, () => this.saveIdeas());
         this.ideaContainer.add(view, isNew);
     }
 

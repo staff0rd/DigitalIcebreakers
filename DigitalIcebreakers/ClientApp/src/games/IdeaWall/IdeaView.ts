@@ -13,7 +13,7 @@ export class IdeaView extends PIXI.Container {
     updatePosition: (x: number, y: number) => void;
     idea: Idea;
 
-    constructor(idea: Idea, width: number, margin: number, showName: boolean, updatePosition: (x: number, y: number) => void) {
+    constructor(idea: Idea, size: number, margin: number, showName: boolean, laneWidth: number, updatePosition: (x: number, y: number) => void) {
         super();
 
         this.idea = idea;
@@ -26,21 +26,38 @@ export class IdeaView extends PIXI.Container {
         this.on('pointermove', this.onDragMove);
         this.on('pointerup', this.onDragEnd);
         this.on('pointerupoutside', this.onDragEnd);
-
-        this.background = new PIXI.Graphics();
-        this.background.beginFill(idea.color);
-        this.background.drawRect(0, 0, width, width);
-        this.background.endFill();
-        this.title = new PIXI.Text(idea.playerName, { fontSize: TITLE_FONT_SIZE });
-        this.title.x = margin;
-        this.title.visible = showName;
-        this.body = new PIXI.Text(idea.idea, { fontSize: BODY_FONT_SIZE, breakWords: true, wordWrap: true, wordWrapWidth: width - 2*margin, align: "center"});
-        this.body.pivot.set(this.body.width/2, this.body.height/2)
-        this.body.position.set(width / 2, width / 2);
+        
+        this.title = this.getTitle(idea.playerName, margin, showName);
+        this.body = this.getBody(size, laneWidth, margin, idea.idea);
+        this.background = this.getBackground(idea.color, size | this.body.width + 2*margin, size | this.body.height + 2*margin);
+        
         this.addChild(this.background as PIXI.DisplayObject, this.title, this.body);
         this.alpha = .85;
         this.x = idea.x || 0;
         this.y = idea.y || 0;
+    }
+
+    private getBackground(color: number, width: number, height: number) {
+        const background = new PIXI.Graphics();
+        background.beginFill(color);
+        background.drawRect(0, 0, width, height);
+        background.endFill();
+        return background;
+    }
+
+    getTitle(playerName: string, margin: number, showName: boolean) {
+        const title = new PIXI.Text(playerName, { fontSize: TITLE_FONT_SIZE });
+        title.x = margin;
+        title.visible = showName;
+        return title;
+    }
+
+    getBody(width: number, laneWidth: number, margin: number, content: string) {
+        const wordWrapWidth = width ? width - 2*margin : laneWidth - 4*margin;
+        const body = new PIXI.Text(content, { fontSize: BODY_FONT_SIZE, breakWords: true, wordWrap: true, wordWrapWidth: wordWrapWidth, align: "center"});
+        //this.body.pivot.set(this.body.width/2, this.body.height/2)
+        //this.body.position.set(this.background.width / 2, this.background.height / 2 + this.title.height/2);
+        return body;
     }
 
     onDragStart = (event: PIXI.interaction.InteractionEvent) => {

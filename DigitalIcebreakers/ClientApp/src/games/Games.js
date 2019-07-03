@@ -41,14 +41,14 @@ export default function (props) {
     }, {
         name: "ideawall",
         client: <IdeaWallClient {...props} />,
-        presenter: <IdeaWallPresenter {...props} storageKey="ideawall:ideas" />,
+        presenter: <IdeaWallPresenter dynamicSize={false} {...props} storageKey="ideawall:ideas" />,
         title: "Idea Wall",
         fullscreen: true,
         isGame: false
     }, {
         name: "startstopcontinue",
         client: <StartStopContinueClient {...props} />,
-        presenter: <IdeaWallPresenter {...props} storageKey="startstopcontinue:ideas" lanes={StartStopContinueLanes} />,
+        presenter: <IdeaWallPresenter dynamicSize={true} {...props} storageKey="startstopcontinue:ideas" lanes={StartStopContinueLanes} />,
         title: "Start Stop Continue",
         fullscreen: true,
         isGame: false
