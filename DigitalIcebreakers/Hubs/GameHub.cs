@@ -201,10 +201,6 @@ namespace DigitalIcebreakers.Hubs
             return player;
         }
 
-        // Given_an_existing_lobby_When_player_connects_to_a_new_lobby
-        // Given_an_existing_lobby_When_player_connects_to_the_same_lobby
-        // Given_a_non_exisitng_lobby_When_player_connects
-
         public async Task ConnectToLobby(User user, Guid lobbyId)
         {
             var player = GetPlayer(user);
@@ -244,7 +240,6 @@ namespace DigitalIcebreakers.Hubs
                     await Clients.Client(admin.ConnectionId).SendAsync("left", new User { Id = player.ExternalId, Name = player.Name });
                 }
             }
-
             await base.OnDisconnectedAsync(exception);
         }
 
