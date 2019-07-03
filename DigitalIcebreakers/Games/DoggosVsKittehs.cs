@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DigitalIcebreakers.Hubs;
 using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json.Linq;
 
 namespace DigitalIcebreakers.Games
 {
@@ -13,12 +14,12 @@ namespace DigitalIcebreakers.Games
 
         Dictionary<Guid, int> _results = new Dictionary<Guid, int>();
 
-        public async override Task ClientMessage(dynamic payload, GameHub hub)
+        public async override Task ClientMessage(JToken payload, GameHub hub)
         {
             // 1 = kittehs
             // 0 = doggos
 
-            string client = payload;
+            string client = payload.ToObject<string>();
 
             if (!string.IsNullOrWhiteSpace(client))
             {

@@ -1,30 +1,13 @@
-﻿using DigitalIcebreakers;
-using DigitalIcebreakers.Games;
+﻿using DigitalIcebreakers.Games;
 using DigitalIcebreakers.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace DigitalIcebreakers.Test
 {
-    public class MockGamehub : GameHub
-    {
-        public List<object[]> SentToAdmin { get; private set;} = new List<object[]>();
-
-        public MockGamehub(ILogger<GameHub> logger, List<Lobby> lobbys, IOptions<AppSettings> settings) : base(logger, lobbys, settings)
-        {
-        }
-
-        public override Task SendGameUpdateToAdmin(params object[] parameters)
-        {
-            this.SentToAdmin.Add(parameters);
-            return Task.CompletedTask;
-        }
-    }
     public static class ObjectMother
     {
         public static MockGamehub GetMockGameHub(Guid contextId, List<Lobby> lobbys)

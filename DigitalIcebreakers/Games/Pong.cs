@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DigitalIcebreakers.Hubs;
 using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json.Linq;
 
 namespace DigitalIcebreakers.Games
 {
@@ -22,11 +23,11 @@ namespace DigitalIcebreakers.Games
         Dictionary<Guid, int> _leftTeam = new Dictionary<Guid, int>();
         Dictionary<Guid, int> _rightTeam = new Dictionary<Guid, int>();
 
-        public async override Task ClientMessage(dynamic payload, GameHub hub)
+        public async override Task ClientMessage(JToken payload, GameHub hub)
         {
             var player = hub.GetPlayerByConnectionId();
             var externalId = player.ExternalId;
-            string client = payload;
+            string client = payload.ToString();
             switch (client)
             {
                 case "release": Move(0, externalId); break;
@@ -37,11 +38,11 @@ namespace DigitalIcebreakers.Games
             await SendUpdate(hub);
         }
 
-        public async override Task SystemMessage(dynamic payload, GameHub hub)
+        public async override Task SystemMessage(JToken payload, GameHub hub)
         {
             var player = hub.GetPlayerByConnectionId();
             var externalId = player.ExternalId;
-            string system = payload;
+            string system = payload.ToString();
             switch (system)
             {
                 case "leave": Leave(externalId); Move(0, externalId); break;

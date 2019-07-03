@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DigitalIcebreakers.Hubs;
+using Newtonsoft.Json.Linq;
 
 namespace DigitalIcebreakers.Games
 {
@@ -10,9 +11,9 @@ namespace DigitalIcebreakers.Games
     {
         public string Name => "yes-no-maybe";
         Dictionary<Guid, int> _results = new Dictionary<Guid, int>();
-        public override async Task ClientMessage(dynamic payload, GameHub hub)
+        public override async Task ClientMessage(JToken payload, GameHub hub)
         {   
-            string client = payload;
+            string client = payload.ToString();
             // 1 = no
             // 0 = yes
             int value;
@@ -30,9 +31,9 @@ namespace DigitalIcebreakers.Games
             await hub.SendGameUpdateToAdmin(result);
         }
 
-        public async override Task AdminMessage(dynamic payload, GameHub hub)
+        public async override Task AdminMessage(JToken payload, GameHub hub)
         {
-            string admin = payload;
+            string admin = payload.ToString();
             if (admin == "reset")
                 _results.Clear();
             await SendUpdate(hub);

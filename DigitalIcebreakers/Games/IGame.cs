@@ -1,4 +1,5 @@
 ﻿using DigitalIcebreakers.Hubs;
+using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
 
 namespace DigitalIcebreakers.Games
@@ -9,10 +10,10 @@ namespace DigitalIcebreakers.Games
 
         string Name { get; }
 
-        Task AdminMessage(dynamic admin, GameHub hub);
+        Task AdminMessage(JToken admin, GameHub hub);
 
-        Task ClientMessage(dynamic client, GameHub hub);
+        Task ClientMessage(JToken client, GameHub hub);
 
-        Task SystemMessage(dynamic client, GameHub hub);
+        Task SystemMessage(JToken system, GameHub hub);
     }
 }

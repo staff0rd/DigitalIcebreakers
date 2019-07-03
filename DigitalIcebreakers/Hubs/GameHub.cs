@@ -261,14 +261,21 @@ namespace DigitalIcebreakers.Hubs
             {
                 var message = JObject.Parse(json);
                 
-                JToken b = message.Children().First();
+                var system = message["system"];
+                var admin = message["admin"];
+                var client = message["client"];
 
-                // switch (message.Properties().First().Name)
-                // {
-                //     case "system": await lobby.CurrentGame.SystemMessage(message.Children().First())
-                // }
+                if (system != null) {
+                    await lobby.CurrentGame.SystemMessage(system, this);
+                }
 
-                // await lobby.CurrentGame.Message(payload, this);
+                if (admin != null && IsAdmin) {
+                    await lobby.CurrentGame.AdminMessage(admin, this);
+                }
+
+                if (client != null) {
+                    await lobby.CurrentGame.ClientMessage(client, this);
+                }
             }
         }
     }

@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using DigitalIcebreakers.Hubs;
+using Newtonsoft.Json.Linq;
 
 namespace DigitalIcebreakers.Games
 {
@@ -10,17 +11,17 @@ namespace DigitalIcebreakers.Games
             return Task.CompletedTask;
         }
 
-        public virtual Task AdminMessage(dynamic admin, GameHub hub)
+        public virtual Task AdminMessage(JToken admin, GameHub hub)
         {
             return Task.CompletedTask;
         }
 
-        public virtual Task ClientMessage(dynamic client, GameHub hub)
+        public virtual Task ClientMessage(JToken client, GameHub hub)
         {
             return Task.CompletedTask;
         }
 
-        public virtual Task SystemMessage(dynamic system, GameHub hub)
+        public virtual Task SystemMessage(JToken system, GameHub hub)
         {
             return Task.CompletedTask;
         }

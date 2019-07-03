@@ -3,6 +3,7 @@ using DigitalIcebreakers.Games;
 using DigitalIcebreakers.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace DigitalIcebreakers.Games
 {
@@ -10,7 +11,7 @@ namespace DigitalIcebreakers.Games
     {
         public string Name => "startstopcontinue";
         
-        public async override Task ClientMessage(dynamic client, GameHub hub)
+        public async override Task ClientMessage(JToken client, GameHub hub)
         {
             var idea = client.ToObject<Idea>();
             var player = hub.GetPlayerByConnectionId();

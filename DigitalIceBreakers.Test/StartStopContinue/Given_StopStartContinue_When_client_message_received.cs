@@ -8,7 +8,7 @@ using System.Linq;
 namespace DigitalIcebreakers.Test
 {
     [TestClass]
-    public class Given_a_Client_message_When_received_by_hub
+    public class Given_StopStartContinue_When_client_message_received
     {
         private MockGamehub _gameHub;
 
