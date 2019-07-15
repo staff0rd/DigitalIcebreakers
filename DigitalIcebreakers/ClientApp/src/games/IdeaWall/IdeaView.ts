@@ -12,11 +12,13 @@ export class IdeaView extends PIXI.Container {
     pointerData: Point | undefined;
     updatePosition: (x: number, y: number) => void;
     idea: Idea;
+    size: number;
 
     constructor(idea: Idea, size: number, margin: number, showName: boolean, laneWidth: number, updatePosition: (x: number, y: number) => void) {
         super();
 
         this.idea = idea;
+        this.size = size;
 
         this.updatePosition = updatePosition;
         
@@ -29,7 +31,7 @@ export class IdeaView extends PIXI.Container {
         
         this.title = this.getTitle(idea.playerName, margin, showName);
         this.body = this.getBody(size, laneWidth, margin, idea.idea);
-        this.background = this.getBackground(idea.color, size | this.body.width + 2*margin, size | this.body.height + 2*margin);
+        this.background = this.getBackground(idea.color, size || this.body.width + 2*margin, size || this.body.height + 2*margin);
         
         this.addChild(this.background as PIXI.DisplayObject, this.title, this.body);
         this.alpha = .85;
@@ -38,6 +40,7 @@ export class IdeaView extends PIXI.Container {
     }
 
     private getBackground(color: number, width: number, height: number) {
+        console.log(width);
         const background = new PIXI.Graphics();
         background.beginFill(color);
         background.drawRect(0, 0, width, height);
@@ -55,8 +58,10 @@ export class IdeaView extends PIXI.Container {
     getBody(width: number, laneWidth: number, margin: number, content: string) {
         const wordWrapWidth = width ? width - 2*margin : laneWidth - 4*margin;
         const body = new PIXI.Text(content, { fontSize: BODY_FONT_SIZE, breakWords: true, wordWrap: true, wordWrapWidth: wordWrapWidth, align: "center"});
-        //this.body.pivot.set(this.body.width/2, this.body.height/2)
-        //this.body.position.set(this.background.width / 2, this.background.height / 2 + this.title.height/2);
+        if (this.size) {
+            body.pivot.set(body.width/2, body.height/2)
+            body.position.set(this.size / 2, this.size / 2);
+        }
         return body;
     }
 

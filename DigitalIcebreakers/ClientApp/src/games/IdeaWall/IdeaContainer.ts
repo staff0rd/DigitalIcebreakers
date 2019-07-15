@@ -125,7 +125,7 @@ export class IdeaContainer {
         return this.ideaContainer.children
             .filter((c) => {
             const iv = c as IdeaView;
-            return intersects(iv, rect) && iv.idea.lane == laneId;
+            return intersects(iv, rect) && iv.idea.lane === laneId;
         }).length === 0
     }
 
