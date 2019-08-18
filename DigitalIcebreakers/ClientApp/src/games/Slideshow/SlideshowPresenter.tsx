@@ -1,6 +1,9 @@
 import React from 'react';
 import { BaseGame, BaseGameProps } from '../BaseGame';
-import Reveal from 'reveal.js'
+import Reveal, {SlideEvent} from 'reveal.js'
+import { Slides } from './Slides'
+
+declare var window: any;
 
 interface SlideshowPresenterState {
     count: number;
@@ -19,8 +22,15 @@ export class SlideshowPresenter extends BaseGame<BaseGameProps, SlideshowPresent
         };
     }
 
+    componentWillUnmount(){
+        super.componentWillUnmount();
+        Reveal.removeEventListener('slidechanged');
+        Reveal.removeEventListener('fragmentshown');
+    }
+
     componentDidMount() {
         super.componentDidMount();
+        window.Reveal = Reveal;
         Reveal.initialize({
             dependencies: [
                 // { src: 'plugin/markdown/marked.js' },
@@ -29,6 +39,12 @@ export class SlideshowPresenter extends BaseGame<BaseGameProps, SlideshowPresent
                 { src: 'plugin/highlight/highlight.js', async: true }
             ]
         });
+
+        Reveal.addEventListener( 'slidechanged', (event: SlideEvent ) => console.log(Reveal.getState()));
+        Reveal.addEventListener( 'fragmentshown', (event: SlideEvent ) => console.log(Reveal.getState()));
+
+        // Reveal.sync();
+        // Reveal.layout();
         // this.props.connection.on("gameUpdate", (result) => {
         //     if (result === "d") {
         //         this.setState(prevState => {
@@ -42,17 +58,11 @@ export class SlideshowPresenter extends BaseGame<BaseGameProps, SlideshowPresent
         return (
             <div className="classHtml">
                 <div className="head" style={ { height: '0px'}}>
-                    <link rel="stylesheet" href="css/reset.css" />
-                    <link rel="stylesheet" href="css/reveal.css" />
-                    <link rel="stylesheet" href="css/theme/black.css" />
-                    <link rel="stylesheet" href="lib/css/monokai.css" />
+                    
                 </div>
                 <div className="classBody">
                     <div className="reveal">
-                        <div className="slides">
-                            <section>Slide 1</section>
-                            <section>Slide 2</section>
-                        </div>
+                        <Slides />
                     </div>
                 </div>
             </div>

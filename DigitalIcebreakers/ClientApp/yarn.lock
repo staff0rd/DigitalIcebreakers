@@ -8391,6 +8391,11 @@ ret@~0.1.10:
   version "0.1.15"
   resolved "https://registry.yarnpkg.com/ret/-/ret-0.1.15.tgz#b8a4825d5bdb1fc3f6f53c2bc33f81388681c7bc"
 
+reveal.js@^3.8.0:
+  version "3.8.0"
+  resolved "https://registry.yarnpkg.com/reveal.js/-/reveal.js-3.8.0.tgz#9a2818e366d46237f0e64c00f50a05f2340cd50f"
+  integrity sha512-MQ+UBXIIL9IyBXhkLZWb/AG5h5/BedmnHXHIEavMBawNLVfAayvTrwNlDjGn4tf/CQ2CTJR8jSyIdu4RpfoLpg==
+
 rgb-regex@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/rgb-regex/-/rgb-regex-1.0.1.tgz#c0e0d6882df0e23be254a475e8edd41915feaeb1"
