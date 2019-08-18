@@ -40,26 +40,18 @@ export class SlideshowPresenter extends BaseGame<BaseGameProps, SlideshowPresent
             ]
         });
 
-        Reveal.addEventListener( 'slidechanged', (event: SlideEvent ) => console.log(Reveal.getState()));
-        Reveal.addEventListener( 'fragmentshown', (event: SlideEvent ) => console.log(Reveal.getState()));
+        Reveal.addEventListener( 'slidechanged', (event: SlideEvent ) => this.reportState());
+        Reveal.addEventListener( 'fragmentshown', (event: SlideEvent ) => this.reportState());
+        Reveal.addEventListener( 'fragmenthidden', (event: SlideEvent ) => this.reportState());
+    }
 
-        // Reveal.sync();
-        // Reveal.layout();
-        // this.props.connection.on("gameUpdate", (result) => {
-        //     if (result === "d") {
-        //         this.setState(prevState => {
-        //             return {count: prevState.count+1};
-        //         });
-        //     }
-        // });
+    reportState() {
+        this.adminMessage(Reveal.getState());
     }
 
     render() {
         return (
             <div className="classHtml">
-                <div className="head" style={ { height: '0px'}}>
-                    
-                </div>
                 <div className="classBody">
                     <div className="reveal">
                         <Slides />

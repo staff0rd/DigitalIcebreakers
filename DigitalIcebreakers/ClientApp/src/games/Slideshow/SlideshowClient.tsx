@@ -1,10 +1,14 @@
 import React from 'react';
 import { Button, Glyphicon  } from 'react-bootstrap';
 import { BaseGame, BaseGameProps } from '../BaseGame';
+import { Slides } from './Slides'
+import Reveal from 'reveal.js'
 
 interface SlideshowClientState {
     value: string;
 }
+
+declare var window: any;
 
 export class SlideshowClient extends BaseGame<BaseGameProps, SlideshowClientState>  {
     displayName = SlideshowClient.name
@@ -19,27 +23,32 @@ export class SlideshowClient extends BaseGame<BaseGameProps, SlideshowClientStat
 
     componentDidMount() {
         super.componentDidMount();
-        this.props.connection.on("gameUpdate", (result) => {
-            console.log(result);
-            this.setState({
-                value: result
-            });
+        window.Reveal = Reveal;
+        Reveal.initialize({
+            controls: false,
+            touch: false,
+            overview: false,
+            keyboard: false,
+            progress: false,
+            dependencies: [
+                // { src: 'plugin/markdown/marked.js' },
+                // { src: 'plugin/markdown/markdown.js' },
+                { src: 'plugin/notes/notes.js', async: true },
+                { src: 'plugin/highlight/highlight.js', async: true }
+            ]
+        });
+        this.props.connection.on("gameUpdate", (state) => {
+            Reveal.slide( state.indexH, state.indexV, state.indexF);
         });
     }
 
-    ding = () => {
-        this.clientMessage(1);      
-    }
-
     render() {
-        const style = { height: '100px', width: '150px' };
         return (
-            <div className="vcenter">
-                <div style={{textAlign: "center"}}>
-                    <h1>{this.state.value}</h1>
-                    <Button bsStyle="primary" bsSize="large" style={style} onClick={this.ding}>
-                        <Glyphicon glyph="bell" />
-                    </Button>
+            <div className="classHtml">
+                <div className="classBody">
+                    <div className="reveal">
+                        <Slides />
+                    </div>
                 </div>
             </div>
         );
