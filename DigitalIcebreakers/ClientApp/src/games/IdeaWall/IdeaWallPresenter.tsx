@@ -55,13 +55,10 @@ interface IdeaWallPresenterState {
 
 export class IdeaWallPresenter extends PixiPresenter<IdeaWallPresenterProps, IdeaWallPresenterState> {
     displayName = IdeaWallPresenter.name
-    myStorage: Storage;
     ideaContainer: IdeaContainer;
 
     constructor(props: IdeaWallPresenterProps, context: IdeaWallPresenterState) {
         super(0xFFFFFF, props);
-        
-        this.myStorage = window.localStorage;
 
         this.state = {
             ideas: [],
@@ -81,26 +78,17 @@ export class IdeaWallPresenter extends PixiPresenter<IdeaWallPresenterProps, Ide
     getRandomColor() {
         return Random.pick(IDEA_COLORS);
     }
-
+    
     saveIdeas() {
-        if (this.myStorage) {
-            this.myStorage.setItem(this.props.storageKey, JSON.stringify(this.state.ideas));
-        }
+        this.saveToStorage(this.props.storageKey, this.state.ideas);
     }
 
     getIdeas() {
-        if (this.myStorage) {
-            const raw = this.myStorage.getItem(this.props.storageKey);
-            if (raw) {
-                return JSON.parse(raw);
-            }
-        }
+        return this.getFromStorage(this.props.storageKey);
     }
 
     clearIdeas() {
-        if (this.myStorage) {
-            this.myStorage.removeItem(this.props.storageKey);
-        }
+        this.clearStorage(this.props.storageKey);
         this.setState({ideas: []}, () => this.init());
         this.ideaContainer.reset();
     }

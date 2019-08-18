@@ -75,7 +75,7 @@ export default function (props: any) : IGame[] {
     }, {
         name: "slideshow",
         client: <SlideshowClient {...props} />,
-        presenter: <SlideshowPresenter {...props} />,
+        presenter: <SlideshowPresenter {...props} storageKey="slideshow:state" />,
         title: "Slideshow",
         fullscreen: true,
         isGame: false

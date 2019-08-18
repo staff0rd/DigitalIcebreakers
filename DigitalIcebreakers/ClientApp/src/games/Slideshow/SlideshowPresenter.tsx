@@ -9,11 +9,14 @@ interface SlideshowPresenterState {
     count: number;
     value: string;
 }
+interface SlideshowProps extends BaseGameProps {
+    storageKey: string;
+}
 
-export class SlideshowPresenter extends BaseGame<BaseGameProps, SlideshowPresenterState> {
+export class SlideshowPresenter extends BaseGame<SlideshowProps, SlideshowPresenterState> {
     displayName = SlideshowPresenter.name
 
-    constructor(props: BaseGameProps) {
+    constructor(props: SlideshowProps) {
         super(props);
         
         this.state = {
@@ -26,6 +29,7 @@ export class SlideshowPresenter extends BaseGame<BaseGameProps, SlideshowPresent
         super.componentWillUnmount();
         Reveal.removeEventListener('slidechanged');
         Reveal.removeEventListener('fragmentshown');
+        Reveal.removeEventListener('fragmenthidden');
     }
 
     componentDidMount() {
@@ -40,13 +44,19 @@ export class SlideshowPresenter extends BaseGame<BaseGameProps, SlideshowPresent
             ]
         });
 
+        const state = this.getFromStorage(this.props.storageKey);
+        if (state)
+            Reveal.slide( state.indexh, state.indexv, state.indexf);
+
         Reveal.addEventListener( 'slidechanged', (event: SlideEvent ) => this.reportState());
         Reveal.addEventListener( 'fragmentshown', (event: SlideEvent ) => this.reportState());
         Reveal.addEventListener( 'fragmenthidden', (event: SlideEvent ) => this.reportState());
     }
 
     reportState() {
-        this.adminMessage(Reveal.getState());
+        const state = Reveal.getState();
+        this.adminMessage(state);
+        this.saveToStorage(this.props.storageKey, state);
     }
 
     render() {
