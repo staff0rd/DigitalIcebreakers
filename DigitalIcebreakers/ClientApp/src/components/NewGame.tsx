@@ -1,16 +1,23 @@
 import React, { Component } from 'react';
 import { Row, Col, ListGroup, ListGroupItem  } from 'react-bootstrap';
-import Games from '../games/Games';
+import Games, { IGame } from '../games/Games';
 
-export class NewGame extends Component {
+
+interface NewGameProps {
+    newGame: (name: string) => void;
+}
+
+export class NewGame extends Component<NewGameProps> {
     displayName = NewGame.name
 
-    newGame = (name) => {
+    newGame = (name: string) => {
         this.props.newGame(name);
     }
 
-    getListItems(items) {
-        return items.map((g,ix) => {
+    getListItems(items: IGame[]) {
+        return items
+            .filter((g: IGame) => !g.disabled)
+            .map((g,ix) => {
             return (
                 <ListGroupItem key={ix} onClick={() => this.newGame(g.name)}>{g.title}</ListGroupItem>
             );

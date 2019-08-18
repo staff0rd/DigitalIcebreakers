@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { DoggosVsKittehsClient } from './DoggosVsKittehs/DoggosVsKittehsClient';
 import { DoggosVsKittehsPresenter } from './DoggosVsKittehs/DoggosVsKittehsPresenter';
 import { BroadcastClient } from './Broadcast/BroadcastClient';
@@ -13,7 +13,17 @@ import PongPresenter from './Pong/PongPresenter';
 import { PongClient } from './Pong/PongClient';
 import { StartStopContinueClient } from './StartStopContinue/StartStopContinueClient';
 
-export default function (props) {
+export interface IGame {
+    name: string;
+    client: any;
+    presenter: any;
+    title: string;
+    isGame?: boolean;
+    disabled?: boolean;
+    fullscreen?: boolean;
+}
+
+export default function (props: any) : IGame[] {
     return [{
         name: "doggos-vs-kittehs",
         client: <DoggosVsKittehsClient {...props} />,
@@ -51,7 +61,8 @@ export default function (props) {
         presenter: <IdeaWallPresenter dynamicSize={true} {...props} storageKey="startstopcontinue:ideas" lanes={StartStopContinueLanes} />,
         title: "Start Stop Continue",
         fullscreen: true,
-        isGame: false
+        isGame: false,
+        disabled: true
     }, {
         name: "broadcast",
         client: <BroadcastClient {...props} />,
