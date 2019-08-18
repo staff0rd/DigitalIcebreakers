@@ -12,6 +12,7 @@
     "@types/react-bootstrap": "^0.32.17",
     "@types/react-dom": "^16.8.4",
     "@types/react-router": "^5.0.1",
+    "@types/reveal": "^3.3.33",
     "bootstrap": "^3.3.7",
     "chart.js": "^2.7.3",
     "moment": "^2.24.0",
