@@ -166,6 +166,7 @@ namespace DigitalIcebreakers.Hubs
                 case "ideawall": return new IdeaWall();
                 case "broadcast": return new Broadcast();
                 case "startstopcontinue": return new StartStopContinue();
+                case "slideshow": return new Slideshow();
                 default: throw new ArgumentOutOfRangeException("Unknown game");
             }
         }

@@ -12,6 +12,8 @@ import { BuzzerPresenter } from './Buzzer/BuzzerPresenter';
 import PongPresenter from './Pong/PongPresenter';
 import { PongClient } from './Pong/PongClient';
 import { StartStopContinueClient } from './StartStopContinue/StartStopContinueClient';
+import { SlideshowClient } from './Slideshow/SlideshowClient';
+import { SlideshowPresenter } from './Slideshow/SlideshowPresenter';
 
 export interface IGame {
     name: string;
@@ -68,6 +70,13 @@ export default function (props: any) : IGame[] {
         client: <BroadcastClient {...props} />,
         presenter: <BroadcastPresenter {...props} />,
         title: "Broadcast",
+        fullscreen: true,
+        isGame: false
+    }, {
+        name: "slideshow",
+        client: <SlideshowClient {...props} />,
+        presenter: <SlideshowPresenter {...props} />,
+        title: "Slideshow",
         fullscreen: true,
         isGame: false
     }];
