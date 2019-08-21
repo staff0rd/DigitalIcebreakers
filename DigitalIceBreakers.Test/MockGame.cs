@@ -16,19 +16,19 @@ namespace DigitalIcebreakers.Test
 
         public string Name => "mockgame";
 
-        public override Task AdminMessage(JToken admin, GameHub hub)
+        public override Task AdminMessage(JToken admin, IGameHub hub)
         {
             AdminMessages.Add(admin.ToString());
             return Task.CompletedTask;
         }
 
-        public async override Task ClientMessage(JToken client, GameHub hub)
+        public async override Task ClientMessage(JToken client, IGameHub hub)
         {
             ClientMessages.Add(client.ToString());
-            await hub.SendGameUpdateToAdmin("test");
+            await hub.SendGameUpdateToPresenter("test");
         }
 
-        public override Task SystemMessage(JToken system, GameHub hub)
+        public override Task SystemMessage(JToken system, IGameHub hub)
         {
             SystemMessages.Add(system.ToString());
             return Task.CompletedTask;

@@ -9,13 +9,13 @@ public class IdeaWall : Game, IGame
 {
     public string Name => "ideawall";
 
-    public override async Task ClientMessage(JToken payload, GameHub hub)
+    public override async Task ClientMessage(JToken payload, IGameHub hub)
     {
         var player = hub.GetPlayerByConnectionId();
 
         string idea = payload.ToObject<string>();
 
         if (!string.IsNullOrWhiteSpace(idea))
-            await hub.SendGameUpdateToAdmin(player.Name, idea);
+            await hub.SendGameUpdateToPresenter(player.Name, idea);
     }
 }

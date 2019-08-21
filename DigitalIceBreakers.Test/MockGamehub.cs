@@ -14,7 +14,7 @@ namespace DigitalIcebreakers.Test
         {
         }
 
-        public override Task SendGameUpdateToAdmin(params object[] parameters)
+        public override Task SendGameUpdateToPresenter(params object[] parameters)
         {
             this.SentToAdmin.Add(parameters);
             return Task.CompletedTask;

@@ -23,7 +23,7 @@ namespace DigitalIcebreakers.Games
         Dictionary<Guid, int> _leftTeam = new Dictionary<Guid, int>();
         Dictionary<Guid, int> _rightTeam = new Dictionary<Guid, int>();
 
-        public async override Task ClientMessage(JToken payload, GameHub hub)
+        public async override Task ClientMessage(JToken payload, IGameHub hub)
         {
             var player = hub.GetPlayerByConnectionId();
             var externalId = player.ExternalId;
@@ -35,10 +35,10 @@ namespace DigitalIcebreakers.Games
                 case "down": Move(-1, externalId); break;
                 case "join": await Join(hub, player); break;
             }
-            await SendUpdate(hub);
+            await UpdatePresenter(hub);
         }
 
-        public async override Task SystemMessage(JToken payload, GameHub hub)
+        public async override Task SystemMessage(JToken payload, IGameHub hub)
         {
             var player = hub.GetPlayerByConnectionId();
             var externalId = player.ExternalId;
@@ -48,12 +48,12 @@ namespace DigitalIcebreakers.Games
                 case "leave": Leave(externalId); Move(0, externalId); break;
                 case "join": await Join(hub, player); break;
             }
-            await SendUpdate(hub);
+            await UpdatePresenter(hub);
         }
 
-        private async Task SendUpdate(GameHub hub)
+        private async Task UpdatePresenter(IGameHub hub)
         {
-            await hub.SendGameUpdateToAdmin(new Result(Speed(_leftTeam), Speed(_rightTeam)));
+            await hub.SendGameUpdateToPresenter(new Result(Speed(_leftTeam), Speed(_rightTeam)));
         }
 
         private decimal Speed(Dictionary<Guid, int> team)
@@ -86,7 +86,7 @@ namespace DigitalIcebreakers.Games
             PerformOnDictionary(id, (d) => d.Remove(id));
         }
 
-        internal async Task Join(GameHub hub, Player player)
+        internal async Task Join(IGameHub hub, Player player)
         {
             if (!player.IsAdmin)
             {
@@ -100,13 +100,13 @@ namespace DigitalIcebreakers.Games
                     _rightTeam[id] = 0;
                 PerformOnDictionary(id, (d) => d[id] = 0);
 
-                await hub.Clients.Client(player.ConnectionId).SendAsync("gameUpdate", GetGameData(player));
+                await hub.SendGameUpdateToPlayer(player, GetGameData(player));
             }
         }
 
-        public override async Task Start(GameHub hub)
+        public override async Task Start(IGameHub hub)
         {
-            var players = hub.GetLobby().Players.ToList();
+            var players = hub.GetPlayers();
 
             foreach (var player in players)
             {

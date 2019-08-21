@@ -13,30 +13,86 @@ using Newtonsoft.Json.Linq;
 
 namespace DigitalIcebreakers.Hubs
 {
-    public class GameHub : Hub
+
+    public class SendHelper 
+    {
+        IHubCallerClients _clients;
+
+        public SendHelper(IHubCallerClients clients)
+        {
+            _clients = clients;
+        }
+
+        public IClientProxy EveryoneInLobby(Lobby lobby)
+        {
+            return _clients.Clients(lobby.Players.Select(p => p.ConnectionId).ToList());
+        }
+
+        public IClientProxy Admin(Lobby lobby)
+        {
+            return _clients.Client(lobby.Admin.ConnectionId);
+        }
+
+        public IClientProxy Self()
+        {
+            return _clients.Caller;
+        }
+
+        internal IClientProxy Player(Player player)
+        {
+            return _clients.Client(player.ConnectionId);
+        }
+    }
+
+    public class GameHub : Hub, IGameHub
     {
         static int lobbyNumber = 0;
         private ILogger<GameHub> _logger;
         private List<Lobby> _lobbys;
         private AppSettings _settings;
 
+        private SendHelper _clients;
+
         public GameHub(ILogger<GameHub> logger, List<Lobby> lobbys, IOptions<AppSettings> settings)
         {
             _lobbys = lobbys;
             _logger = logger;
             _settings = settings?.Value;
+            _clients = new SendHelper(Clients);
         }
 
-        public async virtual Task SendGameUpdateToAdmin(params object[] parameters)
+        public int GetConnectedPlayerCount()
         {
-            var client = Clients.Client(GetAdmin().ConnectionId);
+            return GetLobby().Players.Count(p => !p.IsAdmin && p.IsConnected);
+        }
+
+        public async Task SendGameUpdateToPlayers(params object[] parameters)
+        {
+            var clients =  _clients.EveryoneInLobby(GetLobby());
+            await SendGameUpdate(clients, parameters);
+        }
+
+        public async Task SendGameUpdateToPlayer(Player player, params object[] parameters)
+        {
+            var clients =  _clients.Player(player);
+            await SendGameUpdate(clients, parameters);
+        }
+
+        private async Task SendGameUpdate(IClientProxy clients, params object[] parameters)
+        {
             var method = "gameUpdate";
             switch (parameters.Length) {
-                case 1: await client.SendAsync(method, parameters[0]); break;
-                case 2: await client.SendAsync(method, parameters[0], parameters[1]); break;
-                case 3: await client.SendAsync(method, parameters[0], parameters[1], parameters[2]); break;
+                case 1: await clients.SendAsync(method, parameters[0]); break;
+                case 2: await clients.SendAsync(method, parameters[0], parameters[1]); break;
+                case 3: await clients.SendAsync(method, parameters[0], parameters[1], parameters[2]); break;
                 default: throw new NotImplementedException();
             }
+        }
+
+        public async virtual Task SendGameUpdateToPresenter(params object[] parameters)
+        {
+            var client = _clients.Admin(GetLobby());
+            await SendGameUpdate(client, parameters);
         }
 
         public async Task CreateLobby(Guid id, string name, User user)
@@ -75,10 +131,7 @@ namespace DigitalIcebreakers.Hubs
             {
                 _logger.LogInformation("Lobby {lobbyName} (#{lobbyNumber}, {lobbyPlayers} players) has been {action}", lobby.Name, lobby.Number, lobby.PlayerCount, "closed");
                 _lobbys.Remove(lobby);
-                foreach (var player in lobby.Players)
-                {
-                    await Clients.Client(player.ConnectionId).SendAsync("closelobby");
-                }
+                await _clients.EveryoneInLobby(lobby).SendAsync("closelobby");
             }
         }
 
@@ -106,16 +159,16 @@ namespace DigitalIcebreakers.Hubs
             {
                 _logger.LogInformation("{player} {action} to lobby {lobbyName} (#{lobbyNumber}, {lobbyPlayers} players)", player, "re-connected", lobby.Name, lobby.Number, lobby.PlayerCount);
                 var players = lobby.Players.Where(p => !p.IsAdmin).Select(p => new User { Id = p.ExternalId, Name = p.Name }).ToList();
-                await Clients.Caller.SendAsync("Reconnect", new Reconnect { PlayerId = player.Id, PlayerName = player.Name, LobbyName = lobby.Name, LobbyId = lobby.Id, IsAdmin = player.IsAdmin, Players = players, CurrentGame = lobby.CurrentGame?.Name });
+                await _clients.Self().SendAsync("Reconnect", new Reconnect { PlayerId = player.Id, PlayerName = player.Name, LobbyName = lobby.Name, LobbyId = lobby.Id, IsAdmin = player.IsAdmin, Players = players, CurrentGame = lobby.CurrentGame?.Name });
                 if (!player.IsAdmin)
                 {
-                    await Clients.Client(lobby.Admin.ConnectionId).SendAsync("joined", new User { Id = player.ExternalId, Name = player.Name });
+                    await _clients.Admin(lobby).SendAsync("joined", new User { Id = player.ExternalId, Name = player.Name });
                     await SystemMessage("join");
                 }
             }
             else {
                 _logger.LogInformation("{player} {action} ({transportType})", player, "connected", this.GetTransportType());
-                await Clients.Caller.SendAsync("Connected");
+                await _clients.Self().SendAsync("Connected");
             }
         }
 
@@ -137,10 +190,11 @@ namespace DigitalIcebreakers.Hubs
             {
                 _logger.LogInformation("Lobby {lobbyName} (#{lobbyNumber}, {lobbyPlayers} players) has {action} {game}", lobby.Name, lobby.Number, lobby.PlayerCount, "started", name);
                 lobby.CurrentGame = GetGame(name);
-                Clients.Clients(lobby.Players.Select(p => p.ConnectionId).ToList()).SendAsync("newgame", name);
+                _clients.EveryoneInLobby(lobby).SendAsync("newgame", name);
                 lobby.CurrentGame.Start(this);
             }
         }
+
 
         private static IGame GetGame(string name)
         {
@@ -166,13 +220,18 @@ namespace DigitalIcebreakers.Hubs
             if (lobby != null && player.IsAdmin)
             {
                 lobby.CurrentGame = null;
-                Clients.Clients(lobby.Players.Select(p => p.ConnectionId).ToList()).SendAsync("endgame");
+                _clients.EveryoneInLobby(lobby).SendAsync("endgame");
             }
         }
 
         private Player GetAdmin()
         {
             return GetLobby().Admin;
+        }
+
+        public Player[] GetPlayers()
+        {
+            return GetLobby().GetPlayers();
         }
 
         public Lobby GetLobby()
@@ -198,7 +257,7 @@ namespace DigitalIcebreakers.Hubs
            
             var lobby = _lobbys.SingleOrDefault(p => p.Id == lobbyId);
             if (lobby == null)            
-                await Clients.Caller.SendAsync("closelobby");
+                await _clients.Self().SendAsync("closelobby");
             else
             {
                 if (!lobby.Players.Any(p => p.Id == player.Id))
@@ -210,7 +269,7 @@ namespace DigitalIcebreakers.Hubs
         private async Task LeaveLobby(Player player, Lobby lobby)
         {
             _logger.LogInformation("{player} has left {lobbyName} (#{lobbyNumber}, {lobbyPlayers} players)", player, lobby.Name, lobby.Number, lobby.PlayerCount);
-            await Clients.Client(lobby.Admin.ConnectionId).SendAsync("left", new User { Id = player.ExternalId, Name = player.Name });
+            await _clients.Admin(lobby).SendAsync("left", new User { Id = player.ExternalId, Name = player.Name });
             lobby.Players.Remove(player);
         }
 
@@ -222,10 +281,10 @@ namespace DigitalIcebreakers.Hubs
             {
                 _logger.LogInformation("{player} {action}", player, "disconnected");
                 player.IsConnected = false;
-                var admin = GetAdmin();
-                if (admin != null)
+                var lobby = GetLobby();
+                if (lobby != null)
                 {
-                    await Clients.Client(admin.ConnectionId).SendAsync("left", new User { Id = player.ExternalId, Name = player.Name });
+                    await _clients.Admin(lobby).SendAsync("left", new User { Id = player.ExternalId, Name = player.Name });
                 }
             }
             await base.OnDisconnectedAsync(exception);

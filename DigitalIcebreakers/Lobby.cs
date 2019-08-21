@@ -16,10 +16,15 @@ namespace DigitalIcebreakers
 
         internal Player Admin => Players.SingleOrDefault(p => p.IsAdmin);
 
-        public int PlayerCount => Players.Count(p => p.IsConnected && !p.IsAdmin);
+        public int PlayerCount => GetPlayers().Count();
 
         public IGame CurrentGame { get; set; }
         
         public int Number { get; internal set; }
+
+        internal Player[] GetPlayers()
+        {
+            return Players.Where(p => p.IsConnected && !p.IsAdmin).ToArray();
+        }
     }
 }

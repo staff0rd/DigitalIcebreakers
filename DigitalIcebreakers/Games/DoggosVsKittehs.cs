@@ -14,7 +14,7 @@ namespace DigitalIcebreakers.Games
 
         Dictionary<Guid, int> _results = new Dictionary<Guid, int>();
 
-        public async override Task ClientMessage(JToken payload, GameHub hub)
+        public async override Task ClientMessage(JToken payload, IGameHub hub)
         {
             // 1 = kittehs
             // 0 = doggos
@@ -28,10 +28,9 @@ namespace DigitalIcebreakers.Games
                     _results[hub.GetPlayerByConnectionId().Id] = value;
             }
             
-            var totalPlayers = hub.GetLobby().Players.Count(p => !p.IsAdmin && p.IsConnected);
             var result = new Result { Doggos = _results.Where(p => p.Value == 0).Count(), Kittehs = _results.Where(p => p.Value == 1).Count() };
-            result.Undecided = totalPlayers - result.Kittehs - result.Doggos;
-            await hub.SendGameUpdateToAdmin(result);
+            result.Undecided = hub.GetPlayers().Count() - result.Kittehs - result.Doggos;
+            await hub.SendGameUpdateToPresenter(result);
         }
 
         public class Result

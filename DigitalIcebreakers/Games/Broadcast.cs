@@ -8,14 +8,14 @@ public class Broadcast : Game, IGame
 {
     public string Name => "broadcast";
     
-    public async override Task ClientMessage(JToken client, GameHub hub)
+    public async override Task ClientMessage(JToken client, IGameHub hub)
     {
-        await hub.SendGameUpdateToAdmin("d");   
+        await hub.SendGameUpdateToPresenter("d");   
     }
 
-    public async override Task AdminMessage(JToken admin, GameHub hub)
+    public async override Task AdminMessage(JToken admin, IGameHub hub)
     {
         string message = admin.ToObject<string>();
-        await hub.Clients.All.SendAsync("gameUpdate", message);
+        await hub.SendGameUpdateToPlayers(message);
     }
 }

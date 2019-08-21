@@ -10,22 +10,22 @@ public class Slideshow : Game, IGame
 
     private SlideState _state = new SlideState(); 
     
-    public async override Task ClientMessage(JToken client, GameHub hub)
+    public async override Task ClientMessage(JToken client, IGameHub hub)
     {
-        await hub.SendGameUpdateToAdmin("d");   
+        await hub.SendGameUpdateToPresenter("d");   
     }
 
-    public async override Task SystemMessage(JToken system, GameHub hub)
+    public async override Task SystemMessage(JToken system, IGameHub hub)
     {
         var action = system.ToObject<string>();
         if (action == "join")
-            await hub.Clients.Client(hub.GetPlayerByConnectionId().ConnectionId).SendAsync("gameUpdate", _state);
+            await hub.SendGameUpdateToPlayer(hub.GetPlayerByConnectionId(), _state);
     }
 
-    public async override Task AdminMessage(JToken admin, GameHub hub)
+    public async override Task AdminMessage(JToken admin, IGameHub hub)
     {
         var state = admin.ToObject<SlideState>();
         _state = state;
-        await hub.Clients.All.SendAsync("gameUpdate", state);
+        await hub.SendGameUpdateToPlayers(state);
     }
 }

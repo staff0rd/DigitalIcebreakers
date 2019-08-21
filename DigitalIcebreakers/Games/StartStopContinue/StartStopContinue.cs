@@ -11,13 +11,13 @@ namespace DigitalIcebreakers.Games
     {
         public string Name => "startstopcontinue";
         
-        public async override Task ClientMessage(JToken client, GameHub hub)
+        public async override Task ClientMessage(JToken client, IGameHub hub)
         {
             var idea = client.ToObject<Idea>();
             var player = hub.GetPlayerByConnectionId();
 
             if (idea != null)
-                await hub.SendGameUpdateToAdmin(player.Name,  idea);
+                await hub.SendGameUpdateToPresenter(player.Name,  idea);
         }
     }
 }
