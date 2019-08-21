@@ -18,6 +18,7 @@ namespace DigitalIcebreakers.Test
             gameHub.Context = context.Object;
             var clients = new Mock<IHubCallerClients>();
             clients.Setup(p => p.Client(It.IsAny<string>())).Returns(new Mock<IClientProxy>().Object);
+            clients.Setup(p => p.Clients(It.IsAny<IReadOnlyList<string>>())).Returns(new Mock<IClientProxy>().Object);
             clients.SetupGet(p => p.Caller).Returns(new Mock<IClientProxy>().Object);
             gameHub.Clients = clients.Object;
             return gameHub;
