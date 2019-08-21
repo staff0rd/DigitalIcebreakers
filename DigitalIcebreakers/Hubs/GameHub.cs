@@ -39,19 +39,6 @@ namespace DigitalIcebreakers.Hubs
             }
         }
 
-        public async Task StopGame()
-        {
-            var games = _lobbys.SelectMany(p => p.Players, (g, p) => new { g, p }).Where(p => p.p.IsAdmin && p.p.ConnectionId == Context.ConnectionId).Select(p => p.g).ToList();
-            foreach (var game in games)
-            {
-                foreach (var player in game.Players)
-                {
-                    await Clients.Client(player.ConnectionId).SendAsync("stop");
-                }
-                _lobbys.Remove(_lobbys.Single(p => p.Id == game.Id));
-            }
-        }
-
         public async Task CreateLobby(Guid id, string name, User user)
         {
             _lobbys.Where(p => p.Admin != null && p.Admin.Id == user.Id)
