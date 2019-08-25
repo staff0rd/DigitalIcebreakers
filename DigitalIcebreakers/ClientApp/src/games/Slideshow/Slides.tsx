@@ -55,7 +55,7 @@ export class Slides extends Component {
 						<li className="fragment">Run tests</li>
                         <li className="fragment">Emails</li>
 						<li className="fragment">Scheduled trigger</li>
-                        <li className="fragment"><a target="_blank" href="https://dev.azure.com/staff0rd/all/all%20Team/_dashboards/dashboard/d8ff8649-d43d-4e58-beb2-06d2da0d0848">Dashboard</a></li>
+                        <li className="fragment"><a target="_blank" rel="noopener noreferrer" href="https://dev.azure.com/staff0rd/all/all%20Team/_dashboards/dashboard/d8ff8649-d43d-4e58-beb2-06d2da0d0848">Dashboard</a></li>
 					</ul>
 				</section>
 				<section>
@@ -64,7 +64,7 @@ export class Slides extends Component {
 						<li className="fragment">Called by Selenium</li>
 						<li className="fragment">3 months history</li>
 						<li className="fragment">https://dev.applicationinsights.io/</li>
-						<li className="fragment"><a target="_blank" href="https://portal.azure.com#@413504eb-8622-47d2-aa72-ddbba4584471/blade/Microsoft_Azure_Monitoring_Logs/LogsBlade/resourceId/%2Fsubscriptions%2Fa5c1b01b-4d7f-44e8-91d1-d01d0768c292%2FresourceGroups%2Fazure-web-monitor%2Fproviders%2Fmicrosoft.insights%2Fcomponents%2Fazure-web-monitor-insights/source/LogsBlade.AnalyticsShareLinkToQuery/q/H4sIAAAAAAAAA03NPQ7CMAwF4L2n8FaQIpEeoEycgBUxuIlFg%252FJT2U5RJQ5PM5X1fc9%252BuGKIOIUYdLuT1KgC3Rc%252BMzGBhkSimBa4Ar7KafDnA6U6RyIwjjC0dOHyJqfHkQFfGTWUfBmstQYyJjJQOY6uipZ025tZdpdHv6f9s70p7Ilh2v7GPYlrxJSbNXAzsnY%252FKCuCaL0AAAA%253D">Here!</a></li>
+						<li className="fragment"><a target="_blank" rel="noopener noreferrer" href="https://portal.azure.com#@413504eb-8622-47d2-aa72-ddbba4584471/blade/Microsoft_Azure_Monitoring_Logs/LogsBlade/resourceId/%2Fsubscriptions%2Fa5c1b01b-4d7f-44e8-91d1-d01d0768c292%2FresourceGroups%2Fazure-web-monitor%2Fproviders%2Fmicrosoft.insights%2Fcomponents%2Fazure-web-monitor-insights/source/LogsBlade.AnalyticsShareLinkToQuery/q/H4sIAAAAAAAAA03NPQ7CMAwF4L2n8FaQIpEeoEycgBUxuIlFg%252FJT2U5RJQ5PM5X1fc9%252BuGKIOIUYdLuT1KgC3Rc%252BMzGBhkSimBa4Ar7KafDnA6U6RyIwjjC0dOHyJqfHkQFfGTWUfBmstQYyJjJQOY6uipZ025tZdpdHv6f9s70p7Ilh2v7GPYlrxJSbNXAzsnY%252FKCuCaL0AAAA%253D">Here!</a></li>
 					</ul>
 				</section>
 				<section>
@@ -77,7 +77,7 @@ export class Slides extends Component {
 					<h2>Logic Apps</h2>
 					<ul>
 						<li className="fragment">Trigger Builds</li>
-						<li className="fragment"><a target="_blank" href="https://portal.azure.com/#@readify.net/resource/subscriptions/a5c1b01b-4d7f-44e8-91d1-d01d0768c292/resourceGroups/azure-web-monitor/providers/Microsoft.Logic/workflows/azure-web-monitor-run/logicApp">See it</a></li>
+						<li className="fragment"><a target="_blank" rel="noopener noreferrer" href="https://portal.azure.com/#@readify.net/resource/subscriptions/a5c1b01b-4d7f-44e8-91d1-d01d0768c292/resourceGroups/azure-web-monitor/providers/Microsoft.Logic/workflows/azure-web-monitor-run/logicApp">See it</a></li>
 						<li className="fragment">Shouldn't be needed</li>
 						<li className="fragment">Expensive - 1 cent/week</li>
 					</ul>

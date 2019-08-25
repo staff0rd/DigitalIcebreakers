@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { DoggosVsKittehsClient } from './DoggosVsKittehs/DoggosVsKittehsClient';
 import { DoggosVsKittehsPresenter } from './DoggosVsKittehs/DoggosVsKittehsPresenter';
 import { BroadcastClient } from './Broadcast/BroadcastClient';

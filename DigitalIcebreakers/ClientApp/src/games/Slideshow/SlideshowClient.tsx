@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button, Glyphicon  } from 'react-bootstrap';
 import { BaseGame, BaseGameProps } from '../BaseGame';
 import { Slides } from './Slides'
 import Reveal from 'reveal.js'
