@@ -12,6 +12,7 @@ export const Events = {
             .forEach((e) => { e.handler(); });
     },
     add: (name: string, label: string, handler: Function) => {
+        Events.remove(name, label);
         Events.handlers.push({name: name, label: label, handler: handler});
     },
     remove: (name: string, label: string) => {

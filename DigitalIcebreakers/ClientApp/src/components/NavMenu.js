@@ -25,11 +25,11 @@ export class NavMenu extends Component {
             this.setState({qrCodeWidth: window.innerWidth / 4 - 60});
         }
         resize();
-        Events.add('onresize', 'qrcode', resize);
+        Events.add('onresize', 'qrcode-lobby', resize);
     }
 
     componentWillUnmount() {
-        Events.remove('onresize', 'qrcode');
+        Events.remove('onresize', 'qrcode-lobby');
     }
 
     getConnectionIcon() {
@@ -96,6 +96,7 @@ export class NavMenu extends Component {
         );
 
         const isGameScreen = this.props.history.location.pathname === `/game/${this.props.currentGame}`;
+        const isLobby = this.props.history.location.pathname === `/`
 
         const subMenu = !isGameScreen ? "" : (
             <NavSubMenu menuItems={this.props.menuItems} />
@@ -113,7 +114,7 @@ export class NavMenu extends Component {
                 </Navbar.Header>
                 <Navbar.Collapse>
                     <Nav>
-                        {this.props.lobbyId ? qrCode : ""}
+                        {this.props.lobbyId && !isLobby ? qrCode : ""}
                         {this.props.lobbyId ? "" : createLobby}
                         {this.props.lobbyId ? lobby : ""}
                         {this.props.lobbyId && this.props.currentGame ? currentGame : ""}
