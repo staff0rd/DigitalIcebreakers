@@ -47,6 +47,57 @@ export class Slides extends Component<{}, SlidesState> {
 						<img width={this.state.width} height={this.state.height} src="img/200-longpolling.004.png" style={{position:"absolute", top: 0, left: 0}} className="fragment" />
 					</div>
 				</section>
+				<section data-background-color="#ffffff">
+					<h2>Server-Sent Events</h2>
+					<ul>
+						<li className="fragment">HTML5</li>
+						<li className="fragment">One-way communication</li>
+						<li className="fragment">Low latency</li>
+						<li className="fragment">Unsupported by Edge &amp; IE</li>
+					</ul>
+				</section>
+				<section data-background-color="#ffffff">
+					<h2>&lt;sse diagram&gt;</h2>
+				</section>
+				<section data-background-color="#ffffff">
+					<h2>Web Socket</h2>
+					<ul>
+						<li className="fragment">Bi-directional</li>
+					</ul>
+				</section>
+				<section  data-background-color="#ffffff">
+					<h3>Which transport method<br/>is the best?</h3>
+				</section>
+				<section>
+					<pre><code data-trim>{`
+						public void ConfigureServices(IServiceCollection services)
+						{
+							services.AddSignalR();
+						}
+
+						public void Configure(IApplicationBuilder app)
+						{
+							app.UseRouting();
+							app.UseEndpoints(endpoints =>
+							{
+								endpoints.MapHub<BidHub>("/echo");
+							});
+						}`}
+					</code></pre>
+				</section>
+				<section>
+					<pre><code data-trim>{`
+						public class BidHub : Hub
+						{
+						    public async Task Send(string message)
+						    {
+						        await Clients.All
+								.SendAsync("BroadCastClient", message);
+						    }
+						}
+					`}</code></pre>
+				</section>
+
 			</div>
         );
     }
