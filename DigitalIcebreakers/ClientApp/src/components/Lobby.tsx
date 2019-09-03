@@ -69,7 +69,7 @@ export class Lobby extends Component<LobbyProps, LobbyState> {
                     <QRCode value={joinUrl} size={this.state.qrCodeWidth} renderAs="svg" style={{marginTop: '40', marginRight: '40', marginBottom: '40'}} />
                     {/* <h1>{this.props.name}</h1> */}
 
-                    {/* <Row>
+                       {/* <Row>
                         <Col md={12}>
                             <a href={joinUrl}>{joinUrl}</a>
                             <h2>Players</h2>
@@ -78,6 +78,8 @@ export class Lobby extends Component<LobbyProps, LobbyState> {
                             </ListGroup>
                         </Col>
                     </Row> */}
+                            <a href={joinUrl}>{joinUrl}</a>
+                             
                 </div>
             ); else return (
                 <div>

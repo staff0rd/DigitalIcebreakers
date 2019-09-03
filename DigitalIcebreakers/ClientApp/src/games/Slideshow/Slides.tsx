@@ -36,18 +36,30 @@ export class Slides extends Component<{}, SlidesState> {
 
         return (
             <div className="slides" ref={this.theElement}>
-				<section>
+				<section data-transition="none">
 					<h1>How do real-time apps work?</h1>
 				</section>
-				<section data-background-color="#ffffff">
+				<section data-transition="none" data-background-color="#ffffff">
 					<div style={containerStyle}>
-						<img width={this.state.width} height={this.state.height} src="img/200-longpolling.001.png" style={{position:"absolute", top: 0, left: 0}} />
-						<img width={this.state.width} height={this.state.height} src="img/200-longpolling.002.png" style={{position:"absolute", top: 0, left: 0}} className="fragment" />
-						<img width={this.state.width} height={this.state.height} src="img/200-longpolling.003.png" style={{position:"absolute", top: 0, left: 0}} className="fragment" />
-						<img width={this.state.width} height={this.state.height} src="img/200-longpolling.004.png" style={{position:"absolute", top: 0, left: 0}} className="fragment" />
+						<div style={{width: "100%", height: "500px", backgroundImage: "url(img/200-longpolling.001.png)" , backgroundSize:"100% auto" ,backgroundRepeat:"no-repeat", backgroundPosition:"centre"}} />	 
 					</div>
 				</section>
-				<section data-background-color="#ffffff">
+				<section data-transition="none" data-background-color="#ffffff">
+						<div style={containerStyle}>
+					 	<div style={{width: "100%", height: "500px", backgroundImage: "url(img/200-longpolling.002.png)" , backgroundSize:"100% auto" ,backgroundRepeat:"no-repeat", backgroundPosition:"centre"}} />	 
+				 	</div>
+				</section>
+				<section data-transition="none" data-background-color="#ffffff">
+						<div style={containerStyle}>
+					 	<div style={{width: "100%", height: "500px", backgroundImage: "url(img/200-longpolling.003.png)" , backgroundSize:"100% auto" ,backgroundRepeat:"no-repeat", backgroundPosition:"centre"}} />	 
+				 	</div>
+				</section>
+				<section data-transition="none" data-background-color="#ffffff">
+						<div style={containerStyle}>
+					 	<div style={{width: "100%", height: "500px", backgroundImage: "url(img/200-longpolling.004.png)" , backgroundSize:"100% auto" ,backgroundRepeat:"no-repeat", backgroundPosition:"centre"}} />	 
+				 	</div>
+				</section>
+				<section data-transition="none" data-background-color="#ffffff">
 					<h2>Server-Sent Events</h2>
 					<ul>
 						<li className="fragment">HTML5</li>
