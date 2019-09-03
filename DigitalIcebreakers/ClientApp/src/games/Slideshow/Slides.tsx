@@ -65,7 +65,7 @@ export class Slides extends Component<{}, SlidesState> {
 						<li className="fragment">Bi-directional</li>
 					</ul>
 				</section>
-				<section  data-background-color="#ffffff">
+				<section data-background-color="#ffffff">
 					<h3>Which transport method<br/>is the best?</h3>
 				</section>
 				<section>
@@ -128,6 +128,22 @@ export class Slides extends Component<{}, SlidesState> {
 						  alert(message);
 						}
 					`}</code></pre>
+				</section>
+				<section>
+					<h1>Pushing<br/>the limit</h1>
+				</section>
+				<section data-background-color="#ffffff">
+					<h2>Crankier</h2>
+				</section>
+				<section data-background-color="#ffffff">
+					<table>
+						<tr>
+							<td>Local</td><td>&gt;&gt;</td><td>S1 App<br/>Service</td>
+						</tr>
+						<tr>
+							<td colSpan={3} style={{textAlign:'center'}}>768 connections</td>
+						</tr>
+					</table>
 				</section>
 			</div>
         );
