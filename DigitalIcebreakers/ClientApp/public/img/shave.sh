@@ -1,0 +1,1 @@
+convert $2 -shave $1 $1-$2 
