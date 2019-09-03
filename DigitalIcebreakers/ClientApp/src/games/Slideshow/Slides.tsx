@@ -69,19 +69,19 @@ export class Slides extends Component<{}, SlidesState> {
 					<h3>Which transport method<br/>is the best?</h3>
 				</section>
 				<section>
-					<pre><code data-trim>{`
+					<pre><code className="csharp" data-trim>{`
 						public void ConfigureServices(IServiceCollection services)
 						{
-							services.AddSignalR();
+						  services.AddSignalR();
 						}
 
 						public void Configure(IApplicationBuilder app)
 						{
-							app.UseRouting();
-							app.UseEndpoints(endpoints =>
-							{
-								endpoints.MapHub<BidHub>("/echo");
-							});
+						  app.UseRouting();
+						  app.UseEndpoints(endpoints =>
+						  {
+						    endpoints.MapHub<BidHub>("/echo");
+						  });
 						}`}
 					</code></pre>
 				</section>
@@ -89,15 +89,46 @@ export class Slides extends Component<{}, SlidesState> {
 					<pre><code data-trim>{`
 						public class BidHub : Hub
 						{
-						    public async Task Send(string message)
-						    {
-						        await Clients.All
-								.SendAsync("BroadCastClient", message);
-						    }
+						  public async Task Send(string message)
+						  {
+						    await Clients.All.SendAsync("BroadCastClient", message);
+						  }
 						}
 					`}</code></pre>
 				</section>
+				<section data-background-color="#ffffff">
+				<h2>&lt;deployment diagram&gt;</h2>
+				</section>
+				<section>
+					<pre><code>
+						npm install @microsoft/signalr	
+					</code></pre>
+				</section>
+				<section>
+					<pre><code className='javascript' data-trim>{`
+						constructor() {    
+						  this.hubConnection = new signalR.HubConnectionBuilder()
+						    .withUrl("https://serverbidding.azurewebsites.net/bid")
+						    .build();
+						}
 
+						sendMessage() {
+						  this.hubConnection.send("send","send this to server")}
+						}
+						`}</code></pre>
+				</section>
+				<section>
+					<pre><code className='javascript' data-trim>{`
+						constructor() {
+						  this.hubConnection.on("BroadCastClient",
+						    this.broadcastCallBack);
+						}   
+						
+						broadcastCallBack(name, message) {
+						  alert(message);
+						}
+					`}</code></pre>
+				</section>
 			</div>
         );
     }
