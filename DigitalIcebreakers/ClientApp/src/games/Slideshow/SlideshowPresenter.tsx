@@ -1,7 +1,6 @@
 import React from 'react';
 import { BaseGame, BaseGameProps } from '../BaseGame';
 import Reveal, {SlideEvent} from 'reveal.js'
-import { Slides } from './Slides'
 
 declare var window: any;
 
@@ -40,6 +39,7 @@ export class SlideshowPresenter extends BaseGame<SlideshowProps, SlideshowPresen
                 // { src: 'plugin/markdown/marked.js' },
                 // { src: 'plugin/markdown/markdown.js' },
                 { src: 'plugin/notes/notes.js', async: true },
+                { src: 'plugin/external/external.js', condition: function() { return !!document.querySelector( '[data-external]' ); } },
                 { src: 'plugin/highlight/highlight.js', async: true }
             ]
         });
@@ -64,7 +64,7 @@ export class SlideshowPresenter extends BaseGame<SlideshowProps, SlideshowPresen
             <div className="classHtml">
                 <div className="classBody">
                     <div className="reveal">
-                        <Slides />
+                        <section data-external="slides.html"></section>
                     </div>
                 </div>
             </div>

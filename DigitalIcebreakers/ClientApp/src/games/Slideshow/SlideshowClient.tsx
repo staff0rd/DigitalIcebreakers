@@ -1,7 +1,6 @@
 import React from 'react';
 import { Button, Glyphicon  } from 'react-bootstrap';
 import { BaseGame, BaseGameProps } from '../BaseGame';
-import { Slides } from './Slides'
 import Reveal from 'reveal.js'
 
 interface SlideshowClientState {
@@ -33,6 +32,7 @@ export class SlideshowClient extends BaseGame<BaseGameProps, SlideshowClientStat
             dependencies: [
                 // { src: 'plugin/markdown/marked.js' },
                 // { src: 'plugin/markdown/markdown.js' },
+                { src: 'plugin/external/external.js', condition: function() { return !!document.querySelector( '[data-external]' ); } },
                 { src: 'plugin/notes/notes.js', async: true },
                 { src: 'plugin/highlight/highlight.js', async: true }
             ]
@@ -47,7 +47,7 @@ export class SlideshowClient extends BaseGame<BaseGameProps, SlideshowClientStat
             <div className="classHtml">
                 <div className="classBody">
                     <div className="reveal">
-                        <Slides />
+                        <section data-external="slides.html"></section>
                     </div>
                 </div>
             </div>
