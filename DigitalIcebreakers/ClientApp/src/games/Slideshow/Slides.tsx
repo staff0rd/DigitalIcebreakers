@@ -195,6 +195,37 @@ export class Slides extends Component<{}, SlidesState> {
 				<section>
 					<h1>Managing the pressure</h1>
 				</section>
+				<section data-background-color="#ffffff">
+					<h2>Backplane</h2>
+				</section>
+				<section data-background-color="#ffffff">
+					<h2>&lt;backplane diagrams&gt;</h2>
+				</section>
+				<section data-background-color="#ffffff">
+					Backplane installation, configuration and monitoring is complex!
+				</section>
+				<section data-background-color="#ffffff">
+					Sticky sessions
+				</section>
+				<section data-background-color="#ffffff">
+					Looking for a managed service?
+				</section>
+				<section data-background-color="#ffffff">
+					Azure SignalR Service as a modern solution
+				</section>
+				<section data-background-color="#ffffff">
+					Fairly new product
+				</section>
+				<section data-background-color="#ffffff">
+					Proxy rather than backplane
+				</section>
+				<section data-background-color="#ffffff">
+					<h2>&lt;ASRS diagrams&gt;</h2>
+				</section>
+				<section data-background-color="#ffffff">
+					Setup is trivial!
+				</section>
+				
 			</div>
         );
     }
