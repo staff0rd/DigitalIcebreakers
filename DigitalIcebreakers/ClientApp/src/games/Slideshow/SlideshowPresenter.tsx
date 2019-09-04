@@ -36,6 +36,9 @@ export class SlideshowPresenter extends BaseGame<SlideshowProps, SlideshowPresen
         super.componentDidMount();
         window.Reveal = Reveal;
         Reveal.initialize({
+            transition: 'none', // none/fade/slide/convex/concave/zoom
+            backgroundTransition: 'none', // none/fade/slide/convex/concave/zoom
+            history: true,
             dependencies: [
                 // { src: 'plugin/markdown/marked.js' },
                 // { src: 'plugin/markdown/markdown.js' },
