@@ -149,59 +149,69 @@ export class Slides extends Component<{}, SlidesState> {
 				</section>
 				<section data-background-color="#ffffff">
 					<table>
-						<tr>
-							<td style={{verticalAlign:"middle"}}>Local</td><td style={{verticalAlign:"middle"}}>&gt;&gt;</td><td>S1 App<br/>Service</td>
-						</tr>
-						<tr>
-							<td colSpan={3} style={{textAlign:'center'}}>768 connections</td>
-						</tr>
+						<tbody>
+							<tr>
+								<td style={{verticalAlign:"middle"}}>Local</td><td style={{verticalAlign:"middle"}}>&gt;&gt;</td><td>S1 App<br/>Service</td>
+							</tr>
+							<tr>
+								<td colSpan={3} style={{textAlign:'center'}}>768 connections</td>
+							</tr>
+						</tbody>
 					</table>
 				</section>
 				<section data-background-color="#ffffff">
 					<table>
-						<tr>
-							<td style={{verticalAlign:"middle", textAlign:"center"}}>30-50 <br/>Containers</td><td style={{verticalAlign:"middle"}}>&gt;&gt;</td><td>S1 App<br/>Service</td>
-						</tr>
-						<tr>
-							<td colSpan={3} style={{textAlign:'center'}}>16,000 connections</td>
-						</tr>
+						<tbody>
+							<tr>
+								<td style={{verticalAlign:"middle", textAlign:"center"}}>30-50 <br/>Containers</td><td style={{verticalAlign:"middle"}}>&gt;&gt;</td><td>S1 App<br/>Service</td>
+							</tr>
+							<tr>
+								<td colSpan={3} style={{textAlign:'center'}}>16,000 connections</td>
+							</tr>
+						</tbody>
 					</table>
 				</section>
 				<section data-background-color="#ffffff">
 					<table>
-						<tr>
-							<td style={{verticalAlign:"middle", textAlign:"center"}}>30-50 <br/>Containers</td><td style={{verticalAlign:"middle"}}>&gt;&gt;</td><td>D2s<br/>VM</td>
-						</tr>
-						<tr>
-							<td colSpan={3} style={{textAlign:'center'}}>65,000 connections</td>
-						</tr>
+						<tbody>
+							<tr>
+								<td style={{verticalAlign:"middle", textAlign:"center"}}>30-50 <br/>Containers</td><td style={{verticalAlign:"middle"}}>&gt;&gt;</td><td>D2s<br/>VM</td>
+							</tr>
+							<tr>
+								<td colSpan={3} style={{textAlign:'center'}}>65,000 connections</td>
+							</tr>
+						</tbody>
 					</table>
 				</section>
 				<section data-background-color="#ffffff">
 					<table>
-						<tr>
-							<td style={{verticalAlign:"middle", textAlign:"center"}}>30-50 <br/>VMs</td><td style={{verticalAlign:"middle"}}>&gt;&gt;</td><td>D2s<br/>VM</td>
-						</tr>
-						<tr>
-							<td colSpan={3} style={{textAlign:'center'}}>100,000 connections</td>
-						</tr>
+						<tbody>
+							<tr>
+								<td style={{verticalAlign:"middle", textAlign:"center"}}>30-50 <br/>VMs</td><td style={{verticalAlign:"middle"}}>&gt;&gt;</td><td>D2s<br/>VM</td>
+							</tr>
+							<tr>
+								<td colSpan={3} style={{textAlign:'center'}}>100,000 connections</td>
+							</tr>
+						</tbody>
 					</table>
 				</section>
 				<section data-background-color="#ffffff">
 					<table>
-						<tr>
-							<th style={{textAlign:"center"}}>Server<br/>size</th>
-							<th style={{textAlign:"center"}}>Total<br/>connections</th>
-						</tr>
-						<tr>
-							<td>D2s</td><td style={{textAlign:"center"}}>100k</td>
-						</tr>
-						<tr>
-							<td>D8s</td><td style={{textAlign:"center"}}>214k</td>
-						</tr>
-						<tr>
-							<td>D32s</td><td style={{textAlign:"center"}}>245k</td>
-						</tr>
+						<tbody>
+							<tr>
+								<th style={{textAlign:"center"}}>Server<br/>size</th>
+								<th style={{textAlign:"center"}}>Total<br/>connections</th>
+							</tr>
+							<tr>
+								<td>D2s</td><td style={{textAlign:"center"}}>100k</td>
+							</tr>
+							<tr>
+								<td>D8s</td><td style={{textAlign:"center"}}>214k</td>
+							</tr>
+							<tr>
+								<td>D32s</td><td style={{textAlign:"center"}}>245k</td>
+							</tr>
+						</tbody>
 					</table>
 				</section>
 				<section>
