@@ -45,6 +45,10 @@ export class NavMenu extends Component {
         this.qrContainerElement = e;      
     }
 
+    collapse = () => {
+        this.props.toggleMenu(false);
+    }
+
     render() {
         const joinUrl = `${Config.baseUrl}/join/${this.props.lobbyId}`;
 
@@ -79,6 +83,12 @@ export class NavMenu extends Component {
             </LinkContainer>
         );
 
+        const collapseNav = (
+            <NavItem eventKey={1} onClick={() => this.collapse()}>
+                <Glyphicon glyph='circle-arrow-left' />Hide Menu
+            </NavItem>
+        );
+
         const gameName = Games().filter((game) => game.name === this.props.currentGame).map((game) => game.title);
 
         const currentGame = (
@@ -108,7 +118,6 @@ export class NavMenu extends Component {
                 <Navbar.Header>
                     <Navbar.Brand>
                         <Link to={'/'}>Digital Icebreakers</Link>
-                        
                     </Navbar.Brand>
                     <Navbar.Toggle />
                 </Navbar.Header>
@@ -120,6 +129,7 @@ export class NavMenu extends Component {
                         {this.props.lobbyId && this.props.currentGame ? currentGame : ""}
                         {subMenu}
                         {this.props.lobbyId && this.props.isAdmin ? startGame : ""}
+                        {this.props.currentGame && this.props.isAdmin && !isLobby ? collapseNav : ""}
                         {this.props.lobbyId && this.props.isAdmin ? closeLobby : ""}
                         <NavItem disabled={true}>
                             {this.getConnectionIcon()} Connection - v{this.props.version}
