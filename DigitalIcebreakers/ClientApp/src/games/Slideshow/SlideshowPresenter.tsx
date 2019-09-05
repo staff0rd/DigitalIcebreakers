@@ -88,7 +88,6 @@ export class SlideshowPresenter extends BaseGame<SlideshowProps, SlideshowPresen
 
     handleMenuChange = () => {
         this.initReveal();
-        Reveal.sync()
     }
 
     reportState() {
