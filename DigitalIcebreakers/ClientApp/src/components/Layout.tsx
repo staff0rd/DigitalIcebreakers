@@ -1,10 +1,11 @@
-import React, { Component } from 'react';
-import { Col, Grid, Row } from 'react-bootstrap';
+import React, { Component, Fragment } from 'react';
+import { Col, Grid, Row, Glyphicon } from 'react-bootstrap';
 import { NavMenu } from './NavMenu';
 import Games from '../games/Games';
 import { withRouter } from 'react-router-dom';
 import {RouteComponentProps} from "react-router";
 import { Events } from '../Events';
+import { Colors } from '../Colors';
 
 type LayoutProps = RouteComponentProps & {
     currentGame: string;
@@ -72,12 +73,29 @@ class Layout extends Component<LayoutProps, LayoutState> {
     }
 
     getCollapsedMenu() {
+        const iconStyle: React.CSSProperties = {
+            float:"right",
+            position: "absolute",
+            margin: 0,
+            right: 5,
+            top: 5,
+            fontSize: "50px",
+            color: Colors.toHtml(Colors.BlueGrey.C500),
+            opacity: .25,
+            cursor: "pointer"
+        }
+        const columnStyle: React.CSSProperties = {
+            padding: 0
+        }
         return (
-            <Row className="full-height"> 
-                <Col className="full-height" sm={12}>
-                    {this.props.children}
-                </Col>
-            </Row>
+            <Fragment>
+                <Row className="full-height"> 
+                    <Col style={columnStyle} className="full-height" sm={12}>
+                        {this.props.children}
+                    </Col>
+                </Row>
+                <Glyphicon style={iconStyle} glyph="menu-hamburger" onClick={() => this.toggleMenu(true)} />
+            </Fragment>
         );
     }
 }
