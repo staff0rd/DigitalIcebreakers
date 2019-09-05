@@ -39,7 +39,6 @@ interface ModalProperties {
 }
 
 interface IdeaWallPresenterProps extends BaseGameProps {
-    setMenuItems(items: JSX.Element[]): void;
     storageKey: string;
     lanes?: Lane[];
     dynamicSize: boolean;

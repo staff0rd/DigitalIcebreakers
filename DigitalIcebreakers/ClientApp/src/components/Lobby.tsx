@@ -41,11 +41,9 @@ export class Lobby extends Component<LobbyProps, LobbyState> {
         if (this.div) {
             if (this.div.clientWidth > this.div.clientHeight) {
                 this.setState({qrCodeWidth: this.div.clientHeight - 80});
-                console.log(`${this.div.clientWidth}, ${this.div.clientHeight}*`);
             }
             else {
                 this.setState({qrCodeWidth: this.div.clientWidth - 80});
-                console.log(`${this.div.clientWidth}*, ${this.div.clientHeight}`);
             }
         }
     }

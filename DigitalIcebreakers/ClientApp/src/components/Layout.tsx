@@ -4,6 +4,7 @@ import { NavMenu } from './NavMenu';
 import Games from '../games/Games';
 import { withRouter } from 'react-router-dom';
 import {RouteComponentProps} from "react-router";
+import { Events } from '../Events';
 
 type LayoutProps = RouteComponentProps & {
     currentGame: string;
@@ -33,6 +34,7 @@ class Layout extends Component<LayoutProps, LayoutState> {
 
     toggleMenu = (show: boolean) => {
         this.setState({showMenu: show});
+        Events.emit("menu-visibility")
     }
 
     render() {

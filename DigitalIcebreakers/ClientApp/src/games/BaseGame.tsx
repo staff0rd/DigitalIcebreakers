@@ -3,7 +3,7 @@ import { HubConnection } from '@aspnet/signalr';
 
 export interface BaseGameProps {
     connection: HubConnection;
-    setMenuItems: (items: any) => void;
+    setMenuItems(items: JSX.Element[]): void;
 }
 
 export class BaseGame<T extends BaseGameProps, U> extends Component<T, U> {
