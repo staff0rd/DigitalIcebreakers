@@ -62,14 +62,18 @@ class Layout extends Component<LayoutProps, LayoutState> {
     getFullMenu() {
         return (
             <Row className="full-height"> 
-                <Col sm={3}>
+                <Col style={this.columnStyle} sm={3}>
                     <NavMenu {...this.props} toggleMenu={this.toggleMenu} />
                 </Col>
-                <Col className="full-height" sm={9}>
+                <Col style={this.columnStyle} className="full-height" sm={9}>
                     {this.props.children}
                 </Col>
             </Row>
         );
+    }
+
+    private columnStyle: React.CSSProperties = {
+        padding: 0
     }
 
     getCollapsedMenu() {
@@ -84,13 +88,11 @@ class Layout extends Component<LayoutProps, LayoutState> {
             opacity: .25,
             cursor: "pointer"
         }
-        const columnStyle: React.CSSProperties = {
-            padding: 0
-        }
+        
         return (
             <Fragment>
                 <Row className="full-height"> 
-                    <Col style={columnStyle} className="full-height" sm={12}>
+                    <Col style={this.columnStyle} className="full-height" sm={12}>
                         {this.props.children}
                     </Col>
                 </Row>

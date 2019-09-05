@@ -1,6 +1,6 @@
 import React, {Fragment} from 'react';
 import { BaseGame, BaseGameProps } from '../BaseGame';
-import Reveal, {SlideEvent} from 'reveal.js'
+import Reveal from 'reveal.js'
 import { Slides } from './Slides'
 import { Button, FormGroup, Navbar } from 'react-bootstrap';
 import { Events } from '../../Events'
@@ -61,10 +61,6 @@ export class SlideshowPresenter extends BaseGame<SlideshowProps, SlideshowPresen
         window.Reveal = Reveal;
         this.initReveal();
 
-        const state = this.getFromStorage(this.props.storageKey);
-        if (state)
-            Reveal.slide( state.indexh, state.indexv, state.indexf);
-
         Reveal.addEventListener( 'slidechanged', (event: SlideEvent ) => this.reportState());
         Reveal.addEventListener( 'fragmentshown', (event: SlideEvent ) => this.reportState());
         Reveal.addEventListener( 'fragmenthidden', (event: SlideEvent ) => this.reportState());
@@ -72,6 +68,7 @@ export class SlideshowPresenter extends BaseGame<SlideshowProps, SlideshowPresen
     }
 
     initReveal() {
+        const state = this.getFromStorage(this.props.storageKey);
         Reveal.uninitialize();
         Reveal.initialize({
             dependencies: [
@@ -84,6 +81,10 @@ export class SlideshowPresenter extends BaseGame<SlideshowProps, SlideshowPresen
             minScale: 1,
             maxScale: 1
         });
+
+        if (state) {
+            Reveal.slide( state.indexh, state.indexv, state.indexf);
+        }
     }
 
     handleMenuChange = () => {
