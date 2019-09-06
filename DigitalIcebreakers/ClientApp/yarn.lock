@@ -8397,9 +8397,9 @@ ret@~0.1.10:
   version "0.1.15"
   resolved "https://registry.yarnpkg.com/ret/-/ret-0.1.15.tgz#b8a4825d5bdb1fc3f6f53c2bc33f81388681c7bc"
 
-reveal.js@^3.8.0:
+reveal.js@staff0rd/reveal.js:
   version "3.8.0"
-  resolved "https://registry.yarnpkg.com/reveal.js/-/reveal.js-3.8.0.tgz#9a2818e366d46237f0e64c00f50a05f2340cd50f"
+  resolved "https://codeload.github.com/staff0rd/reveal.js/tar.gz/2b0467656997ac2f55143cabda5db28b272e3ed4"
 
 rgb-regex@^1.0.1:
   version "1.0.1"

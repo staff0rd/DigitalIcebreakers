@@ -6,7 +6,7 @@ interface Event {
 
 export const Events = {
     handlers: [] as Event[],
-    handle: (name: string) => {
+    emit: (name: string) => {
         Events.handlers
             .filter((e) => e.name === name)
             .forEach((e) => { e.handler(); });

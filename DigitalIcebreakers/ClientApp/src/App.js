@@ -61,7 +61,7 @@ export default class App extends Component {
 
         this.configureSignalR();
 
-        window.onresize = () => Events.handle('onresize');
+        window.onresize = () => Events.emit('onresize');
     }
 
     debug() {

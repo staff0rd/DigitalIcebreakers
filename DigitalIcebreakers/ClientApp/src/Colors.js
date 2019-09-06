@@ -1,4 +1,7 @@
 export const Colors = {
+    toHtml(color)  {
+      return `#${color.toString(16).padStart(6)}`;
+    },
     Red: { 
       C50: 0xFFEBEE, 
       C100: 0xFFCDD2, 
