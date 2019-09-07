@@ -39,26 +39,19 @@ export class Slides extends Component<{}, SlidesState> {
 				<section data-transition="none">
 					<h1>How do real-time apps work?</h1>
 				</section>
-				<section data-transition="none" data-background-color="#ffffff">
+				{/* <section data-transition="none" data-background-color="#ffffff">
 					<div style={containerStyle}>
 						<div style={{width: "100%", height: "500px", backgroundImage: "url(img/200-longpolling.001.png)" , backgroundSize:"100% auto" ,backgroundRepeat:"no-repeat", backgroundPosition:"centre"}} />	 
 					</div>
-				</section>
-				<section data-transition="none" data-background-color="#ffffff">
-						<div style={containerStyle}>
-					 	<div style={{width: "100%", height: "500px", backgroundImage: "url(img/200-longpolling.002.png)" , backgroundSize:"100% auto" ,backgroundRepeat:"no-repeat", backgroundPosition:"centre"}} />	 
-				 	</div>
-				</section>
-				<section data-transition="none" data-background-color="#ffffff">
-						<div style={containerStyle}>
-					 	<div style={{width: "100%", height: "500px", backgroundImage: "url(img/200-longpolling.003.png)" , backgroundSize:"100% auto" ,backgroundRepeat:"no-repeat", backgroundPosition:"centre"}} />	 
-				 	</div>
-				</section>
-				<section data-transition="none" data-background-color="#ffffff">
-						<div style={containerStyle}>
-					 	<div style={{width: "100%", height: "500px", backgroundImage: "url(img/200-longpolling.004.png)" , backgroundSize:"100% auto" ,backgroundRepeat:"no-repeat", backgroundPosition:"centre"}} />	 
-				 	</div>
-				</section>
+				</section> */}
+				<section data-background-image="img/200-longpolling.001.png"  data-background-color="#ffffff"></section>
+				
+				<section data-background-image="img/200-longpolling.002.png" data-background-color="#ffffff"></section>
+			
+				<section data-background-image="img/200-longpolling.003.png" data-background-color="#ffffff"></section>
+			
+				<section data-background-image="img/200-longpolling.004.png" data-background-color="#ffffff"></section>
+			
 				<section data-transition="none" data-background-color="#ffffff">
 					<h2>Server-Sent Events</h2>
 					<ul>
@@ -80,34 +73,81 @@ export class Slides extends Component<{}, SlidesState> {
 				<section data-background-color="#ffffff">
 					<h3>Which transport method<br/>is the best?</h3>
 				</section>
-				<section>
-					<pre><code className="csharp" data-trim>{`
-						public void ConfigureServices(IServiceCollection services)
-						{
-						  services.AddSignalR();
-						}
 
-						public void Configure(IApplicationBuilder app)
-						{
-						  app.UseRouting();
-						  app.UseEndpoints(endpoints =>
-						  {
-						    endpoints.MapHub<BidHub>("/echo");
-						  });
-						}`}
-					</code></pre>
+				<section>
+					<h1>ASP.NET SignalR</h1>
+				</section>
+
+				<section>
+					<h1>Manages transport  <br /> method is the key benefit</h1>
 				</section>
 				<section>
-					<pre><code data-trim>{`
-						public class BidHub : Hub
-						{
-						  public async Task Send(string message)
-						  {
-						    await Clients.All.SendAsync("BroadCastClient", message);
-						  }
-						}
-					`}</code></pre>
+					<h1>WebSocket <br /> When it’s available</h1>
 				</section>
+				<section>
+					<h1> Originated in 2011 <br /> David Fowler, Damian Edwards</h1>
+				</section>
+				<section>
+					<h1>Server & Client Library </h1>
+				</section>
+				<section>
+					<h1> ASP.NET Core SignalR <br /> is a rewrite!</h1>
+				</section>
+			
+				<section className="cover-page"	data-background-image="img/flower-bidding.jpg">
+					<h1>Bidding Flower bouquet</h1>
+					<h3>ASP.Net Core SignalR,<br />
+						Vue.js
+					 </h3>
+				</section>
+
+				<section>
+							<pre><code className='hljs' data-line-numbers="3" data-noescape data-trim>{`
+								public void ConfigureServices(IServiceCollection services)
+								{
+									services.AddSignalR();
+								}
+
+								public void Configure(IApplicationBuilder app)
+								{
+									app.UseRouting();
+									app.UseEndpoints(endpoints =>
+									{
+										endpoints.MapHub<EchoHub>("/echo");
+									});
+								}
+							`}</code></pre>
+				</section>
+				<section>
+							<pre><code className='hljs' data-line-numbers="8-12" data-noescape data-trim>{`
+								public void ConfigureServices(IServiceCollection services)
+								{
+									services.AddSignalR();
+								}
+
+								public void Configure(IApplicationBuilder app)
+								{
+									app.UseRouting();
+									app.UseEndpoints(endpoints =>
+									{
+										endpoints.MapHub<EchoHub>("/echo");
+									});
+								}
+							`}</code></pre>
+				</section>
+					<section >
+							<pre><code className='hljs' data-line-numbers="5" data-noescape data-trim>{`
+							    public class BidHub : Hub
+							    {
+							        public async Task Send(string message)
+							        {
+							            await Clients.All.SendAsync("BroadCastClient", message);
+							        }
+							    }
+							`}</code></pre>
+				</section>
+
+				
 				<section data-background-color="#ffffff">
 				<h2>&lt;deployment diagram&gt;</h2>
 				</section>
@@ -117,7 +157,7 @@ export class Slides extends Component<{}, SlidesState> {
 					</code></pre>
 				</section>
 				<section>
-					<pre><code className='javascript' data-trim>{`
+					<pre><code className='javascript'  data-line-numbers="2-4"  ata-trim>{`
 						constructor() {    
 						  this.hubConnection = new signalR.HubConnectionBuilder()
 						    .withUrl("https://serverbidding.azurewebsites.net/bid")
@@ -129,6 +169,20 @@ export class Slides extends Component<{}, SlidesState> {
 						}
 						`}</code></pre>
 				</section>
+				<section>
+					<pre><code className='javascript'  data-line-numbers="8"  ata-trim>{`
+						constructor() {    
+						  this.hubConnection = new signalR.HubConnectionBuilder()
+						    .withUrl("https://serverbidding.azurewebsites.net/bid")
+						    .build();
+						}
+
+						sendMessage() {
+						  this.hubConnection.send("send","send this to server")}
+						}
+						`}</code></pre>
+				</section>
+
 				<section>
 					<pre><code className='javascript' data-trim>{`
 						constructor() {
