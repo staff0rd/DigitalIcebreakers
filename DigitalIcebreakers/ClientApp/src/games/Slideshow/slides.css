@@ -1,8 +1,11 @@
 .reveal section img { background:none; border:none; box-shadow:none; }
-.client .slide-background-content{ height: 150px!important ; top:30%!important; }
-.presenter .slide-background-content{ height: 700px!important ; }
 
-.cover-page .slide-background-content {height: 100%!important ; top:0!important;}
+.cover-page .slide-background-content {
+    height: 100%!important ; top:0!important;
+    background-size: cover!important;
+
+}
+
 section.backgroundImage{
     width: 100%!important;
     height: 100%!important;
