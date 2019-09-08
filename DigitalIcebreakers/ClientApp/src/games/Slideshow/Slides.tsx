@@ -29,7 +29,30 @@ export class Slides extends Component<{}, SlidesState> {
     render() {
         return (
             <div className="slides" ref={this.theElement}>
-				<section data-transition="none">
+
+ 				<section data-transition="none">
+					<h1>Best Candidates <br/>for real-time?</h1>
+				</section>
+
+				<section data-background-image="img/facebook.jpg" className="cover-page"   ></section>
+							
+				<section data-background-image="img/dating.jpg"  className="cover-page" ></section>
+							
+				<section data-background-image="img/uber.jpg" className="cover-page"></section>
+							
+				<section data-background-image="img/gaming.jpg" className="cover-page" ></section>
+				
+				<section data-background-image="img/dashboard.jpg" className="cover-page" ></section>
+
+				<section data-transition="none" data-background-color="#ffffff">
+					<h1>High frequency updates</h1>
+				</section>	
+
+				<section data-transition="none" data-background-color="#ffffff">
+					<h1>Event-driven <br /> architecture</h1>
+				</section>	
+				
+				 <section data-transition="none">
 					<h1>How do real-time apps work?</h1>
 				</section>
 				<section data-background-image="img/200-longpolling.001.png"  data-background-color="#ffffff"></section>
