@@ -27,23 +27,11 @@ export class Slides extends Component<{}, SlidesState> {
     }
 
     render() {
-		const containerStyle: React.CSSProperties = {
-			position:"relative", 
-			width: `${this.state.width}px`, 
-			height: `${this.state.height}px`, 
-			margin:"0 auto"
-		};
-
         return (
             <div className="slides" ref={this.theElement}>
 				<section data-transition="none">
 					<h1>How do real-time apps work?</h1>
 				</section>
-				{/* <section data-transition="none" data-background-color="#ffffff">
-					<div style={containerStyle}>
-						<div style={{width: "100%", height: "500px", backgroundImage: "url(img/200-longpolling.001.png)" , backgroundSize:"100% auto" ,backgroundRepeat:"no-repeat", backgroundPosition:"centre"}} />	 
-					</div>
-				</section> */}
 				<section data-background-image="img/200-longpolling.001.png"  data-background-color="#ffffff"></section>
 				
 				<section data-background-image="img/200-longpolling.002.png" data-background-color="#ffffff"></section>
