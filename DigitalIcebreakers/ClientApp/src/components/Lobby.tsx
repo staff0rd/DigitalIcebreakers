@@ -40,7 +40,7 @@ export class Lobby extends Component<LobbyProps, LobbyState> {
     resize = () => {
         if (this.div) {
             if (this.div.clientWidth > this.div.clientHeight) {
-                this.setState({qrCodeWidth: this.div.clientHeight - 80});
+                this.setState({qrCodeWidth: this.div.clientHeight - 100});
             }
             else {
                 this.setState({qrCodeWidth: this.div.clientWidth - 80});
@@ -60,24 +60,14 @@ export class Lobby extends Component<LobbyProps, LobbyState> {
 
     render() {
         const joinUrl = `${Config.baseUrl}/join/${this.props.id}`;
+        const qrCodeStyle: React.CSSProperties = {marginTop: '0', marginRight: '40', marginBottom: '40'}
         //const players = (this.props.players || []).map((p, ix) => <ListGroupItem key={ix}>{p.name}</ListGroupItem>);
         if (this.props.id)
             return (
                 <div ref={this.element} style={{height: "100%"}}>
-                    <QRCode value={joinUrl} size={this.state.qrCodeWidth} renderAs="svg" style={{marginTop: '40', marginRight: '40', marginBottom: '40'}} />
-                    {/* <h1>{this.props.name}</h1> */}
-
-                       {/* <Row>
-                        <Col md={12}>
-                            <a href={joinUrl}>{joinUrl}</a>
-                            <h2>Players</h2>
-                            <ListGroup>
-                                {players}
-                            </ListGroup>
-                        </Col>
-                    </Row> */}
-                            <a href={joinUrl}>{joinUrl}</a>
-                             
+                    <a href={joinUrl}>{joinUrl}</a>
+                    <h1 style={{marginTop: 0}}>Players: {this.props.players.length}</h1>
+                    <QRCode value={joinUrl} size={this.state.qrCodeWidth} renderAs="svg" style={qrCodeStyle} />
                 </div>
             ); else return (
                 <div>
