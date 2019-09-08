@@ -29,9 +29,9 @@ export class SlideshowClient extends BaseGame<BaseGameProps, SlideshowClientStat
             overview: false,
             keyboard: false,
             progress: false,
+            transition: 'none',
+            backgroundTransition: 'none',
             dependencies: [
-                // { src: 'plugin/markdown/marked.js' },
-                // { src: 'plugin/markdown/markdown.js' },
                 { src: 'plugin/notes/notes.js', async: true },
                 { src: 'plugin/highlight/highlight.js', async: true }
             ]

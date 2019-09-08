@@ -71,8 +71,8 @@ export class SlideshowPresenter extends BaseGame<SlideshowProps, SlideshowPresen
         const state = this.getFromStorage(this.props.storageKey);
         Reveal.uninitialize();
         Reveal.initialize({
-            transition: 'none', // none/fade/slide/convex/concave/zoom
-            backgroundTransition: 'none', // none/fade/slide/convex/concave/zoom
+            transition: 'none',
+            backgroundTransition: 'none',
             history: true,
             dependencies: [
                 { src: 'plugin/notes/notes.js', async: true },
