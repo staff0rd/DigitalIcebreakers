@@ -46,7 +46,7 @@ export class SlideshowClient extends BaseGame<BaseGameProps, SlideshowClientStat
             <div className="classHtml">
                 <div className="classBody">
                     <div className="reveal client">
-                        <Slides />
+                        <Slides isPresenter={false} />
                     </div>
                 </div>
             </div>

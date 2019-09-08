@@ -7,7 +7,11 @@ interface SlidesState {
 	height: number;
 }
 
-export class Slides extends Component<{}, SlidesState> {
+type SlidesProps = {
+	isPresenter: boolean;
+}
+
+export class Slides extends Component<SlidesProps, SlidesState> {
 	constructor(props: any) {
 		super(props);
 		this.state = {
@@ -24,7 +28,13 @@ export class Slides extends Component<{}, SlidesState> {
 			);
 			this.setState(result);
 		}
-    }
+	}
+	
+	ifPresenter(content: string)
+	{
+		if (this.props.isPresenter)
+			return content;
+	}
 
     render() {
         return (
@@ -34,15 +44,15 @@ export class Slides extends Component<{}, SlidesState> {
 					<h1>Best Candidates <br/>for real-time?</h1>
 				</section>
 
-				<section data-background-image="img/facebook.jpg" className="cover-page"   ></section>
+				<section data-background-image={this.ifPresenter('img/facebook.jpg')} className="cover-page"   ></section>
 							
-				<section data-background-image="img/dating.jpg"  className="cover-page" ></section>
+				<section data-background-image={this.ifPresenter('img/dating.jpg')} className="cover-page" ></section>
 							
-				<section data-background-image="img/uber.jpg" className="cover-page"></section>
+				<section data-background-image={this.ifPresenter('img/uber.jpg')} className="cover-page"></section>
 							
-				<section data-background-image="img/gaming.jpg" className="cover-page" ></section>
+				<section data-background-image={this.ifPresenter('img/gaming.jpg')} className="cover-page" ></section>
 				
-				<section data-background-image="img/dashboard.jpg" className="cover-page" ></section>
+				<section data-background-image={this.ifPresenter('img/dashboard.jpg')} className="cover-page" ></section>
 
 				<section data-transition="none" data-background-color="#ffffff">
 					<h1>High frequency updates</h1>

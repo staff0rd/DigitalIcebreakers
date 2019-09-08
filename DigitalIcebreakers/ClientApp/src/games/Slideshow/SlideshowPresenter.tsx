@@ -105,7 +105,7 @@ export class SlideshowPresenter extends BaseGame<SlideshowProps, SlideshowPresen
             <div className="classHtml">
                 <div className="classBody">
                     <div className="reveal presenter">
-                        <Slides />
+                        <Slides isPresenter={true} />
                     </div>
                 </div>
             </div>
