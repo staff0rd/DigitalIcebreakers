@@ -76,7 +76,7 @@ export class Slides extends Component<{}, SlidesState> {
 					<h2>&lt;sse diagram&gt;</h2>
 				</section>
 				<section data-background-color="#ffffff">
-					<h2>Web Socket</h2>
+					<h2>WebSocket</h2>
 					<ul>
 						<li className="fragment">Bi-directional</li>
 					</ul>

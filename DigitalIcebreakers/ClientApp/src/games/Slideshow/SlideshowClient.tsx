@@ -23,6 +23,7 @@ export class SlideshowClient extends BaseGame<BaseGameProps, SlideshowClientStat
     componentDidMount() {
         super.componentDidMount();
         window.Reveal = Reveal;
+        Reveal.uninitialize();
         Reveal.initialize({
             controls: false,
             touch: false,
@@ -46,7 +47,7 @@ export class SlideshowClient extends BaseGame<BaseGameProps, SlideshowClientStat
             <div className="classHtml">
                 <div className="classBody">
                     <div className="reveal client">
-                        <Slides />
+                        <Slides isPresenter={false} />
                     </div>
                 </div>
             </div>

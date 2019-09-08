@@ -7,7 +7,11 @@ interface SlidesState {
 	height: number;
 }
 
-export class Slides extends Component<{}, SlidesState> {
+type SlidesProps = {
+	isPresenter: boolean;
+}
+
+export class Slides extends Component<SlidesProps, SlidesState> {
 	constructor(props: any) {
 		super(props);
 		this.state = {
@@ -24,19 +28,61 @@ export class Slides extends Component<{}, SlidesState> {
 			);
 			this.setState(result);
 		}
-    }
+	}
+	
+	ifPresenter(content: string)
+	{
+		if (this.props.isPresenter)
+			return content;
+	}
+
+	ifClient(content: string)
+	{
+		if (!this.props.isPresenter)
+			return content;
+	}
 
     render() {
         return (
             <div className="slides" ref={this.theElement}>
 
  			 
-			   <section data-transition="none">
+				<section data-transition="none">
 					<h1>How do real-time apps work?</h1>
 				</section>
+
+				<section data-transition="none" data-background-color="#ffffff">
+					<h2>Transport Methods</h2>
+					<ul>
+						<li className="fragment"><h3>Long Polling</h3></li>
+						<li className="fragment"><h3>Server-Sent Events</h3></li>
+						<li className="fragment"><h3>WebSocket</h3></li>
+					</ul>
+				</section>
+
+				
+				<section data-background-image=	{this.ifPresenter('img/200-longpolling.001.png')}   data-background-color="#ffffff">
+				<h2> {this.ifClient('No Image Available')}</h2>
+				</section>
+				 
+				<section data-background-image={this.ifPresenter('img/200-longpolling.002.png')}  data-background-color="#ffffff">
+				<h2> {this.ifClient('No Image Available')}</h2>
+			
+				</section>
+			
+				<section data-background-image={this.ifPresenter('img/200-longpolling.003.png')}  data-background-color="#ffffff">
+				<h2> {this.ifClient('No Image Available')}</h2>
+			
+				</section>
+			
+				<section data-background-image={this.ifPresenter('img/200-longpolling.004.png')}  data-background-color="#ffffff">
+				<h2> {this.ifClient('No Image Available')}</h2>
+			
+				</section>
+			
 				 
 				 <section data-background-color="#ffffff">
-					<h1>Web Socket</h1>
+					<h1>WebSocket</h1>
 				</section>
 				<section data-background-color="#ffffff">
 					<h1>HTML5</h1>
@@ -47,17 +93,13 @@ export class Slides extends Component<{}, SlidesState> {
 				<section data-background-color="#ffffff">
 					<h1>Bi-directional</h1>
 				</section>
-				
-				<section data-background-image="img/exported-websocket.png"  data-background-color="#ffffff"></section>
-				
+
 			 
-				<section data-background-image="img/200-longpolling.001.png"  data-background-color="#ffffff"></section>
+				<section data-background-image={this.ifPresenter('img/exported-websocket.png')} data-background-color="#ffffff" >
+				<h2> {this.ifClient('No Image Available')}</h2>
+			
+				</section>
 				
-				<section data-background-image="img/200-longpolling.002.png" data-background-color="#ffffff"></section>
-			
-				<section data-background-image="img/200-longpolling.003.png" data-background-color="#ffffff"></section>
-			
-				<section data-background-image="img/200-longpolling.004.png" data-background-color="#ffffff"></section>
 			
 
 				<section data-background-color="#ffffff">
@@ -77,9 +119,7 @@ export class Slides extends Component<{}, SlidesState> {
 				<section>
 					<h1>WebSocket <br /> When it’s available</h1>
 				</section>
-				<section>
-					<h1> Originated in 2011 <br /> David Fowler, Damian Edwards</h1>
-				</section>
+			 
 				<section>
 					<h1>Server & Client Library </h1>
 				</section>
