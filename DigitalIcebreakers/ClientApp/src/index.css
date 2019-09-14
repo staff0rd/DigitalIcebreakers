@@ -25,3 +25,8 @@ body {
     justify-content: center;
     height: 100%
 }
+
+blockquote { /* bootstrap override */
+    font-size: inherit;
+    border-left: inherit;
+}

@@ -276,6 +276,22 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 					<h1>Pushing the limit</h1>
 				</section>
 				<section data-background-color="#ffffff">
+					<blockquote cite="some idiot">
+					&ldquo;SignalR can handle unlimited persistent connections!&rdquo;
+					</blockquote>
+				</section>
+				<section data-background-color="#ffffff">
+				<blockquote cite="Nelly & Stafford">
+						&ldquo;SignalR can <span style={{color:"red"}}>not</span> handle unlimited persistent connections!&rdquo;
+					</blockquote>
+					{/* <p>
+					SignalR can <span style={{color:"red"}}>not</span> handle unlimited persistent connections!
+					</p>
+					<p>
+						<i>- Nelly & Stafford</i>
+					</p> */}
+				</section>
+				<section data-background-color="#ffffff">
 					<h2>Crankier</h2>
 				</section>
 				<section data-background-color="#ffffff">
