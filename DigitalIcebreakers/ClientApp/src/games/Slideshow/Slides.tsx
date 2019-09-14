@@ -1,6 +1,6 @@
-import React, {Component} from "react"
+import React, { Component } from "react"
 import "./slides.css";
-import {fitRectIntoBounds} from "./fitRectIntoBounds";
+import { fitRectIntoBounds } from "./fitRectIntoBounds";
 
 interface SlidesState {
 	width: number;
@@ -23,8 +23,8 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 	theElement = (element: HTMLDivElement) => {
 		if (element) {
 			const result = fitRectIntoBounds(
-				{width: 1520, height: 680}, 
-				{width: element.clientWidth, height: element.clientHeight}
+				{ width: 1520, height: 680 },
+				{ width: element.clientWidth, height: element.clientHeight }
 			);
 			this.setState(result);
 		}
@@ -36,51 +36,109 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 		else
 			return (
 				<section data-background-color="#ffffff">
-					<h1 style={{opacity: .25}}>Digital<br/>Icebreakers</h1>
+					<h1 style={{ opacity: .25 }}>Digital<br />Icebreakers</h1>
 				</section>);
 	}
 
 	diagram(path: string) {
 		return this.ifPresenter(
 			<section data-background-image={path} data-background-color="#ffffff" className="cover-page"></section>
-			)
+		)
 	}
 
-    render() {
-        return (
-            <div className="slides" ref={this.theElement}>
-				<section>
-					<h1>Using Azure SignalR Service to build real-time applications</h1>
+	render() {
+		return (
+			<div className="slides" ref={this.theElement}>
+
+				{this.diagram("img/intro.png")}
+ 
+				<section data-background-color="#ffffff">
+					<h2>
+						<ul >
+								<li className="no-opacic">Real-time applications</li>
+					 			<li  className="opacic">Scaling</li>
+								<li  className="opacic">Serverless approach</li>
+								<li className="opacic">Audience interactive demo</li>
+							</ul>
+						 
+					</h2>
 				</section>
 				<section data-background-color="#ffffff">
-					<ul>
-					<li>Real-time applications</li>
-					<li className="fragment">Scaling</li>
-					<li className="fragment">Serverless approach</li>
-					<li className="fragment">Audience interactive demo</li>
-					</ul>
+					<h2>
+					<ul >
+								<li className="no-opacic">Real-time applications</li>
+					 			<li  className="no-opacic">Scaling</li>
+								<li  className="opacic">Serverless approach</li>
+								<li className="opacic">Audience interactive demo</li>
+							</ul>
+					</h2>
+				</section>
+				<section data-background-color="#ffffff">
+					<h2>
+					<ul >
+								<li className="no-opacic">Real-time applications</li>
+					 			<li  className="no-opacic">Scaling</li>
+								<li  className="no-opacic">Serverless approach</li>
+								<li className="opacic">Audience interactive demo</li>
+							</ul>
+					</h2>
+				</section>
+				<section data-background-color="#ffffff">
+					<h2>
+					<ul >
+								<li className="no-opacic">Real-time applications</li>
+					 			<li  className="no-opacic">Scaling</li>
+								<li  className="no-opacic">Serverless approach</li>
+								<li className="no-opacic">Audience interactive demo</li>
+							</ul>
+					</h2>
 				</section>
 
-				{this.diagram("img/diagrams.001.png")}
+				{this.ifPresenter(
+					<section  className="cover-page" data-background-image="img/flower-bidding.jpg" >
+						<h2 className="flower" style={{ color: "black" }}>Bidding Flower Bouquet</h2>
+					</section>
+				)}
+				
+				 
+
+				
+				{/* {this.diagram("img/diagrams.001.png")} */}
 
 				{this.ifPresenter(
 					<section>
-							<img src="img/f5.webp" width="414px" />
+						<img src="img/f5.webp" width="414px" />
 					</section>
 				)}
 
-				<section>
+				<section data-background-color="#ffffff">
 					<h3>setTimeout(() => location.reload(true), 1000);</h3>
 				</section>
 
-				{this.diagram("img/diagrams.002.png")}
-
-				<section>
-					<h2>Real-time applications push data once available</h2>
+				<section data-background-color="#ffffff">
+					<h1>POC</h1>
+					<div className="poc">
+						<ul>
+							<h3>
+							<li>Asp.Net Core</li>
+							<li>Vue.js	</li>
+							<li>Azure SignalR Service</li>
+							<li>Azure Storage</li>
+							<li>Azure App Service</li>
+							</h3>
+						</ul>
+					</div>
 				</section>
 
- 				<section data-transition="none">
-					<h1>Best Candidates <br/>for real-time?</h1>
+
+				{this.diagram("img/diagrams.002.png")}
+
+				<section data-background-color="#ffffff">
+					<h2>Push data <br />once available</h2>
+				</section>
+
+				<section data-transition="none" >
+					<h1>Best Candidates <br />for real-time?</h1>
 				</section>
 
 				{this.diagram("img/facebook.jpg")}
@@ -91,13 +149,13 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 
 				<section data-transition="none" data-background-color="#ffffff">
 					<h1>High frequency updates</h1>
-				</section>	
+				</section>
 
 				<section data-transition="none" data-background-color="#ffffff">
 					<h1>Event-driven architecture</h1>
 				</section>
-				
-				 <section data-transition="none">
+
+				<section data-transition="none">
 					<h1>How do real-time apps work?</h1>
 				</section>
 
@@ -109,17 +167,53 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 				{this.diagram("img/diagrams.004.png")}
 				{this.diagram("img/diagrams.005.png")}
 				{this.diagram("img/diagrams.006.png")}
-			
+
 				<section data-transition="none" data-background-color="#ffffff">
-					<h2>Server-Sent Events</h2>
-					<ul>
-						<li className="fragment">HTML5</li>
-						<li className="fragment">One-way communication</li>
-						<li className="fragment">Low latency</li>
-						<li className="fragment">Unsupported by Edge &amp; IE</li>
-					</ul>
+					<h1>Server-Sent Events</h1>
 				</section>
-				
+				<section data-transition="none" data-background-color="#ffffff">
+					<h2>
+						<ul>
+							<li >HTML5</li>
+							<li className="opacic">One-way communication</li>
+							<li className="opacic">Low latency</li>
+							<li className="opacic">Unsupported by Edge &amp; IE</li>
+						</ul>
+					</h2>
+				</section>
+				<section data-transition="none" data-background-color="#ffffff">
+					<h2>
+						<ul>
+							<li  >HTML5</li>
+							<li  >One-way communication</li>
+							<li className="opacic">Low latency</li>
+							<li className="opacic">Unsupported by Edge &amp; IE</li>
+						</ul>
+					</h2>
+				</section>
+				<section data-transition="none" data-background-color="#ffffff">
+					<h2>
+						<ul>
+							<li  >HTML5</li>
+							<li >One-way communication</li>
+							<li >Low latency</li>
+							<li className="opacic">Unsupported by Edge &amp; IE</li>
+						</ul>
+					</h2>
+				</section>
+				 
+
+				<section data-transition="none" data-background-color="#ffffff">
+					<h2>
+						<ul>
+							<li >HTML5</li>
+							<li >One-way communication</li>
+							<li >Low latency</li>
+							<li >Unsupported by Edge &amp; IE</li>
+						</ul>
+					</h2>
+				</section>
+
 				{this.diagram("img/diagrams.007.png")}
 				{this.diagram("img/diagrams.008.png")}
 				{this.diagram("img/diagrams.009.png")}
@@ -127,49 +221,52 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 				{this.diagram("img/diagrams.011.png")}
 
 				<section data-background-color="#ffffff">
-					<h2>Web Socket</h2>
-					<ul>
-						<li className="fragment">Bi-directional</li>
-					</ul>
+					<h1>Web Socket</h1>
 				</section>
+
+			 
+				<section data-background-color="#ffffff">
+					<h1>Bi-directional</h1>
+				</section>
+
 
 				{this.diagram("img/diagrams.012.png")}
 
 				<section data-background-color="#ffffff">
-					<h3>Which transport method<br/>is the best?</h3>
+					<h1>Which transport method<br />is the best?</h1>
 				</section>
 
-				<section>
+				<section data-background-color="#ffffff">
 					<h1>ASP.NET SignalR</h1>
 				</section>
 
-				<section>
+				<section data-background-color="#ffffff">
 					<h1>Manages transport  <br /> method is the key benefit</h1>
 				</section>
-				<section>
+				<section  data-background-color="#ffffff">
 					<h1>WebSocket when it’s available</h1>
 				</section>
-				<section>
-					<h1> Originated in 2011 <br /> David Fowler, Damian Edwards</h1>
+				<section  data-background-color="#ffffff">
+					<h2> Originated in 2011 <br /> David Fowler, Damian Edwards</h2>
 				</section>
-				<section>
+				<section  data-background-color="#ffffff">
 					<h1>Server & Client Library </h1>
 				</section>
-				<section>
+				<section  data-background-color="#ffffff">
 					<h1> ASP.NET Core SignalR <br /> is a rewrite!</h1>
 				</section>
 
 				{this.ifPresenter(
-				<section className="cover-page"	data-background-image="img/flower-bidding.jpg" data-background-opacity=".5">
-					<h1 style={{color:"white"}}>Bidding Flower bouquet</h1>
-					<h3 style={{color:"white"}}>ASP.NET Core SignalR,<br />
-						Vue.js
+					<section className="cover-page" data-background-image="img/flower-bidding.jpg" data-background-opacity=".5">
+						<h1 style={{ color: "white" }}>Bidding Flower Bouquet</h1>
+						<h3 style={{ color: "white" }}>ASP.NET Core SignalR,<br />
+							Vue.js
 						</h3>
-				</section>
+					</section>
 				)}
 
 				<section>
-							<pre><code data-line-numbers="3" data-noescape data-trim>{`
+					<pre><code data-line-numbers="3" data-noescape data-trim>{`
 								public void ConfigureServices(IServiceCollection services)
 								{
 									services.AddSignalR();
@@ -186,7 +283,7 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 							`}</code></pre>
 				</section>
 				<section>
-							<pre><code className='hljs' data-line-numbers="8-12" data-noescape data-trim>{`
+					<pre><code className='hljs' data-line-numbers="8-12" data-noescape data-trim>{`
 								public void ConfigureServices(IServiceCollection services)
 								{
 									services.AddSignalR();
@@ -202,27 +299,27 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 								}
 							`}</code></pre>
 				</section>
-					<section >
-							<pre><code className='hljs' data-line-numbers="5" data-noescape data-trim>{`
+				<section >
+					<pre><code className='hljs' data-line-numbers="5" data-noescape data-trim>{`
 								public class BidHub : Hub
 								{
 								    public async Task Send(string message)
 								    {
-								        await Clients.All.SendAsync("BroadCastClient", message);
+								        await Clients.All.SendAsync("BroadCastClient", msg);
 								    }
 								}
 							`}</code></pre>
 				</section>
-				
+
 				{this.diagram("img/diagrams.026.png")}
 
 				<section>
 					<h2>
-						npm install @microsoft/signalr	
+						npm install @microsoft/signalr
 					</h2>
 				</section>
 				<section>
-					<pre><code className='javascript'  data-line-numbers="2-4" data-trim>{`
+					<pre><code className='javascript' data-line-numbers="2-4" data-trim>{`
 						constructor() {    
 						  this.hubConnection = new signalR.HubConnectionBuilder()
 						    .withUrl("https://serverbidding.azurewebsites.net/bid")
@@ -249,7 +346,7 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 				</section>
 
 				<section>
-					<pre><code className='javascript' data-line-numbers="2-3"  data-trim>{`
+					<pre><code className='javascript' data-line-numbers="2-3" data-trim>{`
 						constructor() {
 						  this.hubConnection.on("BroadCastClient",
 						    this.broadcastCallBack);
@@ -261,7 +358,7 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 					`}</code></pre>
 				</section>
 				<section>
-					<pre><code className='javascript' data-line-numbers="6-8"  data-trim>{`
+					<pre><code className='javascript' data-line-numbers="6-8" data-trim>{`
 						constructor() {
 						  this.hubConnection.on("BroadCastClient",
 						    this.broadcastCallBack);
@@ -282,7 +379,7 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 				</section>
 				<section data-background-color="#ffffff">
 					<blockquote cite="Nelly & Stafford">
-						&ldquo;SignalR can <span style={{color:"red"}}>not</span> handle unlimited persistent connections!&rdquo;
+						&ldquo;SignalR can <span style={{ color: "red" }}>not</span> handle unlimited persistent connections!&rdquo;
 					</blockquote>
 				</section>
 				<section data-background-color="#ffffff">
@@ -290,8 +387,14 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 					<img src="img/placeholder.png"></img>
 				</section>
 				<section data-background-color="#ffffff">
-					<h2>Persistent connections consume resources significantly!</h2>
+					<h1>Persistent connections <br /> consume resources  <br /> significantly!</h1>
 				</section>
+
+			 	{this.ifPresenter(
+					<section data-background-color="#ffffff">
+						<img src="img/serverresources.png"   />
+					</section>
+				)}
 
 				{this.diagram("img/realtime.001.png")}
 				{this.diagram("img/realtime.002.png")}
@@ -343,6 +446,6 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 					</table>
 				</section>
 			</div>
-        );
-    }
+		);
+	}
 }

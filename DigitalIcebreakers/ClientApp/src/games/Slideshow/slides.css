@@ -12,6 +12,37 @@ section.backgroundImage{
     padding: 0px!important;
 }
 
+.opacic{
+    opacity: 0.25;
+}
+ 
+ul li{
+    margin-bottom: 16px!important;
+}
+  
+.flower{
+    text-align: left;
+    padding-left: 24px;
+}
+h1,h2{
+    line-height: 1.5!important;
+}
+
+code .hljs-ln-line.hljs-ln-n
+{
+    display: none!important;
+
+}
+code{
+    font-size: 30px!important;
+    line-height: 1.2!important;
+    max-height: 500px!important;
+}
+.poc{
+    border: 1px solid;
+    margin-left: 350px;
+    margin-right: 350px;
+}
 .slides{
     /* transform: none!important;
     top:0!important;
