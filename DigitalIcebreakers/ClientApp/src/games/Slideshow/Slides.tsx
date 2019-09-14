@@ -292,6 +292,14 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 				<section data-background-color="#ffffff">
 					<h2>Persistent connections consume resources significantly!</h2>
 				</section>
+
+				{this.diagram("img/realtime.001.png")}
+				{this.diagram("img/realtime.002.png")}
+				{this.diagram("img/realtime.003.png")}
+				{this.diagram("img/realtime.004.png")}
+				{this.diagram("img/realtime.005.png")}
+
+
 				<section data-background-color="#ffffff">
 					<h2>Crankier</h2>
 				</section>
