@@ -5,7 +5,9 @@ import { Slides } from './Slides'
 import { Button, FormGroup, Navbar } from 'react-bootstrap';
 import { Events } from '../../Events'
 
-declare var window: any;
+declare var window: any & {
+    hljs: any;
+};
 
 interface SlideshowPresenterState {
     count: number;
@@ -76,7 +78,12 @@ export class SlideshowPresenter extends BaseGame<SlideshowProps, SlideshowPresen
             history: true,
             dependencies: [
                 { src: 'plugin/notes/notes.js', async: true },
-                { src: 'plugin/highlight/highlight.js', async: true }
+                { src: 'plugin/highlight/highlight.js', async: true, callback: function() {
+                    window.hljs.configure({
+                        tabReplace: '    '
+                    });
+                    window.hljs.initHighlighting();
+                } }
             ],
             width: "100%",
             height: "100%",
