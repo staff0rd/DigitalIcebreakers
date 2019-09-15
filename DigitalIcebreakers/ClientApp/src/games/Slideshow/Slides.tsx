@@ -42,7 +42,7 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 
 	diagram(path: string) {
 		return this.ifPresenter(
-			<section data-background-image={path} data-background-color="#ffffff" className="cover-page"></section>
+			<section  data-background-image={path} data-background-color="#ffffff" className="cover-page"></section>
 		)
 	}
 
@@ -95,16 +95,12 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 				</section>
 
 				{this.ifPresenter(
-					<section  className="cover-page" data-background-image="img/flower-bidding.jpg" >
-						<h2 className="flower" style={{ color: "black" }}>Bidding Flower Bouquet</h2>
+					<section  className="cover-page" data-background-image="img/flower-bidding.jpg" data-background-opacity=".5">
+						<h1 className="flower" style={{ color: "white" }}>Bidding Flower Bouquet</h1>
 					</section>
 				)}
 				
-				 
-
-				
-				{/* {this.diagram("img/diagrams.001.png")} */}
-
+			
 				{this.ifPresenter(
 					<section>
 						<img src="img/f5.webp" width="414px" />
@@ -115,23 +111,9 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 					<h3>setTimeout(() => location.reload(true), 1000);</h3>
 				</section>
 
-				<section data-background-color="#ffffff">
-					<h1>POC</h1>
-					<div className="poc">
-						<ul>
-							<h3>
-							<li>Asp.Net Core</li>
-							<li>Vue.js	</li>
-							<li>Azure SignalR Service</li>
-							<li>Azure Storage</li>
-							<li>Azure App Service</li>
-							</h3>
-						</ul>
-					</div>
-				</section>
+				{this.diagram("img/diagrams.001.png")}
 
-
-				{this.diagram("img/diagrams.002.png")}
+		    	{this.diagram("img/diagrams.002.png")}
 
 				<section data-background-color="#ffffff">
 					<h2>Push data <br />once available</h2>
@@ -171,6 +153,7 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 				<section data-transition="none" data-background-color="#ffffff">
 					<h1>Server-Sent Events</h1>
 				</section>
+
 				<section data-transition="none" data-background-color="#ffffff">
 					<h2>
 						<ul>
@@ -201,8 +184,6 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 						</ul>
 					</h2>
 				</section>
-				 
-
 				<section data-transition="none" data-background-color="#ffffff">
 					<h2>
 						<ul>
@@ -224,11 +205,9 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 					<h1>Web Socket</h1>
 				</section>
 
-			 
 				<section data-background-color="#ffffff">
 					<h1>Bi-directional</h1>
 				</section>
-
 
 				{this.diagram("img/diagrams.012.png")}
 
@@ -258,11 +237,13 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 
 				{this.ifPresenter(
 					<section className="cover-page" data-background-image="img/flower-bidding.jpg" data-background-opacity=".5">
-						<h1 style={{ color: "white" }}>Bidding Flower Bouquet</h1>
-						<h3 style={{ color: "white" }}>ASP.NET Core SignalR,<br />
+						<h1 className="flower" style={{ color: "white" }}>Bidding Flower Bouquet</h1>
+						<h3 className="flower"  style={{ color: "white" }}>ASP.NET Core SignalR,<br />
 							Vue.js
 						</h3>
 					</section>
+
+					
 				)}
 
 				<section>
@@ -372,14 +353,15 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 				<section>
 					<h1>Pushing the limit</h1>
 				</section>
-				<section data-background-color="#ffffff">
-					<blockquote cite="some idiot">
-						&ldquo;SignalR can handle unlimited persistent connections!&rdquo;
+			 
+				<section data-background-color="#ffffff" >
+					<blockquote className="quote-signalr" cite="Nelly & Stafford">
+						&ldquo;SignalR can &nbsp; <br /> handle unlimited persistent connections!&rdquo;
 					</blockquote>
 				</section>
-				<section data-background-color="#ffffff">
-					<blockquote cite="Nelly & Stafford">
-						&ldquo;SignalR can <span style={{ color: "red" }}>not</span> handle unlimited persistent connections!&rdquo;
+				<section data-background-color="#ffffff" >
+					<blockquote className="quote-signalr" cite="Nelly & Stafford">
+						&ldquo;SignalR can &nbsp; <span style={{ color: "red",position:"absolute" }}> not</span> <br /> handle unlimited persistent connections!&rdquo;
 					</blockquote>
 				</section>
 				<section data-background-color="#ffffff">
@@ -396,8 +378,11 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 					</section>
 				)}
 
-				{this.diagram("img/realtime.001.png")}
-				{this.diagram("img/realtime.002.png")}
+				{this.diagram("img/typicalapp.001.png")}
+				{this.diagram("img/typicalapp.002.png")}
+				{this.diagram("img/typicalapp.003.png")}
+			
+			 	{this.diagram("img/realtime.002.png")}
 				{this.diagram("img/realtime.003.png")}
 				{this.diagram("img/realtime.004.png")}
 				{this.diagram("img/realtime.005.png")}

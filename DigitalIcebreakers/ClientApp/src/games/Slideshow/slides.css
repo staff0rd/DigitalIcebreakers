@@ -38,20 +38,12 @@ code{
     line-height: 1.2!important;
     max-height: 500px!important;
 }
-.poc{
-    border: 1px solid;
-    margin-left: 350px;
-    margin-right: 350px;
-}
-.slides{
-    /* transform: none!important;
-    top:0!important;
-    left: 0!important;
-    position: relative!important;
-    width: 100%!important;
-    height: 100%!important; */
-}
-
+ 
 .reveal .hljs-ln-numbers{
     padding-right: 0px;
+}
+
+.quote-signalr{
+    font-size: 80px!important;
+    font-weight: 700;
 }
