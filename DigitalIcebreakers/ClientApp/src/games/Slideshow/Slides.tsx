@@ -43,9 +43,13 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 	diagram(image: string) {
 		let path;
 		let style: any = {};
+		let className = "";
 
 		if (this.props.isPresenter)
+		{
 			path = `img/${image}`;
+			className = "cover-page";
+		}
 		else
 		{
 			const fileName = image.replace(".png", ".jpg");
@@ -53,7 +57,7 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 			style = { width: "100%"};
 		}
 
-		return (<section style={style} data-background-image={path} data-background-color="#ffffff" className="cover-page"></section>)
+		return (<section style={style} data-background-image={path} data-background-color="#ffffff" className={className}></section>)
 	}
 
 	render() {
