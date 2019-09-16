@@ -40,17 +40,27 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 				</section>);
 	}
 
-	diagram(path: string) {
-		return this.ifPresenter(
-			<section  data-background-image={path} data-background-color="#ffffff" className="cover-page"></section>
-		)
+	diagram(image: string) {
+		let path;
+		let style: any = {};
+
+		if (this.props.isPresenter)
+			path = `img/${image}`;
+		else
+		{
+			const fileName = image.replace(".png", ".jpg");
+			path = `img/mobile/${fileName}`;
+			style = { width: "100%"};
+		}
+
+		return (<section style={style} data-background-image={path} data-background-color="#ffffff" className="cover-page"></section>)
 	}
 
 	render() {
 		return (
 			<div className="slides" ref={this.theElement}>
 
-				{this.diagram("img/intro.png")}
+				{this.diagram("intro.png")}
  
 				<section data-background-color="#ffffff">
 					<h2>
@@ -111,9 +121,9 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 					<h3>setTimeout(() => location.reload(true), 1000);</h3>
 				</section>
 
-				{this.diagram("img/diagrams.001.png")}
+				{this.diagram("diagrams.001.png")}
 
-		    	{this.diagram("img/diagrams.002.png")}
+		    	{this.diagram("diagrams.002.png")}
 
 				<section data-background-color="#ffffff">
 					<h2>Push data <br />once available</h2>
@@ -123,11 +133,11 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 					<h1>Best Candidates <br />for real-time?</h1>
 				</section>
 
-				{this.diagram("img/facebook.jpg")}
-				{this.diagram("img/dating.jpg")}
-				{this.diagram("img/uber.jpg")}
-				{this.diagram("img/gaming.jpg")}
-				{this.diagram("img/dashboard.jpg")}
+				{this.diagram("facebook.jpg")}
+				{this.diagram("dating.jpg")}
+				{this.diagram("uber.jpg")}
+				{this.diagram("gaming.jpg")}
+				{this.diagram("dashboard.jpg")}
 
 				<section data-transition="none" data-background-color="#ffffff">
 					<h1>High frequency updates</h1>
@@ -145,10 +155,10 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 					<h1>Long Polling</h1>
 				</section>
 
-				{this.diagram("img/diagrams.003.png")}
-				{this.diagram("img/diagrams.004.png")}
-				{this.diagram("img/diagrams.005.png")}
-				{this.diagram("img/diagrams.006.png")}
+				{this.diagram("diagrams.003.png")}
+				{this.diagram("diagrams.004.png")}
+				{this.diagram("diagrams.005.png")}
+				{this.diagram("diagrams.006.png")}
 
 				<section data-transition="none" data-background-color="#ffffff">
 					<h1>Server-Sent Events</h1>
@@ -195,11 +205,11 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 					</h2>
 				</section>
 
-				{this.diagram("img/diagrams.007.png")}
-				{this.diagram("img/diagrams.008.png")}
-				{this.diagram("img/diagrams.009.png")}
-				{this.diagram("img/diagrams.010.png")}
-				{this.diagram("img/diagrams.011.png")}
+				{this.diagram("diagrams.007.png")}
+				{this.diagram("diagrams.008.png")}
+				{this.diagram("diagrams.009.png")}
+				{this.diagram("diagrams.010.png")}
+				{this.diagram("diagrams.011.png")}
 
 				<section data-background-color="#ffffff">
 					<h1>Web Socket</h1>
@@ -209,7 +219,7 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 					<h1>Bi-directional</h1>
 				</section>
 
-				{this.diagram("img/diagrams.012.png")}
+				{this.diagram("diagrams.012.png")}
 
 				<section data-background-color="#ffffff">
 					<h1>Which transport method<br />is the best?</h1>
@@ -292,7 +302,7 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 							`}</code></pre>
 				</section>
 
-				{this.diagram("img/diagrams.026.png")}
+				{this.diagram("diagrams.026.png")}
 
 				<section>
 					<h2>
@@ -367,21 +377,21 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 				<section data-background-color="#ffffff">
 					<div style={{ display:"grid", height: "100vh"}}>
 					{/* <h2>Servers have limited resources</h2> */}
-						<img src="img/serverresources.png" />
+						<img style={{margin:"auto"}} src="img/serverresources.png" />
 					</div>
 				</section>
 				<section data-background-color="#ffffff">
 					<h1>Persistent connections <br /> consume resources  <br /> significantly!</h1>
 				</section>
 
-				{this.diagram("img/typicalapp.001.png")}
-				{this.diagram("img/typicalapp.002.png")}
-				{this.diagram("img/typicalapp.003.png")}
+				{this.diagram("typicalapp.001.png")}
+				{this.diagram("typicalapp.002.png")}
+				{this.diagram("typicalapp.003.png")}
 			
-			 	{this.diagram("img/realtime.002.png")}
-				{this.diagram("img/realtime.003.png")}
-				{this.diagram("img/realtime.004.png")}
-				{this.diagram("img/realtime.005.png")}
+			 	{this.diagram("realtime.002.png")}
+				{this.diagram("realtime.003.png")}
+				{this.diagram("realtime.004.png")}
+				{this.diagram("realtime.005.png")}
 
 
 				<section data-background-color="#ffffff">
