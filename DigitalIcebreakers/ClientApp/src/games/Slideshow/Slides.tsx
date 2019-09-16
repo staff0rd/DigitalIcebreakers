@@ -365,18 +365,14 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 					</blockquote>
 				</section>
 				<section data-background-color="#ffffff">
-					<h2>Servers have limited resources</h2>
-					<img src="img/placeholder.png"></img>
+					<div style={{ display:"grid", height: "100vh"}}>
+					{/* <h2>Servers have limited resources</h2> */}
+						<img src="img/serverresources.png" />
+					</div>
 				</section>
 				<section data-background-color="#ffffff">
 					<h1>Persistent connections <br /> consume resources  <br /> significantly!</h1>
 				</section>
-
-			 	{this.ifPresenter(
-					<section data-background-color="#ffffff">
-						<img src="img/serverresources.png"   />
-					</section>
-				)}
 
 				{this.diagram("img/typicalapp.001.png")}
 				{this.diagram("img/typicalapp.002.png")}
