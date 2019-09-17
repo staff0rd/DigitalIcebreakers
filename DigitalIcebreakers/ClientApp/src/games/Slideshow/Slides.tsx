@@ -115,11 +115,11 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 				)}
 				
 			
-				{this.ifPresenter(
+				
 					<section>
-						<img src="img/f5.webp" width="414px" />
+						<img src="img/f5.gif" width="414px" />
 					</section>
-				)}
+				
 
 				<section data-background-color="#ffffff">
 					<h3>setTimeout(() => location.reload(true), 1000);</h3>
