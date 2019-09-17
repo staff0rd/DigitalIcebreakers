@@ -40,7 +40,7 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 				</section>);
 	}
 
-	diagram(image: string) {
+	getClientOrPresenterImageParameters(image: string) {
 		let path;
 		let style: any = {};
 		let className = "";
@@ -57,7 +57,13 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 			style = { width: "100%"};
 		}
 
-		return (<section style={style} data-background-image={path} data-background-color="#ffffff" className={className}></section>)
+		return {className, path, style };
+	}
+
+	diagram(image: string) {
+		const params = this.getClientOrPresenterImageParameters(image);
+
+		return (<section style={params.style} data-background-image={params.path} data-background-color="#ffffff" className={params.className}></section>)
 	}
 
 	render() {
@@ -108,18 +114,13 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 					</h2>
 				</section>
 
-				{this.ifPresenter(
-					<section  className="cover-page" data-background-image="img/flower-bidding.jpg" data-background-opacity=".5">
-						<h1 className="flower" style={{ color: "white" }}>Bidding Flower Bouquet</h1>
-					</section>
-				)}
+				<section className="cover-page" data-background-image={this.getClientOrPresenterImageParameters("flower-bidding.jpg").path} data-background-opacity=".5">
+					<h1 className="flower" style={{ color: "white" }}>Bidding Flower Bouquet</h1>
+				</section>				
 				
-			
-				
-					<section>
-						<img src="img/f5.gif" width="414px" />
-					</section>
-				
+				<section>
+					<img src="img/f5.gif" width="414px" />
+				</section>
 
 				<section data-background-color="#ffffff">
 					<h3>setTimeout(() => location.reload(true), 1000);</h3>
@@ -249,16 +250,12 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 					<h1> ASP.NET Core SignalR <br /> is a rewrite!</h1>
 				</section>
 
-				{this.ifPresenter(
-					<section className="cover-page" data-background-image="img/flower-bidding.jpg" data-background-opacity=".5">
-						<h1 className="flower" style={{ color: "white" }}>Bidding Flower Bouquet</h1>
-						<h3 className="flower"  style={{ color: "white" }}>ASP.NET Core SignalR,<br />
-							Vue.js
-						</h3>
-					</section>
-
-					
-				)}
+				<section className="cover-page" data-background-image={this.getClientOrPresenterImageParameters("flower-bidding.jpg").path} data-background-opacity=".5">
+					<h1 className="flower" style={{ color: "white" }}>Bidding Flower Bouquet</h1>
+					<h3 className="flower"  style={{ color: "white" }}>ASP.NET Core SignalR,<br />
+						Vue.js
+					</h3>
+				</section>
 
 				<section>
 					<pre><code data-line-numbers="3" data-noescape data-trim>{`
