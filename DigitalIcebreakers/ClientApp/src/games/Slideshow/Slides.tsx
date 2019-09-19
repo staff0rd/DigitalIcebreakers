@@ -426,7 +426,7 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 							</tr>
 							<tr className="fragment">
 								<td>50 VMs</td>
-								<td>D14s VM</td>
+								<td>D8s VM</td>
 								<td>~214,000</td>
 							</tr>
 							<tr className="fragment">
