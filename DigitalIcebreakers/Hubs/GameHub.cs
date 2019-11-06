@@ -23,6 +23,10 @@ namespace DigitalIcebreakers.Hubs
             _clients = clients;
         }
 
+        public IClientProxy Players(Lobby lobby) {
+            return _clients.Clients(lobby.Players.Where(p => !p.IsAdmin).Select(p => p.ConnectionId).ToList());
+        }
+
         public IClientProxy EveryoneInLobby(Lobby lobby)
         {
             return _clients.Clients(lobby.Players.Select(p => p.ConnectionId).ToList());
@@ -75,7 +79,7 @@ namespace DigitalIcebreakers.Hubs
 
         public async Task SendGameUpdateToPlayers(params object[] parameters)
         {
-            var clients =  SendTo.EveryoneInLobby(GetLobby());
+            var clients =  SendTo.Players(GetLobby());
             await SendGameUpdate(clients, parameters);
         }
 
@@ -215,6 +219,7 @@ namespace DigitalIcebreakers.Hubs
                 case "broadcast": return new Broadcast();
                 case "startstopcontinue": return new StartStopContinue();
                 case "slideshow": return new Slideshow();
+                case "react": return new Reaction();
                 default: throw new ArgumentOutOfRangeException("Unknown game");
             }
         }

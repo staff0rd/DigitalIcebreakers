@@ -14,6 +14,8 @@ import { PongClient } from './Pong/PongClient';
 import { StartStopContinueClient } from './StartStopContinue/StartStopContinueClient';
 import { SlideshowClient } from './Slideshow/SlideshowClient';
 import { SlideshowPresenter } from './Slideshow/SlideshowPresenter';
+import { ReactClient } from './React/ReactClient';
+import { ReactPresenter } from './React/ReactPresenter';
 
 export interface IGame {
     name: string;
@@ -79,5 +81,12 @@ export default function (props: any) : IGame[] {
         title: "Slideshow",
         fullscreen: true,
         isGame: false
+    }, {
+        title: "Reaction",
+        name: "react",
+        client: <ReactClient {...props} />,
+        presenter: <ReactPresenter {... props} />,
+        fullscreen: true,
+        isGame: true
     }];
 }
