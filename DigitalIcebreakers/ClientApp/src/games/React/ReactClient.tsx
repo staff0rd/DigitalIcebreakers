@@ -12,7 +12,7 @@ type ReactClientState = {
 export class ReactClient extends PixiPresenter<BaseGameProps, ReactClientState> {
 
     constructor(props: BaseGameProps) {
-        super(Colors.BlueGrey.C400,props);
+        super(Colors.White,props);
     }
 
     componentDidMount() {
@@ -32,52 +32,41 @@ export class ReactClient extends PixiPresenter<BaseGameProps, ReactClientState> 
                ((this.app.screen.height - (this.state.shapes.length/2 + 1) * margin)) / 4
                );
            for (let i = 0; i < this.state.shapes.length; i += 2) {
-                const g1 = new PIXI.Graphics();
-
-                if (this.state.selectedId === this.state.shapes[i].id)
-                    g1.lineStyle(5, Colors.BlueGrey.C900);
-                    
-                g1.beginFill(this.state.shapes[i].color)
-                    .drawCircle(radius, radius, radius)
-                    .endFill();
-                    
-                if (this.state.selectedId === null ) {
-                    g1.on('pointerdown', () => this.select(this.state.shapes[i].id));
-                    g1.buttonMode = true;
-                    g1.interactive = true;
-                }
-                
-                const g2 = new PIXI.Graphics();
-                
-                if (this.state.selectedId === this.state.shapes[i+1].id)
-                    g2.lineStyle(5, Colors.BlueGrey.C900);
-
-                g2.beginFill(this.state.shapes[i+1].color)
-                    .drawCircle(radius * 3 + margin, radius, radius)
-                    .endFill();
-                
-                if (this.state.selectedId === null ) {
-                    g2.on('pointerdown', () => this.select(this.state.shapes[i+1].id))
-                    g2.buttonMode = true;
-                    g2.interactive = true;
-                }
-                
+                const g1 = this.drawShape(this.state.shapes[i], radius);
+                const g2 = this.drawShape(this.state.shapes[i+1], radius, radius * 3 + margin)
                 const container = new PIXI.Container();
                 container.addChild(g1, g2);
                 container.position.set(this.app.screen.width/2 - container.width/2, margin + (i/2 * (radius*2 + margin)))
                 this.app.stage.addChild(container);
            }
-
        }
+    }
+
+    private drawShape(shape: Shape, radius: number, leftOffset = radius) {
+        const g = new PIXI.Graphics();
+        let alpha = 1;
+        if (this.state.selectedId === null) {
+            g.on('pointerdown', () => this.select(shape.id));
+            g.buttonMode = true;
+            g.interactive = true;
+        } else
+            alpha = .5;
+        if (this.state.selectedId === shape.id) {
+            g.lineStyle(5, Colors.BlueGrey.C900);
+            alpha = 1;
+        }
+        g.beginFill(shape.color, alpha)
+            .drawCircle(leftOffset, radius, radius)
+            .endFill();
+        return g;
     }
 
     private select(id: number) {
         this.setState({
             selectedId: id
-        }, () => this.init());
-    }
-
-    down = () => {
-        this.props.connection.invoke("hubMessage", JSON.stringify({client: "down"}));
+        }, () => {
+            super.clientMessage(id)
+            this.init();
+        });
     }
 }

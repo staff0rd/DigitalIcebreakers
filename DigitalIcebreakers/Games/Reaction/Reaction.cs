@@ -1,3 +1,5 @@
+    using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using DigitalIcebreakers;
 using DigitalIcebreakers.Games;
@@ -7,17 +9,26 @@ public class Reaction : Game, IGame
 {
     public string Name => "react";
 
+    readonly Dictionary<Guid, int> _selections = new Dictionary<Guid, int>();
+
     private Shape[] _state = new Shape[0]; 
     
     public async override Task ClientMessage(JToken client, IGameHub hub)
     {
-        
+        var player = hub.GetPlayerByConnectionId();
+        var selectedId = client.ToObject<int>();
+        if (!_selections.ContainsKey(player.Id)) 
+        {
+            _selections.Add(player.Id, selectedId);
+            await hub.SendGameUpdateToPresenter(player.ExternalId, player.Name, selectedId);
+        }
     }
 
     public async override Task AdminMessage(JToken admin, IGameHub hub)
     {
         var state = admin.ToObject<Shape[]>();
         _state = state;
+        _selections.Clear();
         await hub.SendGameUpdateToPlayers(new ClientPayload { Shapes = state });
     }
 
