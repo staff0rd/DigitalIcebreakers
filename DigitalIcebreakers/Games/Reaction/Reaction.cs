@@ -48,8 +48,9 @@ public class Reaction : Game, IGame
         if (!player.IsAdmin)
         {
             var id = player.ExternalId;
+            int? selectedId = _selections.ContainsKey(player.Id) ? _selections[player.Id] : (int?)null;
 
-            await hub.SendGameUpdateToPlayer(player, new ClientPayload { Shapes = _state});
+            await hub.SendGameUpdateToPlayer(player, new ClientPayload { Shapes = _state, SelectedId = selectedId });
         }
     }
 }
