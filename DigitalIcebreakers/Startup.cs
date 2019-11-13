@@ -26,7 +26,9 @@ namespace DigitalIcebreakers
             
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddSignalR();
+            services.AddSignalR(options =>  {
+                options.ClientTimeoutInterval = new System.TimeSpan(0, 0, 4);
+            });
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

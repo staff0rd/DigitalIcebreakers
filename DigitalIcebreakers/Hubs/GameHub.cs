@@ -287,6 +287,7 @@ namespace DigitalIcebreakers.Hubs
 
         public async override Task OnDisconnectedAsync(Exception exception)
         {
+            // disconnects only logged for players
             await SystemMessage("leave");
             var player = GetPlayerByConnectionId();
             if (player != null)

@@ -71,6 +71,7 @@ export default class App extends Component {
 
     configureSignalR() {
         this.connection = new HubConnectionBuilder().withUrl("/gameHub").build();
+        this.connection.keepAliveIntervalInMilliseconds = 2000;
         const component = this;
 
         this.connection.on("reconnect", (response) => {
