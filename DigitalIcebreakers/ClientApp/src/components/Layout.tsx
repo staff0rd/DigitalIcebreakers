@@ -6,10 +6,15 @@ import { withRouter } from 'react-router-dom';
 import {RouteComponentProps} from "react-router";
 import { Events } from '../Events';
 import { Colors } from '../Colors';
+import { ConnectionStatus } from '../ConnectionStatus';
 
 type LayoutProps = RouteComponentProps & {
-    currentGame: string;
+    currentGame?: string;
     isAdmin: boolean;
+    connectionStatus: ConnectionStatus;
+    menuItems: JSX.Element[];
+    version: string;
+    lobbyId?: string;
 }
 
 type LayoutState = {

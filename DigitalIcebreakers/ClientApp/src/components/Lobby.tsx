@@ -9,9 +9,13 @@ interface Player {
     id: string;
 }
 
-interface LobbyProps {
+interface AppLobby {
     id: string;
     name: string;
+}
+
+interface LobbyProps {
+    lobby?: AppLobby;
     players: Player[];
 }
 
@@ -59,17 +63,18 @@ export class Lobby extends Component<LobbyProps, LobbyState> {
     }
 
     render() {
-        const joinUrl = `${Config.baseUrl}/join/${this.props.id}`;
         const qrCodeStyle: React.CSSProperties = {marginTop: '0', marginRight: '40', marginBottom: '40'}
         //const players = (this.props.players || []).map((p, ix) => <ListGroupItem key={ix}>{p.name}</ListGroupItem>);
-        if (this.props.id)
+        if (this.props.lobby) {
+        const joinUrl = `${Config.baseUrl}/join/${this.props.lobby.id}`;
             return (
                 <div ref={this.element} style={{height: "100%"}}>
                     <a href={joinUrl}>{joinUrl}</a>
                     <h1 style={{marginTop: 0}}>Players: {this.props.players.length}</h1>
                     <QRCode value={joinUrl} size={this.state.qrCodeWidth} renderAs="svg" style={qrCodeStyle} />
                 </div>
-            ); else return (
+            );
+         } else return (
                 <div>
                     <h1>Digital Icebreakers</h1>
                     <p>feature requests, suggestions, bugs & feedback to <a href="mailto:stafford@atqu.in">stafford@atqu.in</a></p>

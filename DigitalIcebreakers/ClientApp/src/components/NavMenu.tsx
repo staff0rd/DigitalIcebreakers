@@ -5,15 +5,33 @@ import { LinkContainer } from 'react-router-bootstrap';
 import './NavMenu.css';
 import { Config } from '../config';
 import { NavSubMenu } from './NavSubMenu'
-import Games from '../games/Games';
+import Games, { IGame } from '../games/Games';
 import { Events } from '../Events';
+import { ConnectionStatus } from '../ConnectionStatus';
+import { History } from 'history';
 
 var QRCode = require('qrcode.react');
 
-export class NavMenu extends Component {
-  displayName = NavMenu.name
+type NavMenuState = {
+    qrCodeWidth: number;
+}
 
-    constructor(props, context) {
+type NavMenuProps = {
+    connectionStatus: ConnectionStatus
+    lobbyId?: string;
+    toggleMenu: (show: boolean) => void;
+    currentGame?: string;
+    isAdmin: boolean;
+    history: History;
+    menuItems: JSX.Element[];
+    version: string;
+}
+
+export class NavMenu extends Component<NavMenuProps, NavMenuState> {
+  displayName = NavMenu.name
+  private qrContainerElement?: HTMLElement;
+
+    constructor(props: NavMenuProps, context: any) {
         super(props, context);
         this.state = {
             qrCodeWidth: 256
@@ -33,7 +51,7 @@ export class NavMenu extends Component {
     }
 
     getConnectionIcon() {
-        switch (this.props.connected) {
+        switch (this.props.connectionStatus) {
             case 0: return (<Glyphicon glyph="remove-sign" />);
             case 1: return (<Glyphicon glyph="question-sign" />);
             case 2: return (<Glyphicon glyph="ok-sign" />);
@@ -41,7 +59,7 @@ export class NavMenu extends Component {
         }
     }
 
-    qrContainer = (e) => {
+    qrContainer = (e: any) => {
         this.qrContainerElement = e;      
     }
 
@@ -89,7 +107,9 @@ export class NavMenu extends Component {
             </NavItem>
         );
 
-        const gameName = Games().filter((game) => game.name === this.props.currentGame).map((game) => game.title);
+        const gameName = Games(this.props)
+            .filter((game: any) => game.name === this.props.currentGame)
+            .map((game: IGame) => game.title);
 
         const currentGame = (
             <LinkContainer to={`/game/${this.props.currentGame}`} exact>
