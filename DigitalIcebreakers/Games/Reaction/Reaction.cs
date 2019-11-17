@@ -20,7 +20,7 @@ public class Reaction : Game, IGame
         if (!_selections.ContainsKey(player.Id)) 
         {
             _selections.Add(player.Id, selectedId);
-            await hub.SendGameUpdateToPresenter(player.ExternalId, player.Name, selectedId);
+            await hub.SendGameUpdateToPresenter(player.ExternalId, selectedId);
         }
     }
 

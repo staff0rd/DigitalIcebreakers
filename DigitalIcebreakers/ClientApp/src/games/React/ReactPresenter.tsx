@@ -8,10 +8,10 @@ import { shuffle } from '../../Random';
 import { PixiPresenter } from '../pixi/PixiPresenter';
 import * as PIXI from "pixi.js";
 import { ShapeView } from './ShapeView';
+import * as gsap from "gsap";
 
-interface Player {
+interface Choice {
     id: string;
-    name: string;
     choice: number;
 }
 
@@ -22,27 +22,48 @@ interface Score {
 }
 
 interface ReactState {
-    players: Player[];
     shapes: Shape[],
     shape: Shape|undefined,
     views: ShapeView[],
     showScores: boolean,
-    scores: Score[]
+    scores: Score[],
+    choices: Choice[],
+    autoAgain: boolean
 }
 
 export class ReactPresenter extends PixiPresenter<BaseGameProps, ReactState> {
     private timeout: NodeJS.Timeout|undefined;
+    private againProgressElement?: HTMLDivElement;
+    private againTween?: GSAPStatic.Tween;
     constructor(props: BaseGameProps) {
         super(Colors.White, props);
 
         this.state = {
-            players: [],
             shapes: [],
             shape: undefined,
             views: [],
             showScores: false,
-            scores: []
+            scores: [],
+            choices: [],
+            autoAgain: false
         };
+    }
+
+    againProgress = (element: HTMLDivElement) => {
+        this.againProgressElement = element;
+        if (element)
+            this.triggerAgainProgress();
+    }
+
+    again() {
+        this.setState(prevState => { return { autoAgain: !prevState.autoAgain}}, () => this.triggerAgainProgress() );
+    }
+
+    triggerAgainProgress() {
+        if (this.state.autoAgain) {
+            this.againTween = gsap.TweenLite.to(this.againProgressElement!.style,5, { width: '0px', ease: "power1.in", onComplete: () => this.setShape() } );
+        } else
+            this.againTween && this.againTween.kill();
     }
     
     private getOtherShapes() {
@@ -81,51 +102,72 @@ export class ReactPresenter extends PixiPresenter<BaseGameProps, ReactState> {
     updateScores() {
         
         this.setState(prevState => {
-            const prevScores = prevState.scores.slice();
-            const scores = prevState.players.map(p => {
-                const prevScore = prevScores.filter(s => s.id == p.id)[0];
-                return { 
-                    id: p.id, 
-                    name: p.name, 
-                    score: prevState.shape!.id == p.choice ? 1 : 0 + (prevScore ? prevScore.score : 0) };
-                });
+            const totalChoices = prevState.choices.length;
+            const correct = [...prevState.choices]
+                .filter(p => p.choice === this.state.shape!.id)
+                .map((choice, ix: number) => {
+                    return { 
+                        id:choice.id, 
+                        name: super.getUserName(choice.id) || "", 
+                        score: totalChoices-ix
+                    }});
+            const wrong = [...prevState.choices]
+                .filter(p => p.choice !== this.state.shape!.id)
+                .map(choice => {
+                    return { 
+                        id:choice.id, 
+                        name: super.getUserName(choice.id) || "",
+                        score: -1
+                }});
             
+            const newScores = [...prevState.scores];
+                    
+            [...correct, ...wrong].forEach(score => {
+                const existing = newScores.filter(p => p.id === score.id)[0];
+                if (existing)
+                    existing.score += score.score;
+                else if (score.name !== "")
+                    newScores.push(score);
+            });
+
+            this.props.players.forEach(p => {
+                if (!newScores.filter(s => s.id === p.id).length)
+                newScores.push({id: p.id, name: p.name, score: 0})
+            })
+
             return {
                 showScores: true,
-                scores: scores
+                scores: newScores,
+                choices: []
             };
         });
     }
 
     componentDidMount() {
         super.componentDidMount();
-        this.props.connection.on("gameUpdate", (id, name, choice) => {
+        this.props.connection.on("gameUpdate", (id: string, choice: number) => {
             var user = {
                 id: id,
-                name: name,
                 choice: choice
             };
 
             this.timeout && clearTimeout(this.timeout);
 
             this.setState(prevState => {
-                const players = prevState.players.map((p: Player) => p);
-                if (!players.filter((p:Player) => p.id === user.id).length) {
-                    const view = this.state.views.filter(v => v.id == user.choice)[0];
+                const choices = [...prevState.choices];
+                if (!choices.filter((p:Choice) => p.id === user.id).length) {
+                    const view = this.state.views.filter(v => v.id === user.choice)[0];
                     if (view) { 
-                        if (!players.filter(p => p.choice === user.choice).length) {
-                            view.updateFirst(user.name);
+                        if (!choices.filter(p => p.choice === user.choice).length) {
+                            view.updateFirst(super.getUserName(user.id) || "");
                         }
                         view.increment();
                     }
                     
-                    players.push(user);
+                    choices.push(user);
                 }
-                players.forEach((p: Player) => {
-                    if (p.id === user.id)
-                        p.choice = user.choice;
-                });
-                return { players: players };
+               
+                return { choices: choices };
             });
         });
         this.setShape();
@@ -155,7 +197,7 @@ export class ReactPresenter extends PixiPresenter<BaseGameProps, ReactState> {
             
             this.app.view.parentElement && this.app.view.parentElement.removeChild(this.app.view);
             const scores = this.state.scores
-                .sort((a,b) => a.score - b.score)
+                .sort((a,b) => b.score - a.score)
                 .map((p, ix) => <li key={ix}>{p.score} - {p.name}</li>); 
 
             return <div>
@@ -163,7 +205,8 @@ export class ReactPresenter extends PixiPresenter<BaseGameProps, ReactState> {
                 <ul>
                     {scores}
                 </ul>
-                <Button className="primary" onClick={() => this.setShape()}>Again</Button>
+                <Button className="primary" onClick={() => this.again() }>Again</Button>
+                <div ref={this.againProgress} style={{marginTop: 15, width: 200, height: 20, backgroundColor: Colors.toHtml(Colors.Red.C400)}}></div>
             </div>;
         } else {
             return super.render();

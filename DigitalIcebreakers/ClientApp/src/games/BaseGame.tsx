@@ -1,9 +1,12 @@
 import { Component } from 'react';
 import { HubConnection } from '@aspnet/signalr';
+import { Player } from '../components/Player';
+import { filters } from 'pixi.js';
 
 export interface BaseGameProps {
     connection: HubConnection;
     setMenuItems(items: JSX.Element[]): void;
+    players: Player[];
 }
 
 export class BaseGame<T extends BaseGameProps, U> extends Component<T, U> {
@@ -75,5 +78,11 @@ export class BaseGame<T extends BaseGameProps, U> extends Component<T, U> {
         this.props.connection.off("gameUpdate");
         if (this.debug)
             console.log('componentWillUnmount');
+    }
+
+    getUserName(id: string) {
+        const player = this.props.players.filter(p => p.id === id)[0];
+        if (player)
+            return player.name;
     }
 }

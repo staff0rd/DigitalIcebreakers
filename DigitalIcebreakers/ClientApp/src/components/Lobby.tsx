@@ -2,12 +2,8 @@ import React, { Component } from 'react';
 import { Config } from '../config';
 import { Changelog } from './Changelog';
 import { Events } from '../Events';
+import { Player } from './Player';
 var QRCode = require('qrcode.react');
-
-interface Player {
-    name: string;
-    id: string;
-}
 
 interface AppLobby {
     id: string;

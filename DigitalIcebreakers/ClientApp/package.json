@@ -15,6 +15,7 @@
     "@types/react-router-dom": "^4.3.5",
     "bootstrap": "^3.3.7",
     "chart.js": "^2.7.3",
+    "gsap": "^3.0.1",
     "moment": "^2.24.0",
     "pixi.js": "^4.8.3",
     "qrcode.react": "^0.8.0",
