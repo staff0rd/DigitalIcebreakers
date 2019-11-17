@@ -14,6 +14,7 @@ export class Changelog extends Component<{}, ChangelogState> {
 
         this.state = {
             changelogs: [
+                new ChangelogItem(2019, 11, 17, "added #reaction"),
                 new ChangelogItem(2019, 6, 3, "added auto-arrange to #ideawall"),
                 new ChangelogItem(2019, 5, 29, "fixed chart overflow in #yesnomaybe, #doggosvskittehs"),
                 new ChangelogItem(2019, 5, 7, "added #broadcast"),

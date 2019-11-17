@@ -1,6 +1,5 @@
 export enum ShapeType {
     Circle,
     Triangle,
-    Square,
-    Pentagon
+    Square
 }

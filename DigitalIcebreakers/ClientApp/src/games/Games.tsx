@@ -12,8 +12,8 @@ import { BuzzerPresenter } from './Buzzer/BuzzerPresenter';
 import PongPresenter from './Pong/PongPresenter';
 import { PongClient } from './Pong/PongClient';
 import { StartStopContinueClient } from './StartStopContinue/StartStopContinueClient';
-import { SlideshowClient } from './Slideshow/SlideshowClient';
-import { SlideshowPresenter } from './Slideshow/SlideshowPresenter';
+// import { SlideshowClient } from './Slideshow/SlideshowClient';
+// import { SlideshowPresenter } from './Slideshow/SlideshowPresenter';
 import { ReactClient } from './React/ReactClient';
 import { ReactPresenter } from './React/ReactPresenter';
 
@@ -74,13 +74,13 @@ export default function (props: any) : IGame[] {
         title: "Broadcast",
         fullscreen: true,
         isGame: false
-    }, {
-        name: "slideshow",
-        client: <SlideshowClient {...props} />,
-        presenter: <SlideshowPresenter {...props} storageKey="slideshow:state" />,
-        title: "Slideshow",
-        fullscreen: true,
-        isGame: false
+    // }, {
+    //     name: "slideshow",
+    //     client: <SlideshowClient {...props} />,
+    //     presenter: <SlideshowPresenter {...props} storageKey="slideshow:state" />,
+    //     title: "Slideshow",
+    //     fullscreen: true,
+    //     isGame: false
     }, {
         title: "Reaction",
         name: "react",

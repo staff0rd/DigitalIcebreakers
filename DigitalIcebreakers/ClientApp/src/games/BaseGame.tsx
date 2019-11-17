@@ -1,7 +1,6 @@
 import { Component } from 'react';
 import { HubConnection } from '@aspnet/signalr';
 import { Player } from '../components/Player';
-import { filters } from 'pixi.js';
 
 export interface BaseGameProps {
     connection: HubConnection;

@@ -89,7 +89,7 @@ export default class App extends Component<{}, AppState> {
         return user;
     }
 
-    debug(... a: any[]) {
+    debug(...a: any[]) {
         if (this.isDebug)
             console.log('[app]', ...a);
     }

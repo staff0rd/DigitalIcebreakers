@@ -3,6 +3,7 @@ import { PixiPresenter } from '../pixi/PixiPresenter';
 import { Colors } from '../../Colors'
 import { Shape } from './Shape';
 import * as PIXI from "pixi.js";
+import { drawShape } from './ShapeView';
 
 type ReactClientState = {
     shapes: Shape[];
@@ -55,10 +56,9 @@ export class ReactClient extends PixiPresenter<BaseGameProps, ReactClientState> 
             g.lineStyle(5, Colors.BlueGrey.C900);
             alpha = 1;
         }
-        g.beginFill(shape.color, alpha)
-            .drawCircle(leftOffset, radius, radius)
-            .endFill();
-        return g;
+        g.beginFill(shape.color, alpha);
+
+        return drawShape(g, shape.type, leftOffset, radius, radius).endFill();
     }
 
     private select(id: number) {

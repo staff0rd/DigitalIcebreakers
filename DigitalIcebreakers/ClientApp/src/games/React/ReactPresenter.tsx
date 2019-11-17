@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, Table } from 'react-bootstrap';
 import { BaseGameProps } from '../BaseGame'
 import { Shape } from './Shape';
 import { Colors } from '../../Colors';
@@ -93,9 +93,7 @@ export class ReactPresenter extends PixiPresenter<BaseGameProps, ReactState> {
             bottomShapesContainer.position.set(this.app.screen.width/2 - (bottomShapes.length-1) * (smallShapeWidth + shapeMargin) / 2, this.app.screen.height - shapeMargin + smallShapeWidth/2);
             bottomShapesContainer.pivot.set(0, bottomShapesContainer.height);
             this.app.stage.addChild(main.view, bottomShapesContainer);
-            this.setState({views: views}, () => {
-                this.timeout = setTimeout(() => this.updateScores(), 2000);
-            });
+            this.setState({views: views}, () => this.resetTimeout(true));
         }
     }
 
@@ -138,11 +136,18 @@ export class ReactPresenter extends PixiPresenter<BaseGameProps, ReactState> {
             return {
                 showScores: true,
                 scores: newScores,
+                shape: undefined,
                 choices: []
             };
         });
     }
 
+    private resetTimeout(restart = false) {
+        this.timeout && clearTimeout(this.timeout);
+        if (restart)
+            this.timeout = setTimeout(() => this.updateScores(), 2000);
+    }
+    
     componentDidMount() {
         super.componentDidMount();
         this.props.connection.on("gameUpdate", (id: string, choice: number) => {
@@ -151,7 +156,7 @@ export class ReactPresenter extends PixiPresenter<BaseGameProps, ReactState> {
                 choice: choice
             };
 
-            this.timeout && clearTimeout(this.timeout);
+            this.resetTimeout(!!this.state.shape);
 
             this.setState(prevState => {
                 const choices = [...prevState.choices];
@@ -174,13 +179,24 @@ export class ReactPresenter extends PixiPresenter<BaseGameProps, ReactState> {
     }
 
     setShape() {
-        const shapes = shuffle([
-          { id: 0, color: Colors.Red.C500, type: ShapeType.Circle },
-          { id: 1, color: Colors.Green.C500, type: ShapeType.Circle},
-          { id: 2, color: Colors.Blue.C500, type: ShapeType.Circle},
-          { id: 3, color: Colors.Indigo.C500, type: ShapeType.Circle},  
-          { id: 4, color: Colors.Orange.C500, type: ShapeType.Circle},  
-        ]).slice(1);
+        const colors = [
+            Colors.Red.C500,
+            Colors.Green.C500,
+            Colors.Blue.C500,
+            Colors.Indigo.C500,
+            Colors.Orange.C500
+        ];
+        let counter = 0;
+        const allShapes: Shape[] = [];
+        [
+            ShapeType.Circle,
+            ShapeType.Triangle,
+            ShapeType.Square
+        ].forEach(s => {
+            allShapes.push(...colors.map(c => {return {id: counter++, type: s, color: c}}))
+        });
+
+        const shapes = shuffle(allShapes).slice(0, 6);
 
         this.setState({
             shapes: shapes,
@@ -198,15 +214,17 @@ export class ReactPresenter extends PixiPresenter<BaseGameProps, ReactState> {
             this.app.view.parentElement && this.app.view.parentElement.removeChild(this.app.view);
             const scores = this.state.scores
                 .sort((a,b) => b.score - a.score)
-                .map((p, ix) => <li key={ix}>{p.score} - {p.name}</li>); 
+                .map((p, ix) => <tr key={ix}><td>{p.score}</td><td>{p.name}</td></tr>);
 
             return <div>
                 <h1>Scores</h1>
-                <ul>
+                <Table striped bordered>
+                    <tbody>
                     {scores}
-                </ul>
+                    </tbody>
+                </Table>
                 <Button className="primary" onClick={() => this.again() }>Again</Button>
-                <div ref={this.againProgress} style={{marginTop: 15, width: 200, height: 20, backgroundColor: Colors.toHtml(Colors.Red.C400)}}></div>
+                <div ref={this.againProgress} style={{marginTop: 15, width: 500, height: 50, backgroundColor: Colors.toHtml(Colors.Red.C400)}}></div>
             </div>;
         } else {
             return super.render();
