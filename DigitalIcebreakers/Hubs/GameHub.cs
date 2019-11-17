@@ -271,10 +271,7 @@ namespace DigitalIcebreakers.Hubs
         private async Task SystemMessage(string action)
         {
             var payload = JsonConvert.SerializeObject(new HubMessage { system = action });
-            var lobby = GetLobby();
-            if (lobby != null) {
-                await HubMessage(payload);
-            }
+            await HubMessage(payload);
         }
 
         public async Task HubMessage(string json) 
