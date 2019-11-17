@@ -32,7 +32,7 @@ export abstract class PixiPresenter<T extends BaseGameProps, U> extends BaseGame
 
         const resize = () => {
             const parent = this.app.view.parentNode as HTMLElement;
-            this.app.renderer.resize(parent.clientWidth, parent.clientHeight);
+            parent && this.app.renderer.resize(parent.clientWidth, parent.clientHeight);
             this.init();
         }
 
