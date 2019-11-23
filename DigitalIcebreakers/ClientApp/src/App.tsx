@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Route, Redirect } from 'react-router';
 import Layout from './components/Layout';
-import { Lobby } from './components/Lobby';
+import { LobbySwitch } from './components/Lobby';
 import { LobbyClosed } from './components/LobbyClosed';
 import { NewGame } from './components/NewGame';
 import { Game } from './components/Game';
@@ -292,7 +292,7 @@ export default class App extends Component<{}, AppState> {
         return (
             <UserContext.Provider value={this.state.user}>
                 <Layout menuItems={this.state.menuItems} currentGame={this.state.currentGame} isAdmin={this.state.isAdmin} connectionStatus={this.state.connectionStatus} version={Version.version} lobbyId={this.state.lobby && this.state.lobby.id}>
-                    <Route exact path='/' render={() => <Lobby lobby={this.state.lobby} players={this.state.players} /> } />
+                    <Route exact path='/' render={() => <LobbySwitch lobby={this.state.lobby} players={this.state.players} /> } />
                     <Route path='/createLobby' render={() => <CreateLobby createLobby={this.createLobby} /> } />
                     <Route path='/closeLobby' render={closeLobby }  />
                     <Route path='/lobbyClosed' component={LobbyClosed} />
