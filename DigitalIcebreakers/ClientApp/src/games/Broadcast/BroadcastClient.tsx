@@ -12,7 +12,7 @@ export const BroadcastClient : React.FC<BaseGameProps> = (props) => {
     });
 
     const ding = () => {
-        props.clientMessage(1);      
+        props.signalR.clientMessage(1);      
     }
 
     return (

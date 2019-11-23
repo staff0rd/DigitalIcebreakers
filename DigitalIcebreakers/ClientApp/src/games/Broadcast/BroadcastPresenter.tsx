@@ -1,55 +1,38 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
 import { BaseGame, BaseGameProps } from '../BaseGame';
 
-interface BroadcastPresenterState {
-    count: number;
-    value: string;
-}
+export const BroadcastPresenter: React.FC<BaseGameProps> = (props) => {
 
-export class BroadcastPresenter extends BaseGame<BaseGameProps, BroadcastPresenterState> {
-    displayName = BroadcastPresenter.name
+    const [dingCount, setDingCount] = useState<number>(0);
+    const [clientText, setClientText] = useState<string>("");
 
-    constructor(props: BaseGameProps) {
-        super(props);
-        
-        this.state = {
-            count: 0,
-            value: ""
-        };
-    }
-
-    componentDidMount() {
-        super.componentDidMount();
-        this.props.connection.on("gameUpdate", (result) => {
+    useEffect(() => {
+        props.connection.on("gameUpdate", (result) => {
             if (result === "d") {
-                this.setState(prevState => {
-                    return {count: prevState.count+1};
-                });
+                setDingCount(dingCount+1);
             }
         });
-    }
+        return () => props.connection.off("gameUpdate");
+    });
 
-    updateValue = (e: React.FormEvent<FormControl>) => {
+    const updateClientText = (e: React.FormEvent<FormControl>) => {
         const target = e.target as HTMLInputElement;
-        this.setState({value: target.value}, () => {
-            this.adminMessage(this.state.value);
-        });
+        setClientText(target.value);
+        props.signalR.adminMessage(clientText);
     }
 
-    render() {
-        return (
-            <div className="vcenter">
-                <div>
-                    <h1 style={{fontSize:"100px"}}>
-                        Dings: {this.state.count}
-                    </h1>
-                    <FormGroup>
-                        <ControlLabel>Broadcast this</ControlLabel><br />
-                        <FormControl type="text" value={this.state.value} onChange={this.updateValue} />
-                    </FormGroup>
-                </div>
+    return (
+        <div className="vcenter">
+            <div>
+                <h1 style={{fontSize:"100px"}}>
+                    Dings: {dingCount}
+                </h1>
+                <FormGroup>
+                    <ControlLabel>Broadcast this</ControlLabel><br />
+                    <FormControl type="text" value={clientText} onChange={updateClientText} />
+                </FormGroup>
             </div>
-        );
-    }
+        </div>
+    );
 }

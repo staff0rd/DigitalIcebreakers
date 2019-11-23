@@ -16,6 +16,7 @@ import ReactAI from 'react-appinsights';
 import { Events } from './Events';
 import * as Version from './version.json';
 import { ConnectionStatus } from './ConnectionStatus';
+import { SignalR } from './games/BaseGame'
 
 const connectionRetrySeconds = [0, 1, 4, 9, 16, 25, 36, 49];
 
@@ -70,6 +71,19 @@ export default class App extends Component<{}, AppState> {
         this.configureSignalR();
 
         window.onresize = () => Events.emit('onresize');
+    }
+
+    private get signalR(): SignalR {
+        return {
+            clientMessage: (message: any) => {
+                const payload = JSON.stringify({ client: message });
+                this.connection.invoke("hubMessage", payload);
+            },
+            adminMessage: (message: any) => {
+                const payload = JSON.stringify({ admin: message });
+                this.connection.invoke("hubMessage", payload);
+            }
+        }
     }
 
     private getUser() {
@@ -269,14 +283,9 @@ export default class App extends Component<{}, AppState> {
         this.setState({menuItems: items});
     }
 
-    clientMessage = (message: any) => {
-        const payload = JSON.stringify({ client: message });
-        this.connection.invoke("hubMessage", payload);
-    }
-
     render() {
         var connected = this.state.connectionStatus === ConnectionStatus.Connected;
-        var game = this.redirect(connected, (props:any) => <Game isAdmin={this.state.isAdmin} setMenuItems={this.setMenuItems} clientMessage={this.clientMessage} connection={this.connection} {...props} players={this.state.players} />);
+        var game = this.redirect(connected, (props:any) => <Game isAdmin={this.state.isAdmin} setMenuItems={this.setMenuItems} signalR={this.signalR} connection={this.connection} {...props} players={this.state.players} />);
         var newGame = this.redirect(connected, () => <NewGame newGame={this.newGame} />);
         var closeLobby = this.redirect(connected, () => <CloseLobby closeLobby={this.closeLobby} />);
 
