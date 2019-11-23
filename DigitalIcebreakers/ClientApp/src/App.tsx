@@ -269,9 +269,14 @@ export default class App extends Component<{}, AppState> {
         this.setState({menuItems: items});
     }
 
+    clientMessage = (message: any) => {
+        const payload = JSON.stringify({ client: message });
+        this.connection.invoke("hubMessage", payload);
+    }
+
     render() {
         var connected = this.state.connectionStatus === ConnectionStatus.Connected;
-        var game = this.redirect(connected, (props:any) => <Game isAdmin={this.state.isAdmin} setMenuItems={this.setMenuItems} connection={this.connection} {...props} players={this.state.players} />);
+        var game = this.redirect(connected, (props:any) => <Game isAdmin={this.state.isAdmin} setMenuItems={this.setMenuItems} clientMessage={this.clientMessage} connection={this.connection} {...props} players={this.state.players} />);
         var newGame = this.redirect(connected, () => <NewGame newGame={this.newGame} />);
         var closeLobby = this.redirect(connected, () => <CloseLobby closeLobby={this.closeLobby} />);
 

@@ -6,6 +6,7 @@ export interface BaseGameProps {
     connection: HubConnection;
     setMenuItems(items: JSX.Element[]): void;
     players: Player[];
+    clientMessage: (message: any) => void;
 }
 
 export class BaseGame<T extends BaseGameProps, U> extends Component<T, U> {
@@ -45,8 +46,7 @@ export class BaseGame<T extends BaseGameProps, U> extends Component<T, U> {
     }
 
     clientMessage(message: any) {
-        const payload = JSON.stringify({ client: message });
-        this.props.connection.invoke("hubMessage", payload);
+        this.props.clientMessage(message);
     };
 
     adminMessage(message: any) {
