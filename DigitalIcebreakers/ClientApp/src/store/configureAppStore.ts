@@ -1,10 +1,10 @@
-import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'
+import { configureStore, getDefaultMiddleware, Middleware, MiddlewareAPI, Dispatch } from '@reduxjs/toolkit'
 import { rootReducer } from './rootReducer'
 
 export function configureAppStore() {
   const store = configureStore({
     reducer: rootReducer,
-    middleware: [...getDefaultMiddleware()]
+    middleware: [loggerMiddleware, ...getDefaultMiddleware()]
   })
 
   // if (process.env.NODE_ENV !== 'production' && module.hot) {
@@ -12,4 +12,13 @@ export function configureAppStore() {
   // }
 
   return store
+}
+
+const loggerMiddleware: Middleware = ({ getState }: MiddlewareAPI) => (
+  next: Dispatch
+) => action => {
+  console.log('will dispatch', action)
+  const returnValue = next(action)
+  console.log('state after dispatch', getState())
+  return returnValue
 }
