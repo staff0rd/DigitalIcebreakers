@@ -1,7 +1,6 @@
 ﻿import React, { useState } from 'react';
 import { FormGroup, ControlLabel, FormControl, HelpBlock, Button } from 'react-bootstrap';
 import { useSelector } from '../store/useSelector';
-import { useDispatch } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 
 interface JoinProps {
