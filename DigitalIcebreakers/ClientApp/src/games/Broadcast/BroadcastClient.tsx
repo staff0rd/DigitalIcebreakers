@@ -9,7 +9,7 @@ export const BroadcastClient : React.FC<BaseGameProps> = (props) => {
         props.connection.on("gameUpdate", setClientText);
 
         return () => props.connection.off("gameUpdate");
-    });
+    }, [props.connection]);
 
     const ding = () => {
         props.signalR.clientMessage(1);      

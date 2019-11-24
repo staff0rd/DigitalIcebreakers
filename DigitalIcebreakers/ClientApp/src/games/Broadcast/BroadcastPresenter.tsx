@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
-import { BaseGame, BaseGameProps } from '../BaseGame';
+import { BaseGameProps } from '../BaseGame';
 
 export const BroadcastPresenter: React.FC<BaseGameProps> = (props) => {
 
