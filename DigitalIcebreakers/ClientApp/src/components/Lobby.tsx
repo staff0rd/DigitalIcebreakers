@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { Config } from '../config';
 import { Changelog } from './Changelog';
-import { Player } from './Player';
+import { Player } from '../Player';
 import { DynamicSizedQrCode } from './DynamicSizedQrCode';
 
 interface AppLobby {

@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { HubConnection } from '@aspnet/signalr';
-import { Player } from '../components/Player';
+import { Player } from '../Player';
 
 export interface BaseGameProps {
     connection: HubConnection;

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Games from '../games/Games';
 import {RouteComponentProps } from 'react-router'
-import { Player } from './Player';
+import { Player } from '../Player';
 
 type Props = {
     isAdmin: boolean

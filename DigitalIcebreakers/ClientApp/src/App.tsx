@@ -10,7 +10,6 @@ import { CloseLobby } from './components/CloseLobby';
 import { Join } from './components/Join';
 import { HubConnectionBuilder, HubConnection } from '@aspnet/signalr';
 import { guid } from './util/guid';
-import { UserContext } from './contexts/UserContext';
 import history from './history';
 import ReactAI from 'react-appinsights';
 import { Events } from './Events';
@@ -297,17 +296,15 @@ export default class App extends Component<{}, AppState> {
 
         return (
             <Provider store={this.store}>
-                <UserContext.Provider value={this.state.user}>
-                    <Layout menuItems={this.state.menuItems} currentGame={this.state.currentGame} isAdmin={this.state.isAdmin} version={Version.version} lobbyId={this.state.lobby && this.state.lobby.id}>
-                        <Route exact path='/' render={() => <LobbySwitch lobby={this.state.lobby} players={this.state.players} /> } />
-                        <Route path='/createLobby' render={() => <CreateLobby createLobby={this.createLobby} /> } />
-                        <Route path='/closeLobby' render={closeLobby }  />
-                        <Route path='/lobbyClosed' component={LobbyClosed} />
-                        <Route path='/game/:name' render={game} />
-                        <Route path='/newGame' render={newGame} />
-                        <Route path='/join/:id' render={props => <Join join={this.joinLobby} {...props} /> }  />
-                    </Layout>
-                </UserContext.Provider>
+                <Layout menuItems={this.state.menuItems} currentGame={this.state.currentGame} isAdmin={this.state.isAdmin} version={Version.version} lobbyId={this.state.lobby && this.state.lobby.id}>
+                    <Route exact path='/' render={() => <LobbySwitch lobby={this.state.lobby} players={this.state.players} /> } />
+                    <Route path='/createLobby' render={() => <CreateLobby createLobby={this.createLobby} /> } />
+                    <Route path='/closeLobby' render={closeLobby }  />
+                    <Route path='/lobbyClosed' component={LobbyClosed} />
+                    <Route path='/game/:name' render={game} />
+                    <Route path='/newGame' render={newGame} />
+                    <Route path='/join/:id' render={props => <Join join={this.joinLobby} {...props} /> }  />
+                </Layout>
             </Provider>
         );
     }
