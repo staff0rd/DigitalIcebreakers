@@ -29,7 +29,7 @@ export interface IGame {
     fullscreen?: boolean;
 }
 
-export default function (props: any) : IGame[] {
+export default function (props?: any) : IGame[] {
     return [{
         name: "doggos-vs-kittehs",
         client: <DoggosVsKittehsClient {...props} />,

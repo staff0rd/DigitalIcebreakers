@@ -1,17 +1,13 @@
 import { Component } from 'react';
 import { HubConnection } from '@microsoft/signalr';
 import { Player } from '../Player';
+import { SignalRMessaging } from '../SignalRMessaging';
 
 export interface BaseGameProps {
     connection: HubConnection;
     setMenuItems(items: JSX.Element[]): void;
     players: Player[];
-    signalR: SignalR;
-}
-
-export interface SignalR {
-    clientMessage: (message: any) => void;
-    adminMessage: (message: any) => void;
+    signalR: SignalRMessaging;
 }
 
 export class BaseGame<T extends BaseGameProps, U> extends Component<T, U> {

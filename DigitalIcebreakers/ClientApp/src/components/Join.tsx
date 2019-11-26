@@ -2,18 +2,17 @@
 import { FormGroup, ControlLabel, FormControl, HelpBlock, Button } from 'react-bootstrap';
 import { useSelector } from '../store/useSelector';
 import { RouteComponentProps } from 'react-router';
-
-interface JoinProps {
-    join: (id: string, name: string) => void;
-}
+import { useDispatch } from 'react-redux';
+import { setUserName } from '../store/user/actions';
+import { joinLobby } from '../store/lobby/actions';
 
 interface RouteParams {
     id: string
 }
 
-export const Join: React.FC<JoinProps & RouteComponentProps<RouteParams>> = (props) => {
+export const Join: React.FC<RouteComponentProps<RouteParams>> = (props) => {
     const initialName = useSelector(state => state.user.name);
-
+    const dispatch = useDispatch();
     const [name, setName] = useState<string>(initialName);
 
     const validate = () => {
@@ -30,7 +29,8 @@ export const Join: React.FC<JoinProps & RouteComponentProps<RouteParams>> = (pro
 
     const onSubmit = (e:any) => {
         if (validate() === "success") {
-            props.join(props.match.params.id, name); 
+            dispatch(setUserName(name));
+            dispatch(joinLobby(props.match.params.id));
         }      
         e.preventDefault();
     }
