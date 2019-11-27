@@ -115,7 +115,9 @@ const signalRMiddleware = () => {
                     break;
                 }
                 case CONNECTION_CONNECT: {
+                    debugger;
                     setTimeout(() => {
+                        debugger;
                         if (getState().connection.status == ConnectionStatus.NotConnected) {
                             
                             bumpConnectionTimeout();
@@ -137,6 +139,7 @@ const signalRMiddleware = () => {
                     break;
                 }
                 case SET_CONNECTION_STATUS: {
+                    debugger;
                     switch (action) {
                         case ConnectionStatus.NotConnected: dispatch(connectionConnect()); break;
                         case ConnectionStatus.Connected: {
