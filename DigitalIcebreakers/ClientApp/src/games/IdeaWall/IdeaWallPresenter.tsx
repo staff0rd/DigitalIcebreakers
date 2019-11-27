@@ -1,12 +1,11 @@
 import React, { Fragment } from 'react';
 import { Button, Navbar, FormGroup, Modal } from 'react-bootstrap';
-import { PixiView } from '../pixi/PixiView';
 import { Colors } from '../../Colors';
 import * as Random from '../../Random';
 import { Events } from '../../Events';
 import { IdeaContainer, Lane } from './IdeaContainer';
 import { IdeaView } from './IdeaView';
-import { BaseGameProps } from '../BaseGame'
+import { BaseGameProps, BaseGame } from '../BaseGame'
 import { Idea } from './Idea'
 
 const WIDTH = 200;
@@ -52,13 +51,14 @@ interface IdeaWallPresenterState {
 }
 
 
-export class IdeaWallPresenter extends PixiView<IdeaWallPresenterProps, IdeaWallPresenterState> {
+export class IdeaWallPresenter extends BaseGame<IdeaWallPresenterProps, IdeaWallPresenterState> {
     displayName = IdeaWallPresenter.name
-    ideaContainer: IdeaContainer;
+    ideaContainer?: IdeaContainer;
+    app?: PIXI.Application;
 
     constructor(props: IdeaWallPresenterProps, context: IdeaWallPresenterState) {
-        super(0xFFFFFF, props);
-
+        super(props);
+        
         this.state = {
             ideas: [],
             showNames: false,
@@ -69,11 +69,10 @@ export class IdeaWallPresenter extends PixiView<IdeaWallPresenterProps, IdeaWall
                 action: undefined
             }
         };
-
-        this.ideaContainer = new IdeaContainer(this.app, WIDTH, MARGIN, this.props.lanes || []);
-        this.ideaContainer.addToStage(this.app.stage);
+        
+        
     }
-
+    
     getRandomColor() {
         return Random.pick(IDEA_COLORS);
     }
@@ -81,25 +80,30 @@ export class IdeaWallPresenter extends PixiView<IdeaWallPresenterProps, IdeaWall
     saveIdeas() {
         this.saveToStorage(this.props.storageKey, this.state.ideas);
     }
-
+    
     getIdeas() {
         return this.getFromStorage(this.props.storageKey);
     }
-
+    
     clearIdeas() {
         this.clearStorage(this.props.storageKey);
-        this.setState({ideas: []}, () => this.init());
-        this.ideaContainer.reset();
+        this.setState({ideas: []}, () => this.init(this.app));
+        this.ideaContainer!.reset();
     }
-
-    init() {
-        this.setState({ ideas: this.getIdeas() || []}, () => {
-            this.ideaContainer.clear();
-            this.state.ideas.forEach(idea => {
-                this.addIdeaToContainer(idea);
-            })
-        });
-        this.setMenuItems();
+    
+    init(app?: PIXI.Application) {
+        this.app = app;
+        if (this.app) {
+            this.ideaContainer = new IdeaContainer(this.app, WIDTH, MARGIN, this.props.lanes || []);
+            this.ideaContainer.addToStage(this.app.stage);
+            this.setState({ ideas: this.getIdeas() || []}, () => {
+                this.ideaContainer!.clear();
+                this.state.ideas.forEach(idea => {
+                    this.addIdeaToContainer(idea);
+                })
+            });
+            this.setMenuItems();
+        }
     }
 
     closeModal = () => {
@@ -113,7 +117,7 @@ export class IdeaWallPresenter extends PixiView<IdeaWallPresenterProps, IdeaWall
                 title: "Arrange ideas?",
                 body: "This will re-arrange all ideas",
                 action: () => {
-                    this.ideaContainer.arrange();
+                    this.ideaContainer!.arrange();
                     this.closeModal();
                 }
             }
@@ -137,7 +141,7 @@ export class IdeaWallPresenter extends PixiView<IdeaWallPresenterProps, IdeaWall
     toggleNames = () => {
         this.setState((prevState) => {
             return { showNames: !prevState.showNames};
-        }, () => this.init());
+        }, () => this.init(this.app));
     }
 
     setMenuItems() {
@@ -157,8 +161,8 @@ export class IdeaWallPresenter extends PixiView<IdeaWallPresenterProps, IdeaWall
     }
 
     addIdeaToContainer(idea: Idea, isNew: boolean = false) {
-        const view = new IdeaView(idea, this.props.dynamicSize ? 0 : WIDTH, MARGIN, this.state.showNames, this.ideaContainer.laneWidth, () => this.saveIdeas());
-        this.ideaContainer.add(view, isNew);
+        const view = new IdeaView(idea, this.props.dynamicSize ? 0 : WIDTH, MARGIN, this.state.showNames, this.ideaContainer!.laneWidth, () => this.saveIdeas());
+        this.ideaContainer!.add(view, isNew);
     }
 
     getNewIdea(playerName: string, idea: string | ServerIdea) : Idea {
@@ -171,12 +175,12 @@ export class IdeaWallPresenter extends PixiView<IdeaWallPresenterProps, IdeaWall
         super.componentDidMount();
         
         const resize = () => {
-            this.ideaContainer.resize();
+            this.ideaContainer && this.ideaContainer.resize();
         }
         
         resize();
         Events.add('onresize', 'ideawall', resize);
-        this.init();
+        this.init(this.app);
         this.props.connection.on("gameUpdate", (playerName, idea: string | ServerIdea) => {
             const newIdea = this.getNewIdea(playerName, idea);
             this.addIdeaToContainer(newIdea, true);
@@ -185,7 +189,7 @@ export class IdeaWallPresenter extends PixiView<IdeaWallPresenterProps, IdeaWall
                 ideas: ideas
             }, () => {
                 this.saveIdeas();
-                this.init();
+                this.init(this.app);
             });
         });
     }

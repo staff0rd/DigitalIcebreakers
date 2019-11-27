@@ -1,14 +1,16 @@
 import React from 'react';
 import { Button, Table } from 'react-bootstrap';
-import { BaseGameProps } from '../BaseGame'
+import { BaseGameProps, BaseGame } from '../BaseGame'
 import { Shape } from './Shape';
 import { Colors, ColorUtils } from '../../Colors';
 import { ShapeType } from './ShapeType';
 import { shuffle } from '../../Random';
-import { PixiView } from '../pixi/PixiView';
 import * as PIXI from "pixi.js";
 import { ShapeView } from './ShapeView';
 import * as gsap from "gsap";
+import { ConnectedProps, connect } from 'react-redux';
+import { clientMessage, adminMessage } from '../../store/lobby/actions';
+import { Pixi } from '../pixi/Pixi';
 
 interface Choice {
     id: string;
@@ -31,12 +33,20 @@ interface ReactState {
     autoAgain: boolean
 }
 
-export class ReactPresenter extends PixiView<BaseGameProps, ReactState> {
+const connector = connect(
+    null,
+    { clientMessage, adminMessage }
+);
+  
+type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
+
+export class ReactPresenter extends BaseGame<PropsFromRedux, ReactState> {
     private timeout: NodeJS.Timeout|undefined;
     private againProgressElement?: HTMLDivElement;
     private againTween?: GSAPStatic.Tween;
-    constructor(props: BaseGameProps) {
-        super(Colors.White, props);
+    private app?: PIXI.Application;
+    constructor(props: PropsFromRedux) {
+        super(props);
 
         this.state = {
             shapes: [],
@@ -70,8 +80,9 @@ export class ReactPresenter extends PixiView<BaseGameProps, ReactState> {
         return this.state.shapes.filter(shape => shape.id !== this.state.shape!.id);
     }
 
-    init() {
-        if (this.state.shape) {
+    init(app?: PIXI.Application) {
+        this.app = app;
+        if (this.app && this.state.shape) {
             this.app.stage.removeChildren();
             const bottomShapes = this.getOtherShapes();
             const size = this.app.screen.height * .7;
@@ -84,7 +95,7 @@ export class ReactPresenter extends PixiView<BaseGameProps, ReactState> {
             const shapeMargin = 20;
             bottomShapes
                 .forEach(shape => {
-                    const shapeView = new ShapeView(this.app.screen.height * .2, shape);
+                    const shapeView = new ShapeView(this.app!.screen.height * .2, shape);
                     shapeView.view.position.set((shapeView.view.width + shapeMargin) * bottomShapesContainer.children.length, 0);
                     smallShapeWidth = shapeView.view.width;
                     bottomShapesContainer.addChild(shapeView.view);
@@ -203,16 +214,18 @@ export class ReactPresenter extends PixiView<BaseGameProps, ReactState> {
             shape: shapes[0],
             showScores: false
         }, () => {
-            this.adminMessage(shuffle(shapes));
-            this.init();
+            this.props.adminMessage(shuffle(shapes));
+            this.init(this.app);
         });
     }
 
     render() {
         if (this.state.showScores) {
             
-            this.app.view.parentElement && this.app.view.parentElement.removeChild(this.app.view);
-            const scores = this.state.scores
+            if (this.app)
+                this.app.view.parentElement && this.app.view.parentElement.removeChild(this.app.view);
+            
+                const scores = this.state.scores
                 .sort((a,b) => b.score - a.score)
                 .map((p, ix) => <tr key={ix}><td>{p.score}</td><td>{p.name}</td></tr>);
 
@@ -227,7 +240,7 @@ export class ReactPresenter extends PixiView<BaseGameProps, ReactState> {
                 <div ref={this.againProgress} style={{marginTop: 15, width: 500, height: 50, backgroundColor: ColorUtils.toHtml(Colors.Red.C400)}}></div>
             </div>;
         } else {
-            return super.render();
+            return <Pixi backgroundColor={Colors.White} onAppChange={this.init} />
         }
     }
 }

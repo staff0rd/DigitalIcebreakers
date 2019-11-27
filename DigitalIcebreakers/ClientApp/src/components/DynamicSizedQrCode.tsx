@@ -33,6 +33,7 @@ export const DynamicSizedQrCode: React.FC<DynamicSizedQrCodeProps> = (props) => 
         Events.add('onresize', 'qrcode', resize);
         return () => Events.remove('onresize', 'qrcode');
     }, [props.widthFunction, props.parent, resize]);
+    
     return (
         <QRCode value={props.joinUrl} size={qrCodeWidth} renderAs="svg" style={props.qrCodeStyle} />
     );

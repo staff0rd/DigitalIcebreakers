@@ -1,6 +1,8 @@
 import React from 'react';
 import { Button, Form, FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
 import { BaseGame, BaseGameProps } from '../BaseGame';
+import { ConnectedProps, connect } from 'react-redux';
+import { clientMessage } from '../../store/lobby/actions';
 
 const MAX_CHARACTERS = 50;
 
@@ -8,9 +10,16 @@ interface IdeaWallClientState {
     idea: string;
 }
 
-export class StartStopContinueClient extends BaseGame<BaseGameProps, IdeaWallClientState> {
+const connector = connect(
+    null,
+    { clientMessage }
+);
+  
+type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
 
-    constructor(props: BaseGameProps, context: IdeaWallClientState) {
+export class StartStopContinueClient extends BaseGame<PropsFromRedux, IdeaWallClientState> {
+
+    constructor(props: PropsFromRedux) {
         super(props);
 
         this.state = {
@@ -26,7 +35,7 @@ export class StartStopContinueClient extends BaseGame<BaseGameProps, IdeaWallCli
 
     onClick = (lane: number) => {
         if (this.state.idea.length) {
-            this.clientMessage({content: this.state.idea, lane: lane})
+            this.props.clientMessage({content: this.state.idea, lane: lane})
             this.setState({idea: ""});
         }
     }

@@ -1,25 +1,28 @@
 import React, {useState, useEffect} from 'react';
 import { FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
-import { BaseGameProps } from '../BaseGame';
+import { useDispatch } from 'react-redux';
+import { setGameUpdateCallback, clearGameUpdateCallback } from '../../store/connection/actions';
+import { adminMessage } from '../../store/lobby/actions';
 
-export const BroadcastPresenter: React.FC<BaseGameProps> = (props) => {
+export const BroadcastPresenter = () => {
 
     const [dingCount, setDingCount] = useState<number>(0);
     const [clientText, setClientText] = useState<string>("");
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        props.connection.on("gameUpdate", (result) => {
+        dispatch(setGameUpdateCallback((result: string) => {
             if (result === "d") {
                 setDingCount(dingCount+1);
             }
-        });
-        return () => props.connection.off("gameUpdate");
+        }));
+        return () => { dispatch(clearGameUpdateCallback()); };
     });
 
     const updateClientText = (e: React.FormEvent<FormControl>) => {
         const target = e.target as HTMLInputElement;
         setClientText(target.value);
-        props.signalR.adminMessage(clientText);
+        dispatch(adminMessage(clientText));
     }
 
     return (

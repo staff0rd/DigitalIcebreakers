@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Glyphicon  } from 'react-bootstrap';
-import { BaseGameProps } from '../BaseGame';
+import { useDispatch } from 'react-redux';
+import { setGameUpdateCallback, clearGameUpdateCallback } from '../../store/connection/actions';
+import { clientMessage } from '../../store/lobby/actions';
 
-export const BroadcastClient : React.FC<BaseGameProps> = (props) => {
+export const BroadcastClient = () => {
     const [clientText, setClientText] = useState<string>("");
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        props.connection.on("gameUpdate", setClientText);
-
-        return () => props.connection.off("gameUpdate");
-    }, [props.connection]);
+        dispatch(setGameUpdateCallback(setClientText));
+        return () => {
+            dispatch(clearGameUpdateCallback());
+        }
+    });
 
     const ding = () => {
-        props.signalR.clientMessage(1);      
+        dispatch(clientMessage(1));
     }
 
     return (

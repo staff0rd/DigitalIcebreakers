@@ -1,16 +1,24 @@
 import React from 'react';
 import { Button  } from 'react-bootstrap';
 import { BaseGame, BaseGameProps } from '../BaseGame';
+import { ConnectedProps, connect } from 'react-redux';
+import { clientMessage } from '../../store/lobby/actions';
 
+const connector = connect(
+    null,
+    { clientMessage }
+);
+  
+type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
 
 interface YesNoMaybeState {
     choice: string | undefined;
 }
 
-export class YesNoMaybeClient extends BaseGame<BaseGameProps, YesNoMaybeState> {
+export class YesNoMaybeClient extends BaseGame<PropsFromRedux, YesNoMaybeState> {
     displayName = YesNoMaybeClient.name
 
-    constructor(props: BaseGameProps) {
+    constructor(props: PropsFromRedux) {
         super(props);
 
         this.state = {
@@ -20,7 +28,7 @@ export class YesNoMaybeClient extends BaseGame<BaseGameProps, YesNoMaybeState> {
 
     choose = (choice: string) => {
         this.setState({ choice: choice });
-        this.clientMessage(choice);
+        this.props.clientMessage(choice);
     }
 
     render() {

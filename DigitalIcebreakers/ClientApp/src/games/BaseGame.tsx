@@ -1,13 +1,11 @@
 import { Component } from 'react';
 import { HubConnection } from '@microsoft/signalr';
 import { Player } from '../Player';
-import { SignalRMessaging } from '../SignalRMessaging';
 
 export interface BaseGameProps {
     connection: HubConnection;
     setMenuItems(items: JSX.Element[]): void;
     players: Player[];
-    signalR: SignalRMessaging;
 }
 
 export class BaseGame<T extends BaseGameProps, U> extends Component<T, U> {
@@ -44,18 +42,6 @@ export class BaseGame<T extends BaseGameProps, U> extends Component<T, U> {
         if (this.myStorage) {
             this.myStorage.removeItem(storageKey);
         }
-    }
-
-    clientMessage(message: any) {
-        this.props.signalR.clientMessage(message);
-    };
-
-    adminMessage(message: any) {
-        this.props.signalR.adminMessage(message);
-    };
-    
-    unexpected(arg: any) {
-        console.error('Unexpected: ', arg);
     }
 
     componentDidMount() {
