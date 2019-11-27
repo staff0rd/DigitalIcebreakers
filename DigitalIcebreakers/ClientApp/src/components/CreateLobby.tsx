@@ -1,64 +1,53 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { FormGroup, ControlLabel, FormControl, HelpBlock, Button } from 'react-bootstrap';
+import { useDispatch } from 'react-redux';
+import { createLobby } from '../store/lobby/actions';
 
-interface Props {
-    createLobby: (lobbyName: string) => void;
-}
-
-type State = {
-    name: string
-}
-
-export class CreateLobby extends Component<Props, State> {
-    displayName = CreateLobby.name
-
-    constructor(props: Props) {
-        super(props);
-        this.state = { name: "My Lobby" };
-    }
-
-    getValidationState() {
-        const length = this.state.name.length;
+export const CreateLobby = () => {
+    const [lobbyName, setLobbyName] = useState<string>("My Lobby");
+    const dispatch = useDispatch();
+    const validate = () => {
+        const length = lobbyName.length;
         if (length > 2) return 'success';
         else if (length > 0) return 'error';
         return null;
     }
 
-    onSubmit = (e: React.SyntheticEvent<EventTarget>) => {
-        this.props.createLobby(this.state.name);
+    const handleChange = (e: React.FormEvent<FormControl>) => {
+        const target = e.target as HTMLInputElement;
+        setLobbyName(target.value);
+    }
+
+    const onSubmit = (e:any) => {
+        if (validate() === "success") {
+            dispatch(createLobby(lobbyName));
+        }      
         e.preventDefault();
     }
 
-    handleChange = (e: React.FormEvent<FormControl>) => {
-        const target = e.target as HTMLInputElement;
-        this.setState({name: target.value});
-    }
-
-    render() {
-        return (
-            <div>
-              <h2>Create lobby</h2>
-                <form onSubmit={this.onSubmit}>
-                    <FormGroup
-                        controlId="formBasicText"
-                        validationState={this.getValidationState()}
-                    >
-                        <ControlLabel>Give this lobby a name</ControlLabel>
-                        <FormControl
-                            type="text"
-                            placeholder="Enter text"
-                            name="name"
-                            value={this.state.name}
-                            onChange={this.handleChange}
-                        />
-                        <FormControl.Feedback />
-                        <HelpBlock>You must enter a lobby name.</HelpBlock>
-                    </FormGroup>
-                    <Button bsStyle="primary" bsSize="large" onClick={this.onSubmit}>
-                        Create
-                    </Button>
-                </form>
-            </div>
-        );
-    }
+    return (
+        <div>
+            <h2>Create lobby</h2>
+            <form onSubmit={onSubmit}>
+                <FormGroup
+                    controlId="formBasicText"
+                    validationState={validate()}
+                >
+                    <ControlLabel>Give this lobby a name</ControlLabel>
+                    <FormControl
+                        type="text"
+                        placeholder="Enter text"
+                        name="name"
+                        value={lobbyName}
+                        onChange={handleChange}
+                    />
+                    <FormControl.Feedback />
+                    <HelpBlock>You must enter a lobby name.</HelpBlock>
+                </FormGroup>
+                <Button bsStyle="primary" bsSize="large" onClick={onSubmit}>
+                    Create
+                </Button>
+            </form>
+        </div>
+    );
 }

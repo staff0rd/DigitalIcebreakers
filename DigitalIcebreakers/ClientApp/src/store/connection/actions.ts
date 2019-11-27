@@ -1,8 +1,8 @@
-import { SET_CONNECTION_STATUS, ConnectionActionTypes, CONNECTION_CONNECT, CONNECTION_RECONNECT } from './types';
+import { SET_CONNECTION_STATUS as UPDATE_CONNECTION_STATUS, ConnectionActionTypes, CONNECTION_CONNECT, CONNECTION_RECONNECT } from './types';
 import { ConnectionStatus } from '../../ConnectionStatus';
 
-export function setConnectionStatus(status: ConnectionStatus) : ConnectionActionTypes {
-    return { type: SET_CONNECTION_STATUS, status };
+export function updateConnectionStatus(status: ConnectionStatus) : ConnectionActionTypes {
+    return { type: UPDATE_CONNECTION_STATUS, status };
 }
 
 export function connectionConnect(lobbyId?: string) : ConnectionActionTypes {

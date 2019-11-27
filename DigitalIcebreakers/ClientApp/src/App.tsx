@@ -17,8 +17,7 @@ import { Provider } from 'react-redux'
 import { configureAppStore } from './store/configureAppStore'
 import { EnhancedStore, AnyAction } from '@reduxjs/toolkit';
 import { RootState } from './store/RootState';
-import { setConnectionStatus, connectionConnect } from './store/connection/actions';
-import { SignalR } from './SignalR';
+import { connectionConnect } from './store/connection/actions';
 import ReactAI from 'react-appinsights';
 
 type AppState = {
@@ -46,7 +45,6 @@ export default class App extends Component<{}, AppState> {
     private myStorage: Storage;
     
     private user: User;
-    private signalR: SignalR;
     private store: EnhancedStore<RootState, AnyAction>;
 
     constructor(props: any, context: any) {
@@ -69,10 +67,9 @@ export default class App extends Component<{}, AppState> {
 
         ReactAI.setAppContext({ userId: this.user.id });
 
-        this.signalR = new SignalR(this.store, this.debug);
-        this.signalR.configure(this, this.goToDefaultLocation);
-
         window.onresize = () => Events.emit('onresize');
+
+        this.store.dispatch(connectionConnect());
     }
 
     private getUser() {
@@ -95,13 +92,6 @@ export default class App extends Component<{}, AppState> {
     debug(...a: any[]) {
         if (this.isDebug)
             console.log('[app]', ...a);
-    }
-
-    goToDefaultLocation() {
-        if (this.state.currentGame)
-            history.push(`/game/${this.state.currentGame}`);
-        else
-            history.push("/");
     }
 
     getCurrentLocation() {
@@ -133,15 +123,15 @@ export default class App extends Component<{}, AppState> {
 
     render() {
         const connected = this.store.getState().connection.status === ConnectionStatus.Connected;
-        const game = this.redirect(connected, (props:any) => <Game isAdmin={this.state.isAdmin} setMenuItems={this.setMenuItems} signalR={this.signalR} {...props} players={this.state.players} />);
+        const game = this.redirect(connected, (props:any) => <Game isAdmin={this.state.isAdmin} setMenuItems={this.setMenuItems} {...props} players={this.state.players} />);
         const newGame = this.redirect(connected, () => <NewGame />);
-        const closeLobby = this.redirect(connected, () => <CloseLobby closeLobby={this.signalR.closeLobby} />);
+        const closeLobby = this.redirect(connected, () => <CloseLobby />);
 
         return (
             <Provider store={this.store}>
                 <Layout menuItems={this.state.menuItems} currentGame={this.state.currentGame} isAdmin={this.state.isAdmin} version={Version.version} lobbyId={this.state.lobby && this.state.lobby.id}>
                     <Route exact path='/' render={() => <LobbySwitch lobby={this.state.lobby} players={this.state.players} /> } />
-                    <Route path='/createLobby' render={() => <CreateLobby createLobby={this.signalR.createLobby} /> } />
+                    <Route path='/createLobby' render={() => <CreateLobby /> } />
                     <Route path='/closeLobby' render={closeLobby }  />
                     <Route path='/lobbyClosed' component={LobbyClosed} />
                     <Route path='/game/:name' render={game} />
