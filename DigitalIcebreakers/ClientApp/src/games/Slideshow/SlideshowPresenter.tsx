@@ -4,6 +4,8 @@ import Reveal from 'reveal.js'
 import { Slides } from './Slides'
 import { Button, FormGroup, Navbar } from 'react-bootstrap';
 import { Events } from '../../Events'
+import { ConnectedProps, connect } from 'react-redux';
+import { adminMessage } from '../../store/lobby/actions'
 
 declare var window: any & {
     hljs: any;
@@ -17,10 +19,17 @@ interface SlideshowProps extends BaseGameProps {
     storageKey: string;
 }
 
-export class SlideshowPresenter extends BaseGame<SlideshowProps, SlideshowPresenterState> {
+const connector = connect(
+    null,
+    { adminMessage }
+);
+  
+type PropsFromRedux = ConnectedProps<typeof connector> & SlideshowProps;
+
+export class SlideshowPresenter extends BaseGame<PropsFromRedux, SlideshowPresenterState> {
     displayName = SlideshowPresenter.name
 
-    constructor(props: SlideshowProps) {
+    constructor(props: PropsFromRedux) {
         super(props);
         
         this.state = {
@@ -103,7 +112,7 @@ export class SlideshowPresenter extends BaseGame<SlideshowProps, SlideshowPresen
 
     reportState() {
         const state = Reveal.getState();
-        this.adminMessage(state);
+        this.props.adminMessage(state);
         this.saveToStorage(this.props.storageKey, state);
     }
 

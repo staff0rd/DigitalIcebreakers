@@ -1,42 +1,51 @@
 import React, { Fragment } from 'react';
 import { Button, Navbar, FormGroup } from 'react-bootstrap';
-import { PixiPresenter } from '../pixi/PixiPresenter';
 import { Colors } from '../../Colors';
 import { Graph } from '../pixi/Graph';
-import { BaseGameProps } from '../BaseGame';
+import { BaseGameProps, BaseGame } from '../BaseGame';
+import { Pixi } from '../pixi/Pixi';
+import { connect, ConnectedProps } from 'react-redux';
+import { RootState } from '../../store/RootState';
+import { adminMessage } from '../../store/lobby/actions';
 
 export interface YesNoMaybeState {
     yes: number;
     no: number;
     maybe: number;
 }
-
-export class YesNoMaybePresenter extends PixiPresenter<BaseGameProps, YesNoMaybeState> {
+    
+const connector = connect(
+    null,
+    { adminMessage }
+);
+  
+type PropsFromRedux = ConnectedProps<typeof connector>
+  
+export class YesNoMaybePresenter extends BaseGame<BaseGameProps & PropsFromRedux, YesNoMaybeState> {
     displayName = YesNoMaybePresenter.name
     graph!: Graph;
+    app?: PIXI.Application;
 
-    constructor(props: BaseGameProps) {
-        super(0xFFFFFF, props);
+    constructor(props: BaseGameProps & PropsFromRedux) {
+        super(props);
         
         this.state = {
             yes: 0,
             no: 0,
             maybe: 0
         };
-
-        this.init();
     }
 
-    init() {
+    init(app?: PIXI.Application) {
+        this.app = app || this.app;
         var data = [
             {label: "Yes", value: this.state.yes, color: Colors.Red.C500},
             {label: "No", value: this.state.no, color: Colors.Blue.C500},
             {label: "Maybe", value: this.state.maybe, color: Colors.Grey.C500}
         ]
-
-        this.graph = new Graph(this.app, data);
-
         this.setMenuItems();
+        if (this.app)
+            this.graph = new Graph(this.app, data);
     }
 
     setMenuItems() {
@@ -60,11 +69,15 @@ export class YesNoMaybePresenter extends PixiPresenter<BaseGameProps, YesNoMaybe
                 yes: result.yes,
                 no: result.no,
                 maybe: result.maybe
-            }, this.init);
+            }, () => this.init(this.app));
         });
     }
 
     reset = () => {
-        this.adminMessage("reset");
+        this.props.adminMessage("reset");
+    }
+
+    render() {
+        return <Pixi backgroundColor={0xFFFFFF} onAppChange={this.init} />
     }
 }

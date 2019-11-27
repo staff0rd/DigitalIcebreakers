@@ -1,7 +1,7 @@
 import { configureStore, getDefaultMiddleware, Middleware, MiddlewareAPI, Dispatch, AnyAction, EnhancedStore } from '@reduxjs/toolkit'
 import { rootReducer } from './rootReducer'
 import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr'
-import { CONNECTION_CONNECT, SET_CONNECTION_STATUS } from './connection/types'
+import { CONNECTION_CONNECT, SET_CONNECTION_STATUS, SET_GAME_UPDATE_CALLBACK, CLEAR_GAME_UPDATE_CALLBACK } from './connection/types'
 import { updateConnectionStatus, connectionConnect, connectionReconnect } from './connection/actions'
 import ReactAI from 'react-appinsights';
 import { ConnectionStatus } from '../ConnectionStatus'
@@ -93,6 +93,13 @@ const signalRMiddleware = () => {
 
         return (next: Dispatch) => (action: any) => {
             switch(action.type) {
+                case SET_GAME_UPDATE_CALLBACK: {
+                    connection.on("gameUpdate", action.callback);
+                    break;
+                }
+                case CLEAR_GAME_UPDATE_CALLBACK: {
+                    connection.off("gameUpdate");
+                }
                 case CLEAR_LOBBY: {
                     history.push('/lobbyClosed');
                     break;
@@ -104,7 +111,7 @@ const signalRMiddleware = () => {
                     break;
                 }
                 case SET_LOBBY_GAME: {
-                    history.push(`/game/${name}`);
+                    history.push(`/game/${action.name}`);
                     break;
                 }
                 case CONNECTION_CONNECT: {
@@ -166,7 +173,7 @@ const signalRMiddleware = () => {
                     break;
                 }
             }
-            return new(action);
+            return next(action);
         }
     }
 }

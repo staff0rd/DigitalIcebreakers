@@ -1,84 +1,55 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '../pixi/Button';
-import { BaseGameProps } from '../BaseGame';
 import { PongColors as Colors } from './PongColors'
-import { PixiPresenter } from '../pixi/PixiPresenter';
+import { Pixi } from '../pixi/Pixi';
+import { useDispatch } from 'react-redux';
+import { clientMessage } from '../../store/lobby/actions';
+import { setGameUpdateCallback, clearGameUpdateCallback } from '../../store/connection/actions';
 
-interface PongClientState {
-    up: number;
-    down: number;
-}
-
-export class PongClient extends PixiPresenter<BaseGameProps, PongClientState> {
-    topButton?: Button;
-    bottomButton?: Button;
+export const PongClient = () =>  {
+    const [teamColor, setTeamColor] = useState<number>(0xFFFFFF);
+    const [app, setApp] = useState<PIXI.Application>();
+    const dispatch = useDispatch();
     
-    constructor(props: BaseGameProps) {
-        super(Colors.ClientBackground, props);
-     
-        this.pixiElement = null;
-        
-        this.state = {
-            up: 0xFFFFFF,
-            down: 0xFFFFFF
-        }
-    }
-    
-    init(): void {
-        this.topButton = new Button(this.release, this.up);
-        this.bottomButton = new Button(this.release, this.down);
+    const message = (action: string) => () => dispatch(clientMessage(action));
 
-        this.app.stage.addChild(this.topButton);
-        this.app.stage.addChild(this.bottomButton);
-    }
+    const topButton = new Button(message("release"), message("up"));
+    const bottomButton = new Button(message("release"), message("down"));
 
-    changeTeam(up: number, down: number) {
-        this.setState({up: up, down: down});
-    }
+    const appHandler = (app: PIXI.Application) => {
+        app.stage.addChild(topButton);
+        app.stage.addChild(bottomButton);
+        setApp(app);
+    };
 
-    componentDidMount() {
-        super.componentDidMount();
-        this.props.connection.on("gameUpdate", (response) => {
+    useEffect(() => {
+        dispatch(setGameUpdateCallback((response: string) => {
             const result = response.split(":");
             if (result[0] === "team") {
                 switch(result[1]) {
-                    case "0": this.changeTeam(Colors.LeftPaddleUp, Colors.LeftPaddleDown); break;
-                    case "1": this.changeTeam(Colors.RightPaddleUp, Colors.RightPaddleDown); break;
-                    default: this.unexpected(response);
+                    case "0": setTeamColor(Colors.LeftPaddleUp); break;
+                    case "1": setTeamColor(Colors.RightPaddleUp); break;
+                    default: console.log(`Unexpected response: ${response}`);
                 }
             } else {
-                this.unexpected(response);
+                console.log(`Unexpected response: ${response}`)
             }
-        });
-        this.clientMessage("join");
-    }
+        }));
+        dispatch(clientMessage("join"));
+        return () => { dispatch(clearGameUpdateCallback()); };
+    }, []);
 
-    down = () => {
-        this.clientMessage("down");
-    }
+    if (app) {
+        topButton.x = app.renderer.width / 4;
+        topButton.y = app.renderer.height / 8;
+        topButton.render(teamColor, teamColor, 0, 0, app.renderer.width / 2, app.renderer.height / 16 * 5);
 
-    up = () => {
-        this.clientMessage("up");
+        bottomButton.x = app.renderer.width / 4;
+        bottomButton.y = app.renderer.height / 16 * 9;
+        bottomButton.render(teamColor, teamColor, 0, 0, app.renderer.width / 2, app.renderer.height / 16 * 5);
     }
-
-    release = () => {
-        this.clientMessage("release");
-    }
-
-    render() {
-        if (this.topButton) {
-            this.topButton.x = this.app.renderer.width / 4;
-            this.topButton.y = this.app.renderer.height / 8;
-            this.topButton.render(this.state.up, this.state.down, 0, 0, this.app.renderer.width / 2, this.app.renderer.height / 16 * 5);
-        }
-        if (this.bottomButton) {
-            this.bottomButton.x = this.app.renderer.width / 4;
-            this.bottomButton.y = this.app.renderer.height / 16 * 9;
-            this.bottomButton.render(this.state.up, this.state.down, 0, 0, this.app.renderer.width / 2, this.app.renderer.height / 16 * 5);
-        }
-
-        return (
-            <div ref={this.pixiUpdate} />
-        );
-    }
+    
+    return (
+        <Pixi backgroundColor={Colors.ClientBackground} onAppChange={appHandler}  />
+    );
 }

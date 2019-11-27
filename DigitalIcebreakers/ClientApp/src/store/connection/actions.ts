@@ -1,4 +1,4 @@
-import { SET_CONNECTION_STATUS as UPDATE_CONNECTION_STATUS, ConnectionActionTypes, CONNECTION_CONNECT, CONNECTION_RECONNECT } from './types';
+import { SET_CONNECTION_STATUS as UPDATE_CONNECTION_STATUS, ConnectionActionTypes, CONNECTION_CONNECT, CONNECTION_RECONNECT, CLEAR_GAME_UPDATE_CALLBACK, SET_GAME_UPDATE_CALLBACK } from './types';
 import { ConnectionStatus } from '../../ConnectionStatus';
 
 export function updateConnectionStatus(status: ConnectionStatus) : ConnectionActionTypes {
@@ -11,4 +11,12 @@ export function connectionConnect(lobbyId?: string) : ConnectionActionTypes {
 
 export function connectionReconnect() : ConnectionActionTypes {
     return { type: CONNECTION_RECONNECT };
+}
+
+export function clearGameUpdateCallback() : ConnectionActionTypes {
+    return { type: CLEAR_GAME_UPDATE_CALLBACK };
+}
+
+export function setGameUpdateCallback(callback: Function) : ConnectionActionTypes {
+    return { type: SET_GAME_UPDATE_CALLBACK, callback };
 }

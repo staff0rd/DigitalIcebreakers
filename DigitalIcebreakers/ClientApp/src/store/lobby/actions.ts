@@ -41,10 +41,10 @@ export function createLobby(name: string) : LobbyActionTypes {
     return { type: CREATE_LOBBY, name };
 }
 
-export function adminMessage(message: string) : LobbyActionTypes {
+export function adminMessage(message: any) : LobbyActionTypes {
     return { type: GAME_MESSAGE_ADMIN, message };
 }
 
-export function clientMessage(message: string) : LobbyActionTypes {
+export function clientMessage(message: any) : LobbyActionTypes {
     return { type: GAME_MESSAGE_CLIENT, message};
 }

@@ -1,31 +1,43 @@
-import { BaseGameProps } from '../BaseGame'
-import { PixiPresenter } from '../pixi/PixiPresenter';
+import { BaseGameProps, BaseGame } from '../BaseGame'
 import { Colors } from '../../Colors'
 import { Shape } from './Shape';
 import * as PIXI from "pixi.js";
 import { drawShape } from './ShapeView';
+import { Pixi } from '../pixi/Pixi';
+import { ConnectedProps, connect } from 'react-redux';
+import { clientMessage } from '../../store/lobby/actions';
+import React from 'react';
 
 type ReactClientState = {
     shapes: Shape[];
     selectedId: number;
 }
 
-export class ReactClient extends PixiPresenter<BaseGameProps, ReactClientState> {
+const connector = connect(
+    null,
+    { clientMessage }
+);
+  
+type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
 
-    constructor(props: BaseGameProps) {
-        super(Colors.White,props);
+export class ReactClient extends BaseGame<PropsFromRedux, ReactClientState> {
+    app?: PIXI.Application;
+
+    constructor(props: PropsFromRedux) {
+        super(props);
     }
 
     componentDidMount() {
         super.componentDidMount();
         this.props.connection.on("gameUpdate", (newState: ReactClientState) => {
             console.log(newState);
-            this.setState(newState, () => this.init());
+            this.setState(newState, () => this.init(this.app));
         });
     }
 
-    init() {
-       if (this.state) {
+    init(app?: PIXI.Application) {
+        this.app = app;
+        if (this.app) {
            this.app.stage.removeChildren();
            const margin = 25;
            const radius = Math.min(
@@ -40,7 +52,7 @@ export class ReactClient extends PixiPresenter<BaseGameProps, ReactClientState> 
                 container.position.set(this.app.screen.width/2 - container.width/2, margin + (i/2 * (radius*2 + margin)))
                 this.app.stage.addChild(container);
            }
-       }
+        }
     }
 
     private drawShape(shape: Shape, radius: number, leftOffset = radius) {
@@ -65,8 +77,12 @@ export class ReactClient extends PixiPresenter<BaseGameProps, ReactClientState> 
         this.setState({
             selectedId: id
         }, () => {
-            super.clientMessage(id)
+            this.props.clientMessage(id)
             this.init();
         });
+    }
+
+    render() {
+        return <Pixi backgroundColor={Colors.White} onAppChange={this.init} />
     }
 }
