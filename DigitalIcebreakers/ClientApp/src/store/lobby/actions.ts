@@ -1,4 +1,4 @@
-import { LobbyActionTypes, SET_LOBBY, SET_LOBBY_PLAYERS, SET_LOBBY_GAME, CLEAR_LOBBY, PLAYER_JOINED_LOBBY, PLAYER_LEFT_LOBBY, START_NEW_GAME, JOIN_LOBBY } from './types';
+import { LobbyActionTypes, SET_LOBBY, SET_LOBBY_PLAYERS, SET_LOBBY_GAME, CLEAR_LOBBY, PLAYER_JOINED_LOBBY, PLAYER_LEFT_LOBBY, START_NEW_GAME, JOIN_LOBBY, CLOSE_LOBBY, CREATE_LOBBY, GAME_MESSAGE_ADMIN, GAME_MESSAGE_CLIENT } from './types';
 import { Player } from '../../Player';
 
 export function setLobby(id: string, name: string, isAdmin: boolean, players: Player[], game: string | undefined) : LobbyActionTypes {
@@ -31,4 +31,20 @@ export function startNewGame(name: string): LobbyActionTypes {
 
 export function joinLobby(id: string): LobbyActionTypes {
     return { type: JOIN_LOBBY, id};
+}
+
+export function closeLobby() : LobbyActionTypes {
+    return { type: CLOSE_LOBBY };
+}
+
+export function createLobby(name: string) : LobbyActionTypes {
+    return { type: CREATE_LOBBY, name };
+}
+
+export function adminMessage(message: string) : LobbyActionTypes {
+    return { type: GAME_MESSAGE_ADMIN, message };
+}
+
+export function clientMessage(message: string) : LobbyActionTypes {
+    return { type: GAME_MESSAGE_CLIENT, message};
 }
