@@ -68,7 +68,7 @@ class Layout extends Component<LayoutProps, LayoutState> {
         return (
             <Row className={className}> 
                 <Col style={this.columnStyle} sm={3}>
-                    <NavMenu {...this.props} toggleMenu={this.toggleMenu} />
+                    <NavMenu {...this.props} />
                 </Col>
                 <Col style={this.columnStyle} className={className} sm={9}>
                     {this.props.children}
