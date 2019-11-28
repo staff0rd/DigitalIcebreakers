@@ -130,6 +130,7 @@ export default class App extends Component<{}, AppState> {
 
         return (
             <Provider store={this.store}>
+                <Layout>
                     <Route exact path='/' render={() => <Lobby  /> } /> 
                     <Route path='/createLobby' render={() => <CreateLobby /> } />
                     <Route path='/closeLobby' render={closeLobby }  />

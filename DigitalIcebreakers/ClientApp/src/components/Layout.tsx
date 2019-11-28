@@ -6,13 +6,12 @@ import { withRouter } from 'react-router-dom';
 import {RouteComponentProps} from "react-router";
 import { Events } from '../Events';
 import { Colors } from '../Colors';
+import { connect } from 'react-redux';
+import { RootState } from '../store/RootState';
 
 type LayoutProps = RouteComponentProps & {
     currentGame?: string;
     isAdmin: boolean;
-    menuItems: JSX.Element[];
-    version: string;
-    lobbyId?: string;
 }
 
 type LayoutState = {
@@ -105,4 +104,12 @@ class Layout extends Component<LayoutProps, LayoutState> {
     }
 }
 
-export default withRouter(Layout);
+const mapStateToProps = (state: RootState) => { return {
+    currentGame: state.lobby.currentGame,
+    isAdmin: state.lobby.isAdmin
+}}
+
+const mapDispatchToProps = {};
+
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Layout as any)); //TODO: type any
