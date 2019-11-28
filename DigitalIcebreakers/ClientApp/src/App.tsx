@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Route, Redirect } from 'react-router';
 import Layout from './components/Layout';
-import { LobbySwitch } from './components/Lobby';
+import { Lobby } from './components/Lobby';
 import { LobbyClosed } from './components/LobbyClosed';
 import { NewGame } from './components/NewGame';
 import { Game } from './components/Game';
@@ -11,7 +11,6 @@ import { Join } from './components/Join';
 import { guid } from './util/guid';
 import history from './history';
 import { Events } from './Events';
-import * as Version from './version.json';
 import { ConnectionStatus } from './ConnectionStatus';
 import { Provider } from 'react-redux'
 import { configureAppStore } from './store/configureAppStore'
@@ -131,8 +130,7 @@ export default class App extends Component<{}, AppState> {
 
         return (
             <Provider store={this.store}>
-                <Layout menuItems={this.state.menuItems} currentGame={this.state.currentGame} isAdmin={this.state.isAdmin} version={Version.version} lobbyId={this.state.lobby && this.state.lobby.id}>
-                    <Route exact path='/' render={() => <LobbySwitch lobby={this.state.lobby} players={this.state.players} /> } />
+                    <Route exact path='/' render={() => <Lobby  /> } /> 
                     <Route path='/createLobby' render={() => <CreateLobby /> } />
                     <Route path='/closeLobby' render={closeLobby }  />
                     <Route path='/lobbyClosed' component={LobbyClosed} />

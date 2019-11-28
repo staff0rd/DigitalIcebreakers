@@ -6,24 +6,21 @@ import './NavMenu.css';
 import { Config } from '../config';
 import { NavSubMenu } from './NavSubMenu'
 import Games, { IGame } from '../games/Games';
-import { History } from 'history';
 import { DynamicSizedQrCode } from './DynamicSizedQrCode';
 import { ConnectionIcon } from './ConnectionIcon';
+import { useSelector } from '../store/useSelector';
+import { useDispatch } from 'react-redux';
+import { toggleMenu } from '../store/shell/actions';
+import { useHistory } from 'react-router-dom';
 
-type NavMenuProps = {
-    lobbyId?: string;
-    toggleMenu: (show: boolean) => void;
-    currentGame?: string;
-    isAdmin: boolean;
-    history: History;
-    menuItems: JSX.Element[];
-    version: string;
-}
-
-export const NavMenu: React.FC<NavMenuProps> = (props) => {
+export const NavMenu: React.FC = () => {
+    const lobby = useSelector(state => state.lobby);
+    const dispatch = useDispatch();
     const qrCodeWidthFunction = () => window.innerWidth / 4 - 60;
     const qrCodeParent = useRef<HTMLDivElement>(null);
-    const joinUrl = `${Config.baseUrl}/join/${props.lobbyId}`;
+    const joinUrl = `${Config.baseUrl}/join/${lobby.id}`;
+    const menuItems = useSelector(state => state.shell.menuItems);
+    const version = useSelector(state => state.shell.version);
 
     const createLobby = (
         <LinkContainer to={'/createLobby'}>
@@ -32,7 +29,7 @@ export const NavMenu: React.FC<NavMenuProps> = (props) => {
             </NavItem>
         </LinkContainer>);
 
-    const lobby = (
+    const lobbyLink = (
         <LinkContainer to={'/'} exact>
             <NavItem>
                 <Glyphicon glyph='home' /> Lobby
@@ -57,17 +54,17 @@ export const NavMenu: React.FC<NavMenuProps> = (props) => {
     );
 
     const collapseNav = (
-        <NavItem eventKey={1} onClick={() => props.toggleMenu(false)}>
+        <NavItem eventKey={1} onClick={() => dispatch(toggleMenu(false))}>
             <Glyphicon glyph='circle-arrow-left' />Hide Menu
         </NavItem>
     );
 
-    const gameName = Games(props)
-        .filter((game: any) => game.name === props.currentGame)
+    const gameName = Games()
+        .filter((game: any) => game.name === lobby.currentGame)
         .map((game: IGame) => game.title);
 
     const currentGame = (
-        <LinkContainer to={`/game/${props.currentGame}`} exact>
+        <LinkContainer to={`/game/${lobby.currentGame}`} exact>
             <NavItem>
                 <Glyphicon glyph='king' /> {gameName}
             </NavItem>
@@ -82,11 +79,13 @@ export const NavMenu: React.FC<NavMenuProps> = (props) => {
         </NavItem>
     );
 
-    const isGameScreen = props.history.location.pathname === `/game/${props.currentGame}`;
-    const isLobby = props.history.location.pathname === `/`
+    const history = useHistory();
+
+    const isGameScreen = history.location.pathname === `/game/${lobby.currentGame}`;
+    const isLobby = history.location.pathname === `/`
 
     const subMenu = !isGameScreen ? "" : (
-        <NavSubMenu menuItems={props.menuItems} />
+        <NavSubMenu menuItems={menuItems} />
     );
 
     return (
@@ -99,16 +98,16 @@ export const NavMenu: React.FC<NavMenuProps> = (props) => {
             </Navbar.Header>
             <Navbar.Collapse>
                 <Nav>
-                    {props.lobbyId && !isLobby ? qrCode : ""}
-                    {props.lobbyId ? "" : createLobby}
-                    {props.lobbyId ? lobby : ""}
-                    {props.lobbyId && props.currentGame ? currentGame : ""}
+                    {lobby.id && !isLobby ? qrCode : ""}
+                    {lobby.id ? "" : createLobby}
+                    {lobby.id ? lobbyLink : ""}
+                    {lobby.id && lobby.currentGame ? currentGame : ""}
                     {subMenu}
-                    {props.lobbyId && props.isAdmin ? startGame : ""}
-                    {props.currentGame && props.isAdmin && !isLobby ? collapseNav : ""}
-                    {props.lobbyId && props.isAdmin ? closeLobby : ""}
+                    {lobby.id && lobby.isAdmin ? startGame : ""}
+                    {lobby.currentGame && lobby.isAdmin && !isLobby ? collapseNav : ""}
+                    {lobby.id && lobby.isAdmin ? closeLobby : ""}
                     <NavItem disabled={true}>
-                        <ConnectionIcon /> Connection - v{props.version}
+                        <ConnectionIcon /> Connection - v{version}
                     </NavItem>
                 </Nav>
             </Navbar.Collapse>
