@@ -20,6 +20,7 @@ import { RootState } from './store/RootState';
 import { connectionConnect } from './store/connection/actions';
 import { Config } from './config';
 import ReactAI from './app-insights-deprecated';
+import { setUser } from './store/user/actions';
 
 type AppState = {
     user: User;
@@ -56,7 +57,6 @@ export default class App extends Component<{}, AppState> {
         this.myStorage = window.localStorage;
 
         this.user = this.getUser();
-
         this.state = {
             user: this.user,
             isAdmin: false,
@@ -65,6 +65,8 @@ export default class App extends Component<{}, AppState> {
         };
 
         this.store = configureAppStore();
+        
+        this.store.dispatch(setUser(this.user));
 
         ReactAI.setAppContext({ userId: this.user.id });
 
