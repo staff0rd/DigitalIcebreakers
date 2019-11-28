@@ -1,5 +1,4 @@
 import { Player } from "../../Player";
-import { AnyAction } from "redux";
 
 export interface UserState {
     name: string;
