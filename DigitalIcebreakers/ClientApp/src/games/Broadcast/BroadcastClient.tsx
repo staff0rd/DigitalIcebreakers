@@ -13,7 +13,7 @@ export const BroadcastClient = () => {
         return () => {
             dispatch(clearGameUpdateCallback());
         }
-    });
+    }, [clientText, dispatch]);
 
     const ding = () => {
         dispatch(clientMessage(1));

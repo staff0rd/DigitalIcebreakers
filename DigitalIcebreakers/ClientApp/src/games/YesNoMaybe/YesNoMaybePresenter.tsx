@@ -5,7 +5,6 @@ import { Graph } from '../pixi/Graph';
 import { BaseGameProps, BaseGame } from '../BaseGame';
 import { Pixi } from '../pixi/Pixi';
 import { connect, ConnectedProps } from 'react-redux';
-import { RootState } from '../../store/RootState';
 import { adminMessage } from '../../store/lobby/actions';
 
 export interface YesNoMaybeState {

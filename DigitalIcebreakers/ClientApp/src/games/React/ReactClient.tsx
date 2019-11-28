@@ -23,10 +23,6 @@ type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
 export class ReactClient extends BaseGame<PropsFromRedux, ReactClientState> {
     app?: PIXI.Application;
 
-    constructor(props: PropsFromRedux) {
-        super(props);
-    }
-
     componentDidMount() {
         super.componentDidMount();
         this.props.connection.on("gameUpdate", (newState: ReactClientState) => {

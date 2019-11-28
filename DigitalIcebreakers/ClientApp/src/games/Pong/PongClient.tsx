@@ -37,7 +37,7 @@ export const PongClient = () =>  {
         }));
         dispatch(clientMessage("join"));
         return () => { dispatch(clearGameUpdateCallback()); };
-    }, []);
+    }, [dispatch]);
 
     if (app) {
         topButton.x = app.renderer.width / 4;

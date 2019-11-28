@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { HelpBlock, Button } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { closeLobby } from '../store/lobby/actions';
