@@ -136,7 +136,7 @@ export default class App extends Component<{}, AppState> {
 
         return (
             <Provider store={this.store}>
-                <Layout menuItems={this.state.menuItems} currentGame={this.state.currentGame} isAdmin={this.state.isAdmin} version={Config.version} lobbyId={this.state.lobby && this.state.lobby.id}>
+                <Layout>
                     <Route path='/createLobby' render={() => <CreateLobby /> } />
                     <Route path='/closeLobby' render={closeLobby }  />
                     <Route path='/lobbyClosed' component={LobbyClosed} />

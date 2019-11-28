@@ -1,5 +1,5 @@
 ﻿import React, { useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import { Glyphicon, Nav, Navbar, NavItem } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import './NavMenu.css';
@@ -11,9 +11,8 @@ import { ConnectionIcon } from './ConnectionIcon';
 import { useSelector } from '../store/useSelector';
 import { useDispatch } from 'react-redux';
 import { toggleMenu } from '../store/shell/actions';
-import { useHistory } from 'react-router-dom';
 
-export const NavMenu: React.FC = () => {
+export const NavMenu: React.FC<RouteComponentProps> = (props) => {
     const lobby = useSelector(state => state.lobby);
     const dispatch = useDispatch();
     const qrCodeWidthFunction = () => window.innerWidth / 4 - 60;
@@ -59,7 +58,7 @@ export const NavMenu: React.FC = () => {
         </NavItem>
     );
 
-    const gameName = Games()
+    const gameName = Games(props)
         .filter((game: any) => game.name === lobby.currentGame)
         .map((game: IGame) => game.title);
 
@@ -79,10 +78,8 @@ export const NavMenu: React.FC = () => {
         </NavItem>
     );
 
-    const history = useHistory();
-
-    const isGameScreen = history.location.pathname === `/game/${lobby.currentGame}`;
-    const isLobby = history.location.pathname === `/`
+    const isGameScreen = props.history.location.pathname === `/game/${lobby.currentGame}`;
+    const isLobby = props.history.location.pathname === `/`
 
     const subMenu = !isGameScreen ? "" : (
         <NavSubMenu menuItems={menuItems} />
