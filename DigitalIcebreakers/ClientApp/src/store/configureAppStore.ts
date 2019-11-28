@@ -91,6 +91,11 @@ const signalRMiddleware = () => {
             dispatch(setLobbyGame(name));
         });
 
+        const invoke = (methodName: string, ... params: any[]) => {
+            connection.invoke(methodName, ...params)
+                .catch((err) => console.log(err));;
+        }
+
         return (next: Dispatch) => (action: any) => {
             switch(action.type) {
                 case SET_GAME_UPDATE_CALLBACK: {
@@ -107,7 +112,7 @@ const signalRMiddleware = () => {
                 case START_NEW_GAME: {
                     // TODO: restore
                     //this.setMenuItems([]);
-                    connection.invoke("newGame", action.name);
+                    invoke("newGame", action.name);
                     break;
                 }
                 case SET_LOBBY_GAME: {
@@ -115,9 +120,7 @@ const signalRMiddleware = () => {
                     break;
                 }
                 case CONNECTION_CONNECT: {
-                    debugger;
                     setTimeout(() => {
-                        debugger;
                         if (getState().connection.status == ConnectionStatus.NotConnected) {
                             
                             bumpConnectionTimeout();
@@ -139,7 +142,6 @@ const signalRMiddleware = () => {
                     break;
                 }
                 case SET_CONNECTION_STATUS: {
-                    debugger;
                     switch (action) {
                         case ConnectionStatus.NotConnected: dispatch(connectionConnect()); break;
                         case ConnectionStatus.Connected: {
@@ -153,26 +155,25 @@ const signalRMiddleware = () => {
                     break;
                 }
                 case JOIN_LOBBY: {
-                    connection.invoke("connectToLobby", getState().user,  action.id);
+                    invoke("connectToLobby", getState().user,  action.id);
                     break;
                 }
                 case CLOSE_LOBBY: {
-                    connection.invoke("closelobby");
+                    invoke("closelobby");
                     break;
                 }
                 case CREATE_LOBBY: {
-                    connection.invoke("createLobby", guid(), action.name, action.isAdmin)
-                        .catch((err) => console.log(err));
+                    invoke("createLobby", guid(), action.name, getState().user);
                     break;
                 }
                 case GAME_MESSAGE_ADMIN: {
                     const payload = JSON.stringify({ admin: action.message });
-                    connection.invoke("hubMessage", payload);
+                    invoke("hubMessage", payload);
                     break;
                 }
                 case GAME_MESSAGE_CLIENT: {
                     const payload = JSON.stringify({ client: action.message });
-                    connection.invoke("hubMessage", payload);
+                    invoke("hubMessage", payload);
                     break;
                 }
             }
