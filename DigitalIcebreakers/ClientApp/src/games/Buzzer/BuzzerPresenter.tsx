@@ -22,7 +22,6 @@ export class BuzzerPresenter extends BaseGame<BaseGameProps, BuzzerState> {
     }
 
     componentDidMount() {
-        super.componentDidMount();
         this.props.connection.on("gameUpdate", (id, name, state) => {
             var user = {
                 id: id,

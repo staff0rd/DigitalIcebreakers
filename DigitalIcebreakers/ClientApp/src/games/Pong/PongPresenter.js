@@ -60,7 +60,6 @@ class PongPresenter extends PixiPresenter {
     }
 
     componentDidMount() {
-        super.componentDidMount();
         this.props.connection.on("gameUpdate", (response) => {
             this.setState(response);
         });

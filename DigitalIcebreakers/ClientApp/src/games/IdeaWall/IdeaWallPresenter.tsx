@@ -172,8 +172,6 @@ export class IdeaWallPresenter extends BaseGame<IdeaWallPresenterProps, IdeaWall
     }
 
     componentDidMount() {
-        super.componentDidMount();
-        
         const resize = () => {
             this.ideaContainer && this.ideaContainer.resize();
         }
@@ -195,7 +193,6 @@ export class IdeaWallPresenter extends BaseGame<IdeaWallPresenterProps, IdeaWall
     }
 
     componentWillUnmount() {
-        super.componentWillUnmount();
         Events.remove('onresize', 'ideawall');
     }
 

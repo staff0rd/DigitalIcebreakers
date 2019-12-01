@@ -32,7 +32,6 @@ export class DoggosVsKittehsPresenter extends BaseGame<BaseGameProps, YesNoMaybe
     }
 
     componentDidMount() {
-        super.componentDidMount();
         this.props.connection.on("gameUpdate", (result) => {
             this.setState({
                 yes: result.doggos,

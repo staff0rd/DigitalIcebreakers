@@ -15,7 +15,7 @@ import { StartStopContinueClient } from './StartStopContinue/StartStopContinueCl
 // import { SlideshowClient } from './Slideshow/SlideshowClient';
 // import { SlideshowPresenter } from './Slideshow/SlideshowPresenter';
 import { ReactClient } from './React/ReactClient';
-import { ReactPresenter } from './React/ReactPresenter';
+import ReactPresenter from './React/ReactPresenter';
 
 export interface IGame {
     name: string;

@@ -21,7 +21,6 @@ export class SlideshowClient extends BaseGame<BaseGameProps, SlideshowClientStat
     }
 
     componentDidMount() {
-        super.componentDidMount();
         window.Reveal = Reveal;
         Reveal.uninitialize();
         Reveal.initialize({

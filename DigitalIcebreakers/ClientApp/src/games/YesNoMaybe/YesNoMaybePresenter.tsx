@@ -62,7 +62,6 @@ export class YesNoMaybePresenter extends BaseGame<BaseGameProps & PropsFromRedux
     }
 
     componentDidMount() {
-        super.componentDidMount();
         this.props.connection.on("gameUpdate", (result) => {
             this.setState({
                 yes: result.yes,

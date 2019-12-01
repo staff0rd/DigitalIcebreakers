@@ -28,7 +28,6 @@ export abstract class PixiPresenter<T extends BaseGameProps, U> extends BaseGame
     }
 
     componentDidMount() {
-        super.componentDidMount();
 
         const resize = () => {
             const parent = this.app.view.parentNode as HTMLElement;
@@ -40,7 +39,6 @@ export abstract class PixiPresenter<T extends BaseGameProps, U> extends BaseGame
     }
 
     componentWillUnmount() {
-        super.componentWillUnmount();
         Events.remove('onresize', 'presenter');
     }
 

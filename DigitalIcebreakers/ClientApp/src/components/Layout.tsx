@@ -65,33 +65,6 @@ class Layout extends Component<LayoutProps, LayoutState> {
         Events.emit("menu-visibility")
     }
 
-    redirect(condition: boolean, component: any) {
-        debugger;
-        if (condition)
-            return component;
-        else
-            return () => <Redirect to="/" />
-    }
-
-    getChildren() {
-        const connected = this.props.connected == ConnectionStatus.Connected;
-        const game = this.redirect(connected, () => <Game />);
-        const newGame = this.redirect(connected, () => <NewGame />);
-        const closeLobby = this.redirect(connected, () => <CloseLobby />);
-
-        return (
-            <Switch>
-                <Route exact path='/' render={() => <Lobby  /> } /> 
-                <Route path='/createLobby' render={() => <CreateLobby /> } />
-                <Route path='/closeLobby' render={closeLobby }  />
-                <Route path='/lobbyClosed' component={LobbyClosed} />
-                <Route path='/game/:name' render={game} />
-                <Route path='/newGame' render={newGame} />
-                <Route path='/join/:id' render={props => <Join {...props} /> }  />
-            </Switch>
-        );
-    }
-
     render() {
         let fullscreen = false;
         if (this.props.currentGame && this.props.location.pathname.indexOf('game/') !== -1) {
@@ -120,9 +93,7 @@ class Layout extends Component<LayoutProps, LayoutState> {
                     <NavMenu {...this.props} />
                 </Col>
                 <Col style={this.columnStyle} className="full-height" sm={9}>       
-                    <Router>
-                            {this.props.children}
-                    </Router>
+                    {this.props.children}
                 </Col>
             </Row>
         );

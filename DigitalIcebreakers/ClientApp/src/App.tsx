@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, Redirect } from 'react-router';
+import { Route, Redirect, Switch } from 'react-router';
 import Layout from './components/Layout';
 import { Lobby } from './components/Lobby';
 import { LobbyClosed } from './components/LobbyClosed';
@@ -19,6 +19,7 @@ import { RootState } from './store/RootState';
 import { connectionConnect } from './store/connection/actions';
 import ReactAI from 'react-appinsights';
 import { setUser } from './store/user/actions';
+import { useSelector } from './store/useSelector';
 
 type AppState = {
     user: User;
@@ -120,8 +121,39 @@ export default class App extends Component<{}, AppState> {
     render() {
         return (
             <Provider store={this.store}>
-                <Layout />
+                <Main />
             </Provider>
         );
     }
+}
+
+const Main = () => {
+
+    const connectionStatus = useSelector(state => state.connection.status);
+
+    const redirect = (condition: boolean, component: any) => {
+        if (condition)
+            return component;
+        else
+            return () => <Redirect to="/" />
+    }
+
+    const connected = connectionStatus === ConnectionStatus.Connected;
+    const game = redirect(connected, () => <Game />);
+    const newGame = redirect(connected, () => <NewGame />);
+    const closeLobby = redirect(connected, () => <CloseLobby />);
+    
+    return (
+        <Layout>
+            <Switch>
+                <Route path='/createLobby' render={() => <CreateLobby /> } />
+                <Route path='/closeLobby' render={closeLobby }  />
+                <Route path='/lobbyClosed' component={LobbyClosed} />
+                <Route path='/game/:name' render={game} />
+                <Route path='/newGame' render={newGame} />
+                <Route path='/join/:id' render={props => <Join {...props} /> }  />
+                <Route exact path='/' render={() => <Lobby  /> } /> 
+            </Switch>
+        </Layout>
+    );
 }
