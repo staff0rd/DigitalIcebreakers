@@ -10,7 +10,10 @@ import { ShapeView } from './ShapeView';
 import * as gsap from "gsap";
 import { ConnectedProps, connect } from 'react-redux';
 import { clientMessage, adminMessage } from '../../store/lobby/actions';
+import { setGameUpdateCallback, clearGameUpdateCallback } from '../../store/connection/actions';
+
 import { Pixi } from '../pixi/Pixi';
+import { RootState } from '../../store/RootState';
 
 interface Choice {
     id: string;
@@ -34,13 +37,15 @@ interface ReactState {
 }
 
 const connector = connect(
-    null,
-    { clientMessage, adminMessage }
+    (state: RootState) => { return {
+        players: state.lobby.players
+    }},
+    { clientMessage, adminMessage, setGameUpdateCallback, clearGameUpdateCallback }
 );
   
 type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
 
-export class ReactPresenter extends BaseGame<PropsFromRedux, ReactState> {
+class ReactPresenter extends BaseGame<PropsFromRedux, ReactState> {
     private timeout: NodeJS.Timeout|undefined;
     private againProgressElement?: HTMLDivElement;
     private againTween?: GSAPStatic.Tween;
@@ -108,6 +113,11 @@ export class ReactPresenter extends BaseGame<PropsFromRedux, ReactState> {
         }
     }
 
+    getUserName(id: string) {
+        const player = this.props.players.filter(p => p.id == id)[0];
+        return player ? player.name : "";
+    }
+
     updateScores() {
         
         this.setState(prevState => {
@@ -117,7 +127,7 @@ export class ReactPresenter extends BaseGame<PropsFromRedux, ReactState> {
                 .map((choice, ix: number) => {
                     return { 
                         id:choice.id, 
-                        name: super.getUserName(choice.id) || "", 
+                        name: this.getUserName(choice.id), 
                         score: totalChoices-ix
                     }});
             const wrong = [...prevState.choices]
@@ -125,7 +135,7 @@ export class ReactPresenter extends BaseGame<PropsFromRedux, ReactState> {
                 .map(choice => {
                     return { 
                         id:choice.id, 
-                        name: super.getUserName(choice.id) || "",
+                        name: this.getUserName(choice.id),
                         score: -1
                 }});
             
@@ -158,10 +168,13 @@ export class ReactPresenter extends BaseGame<PropsFromRedux, ReactState> {
         if (restart)
             this.timeout = setTimeout(() => this.updateScores(), 2000);
     }
+
+    componentWillUnmount() {
+        this.props.clearGameUpdateCallback();
+    }
     
     componentDidMount() {
-        super.componentDidMount();
-        this.props.connection.on("gameUpdate", (id: string, choice: number) => {
+        const callback = (id: string, choice: number) => {
             var user = {
                 id: id,
                 choice: choice
@@ -175,7 +188,7 @@ export class ReactPresenter extends BaseGame<PropsFromRedux, ReactState> {
                     const view = this.state.views.filter(v => v.id === user.choice)[0];
                     if (view) { 
                         if (!choices.filter(p => p.choice === user.choice).length) {
-                            view.updateFirst(super.getUserName(user.id) || "");
+                            view.updateFirst(this.getUserName(user.id));
                         }
                         view.increment();
                     }
@@ -185,7 +198,8 @@ export class ReactPresenter extends BaseGame<PropsFromRedux, ReactState> {
                
                 return { choices: choices };
             });
-        });
+        };
+        this.props.setGameUpdateCallback(callback);
         this.setShape();
     }
 
@@ -240,7 +254,9 @@ export class ReactPresenter extends BaseGame<PropsFromRedux, ReactState> {
                 <div ref={this.againProgress} style={{marginTop: 15, width: 500, height: 50, backgroundColor: ColorUtils.toHtml(Colors.Red.C400)}}></div>
             </div>;
         } else {
-            return <Pixi backgroundColor={Colors.White} onAppChange={this.init} />
+            return <Pixi backgroundColor={Colors.White} onAppChange={() => this.init()} />
         }
     }
 }
+
+export default connector(ReactPresenter);

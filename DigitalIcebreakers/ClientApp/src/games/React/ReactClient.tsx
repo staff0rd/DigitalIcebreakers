@@ -24,7 +24,6 @@ export class ReactClient extends BaseGame<PropsFromRedux, ReactClientState> {
     app?: PIXI.Application;
 
     componentDidMount() {
-        super.componentDidMount();
         this.props.connection.on("gameUpdate", (newState: ReactClientState) => {
             console.log(newState);
             this.setState(newState, () => this.init(this.app));

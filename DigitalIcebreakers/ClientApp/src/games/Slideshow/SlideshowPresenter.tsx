@@ -59,7 +59,6 @@ export class SlideshowPresenter extends BaseGame<PropsFromRedux, SlideshowPresen
     }
 
     componentWillUnmount(){
-        super.componentWillUnmount();
         Reveal.removeEventListener('slidechanged');
         Reveal.removeEventListener('fragmentshown');
         Reveal.removeEventListener('fragmenthidden');
@@ -68,7 +67,6 @@ export class SlideshowPresenter extends BaseGame<PropsFromRedux, SlideshowPresen
     }
 
     componentDidMount() {
-        super.componentDidMount();
         window.Reveal = Reveal;
         this.initReveal();
 

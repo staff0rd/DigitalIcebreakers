@@ -43,31 +43,4 @@ export class BaseGame<T extends BaseGameProps, U> extends Component<T, U> {
             this.myStorage.removeItem(storageKey);
         }
     }
-
-    componentDidMount() {
-        this.props.connection.off("gameUpdate");
-        if (this.debug)
-            console.log('componentDidMount');
-    }
-
-    shouldComponentUpdate(nextProps: BaseGameProps, nextState: any) {
-        if (this.debug)
-            console.log('shouldComponentUpdate', nextProps, nextState);
-        return true;
-    }
-    componentDidUpdate() {
-        if (this.debug)
-            console.log('componentDidUpdate');
-    }
-    componentWillUnmount() {
-        this.props.connection.off("gameUpdate");
-        if (this.debug)
-            console.log('componentWillUnmount');
-    }
-
-    getUserName(id: string) {
-        const player = this.props.players.filter(p => p.id === id)[0];
-        if (player)
-            return player.name;
-    }
 }
