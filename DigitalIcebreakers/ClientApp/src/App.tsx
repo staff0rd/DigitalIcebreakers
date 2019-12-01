@@ -117,33 +117,16 @@ export default class App extends Component<{}, AppState> {
         return this.getCurrentLocation().pathname.startsWith("/join/");
     }
 
-    redirect(condition: boolean, component: any) {
-        if (condition)
-            return component;
-        else
-            return () => <Redirect to="/" />
-    }
+    
 
     setMenuItems = (items: JSX.Element[]) => {
         this.setState({menuItems: items});
     }
 
     render() {
-        const connected = this.store.getState().connection.status === ConnectionStatus.Connected;
-        const game = this.redirect(connected, (props:any) => <Game isAdmin={this.state.isAdmin} setMenuItems={this.setMenuItems} {...props} players={this.state.players} />);
-        const newGame = this.redirect(connected, () => <NewGame />);
-        const closeLobby = this.redirect(connected, () => <CloseLobby />);
-
         return (
             <Provider store={this.store}>
-                <Layout>
-                    <Route path='/createLobby' render={() => <CreateLobby /> } />
-                    <Route path='/closeLobby' render={closeLobby }  />
-                    <Route path='/lobbyClosed' component={LobbyClosed} />
-                    <Route path='/game/:name' render={game} />
-                    <Route path='/newGame' render={newGame} />
-                    <Route path='/join/:id' render={props => <Join {...props} /> }  />
-                </Layout>
+                <Layout />
             </Provider>
         );
     }

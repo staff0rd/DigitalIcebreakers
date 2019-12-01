@@ -2,20 +2,45 @@ import React, { Component, Fragment } from 'react';
 import { Col, Grid, Row, Glyphicon } from 'react-bootstrap';
 import { NavMenu } from './NavMenu';
 import Games from '../games/Games';
-import { withRouter } from 'react-router-dom';
-import {RouteComponentProps} from "react-router";
+import { withRouter, BrowserRouterProps } from 'react-router-dom';
+import {RouteComponentProps, Redirect, Route} from "react-router";
 import { Events } from '../Events';
 import { Colors, ColorUtils } from '../Colors';
 import { connect } from 'react-redux';
 import { RootState } from '../store/RootState';
+import history from '../history'
+import { BrowserRouter as Router, Switch } from 'react-router-dom';
+import { ConnectionStatus } from '../ConnectionStatus';
+import { NewGame } from './NewGame';
+import { Game } from './Game';
+import { CloseLobby } from './CloseLobby';
+import { Join } from './Join';
+import { Lobby } from './Lobby';
+import { CreateLobby } from './CreateLobby';
+import { LobbyClosed } from './LobbyClosed';
 
 type LayoutProps = RouteComponentProps & {
     currentGame?: string;
     isAdmin: boolean;
+    connected: ConnectionStatus;
 }
 
 type LayoutState = {
     showMenu: boolean;
+}
+
+
+class DebugRouter extends Router {
+  constructor(props: BrowserRouterProps){
+    super(props);
+    console.log('initial history is: ', JSON.stringify(history, null,2))
+    history.listen((location: any, action: any)=>{
+      console.log(
+        `The current URL is ${location.pathname}${location.search}${location.hash}`
+      )
+      console.log(`The last navigation action was ${action}`, JSON.stringify(history, null,2));
+    });
+  }
 }
 
 class Layout extends Component<LayoutProps, LayoutState> {
@@ -38,6 +63,33 @@ class Layout extends Component<LayoutProps, LayoutState> {
     toggleMenu = (show: boolean) => {
         this.setState({showMenu: show});
         Events.emit("menu-visibility")
+    }
+
+    redirect(condition: boolean, component: any) {
+        debugger;
+        if (condition)
+            return component;
+        else
+            return () => <Redirect to="/" />
+    }
+
+    getChildren() {
+        const connected = this.props.connected == ConnectionStatus.Connected;
+        const game = this.redirect(connected, () => <Game />);
+        const newGame = this.redirect(connected, () => <NewGame />);
+        const closeLobby = this.redirect(connected, () => <CloseLobby />);
+
+        return (
+            <Switch>
+                <Route exact path='/' render={() => <Lobby  /> } /> 
+                <Route path='/createLobby' render={() => <CreateLobby /> } />
+                <Route path='/closeLobby' render={closeLobby }  />
+                <Route path='/lobbyClosed' component={LobbyClosed} />
+                <Route path='/game/:name' render={game} />
+                <Route path='/newGame' render={newGame} />
+                <Route path='/join/:id' render={props => <Join {...props} /> }  />
+            </Switch>
+        );
     }
 
     render() {
@@ -70,7 +122,9 @@ class Layout extends Component<LayoutProps, LayoutState> {
                     <NavMenu {...this.props} />
                 </Col>
                 <Col style={this.columnStyle} className={className} sm={9}>
-                    {this.props.children}
+                    <Router>
+                            {this.props.children}
+                    </Router>
                 </Col>
             </Row>
         );
@@ -108,7 +162,8 @@ class Layout extends Component<LayoutProps, LayoutState> {
 
 const mapStateToProps = (state: RootState) => { return {
     currentGame: state.lobby.currentGame,
-    isAdmin: state.lobby.isAdmin
+    isAdmin: state.lobby.isAdmin,
+    connected: state.connection.status
 }}
 
 const mapDispatchToProps = {};

@@ -1,14 +1,11 @@
 import React from 'react';
 import Games from '../games/Games';
-import {RouteComponentProps } from 'react-router'
+import { useParams } from 'react-router-dom'
 import { useSelector } from '../store/useSelector';
 
-type RouteParams = {
-    name: string
-}
-
-export const Game: React.FC<RouteComponentProps<RouteParams>> = (props) => {
-    const game = Games().filter(g => g.name === props.match.params.name)[0];
+export const Game =  () => {
+    let { name } = useParams();
+    const game = Games().filter(g => g.name === name)[0];
     const isAdmin = useSelector(state => state.lobby.isAdmin); 
     
     if (!game)
