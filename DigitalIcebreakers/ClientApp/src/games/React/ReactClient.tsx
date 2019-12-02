@@ -7,31 +7,39 @@ import { Pixi } from '../pixi/Pixi';
 import { ConnectedProps, connect } from 'react-redux';
 import { clientMessage } from '../../store/lobby/actions';
 import React from 'react';
+import { setGameUpdateCallback } from '../../store/connection/actions'
 
 type ReactClientState = {
     shapes: Shape[];
-    selectedId: number;
+    selectedId?: number;
 }
 
 const connector = connect(
     null,
-    { clientMessage }
+    { clientMessage, setGameUpdateCallback }
 );
   
 type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
 
-export class ReactClient extends BaseGame<PropsFromRedux, ReactClientState> {
+class ReactClient extends BaseGame<PropsFromRedux, ReactClientState> {
     app?: PIXI.Application;
 
+    constructor(props: PropsFromRedux) {
+        super(props);
+        this.state = {
+            shapes: []
+        }
+    }
+
     componentDidMount() {
-        this.props.connection.on("gameUpdate", (newState: ReactClientState) => {
+        this.props.setGameUpdateCallback((newState: ReactClientState) => {
             console.log(newState);
             this.setState(newState, () => this.init(this.app));
         });
     }
 
     init(app?: PIXI.Application) {
-        this.app = app;
+        this.app = app || this.app;
         if (this.app) {
            this.app.stage.removeChildren();
            const margin = 25;
@@ -78,6 +86,8 @@ export class ReactClient extends BaseGame<PropsFromRedux, ReactClientState> {
     }
 
     render() {
-        return <Pixi backgroundColor={Colors.White} onAppChange={this.init} />
+        return <Pixi backgroundColor={Colors.White} onAppChange={(app) => this.init(app)} />
     }
 }
+
+export default connector(ReactClient);

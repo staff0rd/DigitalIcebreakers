@@ -3,15 +3,24 @@ import { ListGroup, ListGroupItem  } from 'react-bootstrap';
 import doggo from './doggo.jpeg';
 import kitteh from './kitteh.jpg';
 import { BaseGame, BaseGameProps } from '../BaseGame'
+import { clientMessage } from '../../store/lobby/actions';
+import { connect, ConnectedProps } from 'react-redux';
+
+const connector = connect(
+    null,
+    { clientMessage }
+);
+  
+type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
 
 interface DoggosVsKittehsState {
     choice: string | undefined;
 }
 
-export class DoggosVsKittehsClient extends BaseGame<BaseGameProps, DoggosVsKittehsState> {
+class DoggosVsKittehsClient extends BaseGame<PropsFromRedux, DoggosVsKittehsState> {
     displayName = DoggosVsKittehsClient.name
 
-    constructor(props: BaseGameProps) {
+    constructor(props: PropsFromRedux) {
         super(props);
         
         this.state = {
@@ -22,7 +31,7 @@ export class DoggosVsKittehsClient extends BaseGame<BaseGameProps, DoggosVsKitte
     choose = (choice: string) => {
         if (choice !== this.state.choice) {
             this.setState({ choice: choice });
-            this.props.connection.invoke("hubMessage", JSON.stringify({client: choice}));
+            this.props.clientMessage(choice)
         }
     }
 
@@ -42,3 +51,5 @@ export class DoggosVsKittehsClient extends BaseGame<BaseGameProps, DoggosVsKitte
         );
     }
 }
+
+export default connector(DoggosVsKittehsClient);

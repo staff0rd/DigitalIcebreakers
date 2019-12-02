@@ -1,9 +1,7 @@
 import { Component } from 'react';
-import { HubConnection } from '@aspnet/signalr';
 import { Player } from '../Player';
 
 export interface BaseGameProps {
-    connection: HubConnection;
     setMenuItems(items: JSX.Element[]): void;
     players: Player[];
 }

@@ -1,4 +1,4 @@
-    using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DigitalIcebreakers;
@@ -20,7 +20,7 @@ public class Reaction : Game, IGame
         if (!_selections.ContainsKey(player.Id)) 
         {
             _selections.Add(player.Id, selectedId);
-            await hub.SendGameUpdateToPresenter(player.ExternalId, selectedId);
+            await hub.SendGameUpdateToPresenter(new AdminPayload { UserId = player.ExternalId, SelectedId =  selectedId });
         }
     }
 

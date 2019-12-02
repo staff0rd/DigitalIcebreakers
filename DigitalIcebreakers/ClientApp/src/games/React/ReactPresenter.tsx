@@ -45,6 +45,11 @@ const connector = connect(
   
 type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
 
+type AdminPayload = {
+    id: string;
+    selectedId: number;
+}
+
 class ReactPresenter extends BaseGame<PropsFromRedux, ReactState> {
     private timeout: NodeJS.Timeout|undefined;
     private againProgressElement?: HTMLDivElement;
@@ -174,10 +179,10 @@ class ReactPresenter extends BaseGame<PropsFromRedux, ReactState> {
     }
     
     componentDidMount() {
-        const callback = (id: string, choice: number) => {
-            var user = {
-                id: id,
-                choice: choice
+        const callback = (response: AdminPayload) => {
+            const user = {
+                id: response.id,
+                choice: response.selectedId
             };
 
             this.resetTimeout(!!this.state.shape);
@@ -254,7 +259,7 @@ class ReactPresenter extends BaseGame<PropsFromRedux, ReactState> {
                 <div ref={this.againProgress} style={{marginTop: 15, width: 500, height: 50, backgroundColor: Colors.toHtml(Colors.Red.C400)}}></div>
             </div>;
         } else {
-            return <Pixi backgroundColor={Colors.White} onAppChange={() => this.init()} />
+            return <Pixi backgroundColor={Colors.White} onAppChange={(app) => this.init(app)} />
         }
     }
 }

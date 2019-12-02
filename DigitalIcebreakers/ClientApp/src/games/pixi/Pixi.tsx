@@ -9,6 +9,11 @@ interface PixiProps {
 }
 
 export const Pixi: React.FC<PixiProps> = (props) => {
+   
+    const newPixi = () => {
+        return new PIXI.Application({ autoResize: true, backgroundColor: props.backgroundColor || 0xFFFFFF })
+    }
+
     const [app, setApp] = useState<PIXI.Application | null>(null);
     const pixiElement = useRef<HTMLDivElement>(null);
     
@@ -24,15 +29,17 @@ export const Pixi: React.FC<PixiProps> = (props) => {
     }, [resize, app]);
 
     useEffect(() => {
+        setApp(newPixi());
+    }, [])
+
+    useEffect(() => {
         const element = pixiElement.current;
-        if (element) {
-            const app = new PIXI.Application({ autoResize: true, backgroundColor: props.backgroundColor || 0xFFFFFF });
-            setApp(app);
+        if (element && app) {
             element.appendChild(app.view);
             resize(element);
             props.onAppChange(app);
         }  
-    }, [resize, props]);
+    }, [app, pixiElement.current]);
 
     useEffect(() => {
         Events.add('onresize', 'pixi', onResize);

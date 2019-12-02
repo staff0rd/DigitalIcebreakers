@@ -1,20 +1,20 @@
 import React from 'react';
-import { DoggosVsKittehsClient } from './DoggosVsKittehs/DoggosVsKittehsClient';
-import { DoggosVsKittehsPresenter } from './DoggosVsKittehs/DoggosVsKittehsPresenter';
+import DoggosVsKittehsClient from './DoggosVsKittehs/DoggosVsKittehsClient';
+import DoggosVsKittehsPresenter from './DoggosVsKittehs/DoggosVsKittehsPresenter';
 import { BroadcastClient } from './Broadcast/BroadcastClient';
 import { BroadcastPresenter } from './Broadcast/BroadcastPresenter';
-import { YesNoMaybePresenter } from './YesNoMaybe/YesNoMaybePresenter';
+import YesNoMaybePresenter from './YesNoMaybe/YesNoMaybePresenter';
 import { YesNoMaybeClient } from './YesNoMaybe/YesNoMaybeClient';
 import { IdeaWallClient } from './IdeaWall/IdeaWallClient';
-import { IdeaWallPresenter, StartStopContinueLanes } from './IdeaWall/IdeaWallPresenter';
-import { BuzzerClient } from './Buzzer/BuzzerClient';
-import { BuzzerPresenter } from './Buzzer/BuzzerPresenter';
+import IdeaWallPresenter, { StartStopContinueLanes } from './IdeaWall/IdeaWallPresenter';
+import BuzzerClient from './Buzzer/BuzzerClient';
+import BuzzerPresenter from './Buzzer/BuzzerPresenter';
 import PongPresenter from './Pong/PongPresenter';
 import { PongClient } from './Pong/PongClient';
 import { StartStopContinueClient } from './StartStopContinue/StartStopContinueClient';
 // import { SlideshowClient } from './Slideshow/SlideshowClient';
 // import { SlideshowPresenter } from './Slideshow/SlideshowPresenter';
-import { ReactClient } from './React/ReactClient';
+import ReactClient from './React/ReactClient';
 import ReactPresenter from './React/ReactPresenter';
 
 export interface IGame {

@@ -7,6 +7,10 @@ import { IdeaContainer, Lane } from './IdeaContainer';
 import { IdeaView } from './IdeaView';
 import { BaseGameProps, BaseGame } from '../BaseGame'
 import { Idea } from './Idea'
+import { setGameUpdateCallback } from '../../store/connection/actions';
+import { setMenuItems } from '../../store/shell/actions'
+import { connect, ConnectedProps } from 'react-redux';
+import { Pixi } from '../pixi/Pixi';
 
 const WIDTH = 200;
 const MARGIN = 5;
@@ -51,12 +55,20 @@ interface IdeaWallPresenterState {
 }
 
 
-export class IdeaWallPresenter extends BaseGame<IdeaWallPresenterProps, IdeaWallPresenterState> {
+const connector = connect(
+    null,
+    { setGameUpdateCallback, setMenuItems }
+);
+  
+type PropsFromRedux = ConnectedProps<typeof connector> & IdeaWallPresenterProps;
+
+
+class IdeaWallPresenter extends BaseGame<PropsFromRedux, IdeaWallPresenterState> {
     displayName = IdeaWallPresenter.name
     ideaContainer?: IdeaContainer;
     app?: PIXI.Application;
 
-    constructor(props: IdeaWallPresenterProps, context: IdeaWallPresenterState) {
+    constructor(props: PropsFromRedux) {
         super(props);
         
         this.state = {
@@ -179,7 +191,7 @@ export class IdeaWallPresenter extends BaseGame<IdeaWallPresenterProps, IdeaWall
         resize();
         Events.add('onresize', 'ideawall', resize);
         this.init(this.app);
-        this.props.connection.on("gameUpdate", (playerName, idea: string | ServerIdea) => {
+        this.props.setGameUpdateCallback((playerName: string, idea: string | ServerIdea) => {
             const newIdea = this.getNewIdea(playerName, idea);
             this.addIdeaToContainer(newIdea, true);
             const ideas = [...this.state.ideas, newIdea];
@@ -197,7 +209,6 @@ export class IdeaWallPresenter extends BaseGame<IdeaWallPresenterProps, IdeaWall
     }
 
     render() {
-        const pixi = super.render();
         const clearModal = (
             <Modal show={this.state.showModal} onHide={this.closeModal}>
                 <Modal.Header closeButton>
@@ -214,9 +225,11 @@ export class IdeaWallPresenter extends BaseGame<IdeaWallPresenterProps, IdeaWall
         );
         return (
             <Fragment>
-                {pixi}
+                <Pixi onAppChange={(app) => this.init(app)} />
                 {clearModal}
             </Fragment>
         )
     }
 }
+
+export default connector(IdeaWallPresenter);

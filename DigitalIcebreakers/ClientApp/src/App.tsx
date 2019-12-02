@@ -86,7 +86,7 @@ export default class App extends Component<{}, AppState> {
 
         const user = { id: guid() };
         if (this.myStorage)
-            this.myStorage.setItem("user", JSON.stringify(this.user));
+            this.myStorage.setItem("user", JSON.stringify(user));
 
         return user;
     }

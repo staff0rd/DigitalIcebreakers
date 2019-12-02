@@ -4,13 +4,22 @@ import { Graph } from '../pixi/Graph';
 import { BaseGameProps, BaseGame } from '../BaseGame';
 import { YesNoMaybeState } from '../YesNoMaybe/YesNoMaybePresenter';
 import React from 'react';
+import { connect, ConnectedProps } from 'react-redux';
+import { setGameUpdateCallback } from '../../store/connection/actions';
 
-export class DoggosVsKittehsPresenter extends BaseGame<BaseGameProps, YesNoMaybeState> {
+const connector = connect(
+    null,
+    { setGameUpdateCallback }
+);
+  
+type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
+
+class DoggosVsKittehsPresenter extends BaseGame<PropsFromRedux, YesNoMaybeState> {
     displayName = DoggosVsKittehsPresenter.name
     graph!: Graph;
     app?: PIXI.Application;
     
-    constructor(props: BaseGameProps) {
+    constructor(props: PropsFromRedux) {
         super(props);
         this.state = {
             yes: 0,
@@ -32,7 +41,7 @@ export class DoggosVsKittehsPresenter extends BaseGame<BaseGameProps, YesNoMaybe
     }
 
     componentDidMount() {
-        this.props.connection.on("gameUpdate", (result) => {
+        this.props.setGameUpdateCallback((result: any) => {
             this.setState({
                 yes: result.doggos,
                 no: result.kittehs,
@@ -42,6 +51,8 @@ export class DoggosVsKittehsPresenter extends BaseGame<BaseGameProps, YesNoMaybe
     }
 
     render() {
-        return <Pixi onAppChange={this.init} />
+        return <Pixi onAppChange={(app) => this.init(app)} />
     }
 }
+
+export default connector(DoggosVsKittehsPresenter);
