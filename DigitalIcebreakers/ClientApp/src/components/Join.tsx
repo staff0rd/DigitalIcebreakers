@@ -5,6 +5,7 @@ import { RouteComponentProps } from 'react-router';
 import { useDispatch } from 'react-redux';
 import { setUserName } from '../store/user/actions';
 import { joinLobby } from '../store/lobby/actions';
+import { goToDefaultUrl } from '../store/shell/actions';
 
 interface RouteParams {
     id: string
@@ -31,6 +32,7 @@ export const Join: React.FC<RouteComponentProps<RouteParams>> = (props) => {
         if (validate() === "success") {
             dispatch(setUserName(name));
             dispatch(joinLobby(props.match.params.id));
+            dispatch(goToDefaultUrl(true));
         }      
         e.preventDefault();
     }

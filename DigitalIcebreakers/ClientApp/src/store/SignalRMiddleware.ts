@@ -10,6 +10,8 @@ import history from '../history'
 import { CLEAR_LOBBY, SET_LOBBY_GAME, START_NEW_GAME, JOIN_LOBBY, CLOSE_LOBBY, CREATE_LOBBY, GAME_MESSAGE_CLIENT, GAME_MESSAGE_ADMIN, LobbyActionTypes } from './lobby/types'
 import { guid } from '../util/guid'
 import { UserActionTypes } from './user/types'
+import { goToDefaultUrl } from './shell/actions'
+import { GO_TO_DEFAULT_URL, ShellActionTypes } from './shell/types'
 
 export const SignalRMiddleware = () => {
     const connectionRetrySeconds = [0, 1, 4, 9, 16, 25, 36, 49];
@@ -71,9 +73,8 @@ export const SignalRMiddleware = () => {
         const invoke = (methodName: string, ...params: any[]) => {
             connection.invoke(methodName, ...params)
                 .catch((err) => console.log(err));
-            ;
         };
-        return (next: Dispatch) => (action: LobbyActionTypes | ConnectionActionTypes | UserActionTypes) => {
+        return (next: Dispatch) => (action: LobbyActionTypes | ConnectionActionTypes | UserActionTypes | ShellActionTypes) => {
             switch (action.type) {
                 case SET_GAME_UPDATE_CALLBACK: {
                     connection.on("gameUpdate", (args: any) => {
@@ -126,10 +127,7 @@ export const SignalRMiddleware = () => {
                             dispatch(connectionConnect());
                             break;
                         case ConnectionStatus.Connected: {
-                            if (getState().lobby.currentGame)
-                                history.push(`/game/${getState().lobby.currentGame}`);
-                            else
-                                history.push("/");
+                            dispatch(goToDefaultUrl());                            
                             break;
                         }
                     }
@@ -156,6 +154,19 @@ export const SignalRMiddleware = () => {
                     const payload = JSON.stringify({ client: action.message });
                     invoke("hubMessage", payload);
                     break;
+                }
+                case GO_TO_DEFAULT_URL: {
+                    if (history.location) {
+                        const isJoin = history.location.pathname.startsWith('/join/');
+                        if (!isJoin || action.ignoreJoin) {
+                            if (getState().lobby.currentGame) {
+                                history.push(`/game/${getState().lobby.currentGame}`);
+                            } else {
+                                history.push("/");
+                            }
+                        }
+                    }
+                    return;
                 }
             }
             return next(action);
