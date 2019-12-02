@@ -6,6 +6,8 @@ import { BaseGameProps, BaseGame } from '../BaseGame';
 import { Pixi } from '../pixi/Pixi';
 import { connect, ConnectedProps } from 'react-redux';
 import { adminMessage } from '../../store/lobby/actions';
+import { setGameUpdateCallback } from '../../store/connection/actions';
+import { setMenuItems } from '../../store/shell/actions';
 
 export interface YesNoMaybeState {
     yes: number;
@@ -15,12 +17,12 @@ export interface YesNoMaybeState {
     
 const connector = connect(
     null,
-    { adminMessage }
+    { adminMessage, setGameUpdateCallback, setMenuItems }
 );
   
 type PropsFromRedux = ConnectedProps<typeof connector>
   
-export class YesNoMaybePresenter extends BaseGame<BaseGameProps & PropsFromRedux, YesNoMaybeState> {
+class YesNoMaybePresenter extends BaseGame<BaseGameProps & PropsFromRedux, YesNoMaybeState> {
     displayName = YesNoMaybePresenter.name
     graph!: Graph;
     app?: PIXI.Application;
@@ -57,12 +59,12 @@ export class YesNoMaybePresenter extends BaseGame<BaseGameProps & PropsFromRedux
                 </Navbar.Form>
             </Fragment>
         );
-
+        
         this.props.setMenuItems([header]);
     }
 
     componentDidMount() {
-        this.props.connection.on("gameUpdate", (result) => {
+        this.props.setGameUpdateCallback((result: any) => {
             this.setState({
                 yes: result.yes,
                 no: result.no,
@@ -76,6 +78,8 @@ export class YesNoMaybePresenter extends BaseGame<BaseGameProps & PropsFromRedux
     }
 
     render() {
-        return <Pixi backgroundColor={0xFFFFFF} onAppChange={this.init} />
+        return <Pixi backgroundColor={0xFFFFFF} onAppChange={(app) => this.init(app)} />
     }
 }
+
+export default connector(YesNoMaybePresenter);

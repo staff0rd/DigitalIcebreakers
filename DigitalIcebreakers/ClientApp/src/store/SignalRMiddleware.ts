@@ -1,14 +1,15 @@
 import { MiddlewareAPI, Dispatch } from '@reduxjs/toolkit'
-import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr'
-import { CONNECTION_CONNECT, SET_CONNECTION_STATUS, SET_GAME_UPDATE_CALLBACK, CLEAR_GAME_UPDATE_CALLBACK } from './connection/types'
+import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr'
+import { CONNECTION_CONNECT, SET_CONNECTION_STATUS, SET_GAME_UPDATE_CALLBACK, CLEAR_GAME_UPDATE_CALLBACK, ConnectionActionTypes } from './connection/types'
 import { updateConnectionStatus, connectionConnect } from './connection/actions'
 import ReactAI from 'react-appinsights'
 import { ConnectionStatus } from '../ConnectionStatus'
 import { setLobby, clearLobby, playerJoinedLobby, playerLeftLobby, setLobbyGame } from './lobby/actions'
 import { setUser } from './user/actions'
 import history from '../history'
-import { CLEAR_LOBBY, SET_LOBBY_GAME, START_NEW_GAME, JOIN_LOBBY, CLOSE_LOBBY, CREATE_LOBBY, GAME_MESSAGE_CLIENT, GAME_MESSAGE_ADMIN } from './lobby/types'
+import { CLEAR_LOBBY, SET_LOBBY_GAME, START_NEW_GAME, JOIN_LOBBY, CLOSE_LOBBY, CREATE_LOBBY, GAME_MESSAGE_CLIENT, GAME_MESSAGE_ADMIN, LobbyActionTypes } from './lobby/types'
 import { guid } from '../util/guid'
+import { UserActionTypes } from './user/types'
 
 export const SignalRMiddleware = () => {
     const connectionRetrySeconds = [0, 1, 4, 9, 16, 25, 36, 49];
@@ -72,11 +73,13 @@ export const SignalRMiddleware = () => {
                 .catch((err) => console.log(err));
             ;
         };
-        return (next: Dispatch) => (action: any) => {
+        return (next: Dispatch) => (action: LobbyActionTypes | ConnectionActionTypes | UserActionTypes) => {
             switch (action.type) {
                 case SET_GAME_UPDATE_CALLBACK: {
-                    connection.on("gameUpdate", action.callback);
-                    break;
+                    connection.on("gameUpdate", (args: any) => {
+                        action.callback(args)
+                    });
+                    return;
                 }
                 case CLEAR_GAME_UPDATE_CALLBACK: {
                     connection.off("gameUpdate");
@@ -93,7 +96,7 @@ export const SignalRMiddleware = () => {
                     break;
                 }
                 case SET_LOBBY_GAME: {
-                    history.push(`/game/${action.name}`);
+                    history.push(`/game/${action.game}`);
                     break;
                 }
                 case CONNECTION_CONNECT: {
@@ -118,7 +121,7 @@ export const SignalRMiddleware = () => {
                     break;
                 }
                 case SET_CONNECTION_STATUS: {
-                    switch (action) {
+                    switch (action.status) {
                         case ConnectionStatus.NotConnected:
                             dispatch(connectionConnect());
                             break;

@@ -6,6 +6,14 @@ import ReactAnimationFrame from 'react-animation-frame';
 import { PixiView } from '../pixi/PixiView';
 import { Stepper } from '../../components/Stepper';
 import { clamp } from '../../util/clamp';
+import { setGameUpdateCallback } from '../../store/connection/actions';
+import { setMenuItems } from '../../store/shell/actions';
+import { connect } from 'react-redux';
+
+const connector = connect(
+    null,
+    { setGameUpdateCallback, setMenuItems }
+);
 
 const defaultPaddleSpeed = 200;
 const defaultHeight = 5;
@@ -55,12 +63,11 @@ class PongPresenter extends PixiView {
                 </Navbar.Form>
             </Fragment>
         );
-
         this.props.setMenuItems([header]);
     }
 
     componentDidMount() {
-        this.props.connection.on("gameUpdate", (response) => {
+        this.props.setGameUpdateCallback((response) => {
             this.setState(response);
         });
     }
@@ -206,4 +213,4 @@ class PongPresenter extends PixiView {
     }
  }
 
-export default ReactAnimationFrame(PongPresenter);
+export default connector(ReactAnimationFrame(PongPresenter));

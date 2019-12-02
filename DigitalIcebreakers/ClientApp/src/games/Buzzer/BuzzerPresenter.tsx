@@ -1,6 +1,15 @@
 import React from 'react';
 import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import { BaseGame, BaseGameProps } from '../BaseGame'
+import { connect, ConnectedProps } from 'react-redux';
+import { setGameUpdateCallback } from '../../store/connection/actions';
+
+const connector = connect(
+    null,
+    { setGameUpdateCallback }
+);
+  
+type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
 
 interface Player {
     id: string;
@@ -12,8 +21,8 @@ interface BuzzerState {
     players: Player[];
 }
 
-export class BuzzerPresenter extends BaseGame<BaseGameProps, BuzzerState> {
-    constructor(props: BaseGameProps) {
+class BuzzerPresenter extends BaseGame<PropsFromRedux, BuzzerState> {
+    constructor(props: PropsFromRedux) {
         super(props);
 
         this.state = {
@@ -22,7 +31,7 @@ export class BuzzerPresenter extends BaseGame<BaseGameProps, BuzzerState> {
     }
 
     componentDidMount() {
-        this.props.connection.on("gameUpdate", (id, name, state) => {
+        this.props.setGameUpdateCallback((id: string, name:string , state: string) => {
             var user = {
                 id: id,
                 name: name,
@@ -62,3 +71,5 @@ export class BuzzerPresenter extends BaseGame<BaseGameProps, BuzzerState> {
         );
     }
 }
+
+export default connector(BuzzerPresenter);

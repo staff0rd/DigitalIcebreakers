@@ -3,12 +3,21 @@ import { Button } from '../pixi/Button';
 import { BaseGameProps, BaseGame } from '../BaseGame'
 import { PixiPresenter } from '../pixi/PixiPresenter';
 import { Colors } from '../../Colors'
+import { connect, ConnectedProps } from 'react-redux';
+import { clientMessage } from '../../store/lobby/actions'
 
-export class BuzzerClient extends BaseGame<BaseGameProps, {}> {
+const connector = connect(
+    null,
+    { clientMessage }
+);
+  
+type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
+
+class BuzzerClient extends BaseGame<PropsFromRedux, {}> {
     private button: Button;
     app?: PIXI.Application;
 
-    constructor(props: BaseGameProps) {
+    constructor(props: PropsFromRedux) {
         super(props);
         this.button = new Button(this.up, this.down);
     }
@@ -20,11 +29,11 @@ export class BuzzerClient extends BaseGame<BaseGameProps, {}> {
     }
 
     down = () => {
-        this.props.connection.invoke("hubMessage", JSON.stringify({client: "down"}));
+        this.props.clientMessage("down");
     }
-
+    
     up = () => {
-        this.props.connection.invoke("hubMessage", JSON.stringify({client: "up"}));
+        this.props.clientMessage("up");
     }
 
     render() {
@@ -34,7 +43,9 @@ export class BuzzerClient extends BaseGame<BaseGameProps, {}> {
             this.button.render(Colors.Red.C400, Colors.Blue.C400, 0, 0, this.app.renderer.width / 2, this.app.renderer.height / 2);
         }
         return (
-            <Pixi backgroundColor={Colors.BlueGrey.C400} onAppChange={this.init} />
+            <Pixi backgroundColor={Colors.BlueGrey.C400} onAppChange={(app) => this.init(app)} />
         );
     }
 }
+
+export default connector(BuzzerClient);
