@@ -46,7 +46,7 @@ const connector = connect(
 type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
 
 type AdminPayload = {
-    id: string;
+    userId: string;
     selectedId: number;
 }
 
@@ -181,7 +181,7 @@ class ReactPresenter extends BaseGame<PropsFromRedux, ReactState> {
     componentDidMount() {
         const callback = (response: AdminPayload) => {
             const user = {
-                id: response.id,
+                id: response.userId,
                 choice: response.selectedId
             };
 
