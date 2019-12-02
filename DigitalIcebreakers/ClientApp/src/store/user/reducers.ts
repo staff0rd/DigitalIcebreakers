@@ -25,7 +25,7 @@ export function userReducer(
             return {
                 ...state,
                 id: action.user.id,
-                name: action.user.id
+                name: action.user.name
             }
         }
         default:

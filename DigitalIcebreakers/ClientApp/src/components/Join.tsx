@@ -16,7 +16,7 @@ export const Join: React.FC<RouteComponentProps<RouteParams>> = (props) => {
     const [name, setName] = useState<string>(initialName);
 
     const validate = () => {
-        const length = name.length;
+        const length = name ? name.length : 0;
         if (length > 2) return 'success';
         else if (length > 0) return 'error';
         return null;
