@@ -4,6 +4,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Serilog;
 using Serilog.Events;
+using Microsoft.Extensions.Hosting;
 
 namespace DigitalIcebreakers
 {
@@ -20,7 +21,7 @@ namespace DigitalIcebreakers
                 .WriteTo.Trace();
 
             var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            var isDevelopment = environment == EnvironmentName.Development;
+            var isDevelopment = environment == Environments.Development;
             
             if (!isDevelopment)
             {
@@ -31,7 +32,7 @@ namespace DigitalIcebreakers
                         rollOnFileSizeLimit: true,
                         shared: true,
                         flushToDiskInterval: TimeSpan.FromSeconds(1))
-                    .WriteTo.ApplicationInsights(TelemetryConfiguration.Active, TelemetryConverter.Traces);
+                    .WriteTo.ApplicationInsights(TelemetryConverter.Traces);
             }
 
             Log.Logger = config.CreateLogger();

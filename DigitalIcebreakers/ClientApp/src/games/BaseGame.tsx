@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { HubConnection } from '@aspnet/signalr';
+import { HubConnection } from '@microsoft/signalr';
 import { Player } from '../components/Player';
 
 export interface BaseGameProps {
