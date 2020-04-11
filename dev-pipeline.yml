@@ -22,6 +22,8 @@ steps:
     kubernetesServiceEndpoint: $(k8s-service-connection)
 - script: "cat ./DigitalIcebreakers/DigitalIcebreakers.csproj | docker run -i --entrypoint xq osimis/yq -x --arg version $(version) '. * {\"Project\": { \"PropertyGroup\": {Version: $version}}}' | tee ./DigitalIcebreakers/DigitalIcebreakers.csproj"
   displayName: update version
+- script: "export PATH=\"$PATH:$HOME/.dotnet/tools\""
+  displayName: update tools path
 - script: tye deploy
   displayName: deploy
   
