@@ -42,7 +42,7 @@ steps:
   displayName: update csproj version
 - script: "cat ./DigitalIcebreakers/DigitalIcebreakers.csproj"
   displayName: echo csproj
-- script: "cat ./DigitalIcebreakers/ClientApp/src/version.json | docker run -i --entrypoint jq osimis/yq --arg version $(version) '. * {version: $version}'"
+- script: "cat ./DigitalIcebreakers/ClientApp/src/version.json | docker run -i --entrypoint jq osimis/yq --arg version $(version) '. * {version: $version}' | tee ./DigitalIcebreakers/ClientApp/src/version.json"
   displayName: update client app version
 - script: tye deploy -v Debug
   displayName: deploy
