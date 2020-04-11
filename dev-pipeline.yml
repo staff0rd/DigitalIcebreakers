@@ -20,7 +20,9 @@ steps:
 #   inputs:
 #     connectionType: Kubernetes Service Connection
 #     kubernetesServiceEndpoint: $(k8s-service-connection)
-- script: "cat DigitalIcebreakers/DigitalIcebreakers.csproj | docker run -i --entrypoint xq osimis/yq -x --arg version $(version) '. * {\"Project\": { \"PropertyGroup\": {Version: $version}}}' | tee DigitalIcebreakers/DigitalIcebreakers.csproj"
+- script: "cat ./DigitalIcebreakers/DigitalIcebreakers.csproj"
+  displayName: file
+- script: "cat ./DigitalIcebreakers/DigitalIcebreakers.csproj | docker run -i --entrypoint xq osimis/yq -x --arg version $(version) '. * {\"Project\": { \"PropertyGroup\": {Version: $version}}}' | tee ./DigitalIcebreakers/DigitalIcebreakers.csproj"
   displayName: update version
 
 
