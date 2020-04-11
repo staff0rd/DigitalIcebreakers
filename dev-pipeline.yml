@@ -9,7 +9,7 @@ variables:
 
 steps:
 - task: UseDotNet@2
-  displayName: 'Use .NET Core sdk'
+  displayName: 'install dotnet core'
   inputs:
     packageType: sdk
     version: 3.1.201
@@ -39,8 +39,11 @@ steps:
     command: pull
     arguments: osimis/yq
 - script: "cat ./DigitalIcebreakers/DigitalIcebreakers.csproj | docker run -i --entrypoint xq osimis/yq -x --arg version $(version) '. * {\"Project\": { \"PropertyGroup\": {Version: $version}}}' | tee ./DigitalIcebreakers/DigitalIcebreakers.csproj"
-  displayName: update version
+  displayName: update csproj version
 - script: "cat ./DigitalIcebreakers/DigitalIcebreakers.csproj"
+  displayName: echo csproj
+- script: "cat ./DigitalIcebreakers/ClientApp/src/version.json | docker run -i --entrypoint jq osimis/yq --arg version $(version) '. * {version: $version}'"
+  displayName: update client app version
 - script: tye deploy -v Debug
   displayName: deploy
   

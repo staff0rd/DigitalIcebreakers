@@ -7,5 +7,5 @@
 name: digitalicebreakers
 registry: staff0rd
 services:
-- name: digitalicebreakers-web
+- name: digitalicebreakers
   project: DigitalIcebreakers/DigitalIcebreakers.csproj
