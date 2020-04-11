@@ -95,9 +95,13 @@ export default class App extends Component<{}, AppState> {
         if (this.myStorage) {
             const raw = this.myStorage.getItem("user");
             if (raw) {
+                try {
                 const user = JSON.parse(raw);
                 console.log("User retrieved", user);
                 return user;
+                } catch {
+                    this.debug('Could not parse user');
+                }
             }
         }
 
