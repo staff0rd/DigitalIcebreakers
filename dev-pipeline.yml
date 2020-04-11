@@ -29,6 +29,6 @@ steps:
 - script: "cat ./DigitalIcebreakers/DigitalIcebreakers.csproj | docker run -i --entrypoint xq osimis/yq -x --arg version $(version) '. * {\"Project\": { \"PropertyGroup\": {Version: $version}}}' | tee ./DigitalIcebreakers/DigitalIcebreakers.csproj"
   displayName: update version
 - script: "cat ./DigitalIcebreakers/DigitalIcebreakers.csproj"
-- script: tye deploy
+- script: tye deploy -v Debug
   displayName: deploy
   
