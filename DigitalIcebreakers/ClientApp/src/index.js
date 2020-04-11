@@ -6,12 +6,12 @@ import ReactDOM from 'react-dom';
 import { Router } from 'react-router-dom';
 import App from './App';
 import history from './history';
-import ReactAI from 'react-appinsights';
+import ReactAI from './app-insights-deprecated';
 
 const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
 const rootElement = document.getElementById('root');
 
-ReactAI.init({ instrumentationKey: '96f93683-084f-441d-ac17-e848ff8cb6ac' }, history);
+ReactAI.init({ instrumentationKey: 'appInsightsKey' }, history);
 
 ReactDOM.render(
   <Router basename={baseUrl} history={history}>

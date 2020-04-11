@@ -8,10 +8,10 @@ import { Game } from './components/Game';
 import { CreateLobby } from './components/CreateLobby';
 import { CloseLobby } from './components/CloseLobby';
 import { Join } from './components/Join';
-import { HubConnectionBuilder, HubConnection } from '@aspnet/signalr';
+import { HubConnectionBuilder, HubConnection } from '@microsoft/signalr';
 import { guid } from './util/guid';
 import history from './history';
-import ReactAI from 'react-appinsights';
+import ReactAI from './app-insights-deprecated';
 import { Events } from './Events';
 import * as Version from './version.json';
 import { ConnectionStatus } from './ConnectionStatus';
@@ -118,7 +118,9 @@ export default class App extends Component<{}, AppState> {
     }
 
     configureSignalR() {
-        this.connection = new HubConnectionBuilder().withUrl("/gameHub").build();
+        this.connection = new HubConnectionBuilder()
+            .withUrl("/gameHub")
+            .build();
         this.connection.keepAliveIntervalInMilliseconds = 2000;
         const component = this;
 

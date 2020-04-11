@@ -1,12 +1,12 @@
 using DigitalIcebreakers.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 
 namespace DigitalIcebreakers
 {
@@ -24,7 +24,7 @@ namespace DigitalIcebreakers
         {
             services.AddApplicationInsightsTelemetry();
             
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc();
 
             services.AddSignalR(options =>  {
                 options.ClientTimeoutInterval = new System.TimeSpan(0, 0, 4);
@@ -42,7 +42,7 @@ namespace DigitalIcebreakers
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -56,17 +56,13 @@ namespace DigitalIcebreakers
 
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
+            app.UseRouting();
 
-            app.UseSignalR(routes =>
-            {
-                routes.MapHub<GameHub>("/gameHub");
-            });
-
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
+            app.UseEndpoints(endpoints => {
+                endpoints.MapHub<GameHub>("/gameHub");
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller}/{action=Index}/{id?}");
+                    pattern: "{controller}/{action=Index}/{id?}");
             });
 
             app.UseSpa(spa =>
