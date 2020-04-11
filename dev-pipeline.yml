@@ -5,7 +5,7 @@ pool:
   vmImage: 'ubuntu-16.04'
 
 variables:
-- version: $(Build.BuildNumber)
+  version: $(Build.BuildNumber)
 
 steps:
 # - script: dotnet tool install -g Microsoft.Tye --version "0.1.0-alpha.20209.5"
