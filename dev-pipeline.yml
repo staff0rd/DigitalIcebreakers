@@ -33,6 +33,11 @@ steps:
     connectionType: Kubernetes Service Connection
     kubernetesServiceEndpoint: $(k8s-service-connection)
     command: login
+- task: Docker@2
+  displayName: Pull yq
+  inputs:
+    command: pull
+    arguments: osimis/yq
 - script: "cat ./DigitalIcebreakers/DigitalIcebreakers.csproj | docker run -i --entrypoint xq osimis/yq -x --arg version $(version) '. * {\"Project\": { \"PropertyGroup\": {Version: $version}}}' | tee ./DigitalIcebreakers/DigitalIcebreakers.csproj"
   displayName: update version
 - script: "cat ./DigitalIcebreakers/DigitalIcebreakers.csproj"
