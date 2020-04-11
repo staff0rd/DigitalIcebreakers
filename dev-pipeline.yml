@@ -5,7 +5,7 @@ pool:
   vmImage: 'ubuntu-16.04'
 
 variables:
-  version: 0.1.$(Build.BuildNumber)
+  version: 0.1.$(Build.BuildId)
 
 steps:
 - task: UseDotNet@2
