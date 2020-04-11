@@ -31,8 +31,6 @@ variables:
 jobs:
 - job: BuildImage
   displayName: Build
-#  dependsOn: CreateResources
-#  condition: or(succeeded(), ne(variables['Azure.CreateResources'], 'true'))
 
   pool:
     vmImage: 'ubuntu-16.04'
