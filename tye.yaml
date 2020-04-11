@@ -5,6 +5,7 @@
 #    https://aka.ms/AA7q20u
 #
 name: digitalicebreakers
+registry: staff0rd
 services:
 - name: digitalicebreakers-web
   project: DigitalIcebreakers/DigitalIcebreakers.csproj
