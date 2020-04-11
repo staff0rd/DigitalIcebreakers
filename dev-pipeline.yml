@@ -15,6 +15,13 @@ steps:
     version: 3.1.201
 - script: dotnet tool install -g Microsoft.Tye --version "0.1.0-alpha.20209.5"
   displayName: 'install tye'
+- task: NodeTool@0
+  displayName: 'Install Node'
+  inputs:
+    versionSpec: '12.16.1'
+- script: npm install
+  workingDirectory: DigitalIcebreakers/ClientApp
+  displayName: 'Install node dependencies'
 - task: Docker@2
   displayName: Login to Docker Hub
   inputs:
