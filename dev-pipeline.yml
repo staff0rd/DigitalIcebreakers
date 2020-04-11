@@ -40,14 +40,12 @@ steps:
   inputs:
     command: pull
     arguments: osimis/yq
-- script: "cat ./DigitalIcebreakers/DigitalIcebreakers.csproj | docker run -i --entrypoint xq osimis/yq -x --arg version $(version) '. * {\"Project\": { \"PropertyGroup\": {Version: $version}}}' | tee ./DigitalIcebreakers/DigitalIcebreakers.csproj"
+
+- script: "cat ./DigitalIcebreakers/DigitalIcebreakers.csproj | docker run -i --entrypoint xq osimis/yq -x --arg version $(version) '. * {\"Project\": { \"PropertyGroup\": {Version: $version}}}' | tee ./out.csproj && mv ./out.csproj ./DigitalIcebreakers/DigitalIcebreakers.csproj"
   displayName: update csproj version
-- script: "cat ./DigitalIcebreakers/DigitalIcebreakers.csproj"
-  displayName: echo csproj
-- script: "cat ./DigitalIcebreakers/ClientApp/src/version.json | docker run -i --entrypoint jq osimis/yq --arg version $(version) '. * {version: $version}' | tee ./DigitalIcebreakers/ClientApp/src/version.json"
+- script: "cat ./DigitalIcebreakers/ClientApp/src/version.json | docker run -i --entrypoint jq osimis/yq --arg version $(version) '. * {version: $version}' | tee ./out.json && mv ./out.json ./DigitalIcebreakers/ClientApp/src/version.json"
   displayName: update client app version
-- script: "cat ./DigitalIcebreakers/ClientApp/src/version.json"
-  displayName: echo version.json
+
 - script: tye deploy -v Debug
   displayName: deploy
   
