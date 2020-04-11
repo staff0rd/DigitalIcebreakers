@@ -7,7 +7,7 @@ pool:
 variables:
   version: 0.1.$(Build.BuildId)
 
-name: $(verison)
+name: 0.1.$(BuildId)
 
 steps:
 - task: UseDotNet@2
