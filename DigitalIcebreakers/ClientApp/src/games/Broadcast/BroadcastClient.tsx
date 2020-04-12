@@ -1,47 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Glyphicon  } from 'react-bootstrap';
-import { BaseGame, BaseGameProps } from '../BaseGame';
+import { BaseGameProps } from '../BaseGame';
 
-interface BroadcastClientState {
-    value: string;
-}
+export const BroadcastClient : React.FC<BaseGameProps> = (props) => {
+    const [clientText, setClientText] = useState<string>("");
 
-export class BroadcastClient extends BaseGame<BaseGameProps, BroadcastClientState>  {
-    displayName = BroadcastClient.name
+    useEffect(() => {
+        props.connection.on("gameUpdate", setClientText);
 
-    constructor(props: BaseGameProps) {
-        super(props);
+        return () => props.connection.off("gameUpdate");
+    }, [props.connection]);
 
-        this.state = {
-            value: ""
-        };
+    const ding = () => {
+        props.signalR.clientMessage(1);      
     }
 
-    componentDidMount() {
-        super.componentDidMount();
-        this.props.connection.on("gameUpdate", (result) => {
-            console.log(result);
-            this.setState({
-                value: result
-            });
-        });
-    }
-
-    ding = () => {
-        this.clientMessage(1);      
-    }
-
-    render() {
-        const style = { height: '100px', width: '150px' };
-        return (
-            <div className="vcenter">
-                <div style={{textAlign: "center"}}>
-                    <h1>{this.state.value}</h1>
-                    <Button bsStyle="primary" bsSize="large" style={style} onClick={this.ding}>
-                        <Glyphicon glyph="bell" />
-                    </Button>
-                </div>
+    return (
+        <div className="vcenter">
+            <div style={{textAlign: "center"}}>
+                <h1>{clientText}</h1>
+                <Button bsStyle="primary" bsSize="large" style={{ height: '100px', width: '150px' }} onClick={ding}>
+                    <Glyphicon glyph="bell" />
+                </Button>
             </div>
-        );
-    }
+        </div>
+    );
 }

@@ -1,21 +1,26 @@
 import React, { Component } from 'react';
 import { Route, Redirect } from 'react-router';
 import Layout from './components/Layout';
-import { Lobby } from './components/Lobby';
+import { LobbySwitch } from './components/Lobby';
 import { LobbyClosed } from './components/LobbyClosed';
 import { NewGame } from './components/NewGame';
 import { Game } from './components/Game';
 import { CreateLobby } from './components/CreateLobby';
 import { CloseLobby } from './components/CloseLobby';
 import { Join } from './components/Join';
-import { HubConnectionBuilder, HubConnection } from '@aspnet/signalr';
+import { HubConnectionBuilder, HubConnection } from '@microsoft/signalr';
 import { guid } from './util/guid';
-import { UserContext } from './contexts/UserContext';
 import history from './history';
-import ReactAI from 'react-appinsights';
+import ReactAI from './app-insights-deprecated';
 import { Events } from './Events';
 import * as Version from './version.json';
 import { ConnectionStatus } from './ConnectionStatus';
+import { SignalR } from './games/BaseGame'
+import { Provider } from 'react-redux'
+import { configureAppStore } from './store/configureAppStore'
+import { EnhancedStore, AnyAction } from '@reduxjs/toolkit';
+import { RootState } from './store/RootState';
+import { setConnectionStatus } from './store/connection/actions';
 
 const connectionRetrySeconds = [0, 1, 4, 9, 16, 25, 36, 49];
 
@@ -24,7 +29,6 @@ type AppState = {
     lobby?: AppLobby,
     players: User[],
     menuItems: JSX.Element[],
-    connectionStatus: ConnectionStatus,
     currentGame?: string,
     isAdmin: boolean
 }
@@ -47,6 +51,7 @@ export default class App extends Component<{}, AppState> {
     private user: User;
     private connection!: HubConnection;
     private connectionStarted?: Date;
+    store: EnhancedStore<RootState, AnyAction>;
 
     constructor(props: any, context: any) {
         super(props, context);
@@ -60,16 +65,30 @@ export default class App extends Component<{}, AppState> {
         this.state = {
             user: this.user,
             isAdmin: false,
-            connectionStatus: ConnectionStatus.NotConnected,
             menuItems: [],
             players: []
         };
+
+        this.store = configureAppStore();
 
         ReactAI.setAppContext({ userId: this.user.id });
 
         this.configureSignalR();
 
         window.onresize = () => Events.emit('onresize');
+    }
+
+    private get signalR(): SignalR {
+        return {
+            clientMessage: (message: any) => {
+                const payload = JSON.stringify({ client: message });
+                this.connection.invoke("hubMessage", payload);
+            },
+            adminMessage: (message: any) => {
+                const payload = JSON.stringify({ admin: message });
+                this.connection.invoke("hubMessage", payload);
+            }
+        }
     }
 
     private getUser() {
@@ -103,7 +122,9 @@ export default class App extends Component<{}, AppState> {
     }
 
     configureSignalR() {
-        this.connection = new HubConnectionBuilder().withUrl("/gameHub").build();
+        this.connection = new HubConnectionBuilder()
+            .withUrl("/gameHub")
+            .build();
         this.connection.keepAliveIntervalInMilliseconds = 2000;
         const component = this;
 
@@ -111,7 +132,7 @@ export default class App extends Component<{}, AppState> {
             this.debug("reconnect", response);
             
             ReactAI.ai().trackMetric("userReconnected", this.getDuration(this.connectionStarted!));
-            this.setState({connectionStatus: ConnectionStatus.Connected});
+            this.store.dispatch(setConnectionStatus(ConnectionStatus.Connected));
             let user = this.user;
             if (response.playerId) {
                 user = {
@@ -140,7 +161,7 @@ export default class App extends Component<{}, AppState> {
         this.connection.onclose(() => {
             this.debug("connection closed");
             ReactAI.ai().trackEvent("Connection closed");
-            this.setState({ connectionStatus: ConnectionStatus.NotConnected });
+            this.store.dispatch(setConnectionStatus(ConnectionStatus.NotConnected));
             this.connect();
         });
 
@@ -154,7 +175,7 @@ export default class App extends Component<{}, AppState> {
         this.connection.on("connected", () => {
             this.debug("connected");
             ReactAI.ai().trackMetric("userConnected", this.getDuration(this.connectionStarted!));
-            this.setState({connectionStatus: ConnectionStatus.Connected});
+            this.store.dispatch(setConnectionStatus(ConnectionStatus.Connected));
         });
 
         this.connection.on("joined", (user) => {
@@ -218,11 +239,11 @@ export default class App extends Component<{}, AppState> {
         }
 
         setTimeout(() => {
-            if (this.state.connectionStatus > 0)
+            if (this.store.getState().connection.status > 0)
                 return;
             this.bumpConnectionTimeout();
             this.connectionStarted = new Date();
-            this.setState({connectionStatus: ConnectionStatus.Pending});
+            this.store.dispatch(setConnectionStatus(ConnectionStatus.Pending));
             this.connection.start()
            .then(() => {
                this.connectionTimeout = 0;
@@ -232,7 +253,7 @@ export default class App extends Component<{}, AppState> {
                });
            })
            .catch((err) => {
-               this.setState({connectionStatus: 0});
+            this.store.dispatch(setConnectionStatus(ConnectionStatus.NotConnected));
                this.connect();
                return console.error(err.toString());
            });
@@ -274,15 +295,15 @@ export default class App extends Component<{}, AppState> {
     }
 
     render() {
-        var connected = this.state.connectionStatus === ConnectionStatus.Connected;
-        var game = this.redirect(connected, (props:any) => <Game isAdmin={this.state.isAdmin} setMenuItems={this.setMenuItems} connection={this.connection} {...props} players={this.state.players} />);
+        var connected = this.store.getState().connection.status === ConnectionStatus.Connected;
+        var game = this.redirect(connected, (props:any) => <Game isAdmin={this.state.isAdmin} setMenuItems={this.setMenuItems} signalR={this.signalR} connection={this.connection} {...props} players={this.state.players} />);
         var newGame = this.redirect(connected, () => <NewGame newGame={this.newGame} />);
         var closeLobby = this.redirect(connected, () => <CloseLobby closeLobby={this.closeLobby} />);
 
         return (
-            <UserContext.Provider value={this.state.user}>
-                <Layout menuItems={this.state.menuItems} currentGame={this.state.currentGame} isAdmin={this.state.isAdmin} connectionStatus={this.state.connectionStatus} version={Version.version} lobbyId={this.state.lobby && this.state.lobby.id}>
-                    <Route exact path='/' render={() => <Lobby lobby={this.state.lobby} players={this.state.players} /> } />
+            <Provider store={this.store}>
+                <Layout menuItems={this.state.menuItems} currentGame={this.state.currentGame} isAdmin={this.state.isAdmin} version={Version.version} lobbyId={this.state.lobby && this.state.lobby.id}>
+                    <Route exact path='/' render={() => <LobbySwitch lobby={this.state.lobby} players={this.state.players} /> } />
                     <Route path='/createLobby' render={() => <CreateLobby createLobby={this.createLobby} /> } />
                     <Route path='/closeLobby' render={closeLobby }  />
                     <Route path='/lobbyClosed' component={LobbyClosed} />
@@ -290,7 +311,7 @@ export default class App extends Component<{}, AppState> {
                     <Route path='/newGame' render={newGame} />
                     <Route path='/join/:id' render={props => <Join join={this.joinLobby} {...props} /> }  />
                 </Layout>
-            </UserContext.Provider>
+            </Provider>
         );
     }
 }

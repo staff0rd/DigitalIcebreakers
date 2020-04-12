@@ -1,11 +1,17 @@
 import { Component } from 'react';
-import { HubConnection } from '@aspnet/signalr';
-import { Player } from '../components/Player';
+import { HubConnection } from '@microsoft/signalr';
+import { Player } from '../Player';
 
 export interface BaseGameProps {
     connection: HubConnection;
     setMenuItems(items: JSX.Element[]): void;
     players: Player[];
+    signalR: SignalR;
+}
+
+export interface SignalR {
+    clientMessage: (message: any) => void;
+    adminMessage: (message: any) => void;
 }
 
 export class BaseGame<T extends BaseGameProps, U> extends Component<T, U> {
@@ -45,13 +51,11 @@ export class BaseGame<T extends BaseGameProps, U> extends Component<T, U> {
     }
 
     clientMessage(message: any) {
-        const payload = JSON.stringify({ client: message });
-        this.props.connection.invoke("hubMessage", payload);
+        this.props.signalR.clientMessage(message);
     };
 
     adminMessage(message: any) {
-        const payload = JSON.stringify({ admin: message });
-        this.props.connection.invoke("hubMessage", payload);
+        this.props.signalR.adminMessage(message);
     };
     
     unexpected(arg: any) {
