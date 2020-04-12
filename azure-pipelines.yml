@@ -50,6 +50,9 @@ steps:
   displayName: update csproj version
 - script: "cat ./DigitalIcebreakers/ClientApp/src/version.json | docker run -i --entrypoint jq osimis/yq --arg version $(version) '. * {version: $version}' | tee ./out.json && mv ./out.json ./DigitalIcebreakers/ClientApp/src/version.json"
   displayName: update client app version
+- script: "cat ./DigitalIcebreakers/appsettings.json | docker run -i --entrypoint jq osimis/yq --arg instrumentationKey $(appinsights-instrumentation-key) '. * {InstrumentationKey: $instrumentationKey}' | tee ./out.json && mv ./out.json ./DigitalIcebreakers/appsettings.json"
+  displayName: update client app version
+- script: cat ./DigitalIcebreakers/appsettings.json
 
 - script: tye deploy -v Debug
   displayName: deploy
