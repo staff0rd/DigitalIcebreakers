@@ -1,5 +1,7 @@
 # Digital Icebreakers
 
+![Digital Icebreakers](https://raw.githubusercontent.com/staff0rd/DigitalIcebreakers/master/DigitalIcebreakers/ClientApp/public/img/digital-icebreakers.jpg)
+
 Digital Icebreakers is a platform for presenters and audiences to collaborate, play, and experiment together.
 
 ## How it works

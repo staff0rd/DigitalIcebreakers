@@ -13,8 +13,10 @@ body {
     .navPad {
         padding-top: 50px;
     }
-    .githubFork {
-        top: -20px;
+}
+@media (min-width: 768px) {
+    .front-image-container {
+        margin-left: -20px;
     }
 }
 

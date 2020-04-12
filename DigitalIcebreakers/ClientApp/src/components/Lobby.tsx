@@ -43,10 +43,19 @@ const Lobby: React.FC<LobbyProps> = (props) => {
 }
 
 const NoLobby = () => {
+    const imageStyle: React.CSSProperties = {
+        maxHeight: '320px',
+    };
+    const imageContainer: React.CSSProperties = {
+        backgroundColor: '#191919',
+    };
     return (
         <>
             <GithubFork />
             <div>
+                <div style={imageContainer} className='front-image-container'>
+                    <img style={imageStyle} src='img/digital-icebreakers.jpg' className='img-responsive center-block' />
+                </div>
                 <h1>Digital Icebreakers</h1>
                 <p>feature requests, suggestions, bugs & feedback to <a href="mailto:stafford@atqu.in">stafford@atqu.in</a></p>
                 <Changelog />
