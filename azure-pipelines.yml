@@ -19,7 +19,7 @@ steps:
   displayName: Run c# tests
   inputs:
     command: test
-    projects: './DigitalIcebreakers.Test/DigitalIceBreakers.Test.csproj'
+    projects: '**/*.Test.csproj'
 - script: dotnet tool install -g Microsoft.Tye --version "0.1.0-alpha.20209.5"
   displayName: 'install tye'
 - task: NodeTool@0
