@@ -1,79 +1,51 @@
-# ASP.NET Core
-# Build and test ASP.NET Core projects targeting .NET Core.
-# Add steps that run tests, create a NuGet package, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
-
 trigger:
 - master
 
-resources:
-- repo: self
+pool:
+  vmImage: 'ubuntu-16.04'
 
 variables:
-   # Update Azure.ResourceGroupName value with Azure resource group name.
-  Azure.ResourceGroupName: 'digital-icebreakers'
+  version: 0.1.$(Build.BuildId)
 
-  # Update Azure.ServiceConnectionId value with AzureRm service endpoint.
-  Azure.ServiceConnectionId: 'digital-icebreakers-service-connection'
+name: 0.1.$(BuildId)
 
-  # Update Azure.Location value with Azure Location.
-  Azure.Location: 'australiaeast'
+steps:
+- task: UseDotNet@2
+  displayName: 'install dotnet core'
+  inputs:
+    packageType: sdk
+    version: 3.1.201
+- script: dotnet tool install -g Microsoft.Tye --version "0.1.0-alpha.20209.5"
+  displayName: 'install tye'
+- task: NodeTool@0
+  displayName: 'Install Node'
+  inputs:
+    versionSpec: '12.16.1'
+- script: npm install
+  workingDirectory: DigitalIcebreakers/ClientApp
+  displayName: 'Install node dependencies'
+- task: Docker@2
+  displayName: Login to Docker Hub
+  inputs:
+    command: login
+    containerRegistry: $(docker-service-connection)
+- task: Kubernetes@1
+  displayName: kubectl login
+  inputs:
+    connectionType: Kubernetes Service Connection
+    kubernetesServiceEndpoint: $(k8s-service-connection)
+    command: login
+- task: Docker@2
+  displayName: Pull yq
+  inputs:
+    command: pull
+    arguments: osimis/yq
 
-  # Update ACR.Name value with ACR name. Please note ACR names should be all lower-case and alphanumeric only.
-  ACR.Name: 'stafford'
+- script: "cat ./DigitalIcebreakers/DigitalIcebreakers.csproj | docker run -i --entrypoint xq osimis/yq -x --arg version $(version) '. * {\"Project\": { \"PropertyGroup\": {Version: $version}}}' | tee ./out.csproj && mv ./out.csproj ./DigitalIcebreakers/DigitalIcebreakers.csproj"
+  displayName: update csproj version
+- script: "cat ./DigitalIcebreakers/ClientApp/src/version.json | docker run -i --entrypoint jq osimis/yq --arg version $(version) '. * {version: $version}' | tee ./out.json && mv ./out.json ./DigitalIcebreakers/ClientApp/src/version.json"
+  displayName: update client app version
 
-  ACR.ImageName: 'digitalicebreakers:$(Build.BuildId)'
-  ACR.FullName: '$(ACR.Name).azurecr.io'
-  Azure.CreateResources: 'true' # Update Azure.CreateResources to false if you have already created resources like resource group and azure container registry.
-  System.Debug: 'false'
-  version: $(Build.BuildNumber)
-
-jobs:
-- job: BuildImage
-  displayName: Build
-
-  pool:
-    vmImage: 'ubuntu-16.04'
-
-  steps:
-  - task: FileTransform@1
-    displayName: 'File Transform: version.json'
-    inputs:
-      folderPath: $(System.DefaultWorkingDirectory)/DigitalIcebreakers/ClientApp/src
-      fileType: json
-      targetFiles: 'version.json'
-  - task: Docker@1
-    displayName: 'Build an image'
-    inputs:
-      azureSubscriptionEndpoint: '$(Azure.ServiceConnectionId)'
-      azureContainerRegistry: '$(ACR.FullName)'
-      imageName: '$(ACR.ImageName)'
-      command: build
-      dockerFile: '**/Dockerfile'
-  - task: Docker@1
-    displayName: Tag $(version)
-    inputs:
-      command: tag
-      imageName: $(ACR.FullName)/$(ACR.ImageName)
-      arguments: $(ACR.FullName)/digitalicebreakers:$(version)
-  - task: Docker@1
-    displayName: Tag latest
-    inputs:
-      command: tag
-      imageName: $(ACR.FullName)/$(ACR.ImageName)
-      arguments: $(ACR.FullName)/digitalicebreakers:latest
-  - task: Docker@1
-    displayName: 'Push $(version)'
-    inputs:
-      azureSubscriptionEndpoint: '$(Azure.ServiceConnectionId)'
-      azureContainerRegistry: '$(ACR.FullName)'
-      imageName: $(ACR.FullName)/digitalicebreakers:$(version)
-      command: push
-  - task: Docker@1
-    displayName: 'Push latest'
-    inputs:
-      azureSubscriptionEndpoint: '$(Azure.ServiceConnectionId)'
-      azureContainerRegistry: '$(ACR.FullName)'
-      imageName: $(ACR.FullName)/digitalicebreakers:latest
-      command: push
+- script: tye deploy -v Debug
+  displayName: deploy
   
