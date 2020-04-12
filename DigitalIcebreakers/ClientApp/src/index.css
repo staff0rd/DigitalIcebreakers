@@ -13,6 +13,9 @@ body {
     .navPad {
         padding-top: 50px;
     }
+    .githubFork {
+        top: -20px;
+    }
 }
 
 .game {

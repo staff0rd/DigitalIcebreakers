@@ -3,6 +3,7 @@ import { Config } from '../config';
 import { Changelog } from './Changelog';
 import { Player } from '../Player';
 import { DynamicSizedQrCode } from './DynamicSizedQrCode';
+import { GithubFork } from './GithubFork';
 
 interface AppLobby {
     id: string;
@@ -43,10 +44,13 @@ const Lobby: React.FC<LobbyProps> = (props) => {
 
 const NoLobby = () => {
     return (
-        <div>
-            <h1>Digital Icebreakers</h1>
-            <p>feature requests, suggestions, bugs & feedback to <a href="mailto:stafford@atqu.in">stafford@atqu.in</a></p>
-            <Changelog />
-        </div>
+        <>
+            <GithubFork />
+            <div>
+                <h1>Digital Icebreakers</h1>
+                <p>feature requests, suggestions, bugs & feedback to <a href="mailto:stafford@atqu.in">stafford@atqu.in</a></p>
+                <Changelog />
+            </div>
+        </>
     );
 }
