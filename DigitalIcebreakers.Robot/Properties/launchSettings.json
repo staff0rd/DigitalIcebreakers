@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "DigitalIcebreakers.Robot": {
-      "commandName": "Project",
-      "commandLineArgs": "yesnomaybe --target-url http://192.168.2.20:5000/gameHub --lobbyId b8ef250c-35c8-495d-3782-0dee155587b7"
-    }
-  }
-}
