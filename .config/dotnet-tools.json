@@ -7,6 +7,12 @@
       "commands": [
         "tye"
       ]
+    },
+    "nbgv": {
+      "version": "3.1.74",
+      "commands": [
+        "nbgv"
+      ]
     }
   }
 }
