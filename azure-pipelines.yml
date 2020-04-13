@@ -20,15 +20,12 @@ steps:
   inputs:
     command: test
     projects: '**/*.Test.csproj'
-- script: dotnet tool install -g Microsoft.Tye --version "0.1.0-alpha.20209.5"
-  displayName: 'install tye'
+- script: dotnet tool restore
+  displayName: 'restore tools'
 - task: NodeTool@0
   displayName: 'Install Node'
   inputs:
     versionSpec: '12.16.1'
-- script: npm install
-  workingDirectory: DigitalIcebreakers/ClientApp
-  displayName: 'Install node dependencies'
 - task: Docker@2
   displayName: Login to Docker Hub
   inputs:
@@ -52,8 +49,7 @@ steps:
   displayName: update client app version
 - script: "cat ./DigitalIcebreakers/appsettings.json | docker run -i --entrypoint jq osimis/yq --arg instrumentationKey $(appinsights-instrumentation-key) '. * { ApplicationInsights: { InstrumentationKey: $instrumentationKey } }' | tee ./out.json && mv ./out.json ./DigitalIcebreakers/appsettings.json"
   displayName: update appsettings
-- script: cat ./DigitalIcebreakers/appsettings.json
 
-- script: tye deploy -v Debug
+- script: dotnet tye deploy -v Debug
   displayName: deploy
   
