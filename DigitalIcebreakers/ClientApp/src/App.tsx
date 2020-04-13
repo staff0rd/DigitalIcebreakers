@@ -13,7 +13,6 @@ import { guid } from './util/guid';
 import history from './history';
 import ReactAI from './app-insights-deprecated';
 import { Events } from './Events';
-import * as Version from './version.json';
 import { ConnectionStatus } from './ConnectionStatus';
 import { SignalR } from './games/BaseGame'
 import { Provider } from 'react-redux'
@@ -21,6 +20,7 @@ import { configureAppStore } from './store/configureAppStore'
 import { EnhancedStore, AnyAction } from '@reduxjs/toolkit';
 import { RootState } from './store/RootState';
 import { setConnectionStatus } from './store/connection/actions';
+import { Config } from './config';
 
 const connectionRetrySeconds = [0, 1, 4, 9, 16, 25, 36, 49];
 
@@ -302,7 +302,7 @@ export default class App extends Component<{}, AppState> {
 
         return (
             <Provider store={this.store}>
-                <Layout menuItems={this.state.menuItems} currentGame={this.state.currentGame} isAdmin={this.state.isAdmin} version={Version.version} lobbyId={this.state.lobby && this.state.lobby.id}>
+                <Layout menuItems={this.state.menuItems} currentGame={this.state.currentGame} isAdmin={this.state.isAdmin} version={Config.version} lobbyId={this.state.lobby && this.state.lobby.id}>
                     <Route exact path='/' render={() => <LobbySwitch lobby={this.state.lobby} players={this.state.players} /> } />
                     <Route path='/createLobby' render={() => <CreateLobby createLobby={this.createLobby} /> } />
                     <Route path='/closeLobby' render={closeLobby }  />

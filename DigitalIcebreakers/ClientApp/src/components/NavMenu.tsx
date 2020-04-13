@@ -17,7 +17,6 @@ type NavMenuProps = {
     isAdmin: boolean;
     history: History;
     menuItems: JSX.Element[];
-    version: string;
 }
 
 export const NavMenu: React.FC<NavMenuProps> = (props) => {
@@ -108,7 +107,7 @@ export const NavMenu: React.FC<NavMenuProps> = (props) => {
                     {props.currentGame && props.isAdmin && !isLobby ? collapseNav : ""}
                     {props.lobbyId && props.isAdmin ? closeLobby : ""}
                     <NavItem disabled={true}>
-                        <ConnectionIcon /> Connection - v{props.version}
+                        <ConnectionIcon /> Connection - v{Config.version}
                     </NavItem>
                 </Nav>
             </Navbar.Collapse>
