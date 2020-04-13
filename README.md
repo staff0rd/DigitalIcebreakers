@@ -12,5 +12,5 @@ A presenter creates a *Lobby* and audience members join by pointing their phone 
 1. Clone this repo
 1. Install [Docker](https://www.docker.com/)
 1. Install [.NET Core 3.1 SDK](https://dot.net)
-1. Install [Tye](https://github.com/dotnet/tye/blob/master/docs/getting_started.md)
-1. `tye run`
+1. Run `dotnet tool restore`
+1. Run `dotnet tye run`
