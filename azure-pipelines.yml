@@ -4,49 +4,50 @@ trigger:
 pool:
   vmImage: 'ubuntu-16.04'
 
-variables:
-  version: 0.1.$(Build.BuildId)
-
-name: 0.1.$(BuildId)
-
 steps:
 - task: UseDotNet@2
-  displayName: 'install dotnet core'
+  displayName: install dotnet core
   inputs:
     packageType: sdk
     version: 3.1.201
+
 - task: DotNetCoreCLI@2
-  displayName: Run c# tests
+  displayName: run c# tests
   inputs:
     command: test
     projects: '**/*.Test.csproj'
+
 - script: dotnet tool restore
   displayName: 'restore tools'
+
 - task: NodeTool@0
-  displayName: 'Install Node'
+  displayName: install node
   inputs:
     versionSpec: '12.16.1'
+
 - task: Docker@2
-  displayName: Login to Docker Hub
+  displayName: login to Docker Hub
   inputs:
     command: login
     containerRegistry: $(docker-service-connection)
+
 - task: Kubernetes@1
   displayName: kubectl login
   inputs:
     connectionType: Kubernetes Service Connection
     kubernetesServiceEndpoint: $(k8s-service-connection)
     command: login
+    
+- script: npm run set-version
+  workingDirectory: ./DigitalIcebreakers/ClientApp
+  displayName: update client app version
+
 - task: Docker@2
   displayName: Pull yq
   inputs:
     command: pull
     arguments: osimis/yq
 
-- script: "cat ./DigitalIcebreakers/DigitalIcebreakers.csproj | docker run -i --entrypoint xq osimis/yq -x --arg version $(version) '. * {\"Project\": { \"PropertyGroup\": {Version: $version}}}' | tee ./out.csproj && mv ./out.csproj ./DigitalIcebreakers/DigitalIcebreakers.csproj"
-  displayName: update csproj version
-- script: "cat ./DigitalIcebreakers/ClientApp/src/version.json | docker run -i --entrypoint jq osimis/yq --arg version $(version) '. * {version: $version}' | tee ./out.json && mv ./out.json ./DigitalIcebreakers/ClientApp/src/version.json"
-  displayName: update client app version
 - script: "cat ./DigitalIcebreakers/appsettings.json | docker run -i --entrypoint jq osimis/yq --arg instrumentationKey $(appinsights-instrumentation-key) '. * { ApplicationInsights: { InstrumentationKey: $instrumentationKey } }' | tee ./out.json && mv ./out.json ./DigitalIcebreakers/appsettings.json"
   displayName: update appsettings
 
