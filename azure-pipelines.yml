@@ -48,6 +48,9 @@ steps:
     command: pull
     arguments: osimis/yq
 
+- script: "cat ./DigitalIcebreakers/DigitalIcebreakers.csproj | docker run -i --entrypoint xq osimis/yq -x --arg version $(dotnet nbgv get-version -v Version) '. * {Project: { PropertyGroup: {Version: $version}}}' | tee ./out.csproj && mv ./out.csproj ./DigitalIcebreakers/DigitalIcebreakers.csproj"
+  displayName: update csproj version
+
 - script: "cat ./DigitalIcebreakers/appsettings.json | docker run -i --entrypoint jq osimis/yq --arg instrumentationKey $(appinsights-instrumentation-key) '. * { ApplicationInsights: { InstrumentationKey: $instrumentationKey } }' | tee ./out.json && mv ./out.json ./DigitalIcebreakers/appsettings.json"
   displayName: update appsettings
 
