@@ -2,10 +2,13 @@ html, body, #root, .container-fluid, .full-height {
     height: 100%;
 }
 
+.full-height {
+    overflow: hidden;
+}
+
 body {
     margin: 0;
     padding: 0;
-    overflow: hidden;
 }
 
 @media (max-width: 767px) {

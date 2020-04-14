@@ -52,7 +52,7 @@ class Layout extends Component<LayoutProps, LayoutState> {
             return this.props.children;
         else
         {
-            const menu = this.state.showMenu ? this.getFullMenu() : this.getCollapsedMenu();
+            const menu = this.state.showMenu ? this.getFullMenu(!!this.props.lobbyId) : this.getCollapsedMenu();
             
             return (
                 <Grid fluid className="navPad">
@@ -62,9 +62,10 @@ class Layout extends Component<LayoutProps, LayoutState> {
         }
     }
 
-    getFullMenu() {
+    getFullMenu(hasLobby: boolean) {
+        const className = hasLobby ? "full-height" : "";
         return (
-            <Row className="full-height"> 
+            <Row className={className}> 
                 <Col style={this.columnStyle} sm={3}>
                     <NavMenu {...this.props} toggleMenu={this.toggleMenu} />
                 </Col>
