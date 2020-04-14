@@ -2,14 +2,14 @@ import React from 'react';
 import { Button } from '../pixi/Button';
 import { BaseGameProps } from '../BaseGame';
 import { PongColors as Colors } from './PongColors'
-import { PixiPresenter } from '../pixi/PixiPresenter';
+import { PixiView } from '../pixi/PixiView';
 
 interface PongClientState {
     up: number;
     down: number;
 }
 
-export class PongClient extends PixiPresenter<BaseGameProps, PongClientState> {
+export class PongClient extends PixiView<BaseGameProps, PongClientState> {
     topButton?: Button;
     bottomButton?: Button;
     

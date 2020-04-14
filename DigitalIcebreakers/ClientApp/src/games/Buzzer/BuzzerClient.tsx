@@ -1,10 +1,10 @@
 import React from 'react';
 import { Button } from '../pixi/Button';
 import { BaseGameProps } from '../BaseGame'
-import { PixiPresenter } from '../pixi/PixiPresenter';
+import { PixiView } from '../pixi/PixiView';
 import { Colors } from '../../Colors'
 
-export class BuzzerClient extends PixiPresenter<BaseGameProps, {}> {
+export class BuzzerClient extends PixiView<BaseGameProps, {}> {
     private button: Button;
 
     constructor(props: BaseGameProps) {

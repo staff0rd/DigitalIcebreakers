@@ -1,10 +1,10 @@
-import { PixiPresenter } from '../pixi/PixiPresenter';
+import { PixiView } from '../pixi/PixiView';
 import { Colors } from '../../Colors';
 import { Graph } from '../pixi/Graph';
 import { BaseGameProps } from '../BaseGame';
 import { YesNoMaybeState } from '../YesNoMaybe/YesNoMaybePresenter';
 
-export class DoggosVsKittehsPresenter extends PixiPresenter<BaseGameProps, YesNoMaybeState> {
+export class DoggosVsKittehsPresenter extends PixiView<BaseGameProps, YesNoMaybeState> {
     displayName = DoggosVsKittehsPresenter.name
     graph!: Graph;
     

@@ -5,7 +5,7 @@ import { Shape } from './Shape';
 import { Colors } from '../../Colors';
 import { ShapeType } from './ShapeType';
 import { shuffle } from '../../Random';
-import { PixiPresenter } from '../pixi/PixiPresenter';
+import { PixiView } from '../pixi/PixiView';
 import * as PIXI from "pixi.js";
 import { ShapeView } from './ShapeView';
 import * as gsap from "gsap";
@@ -31,7 +31,7 @@ interface ReactState {
     autoAgain: boolean
 }
 
-export class ReactPresenter extends PixiPresenter<BaseGameProps, ReactState> {
+export class ReactPresenter extends PixiView<BaseGameProps, ReactState> {
     private timeout: NodeJS.Timeout|undefined;
     private againProgressElement?: HTMLDivElement;
     private againTween?: GSAPStatic.Tween;

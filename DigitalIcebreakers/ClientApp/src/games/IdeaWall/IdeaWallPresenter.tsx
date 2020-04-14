@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { Button, Navbar, FormGroup, Modal } from 'react-bootstrap';
-import { PixiPresenter } from '../pixi/PixiPresenter';
+import { PixiView } from '../pixi/PixiView';
 import { Colors } from '../../Colors';
 import * as Random from '../../Random';
 import { Events } from '../../Events';
@@ -52,7 +52,7 @@ interface IdeaWallPresenterState {
 }
 
 
-export class IdeaWallPresenter extends PixiPresenter<IdeaWallPresenterProps, IdeaWallPresenterState> {
+export class IdeaWallPresenter extends PixiView<IdeaWallPresenterProps, IdeaWallPresenterState> {
     displayName = IdeaWallPresenter.name
     ideaContainer: IdeaContainer;
 

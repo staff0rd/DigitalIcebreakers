@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { Button, Navbar, FormGroup } from 'react-bootstrap';
-import { PixiPresenter } from '../pixi/PixiPresenter';
+import { PixiView } from '../pixi/PixiView';
 import { Colors } from '../../Colors';
 import { Graph } from '../pixi/Graph';
 import { BaseGameProps } from '../BaseGame';
@@ -11,7 +11,7 @@ export interface YesNoMaybeState {
     maybe: number;
 }
 
-export class YesNoMaybePresenter extends PixiPresenter<BaseGameProps, YesNoMaybeState> {
+export class YesNoMaybePresenter extends PixiView<BaseGameProps, YesNoMaybeState> {
     displayName = YesNoMaybePresenter.name
     graph!: Graph;
 

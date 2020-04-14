@@ -3,7 +3,7 @@ import { Events } from '../../Events';
 import * as PIXI from "pixi.js";
 import React from 'react';
 
-export abstract class PixiPresenter<T extends BaseGameProps, U> extends BaseGame<T, U> {
+export abstract class PixiView<T extends BaseGameProps, U> extends BaseGame<T, U> {
     app: PIXI.Application;
     pixiElement: HTMLDivElement | null;
 

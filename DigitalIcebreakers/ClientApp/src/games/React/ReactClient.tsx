@@ -1,5 +1,5 @@
 import { BaseGameProps } from '../BaseGame'
-import { PixiPresenter } from '../pixi/PixiPresenter';
+import { PixiView } from '../pixi/PixiView';
 import { Colors } from '../../Colors'
 import { Shape } from './Shape';
 import * as PIXI from "pixi.js";
@@ -10,7 +10,7 @@ type ReactClientState = {
     selectedId: number;
 }
 
-export class ReactClient extends PixiPresenter<BaseGameProps, ReactClientState> {
+export class ReactClient extends PixiView<BaseGameProps, ReactClientState> {
 
     constructor(props: BaseGameProps) {
         super(Colors.White,props);
