@@ -58,6 +58,8 @@ const NoLobby = () => {
                 </div>
                 <h1>Digital Icebreakers</h1>
                 <p>feature requests, suggestions, bugs & feedback to <a href="mailto:stafford@atqu.in">stafford@atqu.in</a></p>
+                <h2>How it works</h2>
+                <p>A presenter creates a Lobby and audience members join by pointing their phone cameras at the presenter's screen and scanning the QR code. The presenter can then guide the audience through games and experiences by clicking New Game.</p>
                 <Changelog />
             </div>
         </>

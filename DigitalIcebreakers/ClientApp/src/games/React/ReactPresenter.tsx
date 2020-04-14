@@ -2,10 +2,10 @@ import React from 'react';
 import { Button, Table } from 'react-bootstrap';
 import { BaseGameProps } from '../BaseGame'
 import { Shape } from './Shape';
-import { Colors } from '../../Colors';
+import { Colors, ColorUtils } from '../../Colors';
 import { ShapeType } from './ShapeType';
 import { shuffle } from '../../Random';
-import { PixiPresenter } from '../pixi/PixiPresenter';
+import { PixiView } from '../pixi/PixiView';
 import * as PIXI from "pixi.js";
 import { ShapeView } from './ShapeView';
 import * as gsap from "gsap";
@@ -31,7 +31,7 @@ interface ReactState {
     autoAgain: boolean
 }
 
-export class ReactPresenter extends PixiPresenter<BaseGameProps, ReactState> {
+export class ReactPresenter extends PixiView<BaseGameProps, ReactState> {
     private timeout: NodeJS.Timeout|undefined;
     private againProgressElement?: HTMLDivElement;
     private againTween?: GSAPStatic.Tween;
@@ -224,7 +224,7 @@ export class ReactPresenter extends PixiPresenter<BaseGameProps, ReactState> {
                     </tbody>
                 </Table>
                 <Button className="primary" onClick={() => this.again() }>Again</Button>
-                <div ref={this.againProgress} style={{marginTop: 15, width: 500, height: 50, backgroundColor: Colors.toHtml(Colors.Red.C400)}}></div>
+                <div ref={this.againProgress} style={{marginTop: 15, width: 500, height: 50, backgroundColor: ColorUtils.toHtml(Colors.Red.C400)}}></div>
             </div>;
         } else {
             return super.render();

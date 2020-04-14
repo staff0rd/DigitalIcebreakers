@@ -4,7 +4,7 @@ import { BaseGameProps } from '../BaseGame'
 import { PixiView } from '../pixi/PixiView';
 import { Colors } from '../../Colors'
 
-export class BuzzerClient extends PixiView<BaseGameProps, {}> {
+export class SplatClient extends PixiView<BaseGameProps, {}> {
     private button: Button;
 
     constructor(props: BaseGameProps) {

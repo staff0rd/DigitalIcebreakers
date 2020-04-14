@@ -185,6 +185,7 @@ namespace DigitalIcebreakers.Hubs
                 case "startstopcontinue": return new StartStopContinue();
                 case "slideshow": return new Slideshow();
                 case "react": return new Reaction();
+                case "splat": return new Splat();
                 default: throw new ArgumentOutOfRangeException("Unknown game");
             }
         }

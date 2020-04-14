@@ -9,6 +9,8 @@ import { IdeaWallClient } from './IdeaWall/IdeaWallClient';
 import { IdeaWallPresenter, StartStopContinueLanes } from './IdeaWall/IdeaWallPresenter';
 import { BuzzerClient } from './Buzzer/BuzzerClient';
 import { BuzzerPresenter } from './Buzzer/BuzzerPresenter';
+import { SplatClient } from './Splat/SplatClient';
+import { SplatPresenter } from './Splat/SplatPresenter';
 import PongPresenter from './Pong/PongPresenter';
 import { PongClient } from './Pong/PongClient';
 import { StartStopContinueClient } from './StartStopContinue/StartStopContinueClient';
@@ -44,6 +46,12 @@ export default function (props: any) : IGame[] {
         client: <BuzzerClient {...props} />,
         presenter: <BuzzerPresenter {...props} />,
         title: "Buzzer",
+        fullscreen: true
+    }, {
+        name: "splat",
+        client: <SplatClient {...props} />,
+        presenter: <SplatPresenter {...props} />,
+        title: "Splat",
         fullscreen: true
     }, {
         name: "pong",

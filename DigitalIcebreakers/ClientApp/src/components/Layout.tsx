@@ -5,7 +5,7 @@ import Games from '../games/Games';
 import { withRouter } from 'react-router-dom';
 import {RouteComponentProps} from "react-router";
 import { Events } from '../Events';
-import { Colors } from '../Colors';
+import { Colors, ColorUtils } from '../Colors';
 
 type LayoutProps = RouteComponentProps & {
     currentGame?: string;
@@ -52,7 +52,7 @@ class Layout extends Component<LayoutProps, LayoutState> {
             return this.props.children;
         else
         {
-            const menu = this.state.showMenu ? this.getFullMenu() : this.getCollapsedMenu();
+            const menu = this.state.showMenu ? this.getFullMenu(!!this.props.lobbyId) : this.getCollapsedMenu();
             
             return (
                 <Grid fluid className="navPad">
@@ -62,9 +62,10 @@ class Layout extends Component<LayoutProps, LayoutState> {
         }
     }
 
-    getFullMenu() {
+    getFullMenu(hasLobby: boolean) {
+        const className = hasLobby ? "full-height" : "";
         return (
-            <Row className="full-height"> 
+            <Row className={className}> 
                 <Col style={this.columnStyle} sm={3}>
                     <NavMenu {...this.props} toggleMenu={this.toggleMenu} />
                 </Col>
@@ -87,7 +88,7 @@ class Layout extends Component<LayoutProps, LayoutState> {
             right: 5,
             top: 5,
             fontSize: "50px",
-            color: Colors.toHtml(Colors.BlueGrey.C500),
+            color: ColorUtils.toHtml(Colors.BlueGrey.C500),
             opacity: .25,
             cursor: "pointer"
         }

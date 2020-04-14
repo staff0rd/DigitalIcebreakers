@@ -3,7 +3,7 @@ import { Navbar, Button } from 'react-bootstrap';
 import { PongColors as Colors } from './PongColors';
 import * as PIXI from "pixi.js";
 import ReactAnimationFrame from 'react-animation-frame';
-import { PixiPresenter } from '../pixi/PixiPresenter';
+import { PixiView } from '../pixi/PixiView';
 import { Stepper } from '../../components/Stepper';
 import { clamp } from '../../util/clamp';
 
@@ -21,7 +21,7 @@ function getRadians(degrees) {
     return degrees * Math.PI / 180;
 }
 
-class PongPresenter extends PixiPresenter {
+class PongPresenter extends PixiView {
     displayName = PongPresenter.name
 
     constructor(props, context) {
