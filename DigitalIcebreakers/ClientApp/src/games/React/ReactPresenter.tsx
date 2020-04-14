@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Table } from 'react-bootstrap';
 import { BaseGameProps } from '../BaseGame'
 import { Shape } from './Shape';
-import { Colors } from '../../Colors';
+import { Colors, ColorUtils } from '../../Colors';
 import { ShapeType } from './ShapeType';
 import { shuffle } from '../../Random';
 import { PixiView } from '../pixi/PixiView';
@@ -224,7 +224,7 @@ export class ReactPresenter extends PixiView<BaseGameProps, ReactState> {
                     </tbody>
                 </Table>
                 <Button className="primary" onClick={() => this.again() }>Again</Button>
-                <div ref={this.againProgress} style={{marginTop: 15, width: 500, height: 50, backgroundColor: Colors.toHtml(Colors.Red.C400)}}></div>
+                <div ref={this.againProgress} style={{marginTop: 15, width: 500, height: 50, backgroundColor: ColorUtils.toHtml(Colors.Red.C400)}}></div>
             </div>;
         } else {
             return super.render();
