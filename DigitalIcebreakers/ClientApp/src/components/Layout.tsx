@@ -52,7 +52,8 @@ class Layout extends Component<LayoutProps, LayoutState> {
             return this.props.children;
         else
         {
-            const menu = this.state.showMenu ? this.getFullMenu(!!this.props.lobbyId) : this.getCollapsedMenu();
+            const hasLobby = !!this.props.lobbyId;
+            const menu = this.state.showMenu ? this.getFullMenu(hasLobby) : this.getCollapsedMenu(hasLobby);
             
             return (
                 <Grid fluid className="navPad">
@@ -69,7 +70,7 @@ class Layout extends Component<LayoutProps, LayoutState> {
                 <Col style={this.columnStyle} sm={3}>
                     <NavMenu {...this.props} toggleMenu={this.toggleMenu} />
                 </Col>
-                <Col style={this.columnStyle} className="full-height" sm={9}>
+                <Col style={this.columnStyle} className={className} sm={9}>
                     {this.props.children}
                 </Col>
             </Row>
@@ -80,7 +81,7 @@ class Layout extends Component<LayoutProps, LayoutState> {
         padding: 0
     }
 
-    getCollapsedMenu() {
+    getCollapsedMenu(hasLobby: boolean) {
         const iconStyle: React.CSSProperties = {
             float:"right",
             position: "absolute",
@@ -92,11 +93,11 @@ class Layout extends Component<LayoutProps, LayoutState> {
             opacity: .25,
             cursor: "pointer"
         }
-        
+        const className = hasLobby ? "full-height" : "";
         return (
             <Fragment>
-                <Row className="full-height"> 
-                    <Col style={this.columnStyle} className="full-height" sm={12}>
+                <Row className={className}> 
+                    <Col style={this.columnStyle} className={className} sm={12}>
                         {this.props.children}
                     </Col>
                 </Row>
