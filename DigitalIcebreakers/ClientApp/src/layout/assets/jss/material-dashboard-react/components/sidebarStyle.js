@@ -80,7 +80,7 @@ const sidebarStyle = theme => ({
     textTransform: "uppercase",
     padding: "5px 0",
     display: "block",
-    fontSize: "18px",
+    fontSize: "16px",
     textAlign: "left",
     fontWeight: "400",
     lineHeight: "30px",
@@ -102,7 +102,7 @@ const sidebarStyle = theme => ({
   },
   img: {
     width: "35px",
-    top: "22px",
+    top: "16px",
     position: "absolute",
     verticalAlign: "middle",
     border: "0"
