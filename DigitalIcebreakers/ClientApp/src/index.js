@@ -1,6 +1,4 @@
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap/dist/css/bootstrap-theme.css';
-import './index.css';
+import "./layout/assets/css/material-dashboard-react.css?v=1.8.0";
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router } from 'react-router-dom';

@@ -18,6 +18,7 @@ import { EnhancedStore, AnyAction } from '@reduxjs/toolkit';
 import { RootState } from './store/RootState';
 import { connectionConnect } from './store/connection/actions';
 import { Config } from './config';
+import Admin from './layout/layouts/Admin';
 import ReactAI from './app-insights-deprecated';
 import { setUser } from './store/user/actions';
 import { useSelector } from './store/useSelector';
@@ -148,7 +149,9 @@ const Main = () => {
     
     return (
         <Layout>
-            <Switch>
+                <Admin />
+		{/*
+                <Layout menuItems={this.state.menuItems} currentGame={this.state.currentGame} isAdmin={this.state.isAdmin} version={Config.version} lobbyId={this.state.lobby && this.state.lobby.id}>
                 <Route path='/createLobby' render={() => <CreateLobby /> } />
                 <Route path='/closeLobby' render={closeLobby }  />
                 <Route path='/lobbyClosed' component={LobbyClosed} />
@@ -157,6 +160,6 @@ const Main = () => {
                 <Route path='/join/:id' render={props => <Join {...props} /> }  />
                 <Route exact path='/' render={() => <Lobby  /> } /> 
             </Switch>
-        </Layout>
+                </Layout> */}
     );
 }
