@@ -4,9 +4,9 @@ import {
   whiteColor
 } from "../../material-dashboard-react.js";
 
-import dropdownStyle from "../dropdownStyle.js";
+import dropdownStyle from "../dropdownStyle";
 
-const headerLinksStyle = theme => ({
+const headerLinksStyle = (theme: any) => ({
   ...dropdownStyle(theme),
   search: {
     "& > div": {

@@ -8,7 +8,7 @@ import {
   whiteColor
 } from "../../material-dashboard-react";
 
-const cardHeaderStyle = {
+const cardHeaderStyle: any = {
   cardHeader: {
     padding: "0.75rem 1.25rem",
     marginBottom: "0",

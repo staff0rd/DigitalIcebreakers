@@ -1,6 +1,4 @@
-import React from "react";
-// nodejs library to set properties for components
-import PropTypes from "prop-types";
+import React, { ReactNode } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
@@ -13,7 +11,7 @@ const styles = {
 
 const useStyles = makeStyles(styles);
 
-export default function GridItem(props) {
+export default function GridItem(props: any) {
   const classes = useStyles();
   const { children, ...rest } = props;
   return (
@@ -22,7 +20,3 @@ export default function GridItem(props) {
     </Grid>
   );
 }
-
-GridItem.propTypes = {
-  children: PropTypes.node
-};

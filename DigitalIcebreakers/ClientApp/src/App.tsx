@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { Route, Redirect, Switch } from 'react-router';
-import Layout from './components/Layout';
+import Layout from './layout/layouts/Admin';
 import { Lobby } from './components/Lobby';
 import { LobbyClosed } from './components/LobbyClosed';
 import { NewGame } from './components/NewGame';
 import { Game } from './components/Game';
-import { CreateLobby } from './components/CreateLobby';
 import { CloseLobby } from './components/CloseLobby';
 import { Join } from './components/Join';
 import { guid } from './util/guid';
@@ -149,7 +148,7 @@ const Main = () => {
     
     return (
         <Layout>
-                <Admin />
+                <Layout isAdmin={this.state.isAdmin} currentGame={this.state.currentGame} lobbyId={this.state.lobby && this.state.lobby.id} />
 		{/*
                 <Layout menuItems={this.state.menuItems} currentGame={this.state.currentGame} isAdmin={this.state.isAdmin} version={Config.version} lobbyId={this.state.lobby && this.state.lobby.id}>
                 <Route path='/createLobby' render={() => <CreateLobby /> } />

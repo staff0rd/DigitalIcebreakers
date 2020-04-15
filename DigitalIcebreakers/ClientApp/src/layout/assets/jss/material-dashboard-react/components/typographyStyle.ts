@@ -8,7 +8,7 @@ import {
   grayColor
 } from "../../material-dashboard-react";
 
-const typographyStyle = {
+const typographyStyle: any = {
   defaultFontStyle: {
     ...defaultFont,
     fontSize: "14px"

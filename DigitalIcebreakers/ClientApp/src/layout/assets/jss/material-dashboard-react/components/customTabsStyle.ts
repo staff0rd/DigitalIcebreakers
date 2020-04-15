@@ -1,6 +1,6 @@
 import { hexToRgb, whiteColor } from "../../material-dashboard-react";
 
-const customTabsStyle = {
+const customTabsStyle: any = {
   cardTitle: {
     float: "left",
     padding: "10px 10px 10px 0px",

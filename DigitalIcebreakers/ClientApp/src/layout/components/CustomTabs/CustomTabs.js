@@ -13,7 +13,7 @@ import Card from "../Card/Card.js";
 import CardBody from "../Card/CardBody.js";
 import CardHeader from "../Card/CardHeader.js";
 
-import styles from "../../assets/jss/material-dashboard-react/components/customTabsStyle.js";
+import styles from "../../assets/jss/material-dashboard-react/components/customTabsStyle";
 
 const useStyles = makeStyles(styles);
 

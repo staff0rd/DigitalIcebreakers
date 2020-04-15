@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@material-ui/icons": "^4.9.1",
+    "@types/classnames": "^2.2.10",
     "bootstrap": "^3.3.7",
     "chartist": "^0.11.4",
     "gsap": "^3.0.1",

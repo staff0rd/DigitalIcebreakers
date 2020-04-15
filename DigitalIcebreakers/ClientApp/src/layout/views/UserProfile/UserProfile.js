@@ -3,10 +3,10 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 // core components
-import GridItem from "../../components/Grid/GridItem.js";
+import GridItem from "../../components/Grid/GridItem";
 import GridContainer from "../../components/Grid/GridContainer.js";
-import CustomInput from "../../components/CustomInput/CustomInput.js";
-import Button from "../../components/CustomButtons/Button.js";
+import CustomInput from "../../components/CustomInput/CustomInput";
+import Button from "../../components/CustomButtons/Button";
 import Card from "../../components/Card/Card.js";
 import CardHeader from "../../components/Card/CardHeader.js";
 import CardAvatar from "../../components/Card/CardAvatar.js";

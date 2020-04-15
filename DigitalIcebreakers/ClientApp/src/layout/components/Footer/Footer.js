@@ -6,7 +6,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import ListItem from "@material-ui/core/ListItem";
 import List from "@material-ui/core/List";
 // core components
-import styles from "../../assets/jss/material-dashboard-react/components/footerStyle.js";
+import styles from "../../assets/jss/material-dashboard-react/components/footerStyle";
 
 const useStyles = makeStyles(styles);
 
@@ -47,7 +47,7 @@ export default function Footer(props) {
               target="_blank"
               className={classes.a}
             >
-              Creative Tim
+              Stafford Williams
             </a>
             , made with love for a better web
           </span>

@@ -5,7 +5,7 @@ import {
   grayColor
 } from "../../material-dashboard-react.js";
 
-const footerStyle = {
+const footerStyle: any = {
   block: {
     color: "inherit",
     padding: "15px",

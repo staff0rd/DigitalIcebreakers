@@ -4,13 +4,13 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Hidden from "@material-ui/core/Hidden";
 // core components
-import GridItem from "../../components/Grid/GridItem.js";
+import GridItem from "../../components/Grid/GridItem";
 import GridContainer from "../../components/Grid/GridContainer.js";
 import Card from "../../components/Card/Card.js";
 import CardHeader from "../../components/Card/CardHeader.js";
 import CardBody from "../../components/Card/CardBody.js";
 
-import styles from "../../assets/jss/material-dashboard-react/views/iconsStyle.js";
+import styles from "../../assets/jss/material-dashboard-react/views/iconsStyle";
 
 const useStyles = makeStyles(styles);
 

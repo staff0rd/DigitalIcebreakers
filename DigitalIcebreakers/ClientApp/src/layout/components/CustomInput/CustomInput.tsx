@@ -1,27 +1,36 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import classNames from "classnames";
-import PropTypes from "prop-types";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import Input from "@material-ui/core/Input";
+import FormControl, { FormControlTypeMap, FormControlProps } from "@material-ui/core/FormControl";
+import InputLabel, { InputLabelProps } from "@material-ui/core/InputLabel";
+import Input, { InputProps } from "@material-ui/core/Input";
 // @material-ui/icons
 import Clear from "@material-ui/icons/Clear";
 import Check from "@material-ui/icons/Check";
 // core components
-import styles from "../../assets/jss/material-dashboard-react/components/customInputStyle.js";
+import styles from "../../assets/jss/material-dashboard-react/components/customInputStyle";
 
 const useStyles = makeStyles(styles);
 
-export default function CustomInput(props) {
+type Props = { 
+  labelText: ReactNode,
+  labelProps?: InputLabelProps,
+  id: string,
+  inputProps?: InputProps,
+  formControlProps: FormControlProps,
+  error?: boolean,
+  success?: boolean
+} & Partial<InputProps>
+
+
+export default function CustomInput(props: Props) {
   const classes = useStyles();
   const {
     formControlProps,
     labelText,
     id,
     labelProps,
-    inputProps,
     error,
     success
   } = props;
@@ -59,7 +68,7 @@ export default function CustomInput(props) {
           underline: underlineClasses
         }}
         id={id}
-        {...inputProps}
+        {...props}
       />
       {error ? (
         <Clear className={classes.feedback + " " + classes.labelRootError} />
@@ -70,12 +79,4 @@ export default function CustomInput(props) {
   );
 }
 
-CustomInput.propTypes = {
-  labelText: PropTypes.node,
-  labelProps: PropTypes.object,
-  id: PropTypes.string,
-  inputProps: PropTypes.object,
-  formControlProps: PropTypes.object,
-  error: PropTypes.bool,
-  success: PropTypes.bool
-};
+

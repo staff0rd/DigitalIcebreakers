@@ -1,6 +1,6 @@
 import { hexToRgb, blackColor } from "../../material-dashboard-react";
 
-const cardAvatarStyle = {
+const cardAvatarStyle: any = {
   cardAvatar: {
     "&$cardAvatarProfile img": {
       width: "100%",

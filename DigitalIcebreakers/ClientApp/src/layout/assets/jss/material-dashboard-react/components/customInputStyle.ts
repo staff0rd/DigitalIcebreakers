@@ -6,7 +6,7 @@ import {
   defaultFont
 } from "../../material-dashboard-react.js";
 
-const customInputStyle = {
+const customInputStyle: any = {
   disabled: {
     "&:before": {
       backgroundColor: "transparent !important"

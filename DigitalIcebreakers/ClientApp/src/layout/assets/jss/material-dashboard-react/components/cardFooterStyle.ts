@@ -1,6 +1,6 @@
 import { grayColor } from "../../material-dashboard-react";
 
-const cardFooterStyle = {
+const cardFooterStyle: any = {
   cardFooter: {
     padding: "0",
     paddingTop: "10px",

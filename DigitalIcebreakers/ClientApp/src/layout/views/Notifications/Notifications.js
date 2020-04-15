@@ -7,9 +7,9 @@ import { makeStyles } from "@material-ui/core/styles";
 // @material-ui/icons
 import AddAlert from "@material-ui/icons/AddAlert";
 // core components
-import GridItem from "../../components/Grid/GridItem.js";
+import GridItem from "../../components/Grid/GridItem";
 import GridContainer from "../../components/Grid/GridContainer.js";
-import Button from "../../components/CustomButtons/Button.js";
+import Button from "../../components/CustomButtons/Button";
 import SnackbarContent from "../../components/Snackbar/SnackbarContent.js";
 import Snackbar from "../../components/Snackbar/Snackbar.js";
 import Card from "../../components/Card/Card.js";

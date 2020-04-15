@@ -9,38 +9,32 @@ import { makeStyles } from "@material-ui/core/styles";
 import Navbar from "../components/Navbars/Navbar.js";
 import Footer from "../components/Footer/Footer.js";
 import Sidebar from "../components/Sidebar/Sidebar.js";
-import FixedPlugin from "../components/FixedPlugin/FixedPlugin.js";
 
-import routes from "../routes.js";
+import getRoutes from "../routes";
 
-import styles from "../assets/jss/material-dashboard-react/layouts/adminStyle.js";
+import styles from "../assets/jss/material-dashboard-react/layouts/adminStyle";
 
 import bgImage from "../assets/img/sidebar-2.jpg";
 import logo from "../../img/icon.svg";
 
 let ps;
 
-const switchRoutes = (
+const switchRoutes = (routes) => (
   <Switch>
-    {routes.map((prop, key) => {
-      if (prop.layout === "/admin") {
-        return (
-          <Route
-            path={prop.layout + prop.path}
-            component={prop.component}
-            key={key}
-          />
-        );
-      }
-      return null;
-    })}
-    <Redirect from="/admin" to="/admin/dashboard" />
+    {routes.map((prop, key) => (
+      <Route
+        path={prop.path}
+        component={prop.component}
+        key={key}
+      />
+    ))}
+    {/* <Redirect from="/admin" to="/admin/dashboard" /> */}
   </Switch>
 );
 
 const useStyles = makeStyles(styles);
 
-export default function Admin({ ...rest }) {
+export default function Admin({ isAdmin, currentGame, lobbyId, ...rest }) {
   // styles
   const classes = useStyles();
   // ref to help us initialize PerfectScrollbar on windows devices
@@ -92,6 +86,9 @@ export default function Admin({ ...rest }) {
       window.removeEventListener("resize", resizeFunction);
     };
   }, [mainPanel]);
+
+  const routes = getRoutes(isAdmin, lobbyId, currentGame);
+
   return (
     <div className={classes.wrapper}>
       <Sidebar
@@ -113,20 +110,12 @@ export default function Admin({ ...rest }) {
         {/* On the /maps route we want the map to be on full screen - this is not possible if the content and conatiner classes are present because they have some paddings which would make the map smaller */}
         {getRoute() ? (
           <div className={classes.content}>
-            <div className={classes.container}>{switchRoutes}</div>
+            <div className={classes.container}>{switchRoutes(routes)}</div>
           </div>
         ) : (
-          <div className={classes.map}>{switchRoutes}</div>
+          <div className={classes.map}>{switchRoutes(routes)}</div>
         )}
-        {getRoute() ? <Footer /> : null}
-        <FixedPlugin
-          handleImageClick={handleImageClick}
-          handleColorClick={handleColorClick}
-          bgColor={color}
-          bgImage={image}
-          handleFixedClick={handleFixedClick}
-          fixedClasses={fixedClasses}
-        />
+        {/* {getRoute() ? <Footer /> : null} */}
       </div>
     </div>
   );

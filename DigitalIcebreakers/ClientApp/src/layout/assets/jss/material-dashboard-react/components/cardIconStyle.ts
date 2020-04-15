@@ -8,7 +8,7 @@ import {
   grayColor
 } from "../../material-dashboard-react";
 
-const cardIconStyle = {
+const cardIconStyle: any = {
   cardIcon: {
     "&$warningCardHeader,&$successCardHeader,&$dangerCardHeader,&$infoCardHeader,&$primaryCardHeader,&$roseCardHeader": {
       borderRadius: "3px",

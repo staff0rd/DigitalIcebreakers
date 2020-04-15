@@ -18,7 +18,7 @@ import {
   hexToRgb
 } from "../../material-dashboard-react";
 
-const snackbarContentStyle = {
+const snackbarContentStyle: any = {
   root: {
     ...defaultFont,
     flexWrap: "unset",

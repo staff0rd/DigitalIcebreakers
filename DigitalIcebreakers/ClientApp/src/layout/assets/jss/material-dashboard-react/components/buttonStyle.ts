@@ -11,7 +11,7 @@ import {
   hexToRgb
 } from "../../material-dashboard-react.js";
 
-const buttonStyle = {
+const buttonStyle: any = {
   button: {
     minHeight: "auto",
     minWidth: "auto",
