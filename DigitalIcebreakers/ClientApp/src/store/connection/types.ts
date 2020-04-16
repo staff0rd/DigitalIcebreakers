@@ -24,13 +24,13 @@ interface ConnectionReconnectAction {
     type: typeof CONNECTION_RECONNECT;
 }
 
-interface setGameMessageCallbackAction {
+interface SetGameMessageCallbackAction {
     type: typeof SET_GAME_MESSAGE_CALLBACK;
     callback: Function;
 }
 
-interface clearGameMessageCallbackAction {
+interface ClearGameMessageCallbackAction {
     type: typeof CLEAR_GAME_MESSAGE_CALLBACK;
 }
 
-export type ConnectionActionTypes = SetConnectionStatusAction | ConnectionConnectAction | ConnectionReconnectAction | setGameMessageCallbackAction | clearGameMessageCallbackAction;
+export type ConnectionActionTypes = SetConnectionStatusAction | ConnectionConnectAction | ConnectionReconnectAction | SetGameMessageCallbackAction | ClearGameMessageCallbackAction;
