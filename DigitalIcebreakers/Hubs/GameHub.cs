@@ -31,6 +31,15 @@ namespace DigitalIcebreakers.Hubs
             _clients = new ClientHelper(Clients);
             _send = new Sender(_clients);
         }
+        
+        public GameHub(ILogger<GameHub> logger, LobbyManager lobbyManager, IOptions<AppSettings> settings, ClientHelper clients)
+        {
+            _lobbys = lobbyManager;
+            _logger = logger;
+            _settings = settings?.Value;
+            _clients = clients;
+            _send = new Sender(_clients);
+        }
 
         public int GetConnectedPlayerCount()
         {
@@ -158,8 +167,8 @@ namespace DigitalIcebreakers.Hubs
 
         public async Task ConnectToLobby(User user, Guid lobbyId)
         {
-            var player = GetOrCreatePlayer(user, Context.ConnectionId);
-            var existingLobby = _lobbys.GetLobbyById(lobbyId);
+            var player = GetOrCreatePlayer(user, ConnectionId);
+            var existingLobby = _lobbys.GetLobbyByConnectionId(ConnectionId);
             if (existingLobby != null && existingLobby.Id != lobbyId)
             {
                 await LeaveLobby(player, existingLobby);

@@ -49,7 +49,10 @@ namespace DigitalIcebreakers
 
         internal Player GetOrCreatePlayer(Guid userId, string userName)
         {
-            return _lobbys.SelectMany(p => p.Players).SingleOrDefault(p => p.Id == userId) ?? new Player { Id = userId, Name = userName };
+            var player = _lobbys.SelectMany(p => p.Players).SingleOrDefault(p => p.Id == userId);
+            if (player == null)
+                return new Player { Id = userId, Name = userName };
+            return player;
         }
 
         public Player GetLobbyAdmin(string connectionId)

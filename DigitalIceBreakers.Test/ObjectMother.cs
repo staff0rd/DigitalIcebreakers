@@ -25,19 +25,21 @@ namespace DigitalIcebreakers.Test
             var context = new Mock<HubCallerContext>();
             context.Setup(p => p.ConnectionId).Returns(contextId.ToString());
             gameHub.Context = context.Object;
-            gameHub.Clients = GetMockIHubCallerClients().Object;
             return gameHub;
         }
 
-        public static MockGameHub GetMockGameHub(Guid contextId, Lobby lobby) {
+        public static MockGameHub GetMockGameHub(Guid contextId, Lobby lobby)
+        {
             return GetMockGameHub(contextId, new List<Lobby> { lobby });
         }
 
-        public static MockGameHub GetMockGameHub(Guid contextId) {
+        public static MockGameHub GetMockGameHub(Guid contextId)
+        {
             return GetMockGameHub(contextId, new List<Lobby>());
         }
 
-        public static Lobby CreateLobby(MockGameHub hub, Guid adminId, Game game) {
+        public static Lobby CreateLobby(MockGameHub hub, Guid adminId, Game game)
+        {
             var lobby  = hub.Lobbys.CreateLobby(Guid.NewGuid(), "my lobby", GetPlayer(adminId, true));
             lobby.CurrentGame = game;
             return lobby;
