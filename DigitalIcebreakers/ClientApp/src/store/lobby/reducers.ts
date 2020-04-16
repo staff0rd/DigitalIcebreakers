@@ -25,7 +25,8 @@ export function lobbyReducer(
                 ...state,
                 id: action.id,
                 name: action.name,
-                isAdmin: action.isAdmin
+                isAdmin: action.isAdmin,
+                currentGame: action.game
             };
         }
         case PLAYER_JOINED_LOBBY: {
