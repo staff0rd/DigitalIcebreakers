@@ -8,6 +8,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { adminMessage } from '../../store/lobby/actions';
 import { setGameUpdateCallback } from '../../store/connection/actions';
 import { setMenuItems } from '../../store/shell/actions';
+import { GameUpdate } from '../GameUpdate';
 
 export interface YesNoMaybeState {
     yes: number;
@@ -64,12 +65,8 @@ class YesNoMaybePresenter extends BaseGame<BaseGameProps & PropsFromRedux, YesNo
     }
 
     componentDidMount() {
-        this.props.setGameUpdateCallback((result: any) => {
-            this.setState({
-                yes: result.yes,
-                no: result.no,
-                maybe: result.maybe
-            }, () => this.init(this.app));
+        this.props.setGameUpdateCallback(({ payload }: GameUpdate<YesNoMaybeState>) => {
+            this.setState(payload, () => this.init(this.app));
         });
     }
 

@@ -4,7 +4,7 @@ import DoggosVsKittehsPresenter from './DoggosVsKittehs/DoggosVsKittehsPresenter
 import { BroadcastClient } from './Broadcast/BroadcastClient';
 import { BroadcastPresenter } from './Broadcast/BroadcastPresenter';
 import YesNoMaybePresenter from './YesNoMaybe/YesNoMaybePresenter';
-import { YesNoMaybeClient } from './YesNoMaybe/YesNoMaybeClient';
+import YesNoMaybeClient from './YesNoMaybe/YesNoMaybeClient';
 import { IdeaWallClient } from './IdeaWall/IdeaWallClient';
 import IdeaWallPresenter, { StartStopContinueLanes } from './IdeaWall/IdeaWallPresenter';
 import BuzzerClient from './Buzzer/BuzzerClient';

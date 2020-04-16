@@ -15,7 +15,7 @@ interface YesNoMaybeState {
     choice: string | undefined;
 }
 
-export class YesNoMaybeClient extends BaseGame<PropsFromRedux, YesNoMaybeState> {
+class YesNoMaybeClient extends BaseGame<PropsFromRedux, YesNoMaybeState> {
     displayName = YesNoMaybeClient.name
 
     constructor(props: PropsFromRedux) {
@@ -48,3 +48,5 @@ export class YesNoMaybeClient extends BaseGame<PropsFromRedux, YesNoMaybeState> 
         );
     }
 }
+
+export default connector(YesNoMaybeClient);
