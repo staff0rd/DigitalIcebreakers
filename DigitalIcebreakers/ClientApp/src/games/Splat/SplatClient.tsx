@@ -1,37 +1,49 @@
 import React from 'react';
 import { Button } from '../pixi/Button';
-import { BaseGameProps } from '../BaseGame'
-import { PixiView } from '../pixi/PixiView';
+import { BaseGameProps, BaseGame } from '../BaseGame'
 import { Colors } from '../../Colors'
+import { connect, ConnectedProps } from 'react-redux';
+import { clientMessage } from '../../store/lobby/actions'
+import { Pixi } from '../pixi/Pixi';
 
-export class SplatClient extends PixiView<BaseGameProps, {}> {
+const connector = connect(
+    null,
+    { clientMessage }
+);
+  
+type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
+
+export class SplatClient extends BaseGame<PropsFromRedux, {}> {
     private button: Button;
+    app?: PIXI.Application;
 
-    constructor(props: BaseGameProps) {
-        super(Colors.BlueGrey.C400,props);
+    constructor(props: PropsFromRedux) {
+        super(props);
         this.button = new Button(this.up, this.down);
     }
 
-    init() {
+    init(app: PIXI.Application) {
+        this.app = app;
+        
         this.app.stage.addChild(this.button);
     }
 
     down = () => {
-        this.props.connection.invoke("hubMessage", JSON.stringify({client: "down"}));
+        this.props.clientMessage("down");
     }
-
+    
     up = () => {
-        this.props.connection.invoke("hubMessage", JSON.stringify({client: "up"}));
+        this.props.clientMessage("up");
     }
 
     render() {
-        if (this.button) {
+        if (this.app) {
             this.button.x = this.app.renderer.width / 4;
             this.button.y = this.app.renderer.height / 4;
             this.button.render(Colors.Red.C400, Colors.Blue.C400, 0, 0, this.app.renderer.width / 2, this.app.renderer.height / 2);
         }
         return (
-            <div ref={this.pixiUpdate} />
+            <Pixi backgroundColor={Colors.BlueGrey.C400} onAppChange={(app) => this.init(app)} />
         );
     }
 }

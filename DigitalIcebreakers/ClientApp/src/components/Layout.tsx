@@ -23,6 +23,7 @@ type LayoutProps = RouteComponentProps & {
     currentGame?: string;
     isAdmin: boolean;
     connected: ConnectionStatus;
+    lobbyId?: string;
 }
 
 type LayoutState = {
@@ -134,7 +135,8 @@ class Layout extends Component<LayoutProps, LayoutState> {
 const mapStateToProps = (state: RootState) => { return {
     currentGame: state.lobby.currentGame,
     isAdmin: state.lobby.isAdmin,
-    connected: state.connection.status
+    connected: state.connection.status,
+    lobbyId: state.lobby.id,
 }}
 
 const mapDispatchToProps = {};

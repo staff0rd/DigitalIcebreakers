@@ -10,7 +10,6 @@ import { CloseLobby } from './components/CloseLobby';
 import { Join } from './components/Join';
 import { guid } from './util/guid';
 import history from './history';
-import ReactAI from 'react-appinsights';
 import { Events } from './Events';
 import { ConnectionStatus } from './ConnectionStatus';
 import { Provider } from 'react-redux'

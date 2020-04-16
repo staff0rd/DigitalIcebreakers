@@ -1,4 +1,4 @@
-import { PixiPresenter } from '../pixi/PixiPresenter';
+import { Pixi } from '../pixi/Pixi';
 import { Colors } from '../../Colors';
 import { Graph } from '../pixi/Graph';
 import { BaseGameProps, BaseGame } from '../BaseGame';

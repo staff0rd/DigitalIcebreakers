@@ -1,4 +1,4 @@
-import * as Version from '../../version.json';
+import { Config } from '../../config';
 
 import {
     ShellState, ShellActionTypes, SET_MENU_ITEMS, TOGGLE_MENU
@@ -6,7 +6,7 @@ import {
 import { Events } from '../../Events';
 
 const initialState: ShellState = {
-    version: Version.version,
+    version: Config.version,
     menuItems: [],
     showMenu: true
 }

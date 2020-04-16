@@ -1,36 +1,53 @@
 import React from 'react';
-import { BaseGameProps } from '../BaseGame'
-import { PixiView } from '../pixi/PixiView';
+import { BaseGame, BaseGameProps } from '../BaseGame'
+import { connect, ConnectedProps } from 'react-redux';
+import { setGameUpdateCallback } from '../../store/connection/actions';
 import { Colors, ColorUtils } from '../../Colors';
 import { between } from '../../Random';
+import { Pixi } from '../pixi/Pixi';
 
-export class SplatPresenter extends PixiView<BaseGameProps, {}> {
-    constructor(props: BaseGameProps) {
-        super(Colors.White, props);
+const connector = connect(
+    null,
+    { setGameUpdateCallback }
+);
+  
+type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
+
+export class SplatPresenter extends BaseGame<PropsFromRedux, {}> {
+    app?: PIXI.Application;
+    constructor(props: PropsFromRedux) {
+        super(props);
 
         this.state = {
             players: []
         };
     }
 
-    init() { }
+    init(app: PIXI.Application) {
+        this.app = app;
+    }
 
     componentDidMount() {
-        super.componentDidMount();
-        this.props.connection.on("gameUpdate", (id, name, state) => {
+        this.props.setGameUpdateCallback((id: string, name:string , state: string) => {
             this.setState(prevState => {
                 switch (state) {
                     case "down": {
-                        const x = between(0, this.app.screen.width);
-                        const y = between(0, this.app.screen.height);
+                        const x = between(0, this.app!.screen.width);
+                        const y = between(0, this.app!.screen.height);
                         const circle = new PIXI.Graphics()
                             .beginFill(ColorUtils.randomColor().shades[4].shade)
                             .drawCircle(x, y, between(30, 100))
                             .endFill();
-                        this.app.stage.addChild(circle);
+                        this.app!.stage.addChild(circle);
                     }
                 }
             });
         });
+    }
+
+    render() {
+        return (
+            <Pixi backgroundColor={Colors.BlueGrey.C400} onAppChange={(app) => this.init(app)} />
+        );
     }
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '../pixi/Button';
 import { BaseGameProps, BaseGame } from '../BaseGame'
-import { PixiPresenter } from '../pixi/PixiPresenter';
+import { Pixi } from '../pixi/Pixi';
 import { Colors } from '../../Colors'
 import { connect, ConnectedProps } from 'react-redux';
 import { clientMessage } from '../../store/lobby/actions'
