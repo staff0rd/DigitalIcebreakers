@@ -3,6 +3,7 @@ import { FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { setGameUpdateCallback, clearGameUpdateCallback } from '../../store/connection/actions';
 import { adminMessage } from '../../store/lobby/actions';
+import { GameUpdate } from '../GameUpdate';
 
 export const BroadcastPresenter = () => {
 
@@ -11,8 +12,8 @@ export const BroadcastPresenter = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(setGameUpdateCallback((result: string) => {
-            if (result === "d") {
+        dispatch(setGameUpdateCallback(({ payload }: GameUpdate<string>) => {
+            if (payload === "d") {
                 setDingCount(dingCount+1);
             }
         }));
@@ -22,7 +23,7 @@ export const BroadcastPresenter = () => {
     const updateClientText = (e: React.FormEvent<FormControl>) => {
         const target = e.target as HTMLInputElement;
         setClientText(target.value);
-        dispatch(adminMessage(clientText));
+        dispatch(adminMessage(target.value));
     }
 
     return (
