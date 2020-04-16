@@ -5,6 +5,7 @@ import { setGameUpdateCallback } from '../../store/connection/actions';
 import { Colors, ColorUtils } from '../../Colors';
 import { between } from '../../Random';
 import { Pixi } from '../pixi/Pixi';
+import { GameUpdate } from '../GameUpdate';
 
 const connector = connect(
     null,
@@ -28,9 +29,9 @@ class SplatPresenter extends BaseGame<PropsFromRedux, {}> {
     }
 
     componentDidMount() {
-        this.props.setGameUpdateCallback((id: string, name:string , state: string) => {
+        this.props.setGameUpdateCallback(({ id, name, payload }: GameUpdate<string>) => {
             this.setState(prevState => {
-                switch (state) {
+                switch (payload) {
                     case "down": {
                         const x = between(0, this.app!.screen.width);
                         const y = between(0, this.app!.screen.height);
