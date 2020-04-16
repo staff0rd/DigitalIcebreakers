@@ -37,7 +37,7 @@ type Props = {
   justIcon?: boolean,
   className?: string,
   muiClasses?: object,
-  children: ReactNode
+  children?: ReactNode
 } & Partial<ButtonProps>;
 
 export default function RegularButton(props: Props) {

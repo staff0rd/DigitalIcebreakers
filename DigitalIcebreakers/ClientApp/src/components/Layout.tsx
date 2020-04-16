@@ -16,7 +16,6 @@ import { Game } from './Game';
 import { CloseLobby } from './CloseLobby';
 import { Join } from './Join';
 import { Lobby } from './Lobby';
-import { CreateLobby } from './CreateLobby';
 import { LobbyClosed } from './LobbyClosed';
 import { toggleMenu } from '../store/shell/actions'
 

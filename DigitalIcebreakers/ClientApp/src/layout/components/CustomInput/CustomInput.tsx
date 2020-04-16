@@ -32,7 +32,8 @@ export default function CustomInput(props: Props) {
     id,
     labelProps,
     error,
-    success
+    success,
+    ...rest
   } = props;
 
   const labelClasses = classNames({
@@ -68,7 +69,7 @@ export default function CustomInput(props: Props) {
           underline: underlineClasses
         }}
         id={id}
-        {...props}
+        {...rest}
       />
       {error ? (
         <Clear className={classes.feedback + " " + classes.labelRootError} />

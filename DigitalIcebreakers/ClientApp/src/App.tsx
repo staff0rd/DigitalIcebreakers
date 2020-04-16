@@ -133,7 +133,7 @@ export default class App extends Component<{}, AppState> {
 const Main = () => {
 
     const connectionStatus = useSelector(state => state.connection.status);
-
+    const lobby = useSelector(state => state.lobby);
     const redirect = (condition: boolean, component: any) => {
         if (condition)
             return component;
@@ -142,15 +142,16 @@ const Main = () => {
     }
 
     const connected = connectionStatus === ConnectionStatus.Connected;
-    const game = redirect(connected, () => <Game />);
-    const newGame = redirect(connected, () => <NewGame />);
-    const closeLobby = redirect(connected, () => <CloseLobby />);
+    // const game = redirect(connected, () => <Game />);
+    // const newGame = redirect(connected, () => <NewGame />);
+    // const closeLobby = redirect(connected, () => <CloseLobby />);
     
     return (
+        <Layout isAdmin={lobby.isAdmin} currentGame={lobby.currentGame} lobbyId={lobby.id} />
+    ); 
+        /*
         <Layout>
-                <Layout isAdmin={this.state.isAdmin} currentGame={this.state.currentGame} lobbyId={this.state.lobby && this.state.lobby.id} />
-		{/*
-                <Layout menuItems={this.state.menuItems} currentGame={this.state.currentGame} isAdmin={this.state.isAdmin} version={Config.version} lobbyId={this.state.lobby && this.state.lobby.id}>
+            <Switch>
                 <Route path='/createLobby' render={() => <CreateLobby /> } />
                 <Route path='/closeLobby' render={closeLobby }  />
                 <Route path='/lobbyClosed' component={LobbyClosed} />
@@ -159,6 +160,7 @@ const Main = () => {
                 <Route path='/join/:id' render={props => <Join {...props} /> }  />
                 <Route exact path='/' render={() => <Lobby  /> } /> 
             </Switch>
-                </Layout> */}
-    );
+        </Layout>
+        */
+    
 }
