@@ -10,7 +10,7 @@ import history from '../history'
 import { CLEAR_LOBBY, SET_LOBBY_GAME, START_NEW_GAME, JOIN_LOBBY, CLOSE_LOBBY, CREATE_LOBBY, GAME_MESSAGE_CLIENT, GAME_MESSAGE_ADMIN, LobbyActionTypes } from './lobby/types'
 import { guid } from '../util/guid'
 import { UserActionTypes } from './user/types'
-import { goToDefaultUrl } from './shell/actions'
+import { goToDefaultUrl, setMenuItems } from './shell/actions'
 import { GO_TO_DEFAULT_URL, ShellActionTypes } from './shell/types'
 
 export const SignalRMiddleware = () => {
@@ -68,6 +68,7 @@ export const SignalRMiddleware = () => {
         connection.on("newGame", (name) => {
             ReactAI.ai().trackEvent("Joining new game");
             connection.off("gameUpdate");
+            dispatch(setMenuItems([]));
             dispatch(setLobbyGame(name));
         });
         const invoke = (methodName: string, ...params: any[]) => {
