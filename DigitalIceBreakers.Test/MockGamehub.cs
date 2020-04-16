@@ -8,15 +8,15 @@ namespace DigitalIcebreakers.Test
 {
     public class MockGamehub : GameHub
     {
-        public List<object[]> SentToAdmin { get; private set;} = new List<object[]>();
+        public List<object> SentToAdmin { get; private set;} = new List<object>();
 
         public MockGamehub(ILogger<GameHub> logger, List<Lobby> lobbys, IOptions<AppSettings> settings) : base(logger, lobbys, settings)
         {
         }
 
-        public override Task SendGameUpdateToPresenter(params object[] parameters)
+        public override Task SendGameUpdateToPresenter<T>(T payload, Player player = null)
         {
-            this.SentToAdmin.Add(parameters);
+            this.SentToAdmin.Add(payload);
             return Task.CompletedTask;
         }
     }

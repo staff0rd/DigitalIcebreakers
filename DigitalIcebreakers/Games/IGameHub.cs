@@ -1,16 +1,17 @@
 using System.Threading.Tasks;
+using DigitalIcebreakers;
 
 namespace DigitalIcebreakers.Games
 {
     public interface IGameHub
     {
-        Task SendGameUpdateToPresenter(params object[] parameters);
+        Task SendGameUpdateToPresenter<T>(T payload, Player player = null);
 
         Player GetPlayerByConnectionId();
 
-        Task SendGameUpdateToPlayers(params object[] parameters);
+        Task SendGameUpdateToPlayers(object payload);
 
-        Task SendGameUpdateToPlayer(Player player, params object[] parameters);
+        Task SendGameUpdateToPlayer(Player player, object payload);
 
         Player[] GetPlayers();
     }

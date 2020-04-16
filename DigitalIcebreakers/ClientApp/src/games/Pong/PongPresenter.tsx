@@ -10,6 +10,7 @@ import { setMenuItems } from '../../store/shell/actions';
 import { BaseGame, BaseGameProps } from '../BaseGame'
 import { between } from '../../Random';
 import { connect, ConnectedProps } from 'react-redux';
+import { Pixi } from '../pixi/Pixi';
 
 const connector = connect(
     null,
@@ -226,6 +227,10 @@ class PongPresenter extends BaseGame<PropsFromRedux, PongPresenterState> {
 
     resetScore = ()  => {
         this.setState({score: [0, 0]}, this.init);
+    }
+
+    render() {
+        return <Pixi backgroundColor={Colors.Background} onAppChange={(app) => this.init(app)} />
     }
  }
 

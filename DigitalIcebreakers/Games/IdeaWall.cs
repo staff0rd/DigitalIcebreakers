@@ -16,6 +16,6 @@ public class IdeaWall : Game, IGame
         string idea = payload.ToObject<string>();
 
         if (!string.IsNullOrWhiteSpace(idea))
-            await hub.SendGameUpdateToPresenter(player.Name, idea);
+            await hub.SendGameUpdateToPresenter(idea, player);
     }
 }

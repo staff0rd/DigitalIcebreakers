@@ -17,7 +17,7 @@ namespace DigitalIcebreakers.Games
             var player = hub.GetPlayerByConnectionId();
 
             if (idea != null)
-                await hub.SendGameUpdateToPresenter(player.Name,  idea);
+                await hub.SendGameUpdateToPresenter(idea, player);
         }
     }
 }

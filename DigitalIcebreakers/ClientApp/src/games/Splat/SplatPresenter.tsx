@@ -13,7 +13,7 @@ const connector = connect(
   
 type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
 
-export class SplatPresenter extends BaseGame<PropsFromRedux, {}> {
+class SplatPresenter extends BaseGame<PropsFromRedux, {}> {
     app?: PIXI.Application;
     constructor(props: PropsFromRedux) {
         super(props);
@@ -47,7 +47,9 @@ export class SplatPresenter extends BaseGame<PropsFromRedux, {}> {
 
     render() {
         return (
-            <Pixi backgroundColor={Colors.BlueGrey.C400} onAppChange={(app) => this.init(app)} />
+            <Pixi backgroundColor={Colors.White} onAppChange={(app) => this.init(app)} />
         );
     }
 }
+
+export default connector(SplatPresenter);

@@ -42,33 +42,28 @@ namespace DigitalIcebreakers.Hubs
             return GetLobby().Players.Count(p => !p.IsAdmin && p.IsConnected);
         }
 
-        public async Task SendGameUpdateToPlayers(params object[] parameters)
+        public async Task SendGameUpdateToPlayers(object payload)
         {
             var clients =  SendTo.Players(GetLobby());
-            await SendGameUpdate(clients, parameters);
+            await SendGameUpdate(clients, payload);
         }
 
-        public async Task SendGameUpdateToPlayer(Player player, params object[] parameters)
+        public async Task SendGameUpdateToPlayer(Player player, object payload)
         {
             var clients =  SendTo.Player(player);
-            await SendGameUpdate(clients, parameters);
+            await SendGameUpdate(clients, payload);
         }
 
-        private async Task SendGameUpdate(IClientProxy clients, params object[] parameters)
+        private async Task SendGameUpdate(IClientProxy clients, object payload)
         {
             var method = "gameUpdate";
-            switch (parameters.Length) {
-                case 1: await clients.SendAsync(method, parameters[0]); break;
-                case 2: await clients.SendAsync(method, parameters[0], parameters[1]); break;
-                case 3: await clients.SendAsync(method, parameters[0], parameters[1], parameters[2]); break;
-                default: throw new NotImplementedException();
-            }
+            await clients.SendAsync(method, payload);
         }
 
-        public async virtual Task SendGameUpdateToPresenter(params object[] parameters)
+        public async virtual Task SendGameUpdateToPresenter<T>(T payload, Player player = null)
         {
             var client = SendTo.Admin(GetLobby());
-            await SendGameUpdate(client, parameters);
+            await SendGameUpdate(client, new GameUpdate<T>(payload, player));
         }
 
         public async Task CreateLobby(Guid id, string name, User user)

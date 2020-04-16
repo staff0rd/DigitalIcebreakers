@@ -5,7 +5,6 @@ import React, { useRef, useEffect, useState, useCallback } from 'react';
 interface PixiProps {
     backgroundColor?: number;
     onAppChange: (app: PIXI.Application) => void;
-
 }
 
 export const Pixi: React.FC<PixiProps> = (props) => {
@@ -29,8 +28,10 @@ export const Pixi: React.FC<PixiProps> = (props) => {
     }, [resize, app]);
 
     useEffect(() => {
-        setApp(newPixi());
-    }, [])
+        const pixi = newPixi();
+        setApp(pixi);
+        props.onAppChange(pixi);
+    }, [props.onAppChange])
 
     useEffect(() => {
         const element = pixiElement.current;

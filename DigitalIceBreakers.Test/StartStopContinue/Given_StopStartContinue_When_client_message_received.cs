@@ -30,8 +30,7 @@ namespace DigitalIcebreakers.Test
         public void Then_is_forwarded_to_admin()
         {
             _gameHub.SentToAdmin.Count.ShouldBe(1);
-            _gameHub.SentToAdmin.First().Count().ShouldBe(2);
-            var idea = _gameHub.SentToAdmin.First().ElementAt(1) as Idea;
+            var idea = _gameHub.SentToAdmin.First() as Idea;
             idea.ShouldNotBeNull();
             idea.Content.ShouldBe("CONTENT");
         }

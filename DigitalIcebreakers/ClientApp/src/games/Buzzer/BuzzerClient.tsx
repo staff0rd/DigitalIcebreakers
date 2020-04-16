@@ -26,6 +26,11 @@ class BuzzerClient extends BaseGame<PropsFromRedux, {}> {
         this.app = app;
         
         this.app.stage.addChild(this.button);
+
+        this.button.x = this.app.renderer.width / 4;
+        this.button.y = this.app.renderer.height / 4;
+        this.button.render(Colors.Red.C400, Colors.Blue.C400, 0, 0, this.app.renderer.width / 2, this.app.renderer.height / 2);
+    
     }
 
     down = () => {
@@ -37,11 +42,6 @@ class BuzzerClient extends BaseGame<PropsFromRedux, {}> {
     }
 
     render() {
-        if (this.app) {
-            this.button.x = this.app.renderer.width / 4;
-            this.button.y = this.app.renderer.height / 4;
-            this.button.render(Colors.Red.C400, Colors.Blue.C400, 0, 0, this.app.renderer.width / 2, this.app.renderer.height / 2);
-        }
         return (
             <Pixi backgroundColor={Colors.BlueGrey.C400} onAppChange={(app) => this.init(app)} />
         );

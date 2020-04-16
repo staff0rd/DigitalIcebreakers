@@ -13,8 +13,8 @@ namespace DigitalIcebreakers.Games
             var player = hub.GetPlayerByConnectionId();
             switch(client)
             {
-                case "up": await hub.SendGameUpdateToPresenter(player.ExternalId, player.Name, "up"); break;
-                case "down": await hub.SendGameUpdateToPresenter(player.ExternalId, player.Name, "down"); break;
+                case "up": await hub.SendGameUpdateToPresenter("up", player); break;
+                case "down": await hub.SendGameUpdateToPresenter("down", player); break;
                 default: break;
             }
         }
