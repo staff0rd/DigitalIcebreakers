@@ -29,11 +29,12 @@ export class Button extends PIXI.Container {
 
     render(upColor: number, downColor: number, x: number, y: number, width: number, height: number) {
         this.g1.clear();
-        this.g1.beginFill(upColor);
+        this.g1.beginFill(downColor);
+        console.log(x, y, width, height);
         this.g1.drawRect(x, y, width, height);
         this.g1.endFill();
         this.g2.clear();
-        this.g2.beginFill(downColor);
+        this.g2.beginFill(upColor);
         this.g2.drawRect(x, y, width, height);
         this.g2.endFill();
     }

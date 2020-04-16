@@ -11,6 +11,7 @@ import { BaseGame, BaseGameProps } from '../BaseGame'
 import { between } from '../../Random';
 import { connect, ConnectedProps } from 'react-redux';
 import { Pixi } from '../pixi/Pixi';
+import { GameUpdate } from '../GameUpdate';
 
 const connector = connect(
     null,
@@ -38,6 +39,11 @@ type PongPresenterState = {
     ballSpeed: number,
     gameOver: boolean,
     score: number[]
+}
+
+interface PaddleDy {
+    left: number;
+    right: number;
 }
 
 class PongPresenter extends BaseGame<PropsFromRedux, PongPresenterState> {
@@ -82,8 +88,8 @@ class PongPresenter extends BaseGame<PropsFromRedux, PongPresenterState> {
     }
 
     componentDidMount() {
-        this.props.setGameUpdateCallback((response: any) => {
-            this.setState(response);
+        this.props.setGameUpdateCallback(({ payload }: GameUpdate<PaddleDy>) => {
+            this.setState(payload);
         });
     }
 
@@ -145,17 +151,21 @@ class PongPresenter extends BaseGame<PropsFromRedux, PongPresenterState> {
     onAnimationFrame(time: number, lastTime: number) {
         const delta = (time - lastTime) / 1000;
 
-        this.ball.y += this.ballDy;
-        this.ball.x += this.ballDx;
+        if (this.ball) {
+            this.ball.y += this.ballDy;
+            this.ball.x += this.ballDx;
+        }
 
         if (!this.state.gameOver) {
-            this.leftPaddle.y -= this.state.paddleSpeed * delta * this.state.left;
-            this.rightPaddle.y -= this.state.paddleSpeed * delta * this.state.right;
+            if (this.leftPaddle && this.rightPaddle) {
+                this.leftPaddle.y -= this.state.paddleSpeed * delta * this.state.left;
+                this.rightPaddle.y -= this.state.paddleSpeed * delta * this.state.right;
 
-            this.clampPaddle(this.leftPaddle);
-            this.clampPaddle(this.rightPaddle);
+                this.clampPaddle(this.leftPaddle);
+                this.clampPaddle(this.rightPaddle);
 
-            this.checkHit();
+                this.checkHit();
+            }
         }
     }
 
