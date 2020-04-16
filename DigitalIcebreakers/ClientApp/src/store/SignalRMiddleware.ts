@@ -1,6 +1,6 @@
 import { MiddlewareAPI, Dispatch } from '@reduxjs/toolkit'
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr'
-import { CONNECTION_CONNECT, SET_CONNECTION_STATUS, SET_GAME_UPDATE_CALLBACK, CLEAR_GAME_UPDATE_CALLBACK, ConnectionActionTypes } from './connection/types'
+import { CONNECTION_CONNECT, SET_CONNECTION_STATUS, SET_GAME_MESSAGE_CALLBACK, CLEAR_GAME_MESSAGE_CALLBACK, ConnectionActionTypes } from './connection/types'
 import { updateConnectionStatus, connectionConnect } from './connection/actions'
 import ReactAI from '../app-insights-deprecated'
 import { ConnectionStatus } from '../ConnectionStatus'
@@ -67,7 +67,7 @@ export const SignalRMiddleware = () => {
         });
         connection.on("newGame", (name) => {
             ReactAI.ai().trackEvent("Joining new game");
-            connection.off("gameUpdate");
+            connection.off("gameMessage");
             dispatch(setMenuItems([]));
             dispatch(setLobbyGame(name));
         });
@@ -77,14 +77,14 @@ export const SignalRMiddleware = () => {
         };
         return (next: Dispatch) => (action: LobbyActionTypes | ConnectionActionTypes | UserActionTypes | ShellActionTypes) => {
             switch (action.type) {
-                case SET_GAME_UPDATE_CALLBACK: {
-                    connection.on("gameUpdate", (args: any) => {
+                case SET_GAME_MESSAGE_CALLBACK: {
+                    connection.on("gameMessage", (args: any) => {
                         action.callback(args)
                     });
                     return;
                 }
-                case CLEAR_GAME_UPDATE_CALLBACK: {
-                    connection.off("gameUpdate");
+                case CLEAR_GAME_MESSAGE_CALLBACK: {
+                    connection.off("gameMessage");
                     break;
                 }
                 case CLEAR_LOBBY: {

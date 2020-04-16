@@ -2,12 +2,12 @@ import React from 'react';
 import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import { BaseGame, BaseGameProps } from '../BaseGame'
 import { connect, ConnectedProps } from 'react-redux';
-import { setGameUpdateCallback } from '../../store/connection/actions';
-import { GameUpdate } from '../GameUpdate';
+import { setGameMessageCallback } from '../../store/connection/actions';
+import { GameMessage } from '../GameMessage';
 
 const connector = connect(
     null,
-    { setGameUpdateCallback }
+    { setGameMessageCallback }
 );
   
 type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
@@ -32,7 +32,7 @@ class BuzzerPresenter extends BaseGame<PropsFromRedux, BuzzerState> {
     }
 
     componentDidMount() {
-        this.props.setGameUpdateCallback(({ id, name, payload }: GameUpdate<string>) => {
+        this.props.setGameMessageCallback(({ id, name, payload }: GameMessage<string>) => {
             var user = {
                 id: id,
                 name: name,

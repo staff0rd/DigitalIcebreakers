@@ -45,18 +45,18 @@ namespace DigitalIcebreakers.Games
 
         public async Task SendToPlayer(Player player, object payload)
         {
-            await _sender.SendGameUpdateToPlayer(player, payload);
+            await _sender.SendGameMessageToPlayer(player, payload);
         }
         public async Task SendToPresenter(string connectionId, object payload, Player player = null)
         {
             var lobby = _lobbys.GetLobbyByConnectionId(connectionId);
-            await _sender.SendGameUpdateToPresenter(lobby, payload, player);
+            await _sender.SendGameMessageToPresenter(lobby, payload, player);
         }
 
         public async Task SendToPlayers(string connectionId, object payload)
         {
             var lobby = _lobbys.GetLobbyByConnectionId(connectionId);
-            await _sender.SendGameUpdateToPlayers(lobby, payload);
+            await _sender.SendGameMessageToPlayers(lobby, payload);
         }
 
         public Player GetPlayerByConnectionId(string connectionId)

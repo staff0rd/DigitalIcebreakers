@@ -5,17 +5,17 @@ import * as PIXI from "pixi.js";
 import ReactAnimationFrame from 'react-animation-frame';
 import { Stepper } from '../../components/Stepper';
 import { clamp } from '../../util/clamp';
-import { setGameUpdateCallback } from '../../store/connection/actions';
+import { setGameMessageCallback } from '../../store/connection/actions';
 import { setMenuItems } from '../../store/shell/actions';
 import { BaseGame, BaseGameProps } from '../BaseGame'
 import { between } from '../../Random';
 import { connect, ConnectedProps } from 'react-redux';
 import { Pixi } from '../pixi/Pixi';
-import { GameUpdate } from '../GameUpdate';
+import { GameMessage } from '../GameMessage';
 
 const connector = connect(
     null,
-    { setGameUpdateCallback, setMenuItems }
+    { setGameMessageCallback, setMenuItems }
 );
 
 type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
@@ -88,7 +88,7 @@ class PongPresenter extends BaseGame<PropsFromRedux, PongPresenterState> {
     }
 
     componentDidMount() {
-        this.props.setGameUpdateCallback(({ payload }: GameUpdate<PaddleDy>) => {
+        this.props.setGameMessageCallback(({ payload }: GameMessage<PaddleDy>) => {
             this.setState(payload);
         });
     }

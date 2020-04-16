@@ -4,7 +4,7 @@ import { PongColors as Colors } from './PongColors'
 import { Pixi } from '../pixi/Pixi';
 import { useDispatch } from 'react-redux';
 import { clientMessage } from '../../store/lobby/actions';
-import { setGameUpdateCallback, clearGameUpdateCallback } from '../../store/connection/actions';
+import { setGameMessageCallback, clearGameMessageCallback } from '../../store/connection/actions';
 
 interface TeamColors {
     up: number,
@@ -26,7 +26,7 @@ export const PongClient = () =>  {
     };
 
     useEffect(() => {
-        dispatch(setGameUpdateCallback((response: string) => {
+        dispatch(setGameMessageCallback((response: string) => {
             const result = response.split(":");
             if (result[0] === "team") {
                 switch(result[1]) {
@@ -39,7 +39,7 @@ export const PongClient = () =>  {
             }
         }));
         dispatch(clientMessage("join"));
-        return () => { dispatch(clearGameUpdateCallback()); };
+        return () => { dispatch(clearGameMessageCallback()); };
     }, [dispatch]);
 
     if (app) {

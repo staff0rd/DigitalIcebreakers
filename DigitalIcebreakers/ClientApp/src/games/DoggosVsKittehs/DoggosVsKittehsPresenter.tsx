@@ -5,8 +5,8 @@ import { BaseGameProps, BaseGame } from '../BaseGame';
 import { YesNoMaybeState } from '../YesNoMaybe/YesNoMaybePresenter';
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { setGameUpdateCallback } from '../../store/connection/actions';
-import { GameUpdate } from '../GameUpdate';
+import { setGameMessageCallback } from '../../store/connection/actions';
+import { GameMessage } from '../GameMessage';
 
 interface Payload {
     doggos: number;
@@ -16,7 +16,7 @@ interface Payload {
 
 const connector = connect(
     null,
-    { setGameUpdateCallback }
+    { setGameMessageCallback }
 );
   
 type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
@@ -48,7 +48,7 @@ class DoggosVsKittehsPresenter extends BaseGame<PropsFromRedux, YesNoMaybeState>
     }
 
     componentDidMount() {
-        this.props.setGameUpdateCallback(({ payload }: GameUpdate<Payload>) => {
+        this.props.setGameMessageCallback(({ payload }: GameMessage<Payload>) => {
             this.setState({
                 yes: payload.doggos,
                 no: payload.kittehs,

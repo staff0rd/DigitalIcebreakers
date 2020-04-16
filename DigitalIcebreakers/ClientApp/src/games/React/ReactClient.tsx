@@ -7,7 +7,7 @@ import { Pixi } from '../pixi/Pixi';
 import { ConnectedProps, connect } from 'react-redux';
 import { clientMessage } from '../../store/lobby/actions';
 import React from 'react';
-import { setGameUpdateCallback } from '../../store/connection/actions'
+import { setGameMessageCallback } from '../../store/connection/actions'
 
 type ReactClientState = {
     shapes: Shape[];
@@ -16,7 +16,7 @@ type ReactClientState = {
 
 const connector = connect(
     null,
-    { clientMessage, setGameUpdateCallback }
+    { clientMessage, setGameMessageCallback }
 );
   
 type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
@@ -32,7 +32,7 @@ class ReactClient extends BaseGame<PropsFromRedux, ReactClientState> {
     }
 
     componentDidMount() {
-        this.props.setGameUpdateCallback((newState: ReactClientState) => {
+        this.props.setGameMessageCallback((newState: ReactClientState) => {
             console.log(newState);
             this.setState(newState, () => this.init(this.app));
         });

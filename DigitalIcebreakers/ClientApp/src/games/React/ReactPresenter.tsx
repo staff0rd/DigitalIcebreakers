@@ -10,8 +10,8 @@ import { ShapeView } from './ShapeView';
 import * as gsap from "gsap";
 import { ConnectedProps, connect } from 'react-redux';
 import { clientMessage, adminMessage } from '../../store/lobby/actions';
-import { setGameUpdateCallback, clearGameUpdateCallback } from '../../store/connection/actions';
-import { GameUpdate } from '../GameUpdate'
+import { setGameMessageCallback, clearGameMessageCallback } from '../../store/connection/actions';
+import { GameMessage } from '../GameMessage'
 
 import { Pixi } from '../pixi/Pixi';
 import { RootState } from '../../store/RootState';
@@ -41,7 +41,7 @@ const connector = connect(
     (state: RootState) => { return {
         players: state.lobby.players
     }},
-    { clientMessage, adminMessage, setGameUpdateCallback, clearGameUpdateCallback }
+    { clientMessage, adminMessage, setGameMessageCallback, clearGameMessageCallback }
 );
   
 type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
@@ -175,11 +175,11 @@ class ReactPresenter extends BaseGame<PropsFromRedux, ReactState> {
     }
 
     componentWillUnmount() {
-        this.props.clearGameUpdateCallback();
+        this.props.clearGameMessageCallback();
     }
     
     componentDidMount() {
-        const callback = (response: GameUpdate<Payload>) => {
+        const callback = (response: GameMessage<Payload>) => {
             const user = {
                 id: response.id,
                 choice: response.payload.selectedId
@@ -204,7 +204,7 @@ class ReactPresenter extends BaseGame<PropsFromRedux, ReactState> {
                 return { choices: choices };
             });
         };
-        this.props.setGameUpdateCallback(callback);
+        this.props.setGameMessageCallback(callback);
         this.setShape();
     }
 

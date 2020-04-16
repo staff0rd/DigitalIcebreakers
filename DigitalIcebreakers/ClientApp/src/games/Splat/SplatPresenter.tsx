@@ -1,15 +1,15 @@
 import React from 'react';
 import { BaseGame, BaseGameProps } from '../BaseGame'
 import { connect, ConnectedProps } from 'react-redux';
-import { setGameUpdateCallback } from '../../store/connection/actions';
+import { setGameMessageCallback } from '../../store/connection/actions';
 import { Colors, ColorUtils } from '../../Colors';
 import { between } from '../../Random';
 import { Pixi } from '../pixi/Pixi';
-import { GameUpdate } from '../GameUpdate';
+import { GameMessage } from '../GameMessage';
 
 const connector = connect(
     null,
-    { setGameUpdateCallback }
+    { setGameMessageCallback }
 );
   
 type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
@@ -29,7 +29,7 @@ class SplatPresenter extends BaseGame<PropsFromRedux, {}> {
     }
 
     componentDidMount() {
-        this.props.setGameUpdateCallback(({ id, name, payload }: GameUpdate<string>) => {
+        this.props.setGameMessageCallback(({ id, name, payload }: GameMessage<string>) => {
             this.setState(prevState => {
                 switch (payload) {
                     case "down": {

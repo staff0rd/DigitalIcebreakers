@@ -15,28 +15,27 @@ namespace DigitalIcebreakers
             _clients = clients;
         }
 
-        public async Task SendGameUpdateToPlayers(Lobby lobby, object payload)
+        public async Task SendGameMessageToPlayers(Lobby lobby, object payload)
         {
             var clients = _clients.Players(lobby);
-            await SendGameUpdate(clients, payload);
+            await SendGameMessage(clients, payload);
         }
 
-        public async Task SendGameUpdateToPlayer(Player player, object payload)
+        public async Task SendGameMessageToPlayer(Player player, object payload)
         {
             var clients = _clients.Player(player);
-            await SendGameUpdate(clients, payload);
+            await SendGameMessage(clients, payload);
         }
 
-        private async Task SendGameUpdate(IClientProxy clients, object payload)
+        private async Task SendGameMessage(IClientProxy clients, object payload)
         {
-            var method = "gameUpdate";
-            await clients.SendAsync(method, payload);
+            await clients.SendAsync("gameMessage", payload);
         }
 
-        public async virtual Task SendGameUpdateToPresenter<T>(Lobby lobby, T payload, Player player = null)
+        public async virtual Task SendGameMessageToPresenter<T>(Lobby lobby, T payload, Player player = null)
         {
             var client = _clients.Admin(lobby);
-            await SendGameUpdate(client, new GameUpdate<T>(payload, player));
+            await SendGameMessage(client, new GameMessage<T>(payload, player));
         }
 
         public async Task Reconnect(Lobby lobby, Player player)

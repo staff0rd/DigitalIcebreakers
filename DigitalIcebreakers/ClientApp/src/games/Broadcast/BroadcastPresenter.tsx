@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import { FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
-import { setGameUpdateCallback, clearGameUpdateCallback } from '../../store/connection/actions';
+import { setGameMessageCallback, clearGameMessageCallback } from '../../store/connection/actions';
 import { adminMessage } from '../../store/lobby/actions';
-import { GameUpdate } from '../GameUpdate';
+import { GameMessage } from '../GameMessage';
 
 export const BroadcastPresenter = () => {
 
@@ -12,12 +12,12 @@ export const BroadcastPresenter = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(setGameUpdateCallback(({ payload }: GameUpdate<string>) => {
+        dispatch(setGameMessageCallback(({ payload }: GameMessage<string>) => {
             if (payload === "d") {
                 setDingCount(dingCount+1);
             }
         }));
-        return () => { dispatch(clearGameUpdateCallback()); };
+        return () => { dispatch(clearGameMessageCallback()); };
     });
 
     const updateClientText = (e: React.FormEvent<FormControl>) => {

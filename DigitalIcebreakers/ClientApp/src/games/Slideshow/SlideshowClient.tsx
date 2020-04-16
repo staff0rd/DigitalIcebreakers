@@ -3,12 +3,12 @@ import { BaseGame, BaseGameProps } from '../BaseGame';
 import { Slides } from './Slides'
 import Reveal from 'reveal.js'
 
-import { setGameUpdateCallback } from '../../store/connection/actions';
+import { setGameMessageCallback } from '../../store/connection/actions';
 import { connect, ConnectedProps } from 'react-redux';
 
 const connector = connect(
     null,
-    { setGameUpdateCallback }
+    { setGameMessageCallback }
 );
   
 type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
@@ -46,7 +46,7 @@ class SlideshowClient extends BaseGame<PropsFromRedux, SlideshowClientState>  {
                 { src: 'plugin/highlight/highlight.js', async: true }
             ]
         });
-        this.props.setGameUpdateCallback((state: any) => {
+        this.props.setGameMessageCallback((state: any) => {
             Reveal.slide( state.indexH, state.indexV, state.indexF);
         });
     }

@@ -7,11 +7,11 @@ import { IdeaContainer, Lane } from './IdeaContainer';
 import { IdeaView } from './IdeaView';
 import { BaseGameProps, BaseGame } from '../BaseGame'
 import { Idea } from './Idea'
-import { setGameUpdateCallback } from '../../store/connection/actions';
+import { setGameMessageCallback } from '../../store/connection/actions';
 import { setMenuItems } from '../../store/shell/actions'
 import { connect, ConnectedProps } from 'react-redux';
 import { Pixi } from '../pixi/Pixi';
-import { GameUpdate } from '../GameUpdate';
+import { GameMessage } from '../GameMessage';
 
 const WIDTH = 200;
 const MARGIN = 5;
@@ -58,7 +58,7 @@ interface IdeaWallPresenterState {
 
 const connector = connect(
     null,
-    { setGameUpdateCallback, setMenuItems }
+    { setGameMessageCallback, setMenuItems }
 );
   
 type PropsFromRedux = ConnectedProps<typeof connector> & IdeaWallPresenterProps;
@@ -193,7 +193,7 @@ class IdeaWallPresenter extends BaseGame<PropsFromRedux, IdeaWallPresenterState>
         resize();
         Events.add('onresize', 'ideawall', resize);
         this.init(this.app);
-        this.props.setGameUpdateCallback(({ name, payload }: GameUpdate<string>) => {
+        this.props.setGameMessageCallback(({ name, payload }: GameMessage<string>) => {
             const newIdea = this.getNewIdea(name, payload);
             this.addIdeaToContainer(newIdea, true);
             const ideas = [...this.state.ideas, newIdea];

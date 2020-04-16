@@ -7,8 +7,8 @@ export interface ConnectionState {
 export const SET_CONNECTION_STATUS = 'UPDATE_CONNECTION_STATUS';
 export const CONNECTION_CONNECT = 'CONNECTION_CONNECT';
 export const CONNECTION_RECONNECT = 'CONNECTION_RECONNECT';
-export const SET_GAME_UPDATE_CALLBACK = 'SET_GAME_UPDATE_CALLBACK';
-export const CLEAR_GAME_UPDATE_CALLBACK = 'CLEAR_GAME_UPDATE_CALLBACK';
+export const SET_GAME_MESSAGE_CALLBACK = 'SET_GAME_MESSAGE_CALLBACK';
+export const CLEAR_GAME_MESSAGE_CALLBACK = 'CLEAR_GAME_MESSAGE_CALLBACK';
 
 interface SetConnectionStatusAction {
     type: typeof SET_CONNECTION_STATUS
@@ -24,13 +24,13 @@ interface ConnectionReconnectAction {
     type: typeof CONNECTION_RECONNECT;
 }
 
-interface SetGameUpdateCallbackAction {
-    type: typeof SET_GAME_UPDATE_CALLBACK;
+interface setGameMessageCallbackAction {
+    type: typeof SET_GAME_MESSAGE_CALLBACK;
     callback: Function;
 }
 
-interface ClearGameUpdateCallbackAction {
-    type: typeof CLEAR_GAME_UPDATE_CALLBACK;
+interface clearGameMessageCallbackAction {
+    type: typeof CLEAR_GAME_MESSAGE_CALLBACK;
 }
 
-export type ConnectionActionTypes = SetConnectionStatusAction | ConnectionConnectAction | ConnectionReconnectAction | SetGameUpdateCallbackAction | ClearGameUpdateCallbackAction;
+export type ConnectionActionTypes = SetConnectionStatusAction | ConnectionConnectAction | ConnectionReconnectAction | setGameMessageCallbackAction | clearGameMessageCallbackAction;

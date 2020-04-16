@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Glyphicon  } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
-import { setGameUpdateCallback, clearGameUpdateCallback } from '../../store/connection/actions';
+import { setGameMessageCallback, clearGameMessageCallback } from '../../store/connection/actions';
 import { clientMessage } from '../../store/lobby/actions';
 
 export const BroadcastClient = () => {
@@ -9,9 +9,9 @@ export const BroadcastClient = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(setGameUpdateCallback(setClientText));
+        dispatch(setGameMessageCallback(setClientText));
         return () => {
-            dispatch(clearGameUpdateCallback());
+            dispatch(clearGameMessageCallback());
         }
     }, [clientText, dispatch]);
 

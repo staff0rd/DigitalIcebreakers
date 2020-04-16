@@ -1,4 +1,4 @@
-export interface GameUpdate<T> {
+export interface GameMessage<T> {
     payload: T;
     id: string;
     name: string;
