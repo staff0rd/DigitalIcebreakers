@@ -40,7 +40,6 @@ export class IdeaView extends PIXI.Container {
     }
 
     private getBackground(color: number, width: number, height: number) {
-        console.log(width);
         const background = new PIXI.Graphics();
         background.beginFill(color);
         background.drawRect(0, 0, width, height);

@@ -117,8 +117,6 @@ export default class App extends Component<{}, AppState> {
         return this.getCurrentLocation().pathname.startsWith("/join/");
     }
 
-    
-
     setMenuItems = (items: JSX.Element[]) => {
         this.setState({menuItems: items});
     }

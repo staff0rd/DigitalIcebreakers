@@ -11,6 +11,7 @@ import { setGameUpdateCallback } from '../../store/connection/actions';
 import { setMenuItems } from '../../store/shell/actions'
 import { connect, ConnectedProps } from 'react-redux';
 import { Pixi } from '../pixi/Pixi';
+import { GameUpdate } from '../GameUpdate';
 
 const WIDTH = 200;
 const MARGIN = 5;
@@ -106,6 +107,7 @@ class IdeaWallPresenter extends BaseGame<PropsFromRedux, IdeaWallPresenterState>
     init(app?: PIXI.Application) {
         this.app = app;
         if (this.app) {
+            this.app.stage.removeChildren();
             this.ideaContainer = new IdeaContainer(this.app, WIDTH, MARGIN, this.props.lanes || []);
             this.ideaContainer.addToStage(this.app.stage);
             this.setState({ ideas: this.getIdeas() || []}, () => {
@@ -191,8 +193,8 @@ class IdeaWallPresenter extends BaseGame<PropsFromRedux, IdeaWallPresenterState>
         resize();
         Events.add('onresize', 'ideawall', resize);
         this.init(this.app);
-        this.props.setGameUpdateCallback((playerName: string, idea: string | ServerIdea) => {
-            const newIdea = this.getNewIdea(playerName, idea);
+        this.props.setGameUpdateCallback(({ name, payload }: GameUpdate<string>) => {
+            const newIdea = this.getNewIdea(name, payload);
             this.addIdeaToContainer(newIdea, true);
             const ideas = [...this.state.ideas, newIdea];
             this.setState({
