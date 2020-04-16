@@ -18,18 +18,16 @@ import { Join } from './Join';
 import { Lobby } from './Lobby';
 import { CreateLobby } from './CreateLobby';
 import { LobbyClosed } from './LobbyClosed';
+import { toggleMenu } from '../store/shell/actions'
 
 type LayoutProps = RouteComponentProps & {
     currentGame?: string;
     isAdmin: boolean;
     connected: ConnectionStatus;
     lobbyId?: string;
-}
-
-type LayoutState = {
     showMenu: boolean;
+    toggleMenu: (show: boolean) => void;
 }
-
 
 class DebugRouter extends Router {
   constructor(props: BrowserRouterProps){
@@ -44,7 +42,7 @@ class DebugRouter extends Router {
   }
 }
 
-class Layout extends Component<LayoutProps, LayoutState> {
+class Layout extends Component<LayoutProps, {}> {
     displayName = Layout.name
 
     constructor(props: LayoutProps) {
@@ -56,14 +54,9 @@ class Layout extends Component<LayoutProps, LayoutState> {
 
     componentDidMount() {
         const isLobby = this.props.history.location.pathname === `/`;
-        if (isLobby && !this.state.showMenu) {
+        if (isLobby && !this.props.showMenu) {
             this.setState({showMenu: true});
         }
-    }
-
-    toggleMenu = (show: boolean) => {
-        this.setState({showMenu: show});
-        Events.emit("menu-visibility")
     }
 
     render() {
@@ -78,7 +71,7 @@ class Layout extends Component<LayoutProps, LayoutState> {
         else
         {
             const hasLobby = !!this.props.lobbyId;
-            const menu = this.state.showMenu ? this.getFullMenu(hasLobby) : this.getCollapsedMenu(hasLobby);
+            const menu = this.props.showMenu ? this.getFullMenu(hasLobby) : this.getCollapsedMenu(hasLobby);
             
             return (
                 <Grid fluid className="navPad">
@@ -126,7 +119,7 @@ class Layout extends Component<LayoutProps, LayoutState> {
                         {this.props.children}
                     </Col>
                 </Row>
-                <Glyphicon style={iconStyle} glyph="menu-hamburger" onClick={() => this.toggleMenu(true)} />
+                <Glyphicon style={iconStyle} glyph="menu-hamburger" onClick={() => this.props.toggleMenu(true)} />
             </Fragment>
         );
     }
@@ -137,9 +130,12 @@ const mapStateToProps = (state: RootState) => { return {
     isAdmin: state.lobby.isAdmin,
     connected: state.connection.status,
     lobbyId: state.lobby.id,
+    showMenu: state.shell.showMenu,
 }}
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+    toggleMenu
+};
 
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Layout as any)); //TODO: type any
