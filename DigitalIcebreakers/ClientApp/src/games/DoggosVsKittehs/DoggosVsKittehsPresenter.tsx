@@ -6,6 +6,13 @@ import { YesNoMaybeState } from '../YesNoMaybe/YesNoMaybePresenter';
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { setGameUpdateCallback } from '../../store/connection/actions';
+import { GameUpdate } from '../GameUpdate';
+
+interface Payload {
+    doggos: number;
+    kittehs: number;
+    undecided: number;
+}
 
 const connector = connect(
     null,
@@ -41,11 +48,11 @@ class DoggosVsKittehsPresenter extends BaseGame<PropsFromRedux, YesNoMaybeState>
     }
 
     componentDidMount() {
-        this.props.setGameUpdateCallback((result: any) => {
+        this.props.setGameUpdateCallback(({ payload }: GameUpdate<Payload>) => {
             this.setState({
-                yes: result.doggos,
-                no: result.kittehs,
-                maybe: result.undecided
+                yes: payload.doggos,
+                no: payload.kittehs,
+                maybe: payload.undecided
             }, () => this.init(this.app));
         });
     }
