@@ -10,13 +10,15 @@ namespace DigitalIcebreakers.Test
 {
     public static class ObjectMother
     {
-        public static Mock<IHubCallerClients> GetMockIHubCallerClients()
+        public static Mock<IHubContext<GameHub>> GetMockContext()
         {
-            var clients = new Mock<IHubCallerClients>();
+            var clients = new Mock<IHubClients>();
             clients.Setup(p => p.Client(It.IsAny<string>())).Returns(new Mock<IClientProxy>().Object);
             clients.Setup(p => p.Clients(It.IsAny<IReadOnlyList<string>>())).Returns(new Mock<IClientProxy>().Object);
-            clients.SetupGet(p => p.Caller).Returns(new Mock<IClientProxy>().Object);
-            return clients;
+            //clients.SetupGet(p => p.Caller).Returns(new Mock<IClientProxy>().Object);
+            var context = new Mock<IHubContext<GameHub>>();
+            context.Setup(p => p.Clients).Returns(clients.Object);
+            return context;
         }
 
         public static MockGameHub GetMockGameHub(Guid contextId, List<Lobby> lobbys)
