@@ -1,23 +1,22 @@
 using System.Threading.Tasks;
-using DigitalIcebreakers.Games;
-using DigitalIcebreakers.Hubs;
-using Microsoft.AspNetCore.SignalR;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace DigitalIcebreakers.Games
 {
     public class StartStopContinue : Game, IGame 
     {
-        public string Name => "startstopcontinue";
+        public override string Name => "startstopcontinue";
+
+        public StartStopContinue(Sender sender, LobbyManager lobbyManager) : base(sender, lobbyManager) {}
         
-        public async override Task ClientMessage(JToken client, IGameHub hub)
+        public async override Task OnReceivePlayerMessage(JToken client, string connectionId)
         {
             var idea = client.ToObject<Idea>();
-            var player = hub.GetPlayerByConnectionId();
 
             if (idea != null)
-                await hub.SendGameUpdateToPresenter(idea, player);
+            {
+                await SendToPresenter(connectionId, idea, GetPlayerByConnectionId(connectionId));
+            }
         }
     }
 }

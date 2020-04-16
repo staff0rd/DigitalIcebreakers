@@ -6,14 +6,13 @@ namespace DigitalIcebreakers.Games
 {
     public interface IGame
     {
-        Task Start(IGameHub hub);
-
+        Task Start(string connectionId);
         string Name { get; }
 
-        Task AdminMessage(JToken admin, IGameHub hub);
+        Task OnReceivePresenterMessage(JToken admin, string connectionid);
 
-        Task ClientMessage(JToken client, IGameHub hub);
+        Task OnReceivePlayerMessage(JToken client, string connectionid);
 
-        Task SystemMessage(JToken system, IGameHub hub);
+        Task OnReceiveSystemMessage(JToken system, string connectionId);
     }
 }

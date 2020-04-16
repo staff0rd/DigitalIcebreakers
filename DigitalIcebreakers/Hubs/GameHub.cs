@@ -13,77 +13,37 @@ using Newtonsoft.Json.Linq;
 
 namespace DigitalIcebreakers.Hubs
 {
-    public class GameHub : Hub, IGameHub
+    public class GameHub : Hub
     {
-        static int lobbyNumber = 0;
+        protected readonly LobbyManager _lobbys;
         private ILogger<GameHub> _logger;
-        private List<Lobby> _lobbys;
         private AppSettings _settings;
+        private readonly ClientHelper _clients;
+        protected readonly Sender _send;
 
-        private SendHelper _clients;
-        private SendHelper SendTo {
-            get 
-            {
-                if (_clients == null)
-                    _clients = new SendHelper(Clients);
-                return _clients;
-            }
-        }
+        protected virtual string ConnectionId => Context.ConnectionId;
 
-        public GameHub(ILogger<GameHub> logger, List<Lobby> lobbys, IOptions<AppSettings> settings)
+        public GameHub(ILogger<GameHub> logger, LobbyManager lobbyManager, IOptions<AppSettings> settings)
         {
-            _lobbys = lobbys;
+            _lobbys = lobbyManager;
             _logger = logger;
             _settings = settings?.Value;
+            _clients = new ClientHelper(Clients);
+            _send = new Sender(_clients);
         }
 
         public int GetConnectedPlayerCount()
         {
-            return GetLobby().Players.Count(p => !p.IsAdmin && p.IsConnected);
-        }
-
-        public async Task SendGameUpdateToPlayers(object payload)
-        {
-            var clients =  SendTo.Players(GetLobby());
-            await SendGameUpdate(clients, payload);
-        }
-
-        public async Task SendGameUpdateToPlayer(Player player, object payload)
-        {
-            var clients =  SendTo.Player(player);
-            await SendGameUpdate(clients, payload);
-        }
-
-        private async Task SendGameUpdate(IClientProxy clients, object payload)
-        {
-            var method = "gameUpdate";
-            await clients.SendAsync(method, payload);
-        }
-
-        public async virtual Task SendGameUpdateToPresenter<T>(T payload, Player player = null)
-        {
-            var client = SendTo.Admin(GetLobby());
-            await SendGameUpdate(client, new GameUpdate<T>(payload, player));
+            return _lobbys.GetLobbyByConnectionId(ConnectionId).Players.Count(p => !p.IsAdmin && p.IsConnected);
         }
 
         public async Task CreateLobby(Guid id, string name, User user)
         {
-            _lobbys.Where(p => p.Admin != null && p.Admin.Id == user.Id)
+            _lobbys.GetByAdminId(user.Id)
                 .ToList()
                 .ForEach(async l => await CloseLobby(l));
-
-            var lobby = new Lobby
-            {
-                Id = id,
-                Number = ++lobbyNumber,
-                Players = new List<Player>
-                {
-                    new Player { ConnectionId = Context.ConnectionId, Id = user.Id, IsAdmin = true, IsConnected = true, Name = user.Name }
-                },
-                Name = name
-            };
-
-            _lobbys.Add(lobby);
+                
+            var lobby = _lobbys.CreateLobby(id, name, new Player { ConnectionId = Context.ConnectionId, Id = user.Id, IsAdmin = true, IsConnected = true, Name = user.Name });
 
             _logger.LogInformation("{action} {lobbyName} for {id}", "created", lobby.Name, id);
 
@@ -92,7 +52,8 @@ namespace DigitalIcebreakers.Hubs
 
         public async Task CloseLobby()
         {
-            var lobby = _lobbys.SingleOrDefault(l => l.Players.Any(p => p.IsAdmin && p.ConnectionId == Context.ConnectionId));
+            var lobby = _lobbys.GetByAdminConnectionId(Context.ConnectionId);
+
             await CloseLobby(lobby);
         }
 
@@ -101,8 +62,8 @@ namespace DigitalIcebreakers.Hubs
             if (lobby != null)
             {
                 _logger.LogInformation("Lobby {lobbyName} (#{lobbyNumber}, {lobbyPlayers} players) has been {action}", lobby.Name, lobby.Number, lobby.PlayerCount, "closed");
-                _lobbys.Remove(lobby);
-                await SendTo.EveryoneInLobby(lobby).SendAsync("closelobby");
+                _lobbys.Close(lobby);
+                await _send.CloseLobby(lobby);
             }
         }
 
@@ -112,8 +73,8 @@ namespace DigitalIcebreakers.Hubs
 
         public async Task Connect(User user, Guid? lobbyId = null)
         {
-            var player = GetPlayer(user);
-            var lobby = GetLobby();
+            var player = GetOrCreatePlayer(user, ConnectionId);
+            var lobby = _lobbys.GetLobbyByConnectionId(ConnectionId);
 
             if (lobbyId.HasValue && lobby != null && lobbyId.Value != lobby.Id)
                 await LeaveLobby(player, lobby);
@@ -129,112 +90,92 @@ namespace DigitalIcebreakers.Hubs
             if (lobby != null)
             {
                 _logger.LogInformation("{player} {action} to lobby {lobbyName} (#{lobbyNumber}, {lobbyPlayers} players)", player, "re-connected", lobby.Name, lobby.Number, lobby.PlayerCount);
-                var players = lobby.Players.Where(p => !p.IsAdmin).Select(p => new User { Id = p.ExternalId, Name = p.Name }).ToList();
-                await SendTo.Self().SendAsync("Reconnect", new Reconnect { PlayerId = player.Id, PlayerName = player.Name, LobbyName = lobby.Name, LobbyId = lobby.Id, IsAdmin = player.IsAdmin, Players = players, CurrentGame = lobby.CurrentGame?.Name });
+                
+                await _send.Reconnect(lobby, player);
                 if (!player.IsAdmin)
                 {
-                    await SendTo.Admin(lobby).SendAsync("joined", new User { Id = player.ExternalId, Name = player.Name });
+                    await _send.Joined(lobby, player);
                     await SystemMessage("join");
                 }
             }
             else {
                 _logger.LogInformation("{player} {action} ({transportType})", player, "connected", this.GetTransportType());
-                await SendTo.Self().SendAsync("Connected");
+                await _send.Connected();
             }
         }
 
-        private Player GetPlayer(User user)
+        private Player GetOrCreatePlayer(User user, string connectionId)
         {
-            var player = _lobbys.SelectMany(p => p.Players).SingleOrDefault(p => p.Id == user.Id) ?? new Player { Id = user.Id, Name = user.Name };
+            var player = _lobbys.GetOrCreatePlayer(user.Id, user.Name);
             
-            player.ConnectionId = Context.ConnectionId;
+            player.ConnectionId = connectionId;
 
             return player;
         }
 
-        public void NewGame(string name)
+        public async Task NewGame(string name)
         {
-            var player = GetPlayerByConnectionId();
-            var lobby = GetLobby();
+            _lobbys.GetPlayerAndLobby(ConnectionId, out var player, out var lobby);
 
             if (lobby != null && player.IsAdmin)
             {
                 _logger.LogInformation("Lobby {lobbyName} (#{lobbyNumber}, {lobbyPlayers} players) has {action} {game}", lobby.Name, lobby.Number, lobby.PlayerCount, "started", name);
                 lobby.CurrentGame = GetGame(name);
-                SendTo.EveryoneInLobby(lobby).SendAsync("newgame", name);
-                lobby.CurrentGame.Start(this);
+                await _send.NewGame(lobby, name);
+                await lobby.CurrentGame.Start(ConnectionId);
             }
         }
 
 
-        private static IGame GetGame(string name)
+        private IGame GetGame(string name)
         {
             switch (name)
             {
-                case "doggos-vs-kittehs": return new DoggosVsKittehs();
-                case "yes-no-maybe": return new YesNoMaybe();
-                case "buzzer": return new Buzzer();
-                case "pong": return new Pong();
-                case "ideawall": return new IdeaWall();
-                case "broadcast": return new Broadcast();
-                case "startstopcontinue": return new StartStopContinue();
-                case "slideshow": return new Slideshow();
-                case "react": return new Reaction();
-                case "splat": return new Splat();
+                case "doggos-vs-kittehs": return new DoggosVsKittehs(_send, _lobbys);
+                case "yes-no-maybe": return new YesNoMaybe(_send, _lobbys);
+                case "buzzer": return new Buzzer(_send, _lobbys);
+                case "pong": return new Pong(_send, _lobbys);
+                case "ideawall": return new IdeaWall(_send, _lobbys);
+                case "broadcast": return new Broadcast(_send, _lobbys);
+                case "startstopcontinue": return new StartStopContinue(_send, _lobbys);
+                case "slideshow": return new Slideshow(_send, _lobbys);
+                case "react": return new Reaction(_send, _lobbys);
+                case "splat": return new Splat(_send, _lobbys);
                 default: throw new ArgumentOutOfRangeException("Unknown game");
             }
         }
 
-        public void EndGame()
+        public async Task EndGame()
         {
-            var player = GetPlayerByConnectionId();
-            var lobby = GetLobby();
+            _lobbys.GetPlayerAndLobby(ConnectionId, out var player, out var lobby);
 
             if (lobby != null && player.IsAdmin)
             {
                 lobby.CurrentGame = null;
-                SendTo.EveryoneInLobby(lobby).SendAsync("endgame");
+                await _send.EndGame(lobby);
             }
-        }
-
-        private Player GetAdmin()
-        {
-            return GetLobby().Admin;
-        }
-
-        public Player[] GetPlayers()
-        {
-            return GetLobby().GetPlayers();
-        }
-
-        public Lobby GetLobby()
-        {
-            var player = GetPlayerByConnectionId();
-            return _lobbys.SingleOrDefault(p => p.Players.Contains(player));
-        }
-
-        public bool IsAdmin => GetAdmin().ConnectionId == Context.ConnectionId;
-
-        public Player GetPlayerByConnectionId()
-        {
-            var player = _lobbys.SelectMany(p => p.Players).SingleOrDefault(p => p.ConnectionId == Context.ConnectionId);
-            return player;
         }
 
         public async Task ConnectToLobby(User user, Guid lobbyId)
         {
-            var player = GetPlayer(user);
-            var existingLobby = GetLobby();
+            var player = GetOrCreatePlayer(user, Context.ConnectionId);
+            var existingLobby = _lobbys.GetLobbyById(lobbyId);
             if (existingLobby != null && existingLobby.Id != lobbyId)
+            {
                 await LeaveLobby(player, existingLobby);
+            }
            
-            var lobby = _lobbys.SingleOrDefault(p => p.Id == lobbyId);
+            var lobby = _lobbys.GetLobbyById(lobbyId);
             if (lobby == null)            
-                await SendTo.Self().SendAsync("closelobby");
+            {
+                await _send.CloseLobby();
+            }
             else
             {
                 if (!lobby.Players.Any(p => p.Id == player.Id))
+                {
                     lobby.Players.Add(player);
+                }
                 await Connect(player, lobby);
             }
         }
@@ -242,7 +183,7 @@ namespace DigitalIcebreakers.Hubs
         private async Task LeaveLobby(Player player, Lobby lobby)
         {
             _logger.LogInformation("{player} has left {lobbyName} (#{lobbyNumber}, {lobbyPlayers} players)", player, lobby.Name, lobby.Number, lobby.PlayerCount);
-            await SendTo.Admin(lobby).SendAsync("left", new User { Id = player.ExternalId, Name = player.Name });
+            await _send.PlayerLeft(lobby, player);
             lobby.Players.Remove(player);
         }
 
@@ -250,15 +191,14 @@ namespace DigitalIcebreakers.Hubs
         {
             // disconnects only logged for players
             await SystemMessage("leave");
-            var player = GetPlayerByConnectionId();
+            _lobbys.GetPlayerAndLobby(ConnectionId, out var player, out var lobby);
             if (player != null)
             {
                 _logger.LogInformation("{player} {action}", player, "disconnected");
                 player.IsConnected = false;
-                var lobby = GetLobby();
                 if (lobby != null)
                 {
-                    await SendTo.Admin(lobby).SendAsync("left", new User { Id = player.ExternalId, Name = player.Name });
+                    await _send.PlayerLeft(lobby, player);
                 }
             }
             await base.OnDisconnectedAsync(exception);
@@ -272,7 +212,7 @@ namespace DigitalIcebreakers.Hubs
 
         public async Task HubMessage(string json) 
         {
-            var lobby = GetLobby();
+            var lobby = _lobbys.GetLobbyByConnectionId(ConnectionId);
             if (lobby != null && lobby.CurrentGame != null) 
             {
                 var message = JObject.Parse(json);
@@ -282,15 +222,15 @@ namespace DigitalIcebreakers.Hubs
                 var client = message["client"];
 
                 if (system != null) {
-                    await lobby.CurrentGame.SystemMessage(system, this);
+                    await lobby.CurrentGame.OnReceiveSystemMessage(system, ConnectionId);
                 }
 
-                if (admin != null && IsAdmin) {
-                    await lobby.CurrentGame.AdminMessage(admin, this);
+                if (admin != null && _lobbys.PlayerIsAdmin(ConnectionId)) {
+                    await lobby.CurrentGame.OnReceivePresenterMessage(admin, ConnectionId);
                 }
 
                 if (client != null) {
-                    await lobby.CurrentGame.ClientMessage(client, this);
+                    await lobby.CurrentGame.OnReceivePlayerMessage(client, ConnectionId);
                 }
             }
         }

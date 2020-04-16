@@ -10,31 +10,37 @@ namespace DigitalIcebreakers.Test
 {
     public static class ObjectMother
     {
-        public static MockGamehub GetMockGameHub(Guid contextId, List<Lobby> lobbys)
+        public static Mock<IHubCallerClients> GetMockIHubCallerClients()
         {
-            var gameHub = new MockGamehub(new Mock<ILogger<GameHub>>().Object, lobbys, null);
-            var context = new Mock<HubCallerContext>();
-            context.Setup(p => p.ConnectionId).Returns(contextId.ToString());
-            gameHub.Context = context.Object;
             var clients = new Mock<IHubCallerClients>();
             clients.Setup(p => p.Client(It.IsAny<string>())).Returns(new Mock<IClientProxy>().Object);
             clients.Setup(p => p.Clients(It.IsAny<IReadOnlyList<string>>())).Returns(new Mock<IClientProxy>().Object);
             clients.SetupGet(p => p.Caller).Returns(new Mock<IClientProxy>().Object);
-            gameHub.Clients = clients.Object;
+            return clients;
+        }
+
+        public static MockGameHub GetMockGameHub(Guid contextId, List<Lobby> lobbys)
+        {
+            var gameHub = new MockGameHub(lobbys, contextId.ToString());
+            var context = new Mock<HubCallerContext>();
+            context.Setup(p => p.ConnectionId).Returns(contextId.ToString());
+            gameHub.Context = context.Object;
+            gameHub.Clients = GetMockIHubCallerClients().Object;
             return gameHub;
         }
 
-        public static MockGamehub GetMockGameHub(Guid contextId, Lobby lobby) {
+        public static MockGameHub GetMockGameHub(Guid contextId, Lobby lobby) {
             return GetMockGameHub(contextId, new List<Lobby> { lobby });
         }
 
-        public static Lobby GetLobby(Guid adminId, IGame game) {
-            return new Lobby
-            {
-                CurrentGame = game,
-                Id = Guid.NewGuid(),
-                Players = new List<Player> { GetPlayer(adminId, true) }
-            };
+        public static MockGameHub GetMockGameHub(Guid contextId) {
+            return GetMockGameHub(contextId, new List<Lobby>());
+        }
+
+        public static Lobby CreateLobby(MockGameHub hub, Guid adminId, Game game) {
+            var lobby  = hub.Lobbys.CreateLobby(Guid.NewGuid(), "my lobby", GetPlayer(adminId, true));
+            lobby.CurrentGame = game;
+            return lobby;
         }
 
         public static Player GetPlayer(Guid id, bool isAdmin = false) {

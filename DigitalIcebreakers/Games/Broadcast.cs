@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using DigitalIcebreakers;
 using DigitalIcebreakers.Games;
 using DigitalIcebreakers.Hubs;
 using Microsoft.AspNetCore.SignalR;
@@ -6,16 +7,18 @@ using Newtonsoft.Json.Linq;
 
 public class Broadcast : Game, IGame 
 {
-    public string Name => "broadcast";
+    public override string Name => "broadcast";
     
-    public async override Task ClientMessage(JToken client, IGameHub hub)
+    public Broadcast(Sender sender, LobbyManager lobbyManager) : base(sender, lobbyManager) {}
+    
+    public async override Task OnReceivePlayerMessage(JToken client, string connectionId)
     {
-        await hub.SendGameUpdateToPresenter("d");   
+        await SendToPresenter(connectionId, "d");   
     }
 
-    public async override Task AdminMessage(JToken admin, IGameHub hub)
+    public async override Task OnReceivePresenterMessage(JToken admin, string connectionId)
     {
         string message = admin.ToObject<string>();
-        await hub.SendGameUpdateToPlayers(message);
+        await SendToPlayers(connectionId, message);
     }
 }

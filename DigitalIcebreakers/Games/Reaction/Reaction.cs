@@ -7,50 +7,52 @@ using Newtonsoft.Json.Linq;
 
 public class Reaction : Game, IGame 
 {
-    public string Name => "react";
+    public override string Name => "react";
 
     readonly Dictionary<Guid, int> _selections = new Dictionary<Guid, int>();
 
     private Shape[] _state = new Shape[0]; 
+
+    public Reaction(Sender sender, LobbyManager lobbyManager) : base(sender, lobbyManager) {}
     
-    public async override Task ClientMessage(JToken client, IGameHub hub)
+    public async override Task OnReceivePlayerMessage(JToken client, string connectionId)
     {
-        var player = hub.GetPlayerByConnectionId();
+        var player = GetPlayerByConnectionId(connectionId);
         var selectedId = client.ToObject<int>();
         if (!_selections.ContainsKey(player.Id)) 
         {
             _selections.Add(player.Id, selectedId);
-            await hub.SendGameUpdateToPresenter(new AdminPayload { SelectedId =  selectedId }, player);
+            await SendToPresenter(connectionId, new AdminPayload { SelectedId =  selectedId }, player);
         }
     }
 
-    public async override Task AdminMessage(JToken admin, IGameHub hub)
+    public async override Task OnReceivePresenterMessage(JToken admin, string connectionId)
     {
         var state = admin.ToObject<Shape[]>();
         _state = state;
         _selections.Clear();
-        await hub.SendGameUpdateToPlayers(new ClientPayload { Shapes = state });
+        await SendToPlayers(connectionId, new ClientPayload { Shapes = state });
     }
 
-    public async override Task SystemMessage(JToken payload, IGameHub hub) 
+    public async override Task OnReceiveSystemMessage(JToken payload, string connectionId) 
     {
-        var player = hub.GetPlayerByConnectionId();
+        var player = GetPlayerByConnectionId(connectionId);
         var externalId = player.ExternalId;
         string system = payload.ToString();
         switch (system)
         {
-            case "join": await Join(hub, player); break;
+            case "join": await Join(player); break;
         }
     }
 
-    private async Task Join(IGameHub hub, Player player)
+    private async Task Join(Player player)
     {
         if (!player.IsAdmin)
         {
             var id = player.ExternalId;
             int? selectedId = _selections.ContainsKey(player.Id) ? _selections[player.Id] : (int?)null;
 
-            await hub.SendGameUpdateToPlayer(player, new ClientPayload { Shapes = _state, SelectedId = selectedId });
+            await SendToPlayer(player, new ClientPayload { Shapes = _state, SelectedId = selectedId });
         }
     }
 }

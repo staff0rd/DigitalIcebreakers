@@ -19,11 +19,11 @@ namespace DigitalIcebreakers.Test.Pong
         public async Task Setup()
         {
             var playerId = Guid.NewGuid();
-            var game = new DigitalIcebreakers.Games.Pong(_leftTeam, _rightTeam);
-            var lobby = ObjectMother.GetLobby(Guid.NewGuid(), game);
+            var gameHub = ObjectMother.GetMockGameHub(playerId);
+            var game = new DigitalIcebreakers.Games.Pong(gameHub.Sender, gameHub.Lobbys, _leftTeam, _rightTeam);
+            var lobby = ObjectMother.CreateLobby(gameHub, Guid.NewGuid(), game);
             lobby.Players.Add(ObjectMother.GetPlayer(playerId));
             lobby.CurrentGame = game;
-            var gameHub = ObjectMother.GetMockGameHub(playerId, lobby);
             var payload = JsonConvert.SerializeObject(new {
                 client = "join"
             });

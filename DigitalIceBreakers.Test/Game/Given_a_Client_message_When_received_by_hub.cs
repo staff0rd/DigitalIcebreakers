@@ -10,17 +10,17 @@ namespace DigitalIcebreakers.Test
     [TestClass]
     public class Given_a_Client_message_When_received_by_hub
     {
-        private MockGamehub _gameHub;
+        private MockGameHub _gameHub;
         private MockGame _game;
 
         [TestInitialize]
         public void Setup()
         {
             var playerId = Guid.NewGuid();
-            _game = new MockGame();
-            var lobby = ObjectMother.GetLobby(Guid.NewGuid(), _game);
+            _gameHub = ObjectMother.GetMockGameHub(playerId);
+            _game = new MockGame(_gameHub.Sender, _gameHub.Lobbys);
+            var lobby = ObjectMother.CreateLobby(_gameHub, Guid.NewGuid(), _game);
             lobby.Players.Add(ObjectMother.GetPlayer(playerId));
-            _gameHub = ObjectMother.GetMockGameHub(playerId, lobby);
             var payload = JsonConvert.SerializeObject(new {
                 client = new {content = "CONTENT", lane = 0}
             });

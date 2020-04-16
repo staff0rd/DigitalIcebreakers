@@ -17,10 +17,10 @@ namespace DigitalIcebreakers.Test
         {
             var playerId = Guid.NewGuid();
             var adminId = Guid.NewGuid();
-            _game = new MockGame();
-            var lobby = ObjectMother.GetLobby(adminId, _game);
+            var gameHub = ObjectMother.GetMockGameHub(adminId);
+            var lobby = ObjectMother.CreateLobby(gameHub, adminId, _game);
             lobby.Players.Add(ObjectMother.GetPlayer(playerId));
-            var gameHub = ObjectMother.GetMockGameHub(adminId, lobby);
+            _game = new MockGame(gameHub.Sender, gameHub.Lobbys);
             var payload = JsonConvert.SerializeObject(new {
                 admin = new {content = "CONTENT", lane = 0}
             });

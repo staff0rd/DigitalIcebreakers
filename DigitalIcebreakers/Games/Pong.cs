@@ -10,11 +10,11 @@ namespace DigitalIcebreakers.Games
 {
     public class Pong : Game, IGame
     {
-        public string Name => "pong";
+        public override string Name => "pong";
 
-        public Pong() { }
+        public Pong(Sender sender, LobbyManager lobbyManager) : base(sender, lobbyManager) {}
 
-        public Pong (Dictionary<Guid, int> leftTeam, Dictionary<Guid, int> rightTeam)
+        public Pong (Sender sender, LobbyManager lobbyManager, Dictionary<Guid, int> leftTeam, Dictionary<Guid, int> rightTeam) : this(sender, lobbyManager)
         {
             _leftTeam = leftTeam;
             _rightTeam = rightTeam;
@@ -23,9 +23,9 @@ namespace DigitalIcebreakers.Games
         Dictionary<Guid, int> _leftTeam = new Dictionary<Guid, int>();
         Dictionary<Guid, int> _rightTeam = new Dictionary<Guid, int>();
 
-        public async override Task ClientMessage(JToken payload, IGameHub hub)
+        public async override Task OnReceivePlayerMessage(JToken payload, string connectionId)
         {
-            var player = hub.GetPlayerByConnectionId();
+            var player = GetPlayerByConnectionId(connectionId);
             var externalId = player.ExternalId;
             string client = payload.ToString();
             switch (client)
@@ -33,27 +33,27 @@ namespace DigitalIcebreakers.Games
                 case "release": Move(0, externalId); break;
                 case "up": Move(1, externalId); break;
                 case "down": Move(-1, externalId); break;
-                case "join": await Join(hub, player); break;
+                case "join": await Join(player); break;
             }
-            await UpdatePresenter(hub);
+            await UpdatePresenter(connectionId);
         }
 
-        public async override Task SystemMessage(JToken payload, IGameHub hub)
+        public async override Task OnReceiveSystemMessage(JToken payload, string connectionId)
         {
-            var player = hub.GetPlayerByConnectionId();
+            var player = GetPlayerByConnectionId(connectionId);
             var externalId = player.ExternalId;
             string system = payload.ToString();
             switch (system)
             {
                 case "leave": Leave(externalId); Move(0, externalId); break;
-                case "join": await Join(hub, player); break;
+                case "join": await Join(player); break;
             }
-            await UpdatePresenter(hub);
+            await UpdatePresenter(connectionId);
         }
 
-        private async Task UpdatePresenter(IGameHub hub)
+        private async Task UpdatePresenter(string connectionId)
         {
-            await hub.SendGameUpdateToPresenter(new Result(Speed(_leftTeam), Speed(_rightTeam)));
+            await SendToPresenter(connectionId, new Result(Speed(_leftTeam), Speed(_rightTeam)));
         }
 
         private decimal Speed(Dictionary<Guid, int> team)
@@ -86,7 +86,7 @@ namespace DigitalIcebreakers.Games
             PerformOnDictionary(id, (d) => d.Remove(id));
         }
 
-        internal async Task Join(IGameHub hub, Player player)
+        internal async Task Join(Player player)
         {
             if (!player.IsAdmin)
             {
@@ -100,17 +100,17 @@ namespace DigitalIcebreakers.Games
                     _rightTeam[id] = 0;
                 PerformOnDictionary(id, (d) => d[id] = 0);
 
-                await hub.SendGameUpdateToPlayer(player, GetGameData(player));
+                await SendToPlayer(player, GetGameData(player));
             }
         }
 
-        public override async Task Start(IGameHub hub)
+        public override async Task Start(string connectionId)
         {
-            var players = hub.GetPlayers();
+            var players = GetPlayers(connectionId);
 
             foreach (var player in players)
             {
-                await Join(hub, player);
+                await Join(player);
             }
         }
 

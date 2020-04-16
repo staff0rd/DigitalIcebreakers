@@ -14,21 +14,23 @@ namespace DigitalIcebreakers.Test
         public List<string> ClientMessages { get; private set;} = new List<string>();
         public List<string> AdminMessages { get; private set;} = new List<string>();
 
-        public string Name => "mockgame";
+        public override string Name => "mockgame";
 
-        public override Task AdminMessage(JToken admin, IGameHub hub)
+        public MockGame(Sender sender, LobbyManager lobbyManager) : base(sender, lobbyManager) {}
+
+        public override Task OnReceivePresenterMessage(JToken admin, string connectionId)
         {
             AdminMessages.Add(admin.ToString());
             return Task.CompletedTask;
         }
 
-        public async override Task ClientMessage(JToken client, IGameHub hub)
+        public async override Task OnReceivePlayerMessage(JToken client, string connectionId)
         {
             ClientMessages.Add(client.ToString());
-            await hub.SendGameUpdateToPresenter("test");
+            await SendToPresenter(connectionId, "test");
         }
 
-        public override Task SystemMessage(JToken system, IGameHub hub)
+        public override Task OnReceiveSystemMessage(JToken system, string connectionId)
         {
             SystemMessages.Add(system.ToString());
             return Task.CompletedTask;

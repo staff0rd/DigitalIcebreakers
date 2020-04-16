@@ -8,34 +8,37 @@ namespace DigitalIcebreakers.Games
 {
     public class YesNoMaybe : Game, IGame
     {
-        public string Name => "yes-no-maybe";
+        public override string Name => "yes-no-maybe";
         Dictionary<Guid, int> _results = new Dictionary<Guid, int>();
-        public override async Task ClientMessage(JToken payload, IGameHub hub)
+
+        public YesNoMaybe(Sender sender, LobbyManager lobbyManager) : base(sender, lobbyManager) {}
+
+        public override async Task OnReceivePlayerMessage(JToken payload, string connectionId)
         {   
             string client = payload.ToString();
             // 1 = no
             // 0 = yes
             int value;
             if (int.TryParse(client, out value))
-                _results[hub.GetPlayerByConnectionId().Id] = value;
+                _results[GetPlayerByConnectionId(connectionId).Id] = value;
             
-            await SendUpdate(hub);
+            await SendUpdate(connectionId);
         }
 
-        private async Task SendUpdate(IGameHub hub)
+        private async Task SendUpdate(string connectionId)
         {
-            var totalPlayers = hub.GetPlayers().Count();
+            var totalPlayers = GetPlayerCount(connectionId);
             var result = new Result { Yes = _results.Where(p => p.Value == 0).Count(), No = _results.Where(p => p.Value == 1).Count() };
             result.Maybe = totalPlayers - result.No - result.Yes;
-            await hub.SendGameUpdateToPresenter(result);
+            await SendToPresenter(connectionId, result);
         }
 
-        public async override Task AdminMessage(JToken payload, IGameHub hub)
+        public async override Task OnReceivePresenterMessage(JToken payload, string connectionId)
         {
             string admin = payload.ToString();
             if (admin == "reset")
                 _results.Clear();
-            await SendUpdate(hub);
+            await SendUpdate(connectionId);
         }
 
         public class Result

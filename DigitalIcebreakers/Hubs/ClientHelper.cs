@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace DigitalIcebreakers.Hubs
 {
-    public class SendHelper 
+    public class ClientHelper 
     {
         IHubCallerClients _clients;
 
-        public SendHelper(IHubCallerClients clients)
+        public ClientHelper(IHubCallerClients clients)
         {
             _clients = clients;
         }

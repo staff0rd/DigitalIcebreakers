@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using DigitalIcebreakers;
 using DigitalIcebreakers.Games;
 using DigitalIcebreakers.Hubs;
 using Microsoft.AspNetCore.SignalR;
@@ -6,26 +7,28 @@ using Newtonsoft.Json.Linq;
 
 public class Slideshow : Game, IGame 
 {
-    public string Name => "slideshow";
+    public override string Name => "slideshow";
 
     private SlideState _state = new SlideState(); 
+
+    public Slideshow(Sender sender, LobbyManager lobbyManager) : base(sender, lobbyManager) {}
     
-    public async override Task ClientMessage(JToken client, IGameHub hub)
+    public async override Task OnReceivePlayerMessage(JToken client, string connectionId)
     {
-        await hub.SendGameUpdateToPresenter("d");   
+        await SendToPresenter(connectionId, "d");   
     }
 
-    public async override Task SystemMessage(JToken system, IGameHub hub)
+    public async override Task OnReceiveSystemMessage(JToken system, string connectionId)
     {
         var action = system.ToObject<string>();
         if (action == "join")
-            await hub.SendGameUpdateToPlayer(hub.GetPlayerByConnectionId(), _state);
+            await SendToPlayer(connectionId, _state);
     }
 
-    public async override Task AdminMessage(JToken admin, IGameHub hub)
+    public async override Task OnReceivePresenterMessage(JToken admin, string connectionId)
     {
         var state = admin.ToObject<SlideState>();
         _state = state;
-        await hub.SendGameUpdateToPlayers(state);
+        await SendToPlayers(connectionId, state);
     }
 }

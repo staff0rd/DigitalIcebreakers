@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using Moq;
 
 namespace DigitalIcebreakers.Test
 {
-    public class MockGamehub : GameHub
+    public class MockGameHub : GameHub
     {
-        public List<object> SentToAdmin { get; private set;} = new List<object>();
+        private readonly string _connectionId;
+        protected override string ConnectionId => _connectionId;
+        public LobbyManager Lobbys => _lobbys;
+        public Sender Sender => _send;
 
-        public MockGamehub(ILogger<GameHub> logger, List<Lobby> lobbys, IOptions<AppSettings> settings) : base(logger, lobbys, settings)
+        public MockGameHub(List<Lobby> lobbys, string connectionId) 
+            : base(new Mock<ILogger<GameHub>>().Object, new LobbyManager(lobbys), new Mock<IOptions<AppSettings>>().Object)
         {
-        }
-
-        public override Task SendGameUpdateToPresenter<T>(T payload, Player player = null)
-        {
-            this.SentToAdmin.Add(payload);
-            return Task.CompletedTask;
+            _connectionId = connectionId;
         }
     }
 }
