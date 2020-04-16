@@ -30,8 +30,7 @@ export const Pixi: React.FC<PixiProps> = (props) => {
     useEffect(() => {
         const pixi = newPixi();
         setApp(pixi);
-        props.onAppChange(pixi);
-    }, [props.onAppChange])
+    }, [])
 
     useEffect(() => {
         const element = pixiElement.current;

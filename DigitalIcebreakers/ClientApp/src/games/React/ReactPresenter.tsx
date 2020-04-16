@@ -11,6 +11,7 @@ import * as gsap from "gsap";
 import { ConnectedProps, connect } from 'react-redux';
 import { clientMessage, adminMessage } from '../../store/lobby/actions';
 import { setGameUpdateCallback, clearGameUpdateCallback } from '../../store/connection/actions';
+import { GameUpdate } from '../GameUpdate'
 
 import { Pixi } from '../pixi/Pixi';
 import { RootState } from '../../store/RootState';
@@ -45,8 +46,7 @@ const connector = connect(
   
 type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
 
-type AdminPayload = {
-    userId: string;
+type Payload = {
     selectedId: number;
 }
 
@@ -179,10 +179,10 @@ class ReactPresenter extends BaseGame<PropsFromRedux, ReactState> {
     }
     
     componentDidMount() {
-        const callback = (response: AdminPayload) => {
+        const callback = (response: GameUpdate<Payload>) => {
             const user = {
-                id: response.userId,
-                choice: response.selectedId
+                id: response.id,
+                choice: response.payload.selectedId
             };
 
             this.resetTimeout(!!this.state.shape);
