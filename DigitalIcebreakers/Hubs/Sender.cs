@@ -42,7 +42,7 @@ namespace DigitalIcebreakers
         public async Task Reconnect(Lobby lobby, Player player)
         {
             var players = lobby.Players.Where(p => !p.IsAdmin).Select(p => new User { Id = p.ExternalId, Name = p.Name }).ToList();
-            await _clients.Self().SendAsync("Reconnect", new Reconnect { PlayerId = player.Id, PlayerName = player.Name, LobbyName = lobby.Name, LobbyId = lobby.Id, IsAdmin = player.IsAdmin, Players = players, CurrentGame = lobby.CurrentGame?.Name });
+            await _clients.Self(player.ConnectionId).SendAsync("Reconnect", new Reconnect { PlayerId = player.Id, PlayerName = player.Name, LobbyName = lobby.Name, LobbyId = lobby.Id, IsAdmin = player.IsAdmin, Players = players, CurrentGame = lobby.CurrentGame?.Name });
         }
 
         public async Task PlayerLeft(Lobby lobby, Player player)
@@ -50,9 +50,9 @@ namespace DigitalIcebreakers
             await _clients.Admin(lobby).SendAsync("left", new User { Id = player.ExternalId, Name = player.Name });
         }
 
-        internal async Task CloseLobby(Lobby lobby = null)
+        internal async Task CloseLobby(string connectionId, Lobby lobby = null)
         {
-            await (lobby != null ? _clients.EveryoneInLobby(lobby) : _clients.Self())
+            await (lobby != null ? _clients.EveryoneInLobby(lobby) : _clients.Self(connectionId))
                 .SendAsync("closelobby");
         }
 
@@ -71,9 +71,9 @@ namespace DigitalIcebreakers
             await _clients.Admin(lobby).SendAsync("joined", new User { Id = player.ExternalId, Name = player.Name });
         }
 
-        internal async Task Connected()
+        internal async Task Connected(string connectionId)
         {
-            await _clients.Self().SendAsync("Connected");
+            await _clients.Self(connectionId).SendAsync("Connected");
         }
     }
 }

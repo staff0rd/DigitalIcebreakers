@@ -39,6 +39,9 @@ namespace DigitalIcebreakers
             services.Configure<AppSettings>(Configuration);
 
             services.AddSingleton<List<Lobby>>();
+
+            services.AddScoped<ClientHelper>();
+            services.AddScoped<LobbyManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

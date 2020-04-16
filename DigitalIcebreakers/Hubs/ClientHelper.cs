@@ -5,11 +5,11 @@ namespace DigitalIcebreakers.Hubs
 {
     public class ClientHelper 
     {
-        IHubCallerClients _clients;
+        IHubClients _clients;
 
-        public ClientHelper(IHubCallerClients clients)
+        public ClientHelper(IHubContext<GameHub> context)
         {
-            _clients = clients;
+            _clients = context.Clients;
         }
 
         public IClientProxy Players(Lobby lobby) {
@@ -26,9 +26,9 @@ namespace DigitalIcebreakers.Hubs
             return _clients.Client(lobby.Admin.ConnectionId);
         }
 
-        public IClientProxy Self()
+        public IClientProxy Self(string connectionId)
         {
-            return _clients.Caller;
+            return _clients.Client(connectionId);
         }
 
         internal IClientProxy Player(Player player)

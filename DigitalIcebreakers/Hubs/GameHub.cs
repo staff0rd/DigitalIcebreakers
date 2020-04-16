@@ -20,18 +20,8 @@ namespace DigitalIcebreakers.Hubs
         private AppSettings _settings;
         private readonly ClientHelper _clients;
         protected readonly Sender _send;
-
         protected virtual string ConnectionId => Context.ConnectionId;
 
-        public GameHub(ILogger<GameHub> logger, LobbyManager lobbyManager, IOptions<AppSettings> settings)
-        {
-            _lobbys = lobbyManager;
-            _logger = logger;
-            _settings = settings?.Value;
-            _clients = new ClientHelper(Clients);
-            _send = new Sender(_clients);
-        }
-        
         public GameHub(ILogger<GameHub> logger, LobbyManager lobbyManager, IOptions<AppSettings> settings, ClientHelper clients)
         {
             _lobbys = lobbyManager;
@@ -72,7 +62,7 @@ namespace DigitalIcebreakers.Hubs
             {
                 _logger.LogInformation("Lobby {lobbyName} (#{lobbyNumber}, {lobbyPlayers} players) has been {action}", lobby.Name, lobby.Number, lobby.PlayerCount, "closed");
                 _lobbys.Close(lobby);
-                await _send.CloseLobby(lobby);
+                await _send.CloseLobby(ConnectionId,lobby);
             }
         }
 
@@ -109,7 +99,7 @@ namespace DigitalIcebreakers.Hubs
             }
             else {
                 _logger.LogInformation("{player} {action} ({transportType})", player, "connected", this.GetTransportType());
-                await _send.Connected();
+                await _send.Connected(ConnectionId);
             }
         }
 
@@ -177,7 +167,7 @@ namespace DigitalIcebreakers.Hubs
             var lobby = _lobbys.GetLobbyById(lobbyId);
             if (lobby == null)            
             {
-                await _send.CloseLobby();
+                await _send.CloseLobby(ConnectionId);
             }
             else
             {
