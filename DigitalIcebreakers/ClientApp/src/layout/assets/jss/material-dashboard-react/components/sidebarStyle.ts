@@ -124,8 +124,7 @@ const sidebarStyle = (theme: any) => ({
       height: "100%",
       content: '""',
       display: "block",
-      background: blackColor,
-      opacity: ".8"
+      background: '#191919',
     }
   },
   list: {

@@ -1,14 +1,15 @@
 import { Config } from '../../config';
 
 import {
-    ShellState, ShellActionTypes, SET_MENU_ITEMS, TOGGLE_MENU
+    ShellState, ShellActionTypes, SET_MENU_ITEMS, TOGGLE_MENU, TOGGLE_DRAWER
 } from './types'
 import { Events } from '../../Events';
 
 const initialState: ShellState = {
     version: Config.version,
     menuItems: [],
-    showMenu: true
+    showMenu: true,
+    showDrawer: false,
 }
 
 export function shellReducer(
@@ -22,13 +23,18 @@ export function shellReducer(
                 menuItems: action.items
             }
         case TOGGLE_MENU: {
-            // TODO: remove this
-            Events.emit("menu-visibility")
             return {
                 ...state,
                 showMenu: action.show
             }
         }
+        case TOGGLE_DRAWER: {
+            return {
+                ...state,
+                showDrawer: action.show === undefined ? !state.showDrawer : action.show,
+            }
+        }
+
         default: return state
     }
 }

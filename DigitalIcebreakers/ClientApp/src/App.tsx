@@ -1,12 +1,6 @@
 import React, { Component } from 'react';
-import { Route, Redirect, Switch } from 'react-router';
+import { Redirect } from 'react-router';
 import Layout from './layout/layouts/Admin';
-import { Lobby } from './components/Lobby';
-import { LobbyClosed } from './components/LobbyClosed';
-import { NewGame } from './components/NewGame';
-import { Game } from './components/Game';
-import { CloseLobby } from './components/CloseLobby';
-import { Join } from './components/Join';
 import { guid } from './util/guid';
 import history from './history';
 import { Events } from './Events';

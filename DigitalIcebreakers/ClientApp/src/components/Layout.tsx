@@ -3,20 +3,13 @@ import { Col, Grid, Row, Glyphicon } from 'react-bootstrap';
 import { NavMenu } from './NavMenu';
 import Games from '../games/Games';
 import { withRouter, BrowserRouterProps } from 'react-router-dom';
-import {RouteComponentProps, Redirect, Route} from "react-router";
-import { Events } from '../Events';
+import {RouteComponentProps} from "react-router";
 import { Colors, ColorUtils } from '../Colors';
 import { connect } from 'react-redux';
 import { RootState } from '../store/RootState';
 import history from '../history'
-import { BrowserRouter as Router, Switch } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { ConnectionStatus } from '../ConnectionStatus';
-import { NewGame } from './NewGame';
-import { Game } from './Game';
-import { CloseLobby } from './CloseLobby';
-import { Join } from './Join';
-import { Lobby } from './Lobby';
-import { LobbyClosed } from './LobbyClosed';
 import { toggleMenu } from '../store/shell/actions'
 
 type LayoutProps = RouteComponentProps & {

@@ -25,6 +25,7 @@ import Notifications from "@material-ui/icons/Notifications";
 import Unarchive from "@material-ui/icons/Unarchive";
 import Language from "@material-ui/icons/Language";
 import AddCircle from "@material-ui/icons/AddCircle";
+import RemoveCircle from "@material-ui/icons/RemoveCircle";
 // core components/views for Admin layout
 import DashboardPage from "./views/Dashboard/Dashboard";
 import UserProfile from "./views/UserProfile/UserProfile";
@@ -36,6 +37,7 @@ import UpgradeToPro from "./views/UpgradeToPro/UpgradeToPro";
 // core components/views for RTL layout
 import RTLPage from "./views/RTLPage/RTLPage";
 import CreateLobby from "../components/CreateLobby";
+import CloseLobby from "../components/CloseLobby";
 
     // toggleMenu: (show: boolean) => void;
 
@@ -44,12 +46,18 @@ import CreateLobby from "../components/CreateLobby";
 
 
 const getRoutes = (isAdmin: boolean, lobbyId?: string, currentGame?: string) => [
-  {
+  !lobbyId && {
     path: "/create-lobby",
     name: "Host",
     icon: AddCircle,
     component: CreateLobby,
   },
-];
+  lobbyId && {
+    path: "/close-lobby",
+    name: "Close Lobby",
+    icon: RemoveCircle,
+    component: CloseLobby,
+  },
+].filter(paths => paths);
 
 export default getRoutes;

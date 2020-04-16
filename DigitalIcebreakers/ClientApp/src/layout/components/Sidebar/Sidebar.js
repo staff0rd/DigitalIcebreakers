@@ -11,16 +11,15 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Icon from "@material-ui/core/Icon";
-// core components
-import AdminNavbarLinks from "../Navbars/AdminNavbarLinks.js";
-import RTLNavbarLinks from "../Navbars/RTLNavbarLinks.js";
-
 import styles from "../../assets/jss/material-dashboard-react/components/sidebarStyle";
+import { toggleDrawer } from '../../../store/shell/actions';
+import { useDispatch } from 'react-redux';
 
 const useStyles = makeStyles(styles);
 
 export default function Sidebar(props) {
   const classes = useStyles();
+  const dispatch = useDispatch();
   // verifies if routeName is the one active (in browser input)
   function activeRoute(routeName) {
     return window.location.href.indexOf(routeName) > -1 ? true : false;
@@ -45,6 +44,7 @@ export default function Sidebar(props) {
             className={activePro + classes.item}
             activeClassName="active"
             key={key}
+            onClick={() => dispatch(toggleDrawer(false))}
           >
             <ListItem button className={classes.itemLink + listItemClasses}>
               {typeof prop.icon === "string" ? (
@@ -103,7 +103,7 @@ export default function Sidebar(props) {
               [classes.drawerPaperRTL]: props.rtlActive
             })
           }}
-          onClose={props.handleDrawerToggle}
+          onClose={() => dispatch(toggleDrawer())}
           ModalProps={{
             keepMounted: true // Better open performance on mobile.
           }}
@@ -112,12 +112,10 @@ export default function Sidebar(props) {
           <div className={classes.sidebarWrapper}>
             {links}
           </div>
-          {image !== undefined ? (
-            <div
-              className={classes.background}
-              style={{ backgroundImage: "url(" + image + ")" }}
-            />
-          ) : null}
+          <div
+            className={classes.background}
+
+          />
         </Drawer>
       </Hidden>
       <Hidden smDown implementation="css">
@@ -133,12 +131,10 @@ export default function Sidebar(props) {
         >
           {brand}
           <div className={classes.sidebarWrapper}>{links}</div>
-          {image !== undefined ? (
-            <div
-              className={classes.background}
-              style={{ backgroundImage: "url(" + image + ")" }}
-            />
-          ) : null}
+          <div
+            className={classes.background}
+            
+          />
         </Drawer>
       </Hidden>
     </div>
@@ -147,7 +143,6 @@ export default function Sidebar(props) {
 
 Sidebar.propTypes = {
   rtlActive: PropTypes.bool,
-  handleDrawerToggle: PropTypes.func,
   bgColor: PropTypes.oneOf(["purple", "blue", "green", "orange", "red"]),
   logo: PropTypes.string,
   image: PropTypes.string,

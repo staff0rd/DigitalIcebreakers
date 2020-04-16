@@ -7,18 +7,16 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import Hidden from "@material-ui/core/Hidden";
-// @material-ui/icons
 import Menu from "@material-ui/icons/Menu";
-// core components
-import AdminNavbarLinks from "./AdminNavbarLinks.js";
-import RTLNavbarLinks from "./RTLNavbarLinks.js";
 import Button from "../CustomButtons/Button";
-
 import styles from "../../assets/jss/material-dashboard-react/components/headerStyle";
+import { toggleDrawer } from "../../../store/shell/actions";
+import { useDispatch } from "react-redux";
 
 const useStyles = makeStyles(styles);
 
 export default function Header(props) {
+  const dispatch = useDispatch();
   const classes = useStyles();
   function makeBrand() {
     var name;
@@ -47,7 +45,7 @@ export default function Header(props) {
           <IconButton
             color="inherit"
             aria-label="open drawer"
-            onClick={props.handleDrawerToggle}
+            onClick={() => dispatch(toggleDrawer())}
           >
             <Menu />
           </IconButton>
@@ -60,6 +58,5 @@ export default function Header(props) {
 Header.propTypes = {
   color: PropTypes.oneOf(["primary", "info", "success", "warning", "danger"]),
   rtlActive: PropTypes.bool,
-  handleDrawerToggle: PropTypes.func,
   routes: PropTypes.arrayOf(PropTypes.object)
 };
