@@ -18,17 +18,16 @@ const appStyle = theme => ({
     position: "relative",
     float: "right",
     ...transition,
-    maxHeight: "100%",
+    height: "100%",
     width: "100%",
     overflowScrolling: "touch"
   },
   content: {
-    padding: "30px 15px",
-    minHeight: "calc(100vh - 123px)"
+    padding: 0,
+    height: '100%',
   },
-  container,
-  map: {
-    marginTop: "70px"
+  container: {
+    height: '100%',
   }
 });
 

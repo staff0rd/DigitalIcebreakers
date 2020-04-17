@@ -25,6 +25,7 @@ import Notifications from "@material-ui/icons/Notifications";
 import Unarchive from "@material-ui/icons/Unarchive";
 import Language from "@material-ui/icons/Language";
 import AddCircle from "@material-ui/icons/AddCircle";
+import People from "@material-ui/icons/People";
 import RemoveCircle from "@material-ui/icons/RemoveCircle";
 // core components/views for Admin layout
 import DashboardPage from "./views/Dashboard/Dashboard";
@@ -38,14 +39,15 @@ import UpgradeToPro from "./views/UpgradeToPro/UpgradeToPro";
 import RTLPage from "./views/RTLPage/RTLPage";
 import CreateLobby from "../components/CreateLobby";
 import CloseLobby from "../components/CloseLobby";
+import { Lobby } from '../components/Lobby';
 
-    // toggleMenu: (show: boolean) => void;
-
-    // history: History;
-    // menuItems: JSX.Element[];
-
-
-const getRoutes = (isAdmin: boolean, lobbyId?: string, currentGame?: string) => [
+const getRoutes = (isAdmin: boolean, players: number, lobbyId?: string, currentGame?: string) => [
+  {
+    path: "/",
+    name: `Lobby (${players})`,
+    icon: People,
+    component: Lobby,
+  },
   !lobbyId && {
     path: "/create-lobby",
     name: "Host",

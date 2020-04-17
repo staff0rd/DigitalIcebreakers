@@ -6,7 +6,6 @@ import './NavMenu.css';
 import { Config } from '../config';
 import { NavSubMenu } from './NavSubMenu'
 import Games, { IGame } from '../games/Games';
-import { DynamicSizedQrCode } from './DynamicSizedQrCode';
 import { ConnectionIcon } from './ConnectionIcon';
 import { useSelector } from '../store/useSelector';
 import { useDispatch } from 'react-redux';
@@ -15,7 +14,6 @@ import { toggleMenu } from '../store/shell/actions';
 export const NavMenu: React.FC<RouteComponentProps> = (props) => {
     const lobby = useSelector(state => state.lobby);
     const dispatch = useDispatch();
-    const qrCodeWidthFunction = () => window.innerWidth / 4 - 60;
     const qrCodeParent = useRef<HTMLDivElement>(null);
     const joinUrl = `${Config.baseUrl}/join/${lobby.id}`;
     const menuItems = useSelector(state => state.shell.menuItems);
@@ -73,7 +71,7 @@ export const NavMenu: React.FC<RouteComponentProps> = (props) => {
     const qrCode = (
         <NavItem>
             <div ref={qrCodeParent}>
-                <DynamicSizedQrCode joinUrl={joinUrl} qrCodeStyle={{}} parent={qrCodeParent} widthFunction={qrCodeWidthFunction} />
+                
             </div>
         </NavItem>
     );

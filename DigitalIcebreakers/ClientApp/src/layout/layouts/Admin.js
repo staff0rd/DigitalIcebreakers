@@ -41,6 +41,7 @@ export default function Admin({ isAdmin, currentGame, lobbyId, ...rest }) {
   // ref to help us initialize PerfectScrollbar on windows devices
   const mainPanel = React.createRef();
   const showDrawer = useSelector(state => state.shell.showDrawer)
+  const players = useSelector(state => state.lobby.players && state.lobby.players.length || 0);
   
   const handleDrawerToggle = () => {
     toggleDrawer();
@@ -72,7 +73,7 @@ export default function Admin({ isAdmin, currentGame, lobbyId, ...rest }) {
     };
   }, [mainPanel]);
 
-  const routes = getRoutes(isAdmin, lobbyId, currentGame);
+  const routes = getRoutes(isAdmin, players, lobbyId, currentGame);
 
   return (
     <div className={classes.wrapper}>
