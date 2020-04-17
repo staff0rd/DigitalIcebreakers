@@ -15,7 +15,6 @@ import getRoutes from "../routes";
 
 import styles from "../assets/jss/material-dashboard-react/layouts/adminStyle";
 
-import bgImage from "../assets/img/sidebar-2.jpg";
 import logo from "../../img/icon.svg";
 
 let ps;
@@ -24,6 +23,7 @@ const switchRoutes = (routes) => (
   <Switch>
     {routes.map((prop, key) => (
       <Route
+       exact
         path={prop.path}
         component={prop.component}
         key={key}

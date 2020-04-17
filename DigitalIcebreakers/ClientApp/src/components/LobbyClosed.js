@@ -1,17 +1,23 @@
-import React, { Component } from 'react';
-import { Alert } from 'react-bootstrap';
+import React from 'react';
+import React from 'react';
+import GridItem from "../layout/components/Grid/GridItem";
+import GridContainer from "../layout/components/Grid/GridContainer.js";
+import Card from "../layout/components/Card/Card.js";
+import CardBody from '../layout/components/Card/CardBody';
 
-export class LobbyClosed extends Component {
-    displayName = LobbyClosed.name
+export default function LobbyClosed() {
 
-    render() {
-        return (
-            <div>
-                <h2>Lobby closed</h2>
-                <Alert bsStyle="warning">
-                    <strong>This lobby has been closed.</strong> Thanks for playing!
-                </Alert>
-            </div>
-        );
-    }
+  return (
+    <div>
+      <GridContainer>
+        <GridItem xs={12} sm={12} md={8}>
+          <Card>
+            <CardBody>
+                
+            </CardBody>
+          </Card>
+        </GridItem>
+      </GridContainer>
+    </div>
+  );
 }

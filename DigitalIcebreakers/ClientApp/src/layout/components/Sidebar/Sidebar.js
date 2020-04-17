@@ -14,15 +14,17 @@ import Icon from "@material-ui/core/Icon";
 import styles from "../../assets/jss/material-dashboard-react/components/sidebarStyle";
 import { toggleDrawer } from '../../../store/shell/actions';
 import { useDispatch } from 'react-redux';
+import { useLocation } from 'react-router';
 
 const useStyles = makeStyles(styles);
 
 export default function Sidebar(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const location = useLocation();
   // verifies if routeName is the one active (in browser input)
   function activeRoute(routeName) {
-    return window.location.href.indexOf(routeName) > -1 ? true : false;
+    return location.pathname === routeName;
   }
   const { color, logo, image, logoText, routes } = props;
   var links = (
@@ -140,13 +142,3 @@ export default function Sidebar(props) {
     </div>
   );
 }
-
-Sidebar.propTypes = {
-  rtlActive: PropTypes.bool,
-  bgColor: PropTypes.oneOf(["purple", "blue", "green", "orange", "red"]),
-  logo: PropTypes.string,
-  image: PropTypes.string,
-  logoText: PropTypes.string,
-  routes: PropTypes.arrayOf(PropTypes.object),
-  open: PropTypes.bool
-};
