@@ -15,7 +15,7 @@ import {
   hexToRgb
 } from "../../material-dashboard-react.js";
 
-const sidebarStyle = (theme: any) => ({
+const sidebarStyle = (showQrCode: boolean) => (theme: any) => ({
   drawerPaper: {
     border: "none",
     position: "fixed",
@@ -128,7 +128,7 @@ const sidebarStyle = (theme: any) => ({
     }
   },
   list: {
-    marginTop: "20px",
+    marginTop: showQrCode ? 0 : "20px",
     paddingLeft: "0",
     paddingTop: "0",
     paddingBottom: "0",

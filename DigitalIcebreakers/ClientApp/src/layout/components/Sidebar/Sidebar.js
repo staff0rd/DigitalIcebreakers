@@ -1,9 +1,7 @@
 /*eslint-disable*/
 import React from "react";
 import classNames from "classnames";
-import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
-// @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import Hidden from "@material-ui/core/Hidden";
@@ -16,18 +14,22 @@ import { toggleDrawer } from '../../../store/shell/actions';
 import { useDispatch } from 'react-redux';
 import { useLocation } from 'react-router';
 import SidebarFooter from '../../../components/SidebarFooter';
+import { useSelector } from '../../../store/useSelector';
+import LobbyQrCode from "../../../components/LobbyQrCode";
 
-const useStyles = makeStyles(styles);
+const useStyles = (showQrCode) =>  makeStyles(theme => styles(showQrCode)(theme));
 
 export default function Sidebar(props) {
-  const classes = useStyles();
   const dispatch = useDispatch();
   const location = useLocation();
+  const lobby = useSelector(state => state.lobby);
+  const isLobby = location.pathname === '/';
+  const classes = useStyles(lobby && !isLobby)();
   // verifies if routeName is the one active (in browser input)
   function activeRoute(routeName) {
     return location.pathname === routeName;
   }
-  const { color, logo, image, logoText, routes } = props;
+  const { color, logo, logoText, routes } = props;
   var links = (
     <List className={classes.list}>
       {routes.filter(r => r.name)
@@ -95,6 +97,11 @@ export default function Sidebar(props) {
       </a>
     </div>
   );
+
+  const qrCode = lobby && !isLobby && (
+    <LobbyQrCode />
+  );
+
   return (
     <div>
       <Hidden mdUp implementation="css">
@@ -114,6 +121,7 @@ export default function Sidebar(props) {
         >
           {brand}
           <div className={classes.sidebarWrapper}>
+            {qrCode}
             {links}
             <SidebarFooter />
           </div>
@@ -135,6 +143,7 @@ export default function Sidebar(props) {
         >
           {brand}
           <div className={classes.sidebarWrapper}>
+            {qrCode}
             {links}
             <SidebarFooter />
           </div>

@@ -92,7 +92,6 @@ export const NavMenu: React.FC<RouteComponentProps> = (props) => {
             </Navbar.Header>
             <Navbar.Collapse>
                 <Nav>
-                    {lobby.id && !isLobby ? qrCode : ""}
                     {lobby.id ? lobbyLink : ""}
                     {lobby.id && lobby.currentGame ? currentGame : ""}
                     {subMenu}
