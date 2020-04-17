@@ -1,39 +1,6 @@
-import React, { useRef } from 'react';
-import { Changelog } from './Changelog';
-import { GithubFork } from './GithubFork';
-import { useSelector } from '../store/useSelector';
+import React from 'react';
 import LobbyQrCode  from './LobbyQrCode';
 
-export const Lobby = () => {
-    const lobby = useSelector(state => state.lobby);
-
-    if (lobby.id) {
-        return <LobbyQrCode lg />
-    } else {
-        return <NoLobby />;
-    }
-}
-
-const NoLobby = () => {
-    const imageStyle: React.CSSProperties = {
-        maxHeight: '320px',
-    };
-    const imageContainer: React.CSSProperties = {
-        backgroundColor: '#191919',
-    };
-    return (
-        <>
-            <GithubFork />
-            <div>
-                <div style={imageContainer} className='front-image-container'>
-                    <img style={imageStyle} src='img/digital-icebreakers.jpg' className='img-responsive center-block' />
-                </div>
-                <h1>Digital Icebreakers</h1>
-                <p>feature requests, suggestions, bugs & feedback to <a href="mailto:stafford@atqu.in">stafford@atqu.in</a></p>
-                <h2>How it works</h2>
-                <p>A presenter creates a Lobby and audience members join by pointing their phone cameras at the presenter's screen and scanning the QR code. The presenter can then guide the audience through games and experiences by clicking New Game.</p>
-                <Changelog />
-            </div>
-        </>
-    );
+export default () => {
+    return <LobbyQrCode lg />
 }

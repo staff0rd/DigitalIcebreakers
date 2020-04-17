@@ -4,6 +4,7 @@ import Moment from 'react-moment';
 
 export function Changelog() {
     const changelogs = [
+        new ChangelogItem(2020, 4, 20, "reskin"),
         new ChangelogItem(2020, 4, 15, "added #splat + dev tutorial"),
         new ChangelogItem(2019, 11, 17, "added #reaction"),
         new ChangelogItem(2019, 6, 3, "added auto-arrange to #ideawall"),
@@ -15,7 +16,7 @@ export function Changelog() {
 
     return (
     <div>
-        <h2>updates</h2>
+        <h2>Updates</h2>
         <ul style={{paddingLeft: 25}}>
             {changelogs.map((cl, ix) => (
                 <li key={ix}>

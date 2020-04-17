@@ -9,7 +9,7 @@ import CardFooter from "../layout/components/Card/CardFooter.js";
 import { useDispatch } from "react-redux";
 import { createLobby } from '../store/lobby/actions'
 import CardTitle from '../layout/components/Card/CardTitle';
-import FormContainer from './FormContainer';
+import ContentContainer from './ContentContainer';
 
 export default function CreateLobby() {
   const dispatch = useDispatch();
@@ -33,7 +33,7 @@ export default function CreateLobby() {
   }
 
   return (
-    <FormContainer>
+    <ContentContainer>
       <GridContainer>
         <GridItem xs={12} sm={12} md={8}>
           <Card>
@@ -60,6 +60,6 @@ export default function CreateLobby() {
           </Card>
         </GridItem>
       </GridContainer>
-    </FormContainer>
+    </ContentContainer>
   );
 }

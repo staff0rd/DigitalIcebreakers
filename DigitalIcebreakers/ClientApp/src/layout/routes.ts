@@ -41,7 +41,8 @@ import CreateLobby from "../components/CreateLobby";
 import CloseLobby from "../components/CloseLobby";
 import JoinLobby from "../components/JoinLobby";
 import LobbyClosed from "../components/LobbyClosed";
-import { Lobby } from '../components/Lobby';
+import Lobby from '../components/Lobby';
+import Home from '../components/Home'
 
 const getRoutes = (isAdmin: boolean, players: number, lobbyId?: string, currentGame?: string) => [
   lobbyId && {
@@ -49,6 +50,10 @@ const getRoutes = (isAdmin: boolean, players: number, lobbyId?: string, currentG
     name: `Lobby (${players})`,
     icon: People,
     component: Lobby,
+  },
+  !lobbyId && {
+    path: "/",
+    component: Home,
   },
   !lobbyId && {
     path: "/create-lobby",

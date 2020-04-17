@@ -24,7 +24,7 @@ export default function Sidebar(props) {
   const location = useLocation();
   const lobby = useSelector(state => state.lobby);
   const isLobby = location.pathname === '/';
-  const classes = useStyles(lobby && !isLobby)();
+  const classes = useStyles(lobby.id && !isLobby)();
   // verifies if routeName is the one active (in browser input)
   function activeRoute(routeName) {
     return location.pathname === routeName;
@@ -83,22 +83,21 @@ export default function Sidebar(props) {
   );
   var brand = (
     <div className={classes.logo}>
-      <a
-        href="/"
+      <NavLink
+        to="/"
         className={classNames(classes.logoLink, {
           [classes.logoLinkRTL]: props.rtlActive
         })}
-        target="_blank"
       >
         <div className={classes.logoImage}>
           <img src={logo} alt="logo" className={classes.img} />
         </div>
         {logoText}
-      </a>
+      </NavLink>
     </div>
   );
 
-  const qrCode = lobby && !isLobby && (
+  const qrCode = lobby.id && !isLobby && (
     <LobbyQrCode />
   );
 

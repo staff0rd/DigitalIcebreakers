@@ -7,13 +7,13 @@ import GridContainer from "../layout/components/Grid/GridContainer.js";
 import Card from "../layout/components/Card/Card.js";
 import CardFooter from "../layout/components/Card/CardFooter.js";
 import CardTitle from '../layout/components/Card/CardTitle';
-import FormContainer from './FormContainer';
+import ContentContainer from './ContentContainer';
 
 export default function CloseLobby() {
   const dispatch = useDispatch();
 
   return (
-    <FormContainer>
+    <ContentContainer>
       <GridContainer>
         <GridItem xs={12} sm={12} md={8}>
           <Card>
@@ -24,6 +24,6 @@ export default function CloseLobby() {
           </Card>
         </GridItem>
       </GridContainer>
-    </FormContainer>
+    </ContentContainer>
   );
 }

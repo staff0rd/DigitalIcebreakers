@@ -86,7 +86,7 @@ const sidebarStyle = (showQrCode: boolean) => (theme: any) => ({
     lineHeight: "30px",
     textDecoration: "none",
     backgroundColor: "transparent",
-    "&,&:hover": {
+    "&,&:hover,&:focus": {
       color: whiteColor
     }
   },
