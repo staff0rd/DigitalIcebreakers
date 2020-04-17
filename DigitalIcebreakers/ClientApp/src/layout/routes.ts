@@ -26,7 +26,7 @@ import Unarchive from "@material-ui/icons/Unarchive";
 import Language from "@material-ui/icons/Language";
 import AddCircle from "@material-ui/icons/AddCircle";
 import People from "@material-ui/icons/People";
-import RemoveCircle from "@material-ui/icons/RemoveCircle";
+import Cancel from "@material-ui/icons/Cancel";
 // core components/views for Admin layout
 import DashboardPage from "./views/Dashboard/Dashboard";
 import UserProfile from "./views/UserProfile/UserProfile";
@@ -39,10 +39,11 @@ import UpgradeToPro from "./views/UpgradeToPro/UpgradeToPro";
 import RTLPage from "./views/RTLPage/RTLPage";
 import CreateLobby from "../components/CreateLobby";
 import CloseLobby from "../components/CloseLobby";
+import JoinLobby from "../components/JoinLobby";
 import { Lobby } from '../components/Lobby';
 
 const getRoutes = (isAdmin: boolean, players: number, lobbyId?: string, currentGame?: string) => [
-  {
+  lobbyId && {
     path: "/",
     name: `Lobby (${players})`,
     icon: People,
@@ -57,8 +58,12 @@ const getRoutes = (isAdmin: boolean, players: number, lobbyId?: string, currentG
   lobbyId && {
     path: "/close-lobby",
     name: "Close Lobby",
-    icon: RemoveCircle,
+    icon: Cancel,
     component: CloseLobby,
+  },
+  {
+    path: "/join/:id",
+    component: JoinLobby,
   },
 ].filter(paths => paths);
 

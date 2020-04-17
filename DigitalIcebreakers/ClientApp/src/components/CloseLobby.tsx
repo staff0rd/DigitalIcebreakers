@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import Button from "../layout/components/CustomButtons/Button";
 import { useDispatch } from 'react-redux';
 import { closeLobby } from '../store/lobby/actions';
@@ -7,13 +7,13 @@ import GridContainer from "../layout/components/Grid/GridContainer.js";
 import Card from "../layout/components/Card/Card.js";
 import CardFooter from "../layout/components/Card/CardFooter.js";
 import { CardTitle } from '../layout/components/Card/CardTitle';
-import CardBody from '../layout/components/Card/CardBody';
+import FormContainer from './FormContainer';
 
 export default function CloseLobby() {
   const dispatch = useDispatch();
 
   return (
-    <div>
+    <FormContainer>
       <GridContainer>
         <GridItem xs={12} sm={12} md={8}>
           <Card>
@@ -24,6 +24,6 @@ export default function CloseLobby() {
           </Card>
         </GridItem>
       </GridContainer>
-    </div>
+    </FormContainer>
   );
 }
