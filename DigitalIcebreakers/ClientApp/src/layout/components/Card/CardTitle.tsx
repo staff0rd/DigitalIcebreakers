@@ -25,7 +25,7 @@ const styles: any = {
   
   type Props = {
     title: string,
-    subTitle: string
+    subTitle?: string
   }
   
   export default ({ title, subTitle }: Props) => {
@@ -33,7 +33,9 @@ const styles: any = {
     return (
       <CardHeader color="primary">
         <h4 className={classes.cardTitleWhite}>{title}</h4>
-        <p className={classes.cardCategoryWhite}>{subTitle}</p>
+        { subTitle && (
+          <p className={classes.cardCategoryWhite}>{subTitle}</p> 
+        )}
       </CardHeader>
     )
   }

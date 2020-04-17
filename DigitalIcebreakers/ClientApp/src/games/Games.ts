@@ -19,72 +19,61 @@ import { StartStopContinueClient } from './StartStopContinue/StartStopContinueCl
 import ReactClient from './React/ReactClient';
 import ReactPresenter from './React/ReactPresenter';
 
-export interface IGame {
-    name: string;
-    client: any;
-    presenter: any;
-    title: string;
-    isGame?: boolean;
-    disabled?: boolean;
-    fullscreen?: boolean;
-}
-
-export default function (props?: any) : IGame[] {
-    return [{
+export default [{
         name: "doggos-vs-kittehs",
-        client: <DoggosVsKittehsClient {...props} />,
-        presenter: <DoggosVsKittehsPresenter {...props} />,
+        client: DoggosVsKittehsClient,
+        presenter: DoggosVsKittehsPresenter,
         title: "Doggos vs Kittehs",
         isGame: true
     }, {
         name: "yes-no-maybe",
-        client: <YesNoMaybeClient {...props} />,
-        presenter: <YesNoMaybePresenter {...props} />,
+        client: YesNoMaybeClient,
+        presenter: YesNoMaybePresenter,
         title: "Yes, No, Maybe"
     }, {
         name: "buzzer",
-        client: <BuzzerClient {...props} />,
-        presenter: <BuzzerPresenter {...props} />,
+        client: BuzzerClient,
+        presenter: BuzzerPresenter,
         title: "Buzzer",
         fullscreen: true
     }, {
         name: "splat",
-        client: <SplatClient {...props} />,
-        presenter: <SplatPresenter {...props} />,
+        client: SplatClient,
+        presenter: SplatPresenter,
         title: "Splat",
         fullscreen: true
     }, {
         name: "pong",
-        client: <PongClient {...props} />,
-        presenter: <PongPresenter {...props} />,
+        client: PongClient,
+        presenter: PongPresenter,
         title: "Pong",
         fullscreen: true,
         isGame: true
-    }, {
-        name: "ideawall",
-        client: <IdeaWallClient {...props} />,
-        presenter: <IdeaWallPresenter dynamicSize={false} {...props} storageKey="ideawall:ideas" />,
-        title: "Idea Wall",
-        fullscreen: true,
-        isGame: false
-    }, {
-        name: "startstopcontinue",
-        client: <StartStopContinueClient {...props} />,
-        presenter: <IdeaWallPresenter dynamicSize={true} {...props} storageKey="startstopcontinue:ideas" lanes={StartStopContinueLanes} />,
-        title: "Start Stop Continue",
-        fullscreen: true,
-        isGame: false,
-        disabled: true
+    // }, {
+    //     name: "ideawall",
+    //     client: IdeaWallClient,
+    //     presenter: IdeaWallPresenter dynamicSize={false} {...props} storageKey="ideawall:ideas" />,
+    //     title: "Idea Wall",
+    //     fullscreen: true,
+    //     isGame: false
+    // }, {
+    //     name: "startstopcontinue",
+    //     client: <StartStopContinueClient,
+    //     presenter: <IdeaWallPresenter dynamicSize={true} {...props} storageKey="startstopcontinue:ideas" lanes={StartStopContinueLanes} />,
+    //     title: "Start Stop Continue",
+    //     fullscreen: true,
+    //     isGame: false,
+    //     disabled: true
     }, {
         name: "broadcast",
-        client: <BroadcastClient {...props} />,
-        presenter: <BroadcastPresenter {...props} />,
+        client: BroadcastClient,
+        presenter: BroadcastPresenter,
         title: "Broadcast",
         fullscreen: true,
         isGame: false
     // }, {
     //     name: "slideshow",
-    //     client: <SlideshowClient {...props} />,
+    //     client: <SlideshowClient,
     //     presenter: <SlideshowPresenter {...props} storageKey="slideshow:state" />,
     //     title: "Slideshow",
     //     fullscreen: true,
@@ -92,9 +81,9 @@ export default function (props?: any) : IGame[] {
     }, {
         title: "Reaction",
         name: "react",
-        client: <ReactClient {...props} />,
-        presenter: <ReactPresenter {... props} />,
+        client: ReactClient,
+        presenter: ReactPresenter,
         fullscreen: true,
         isGame: true
     }];
-}
+

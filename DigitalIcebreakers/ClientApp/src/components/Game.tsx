@@ -5,7 +5,7 @@ import { useSelector } from '../store/useSelector';
 
 export const Game =  () => {
     let { name } = useParams();
-    const game = Games().filter(g => g.name === name)[0];
+    const game = Games.filter(g => g.name === name)[0];
     const isAdmin = useSelector(state => state.lobby.isAdmin); 
     
     if (!game)

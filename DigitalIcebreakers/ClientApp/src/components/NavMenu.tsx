@@ -5,7 +5,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 import './NavMenu.css';
 import { Config } from '../config';
 import { NavSubMenu } from './NavSubMenu'
-import Games, { IGame } from '../games/Games';
+import Games from '../games/Games';
 import { useSelector } from '../store/useSelector';
 import { useDispatch } from 'react-redux';
 import { toggleMenu } from '../store/shell/actions';
@@ -55,9 +55,9 @@ export const NavMenu: React.FC<RouteComponentProps> = (props) => {
         </NavItem>
     );
 
-    const gameName = Games(props)
+    const gameName = Games
         .filter((game: any) => game.name === lobby.currentGame)
-        .map((game: IGame) => game.title);
+        .map((game: any) => game.title);
 
     const currentGame = (
         <LinkContainer to={`/game/${lobby.currentGame}`} exact>
@@ -65,14 +65,6 @@ export const NavMenu: React.FC<RouteComponentProps> = (props) => {
                 <Glyphicon glyph='king' /> {gameName}
             </NavItem>
         </LinkContainer>
-    );
-
-    const qrCode = (
-        <NavItem>
-            <div ref={qrCodeParent}>
-                
-            </div>
-        </NavItem>
     );
 
     const isGameScreen = props.history.location.pathname === `/game/${lobby.currentGame}`;
@@ -92,7 +84,6 @@ export const NavMenu: React.FC<RouteComponentProps> = (props) => {
             </Navbar.Header>
             <Navbar.Collapse>
                 <Nav>
-                    {lobby.id ? lobbyLink : ""}
                     {lobby.id && lobby.currentGame ? currentGame : ""}
                     {subMenu}
                     {lobby.id && lobby.isAdmin ? startGame : ""}

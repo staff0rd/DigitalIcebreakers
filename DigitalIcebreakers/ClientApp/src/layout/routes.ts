@@ -26,6 +26,7 @@ import Unarchive from "@material-ui/icons/Unarchive";
 import Language from "@material-ui/icons/Language";
 import AddCircle from "@material-ui/icons/AddCircle";
 import People from "@material-ui/icons/People";
+import SportsEsports from "@material-ui/icons/SportsEsports";
 import Cancel from "@material-ui/icons/Cancel";
 // core components/views for Admin layout
 import DashboardPage from "./views/Dashboard/Dashboard";
@@ -43,6 +44,7 @@ import JoinLobby from "../components/JoinLobby";
 import LobbyClosed from "../components/LobbyClosed";
 import Lobby from '../components/Lobby';
 import Home from '../components/Home'
+import NewGame from "../components/NewGame";
 
 const getRoutes = (isAdmin: boolean, players: number, lobbyId?: string, currentGame?: string) => [
   lobbyId && {
@@ -60,6 +62,12 @@ const getRoutes = (isAdmin: boolean, players: number, lobbyId?: string, currentG
     name: "Host",
     icon: AddCircle,
     component: CreateLobby,
+  },
+  lobbyId && {
+    path: "/new-game",
+    name: "New Game",
+    icon: SportsEsports,
+    component: NewGame,
   },
   lobbyId && {
     path: "/close-lobby",
