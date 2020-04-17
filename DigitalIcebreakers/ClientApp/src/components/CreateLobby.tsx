@@ -8,7 +8,7 @@ import CardBody from "../layout/components/Card/CardBody.js";
 import CardFooter from "../layout/components/Card/CardFooter.js";
 import { useDispatch } from "react-redux";
 import { createLobby } from '../store/lobby/actions'
-import { CardTitle } from '../layout/components/Card/CardTitle';
+import CardTitle from '../layout/components/Card/CardTitle';
 import FormContainer from './FormContainer';
 
 export default function CreateLobby() {

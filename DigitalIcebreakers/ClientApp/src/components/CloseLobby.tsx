@@ -6,7 +6,7 @@ import GridItem from "../layout/components/Grid/GridItem";
 import GridContainer from "../layout/components/Grid/GridContainer.js";
 import Card from "../layout/components/Card/Card.js";
 import CardFooter from "../layout/components/Card/CardFooter.js";
-import { CardTitle } from '../layout/components/Card/CardTitle';
+import CardTitle from '../layout/components/Card/CardTitle';
 import FormContainer from './FormContainer';
 
 export default function CloseLobby() {

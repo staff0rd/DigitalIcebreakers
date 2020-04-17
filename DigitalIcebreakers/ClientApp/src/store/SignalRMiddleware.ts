@@ -88,7 +88,7 @@ export const SignalRMiddleware = () => {
                     break;
                 }
                 case CLEAR_LOBBY: {
-                    history.push('/lobbyClosed');
+                    history.push('/lobby-closed');
                     break;
                 }
                 case START_NEW_GAME: {

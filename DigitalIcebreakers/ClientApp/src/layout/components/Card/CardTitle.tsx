@@ -28,7 +28,7 @@ const styles: any = {
     subTitle: string
   }
   
-  export const CardTitle = ({ title, subTitle }: Props) => {
+  export default ({ title, subTitle }: Props) => {
     const classes = useStyles();
     return (
       <CardHeader color="primary">

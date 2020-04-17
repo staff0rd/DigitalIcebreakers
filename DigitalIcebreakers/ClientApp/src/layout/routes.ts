@@ -40,6 +40,7 @@ import RTLPage from "./views/RTLPage/RTLPage";
 import CreateLobby from "../components/CreateLobby";
 import CloseLobby from "../components/CloseLobby";
 import JoinLobby from "../components/JoinLobby";
+import LobbyClosed from "../components/LobbyClosed";
 import { Lobby } from '../components/Lobby';
 
 const getRoutes = (isAdmin: boolean, players: number, lobbyId?: string, currentGame?: string) => [
@@ -64,6 +65,10 @@ const getRoutes = (isAdmin: boolean, players: number, lobbyId?: string, currentG
   {
     path: "/join/:id",
     component: JoinLobby,
+  },
+  {
+    path: "/lobby-closed",
+    component: LobbyClosed,
   },
 ].filter(paths => paths);
 

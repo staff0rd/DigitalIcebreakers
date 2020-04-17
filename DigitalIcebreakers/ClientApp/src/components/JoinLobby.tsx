@@ -11,7 +11,7 @@ import Card from "../layout/components/Card/Card.js";
 import CardBody from "../layout/components/Card/CardBody.js";
 import CardFooter from "../layout/components/Card/CardFooter.js";
 import { useDispatch } from "react-redux";
-import { CardTitle } from '../layout/components/Card/CardTitle';
+import CardTitle from '../layout/components/Card/CardTitle';
 import { useParams } from 'react-router-dom';
 
 interface RouteParams {
