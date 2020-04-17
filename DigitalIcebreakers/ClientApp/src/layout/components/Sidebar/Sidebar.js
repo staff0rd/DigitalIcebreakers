@@ -15,6 +15,7 @@ import styles from "../../assets/jss/material-dashboard-react/components/sidebar
 import { toggleDrawer } from '../../../store/shell/actions';
 import { useDispatch } from 'react-redux';
 import { useLocation } from 'react-router';
+import SidebarFooter from '../../../components/SidebarFooter';
 
 const useStyles = makeStyles(styles);
 
@@ -114,10 +115,10 @@ export default function Sidebar(props) {
           {brand}
           <div className={classes.sidebarWrapper}>
             {links}
+            <SidebarFooter />
           </div>
           <div
             className={classes.background}
-
           />
         </Drawer>
       </Hidden>
@@ -133,10 +134,12 @@ export default function Sidebar(props) {
           }}
         >
           {brand}
-          <div className={classes.sidebarWrapper}>{links}</div>
+          <div className={classes.sidebarWrapper}>
+            {links}
+            <SidebarFooter />
+          </div>
           <div
             className={classes.background}
-            
           />
         </Drawer>
       </Hidden>

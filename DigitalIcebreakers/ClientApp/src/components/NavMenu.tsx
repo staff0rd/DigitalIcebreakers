@@ -6,7 +6,6 @@ import './NavMenu.css';
 import { Config } from '../config';
 import { NavSubMenu } from './NavSubMenu'
 import Games, { IGame } from '../games/Games';
-import { ConnectionIcon } from './ConnectionIcon';
 import { useSelector } from '../store/useSelector';
 import { useDispatch } from 'react-redux';
 import { toggleMenu } from '../store/shell/actions';
@@ -94,16 +93,11 @@ export const NavMenu: React.FC<RouteComponentProps> = (props) => {
             <Navbar.Collapse>
                 <Nav>
                     {lobby.id && !isLobby ? qrCode : ""}
-                    {lobby.id ? "" : createLobby}
                     {lobby.id ? lobbyLink : ""}
                     {lobby.id && lobby.currentGame ? currentGame : ""}
                     {subMenu}
                     {lobby.id && lobby.isAdmin ? startGame : ""}
                     {lobby.currentGame && lobby.isAdmin && !isLobby ? collapseNav : ""}
-                    {lobby.id && lobby.isAdmin ? closeLobby : ""}
-                    <NavItem disabled={true}>
-                        <ConnectionIcon /> Connection - v{Config.version}
-                    </NavItem>
                 </Nav>
             </Navbar.Collapse>
         </Navbar>

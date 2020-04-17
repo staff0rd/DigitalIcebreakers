@@ -1,13 +1,33 @@
 import React from 'react';
-import { Glyphicon } from 'react-bootstrap';
+import UnknownIcon from '@material-ui/icons/Help';
+import ConnectedIcon from '@material-ui/icons/Power';
+import NotConnectedIcon from '@material-ui/icons/PowerOff';
 import { useSelector } from '../store/useSelector';
+import { makeStyles } from '@material-ui/core/styles';
+import { whiteColor, hexToRgb } from '../layout/assets/jss/material-dashboard-react';
 
-export const ConnectionIcon: React.FC = () => {
+const useStyles = makeStyles(theme => ({
+    icon: {
+        width: "24px",
+        height: "30px",
+        fontSize: "24px",
+        lineHeight: "30px",
+        float: "left",
+        marginRight: "15px",
+        textAlign: "center",
+        verticalAlign: "middle",
+        color: "rgba(" + hexToRgb(whiteColor) + ", 0.8)"
+    }
+}));
+
+export default () => {
     const status = useSelector(state => state.connection.status);
+    const classes = useStyles();
+
     switch (status) {
-        case 0: return (<Glyphicon glyph="remove-sign" />);
-        case 1: return (<Glyphicon glyph="question-sign" />);
-        case 2: return (<Glyphicon glyph="ok-sign" />);
+        case 0: return (<NotConnectedIcon className={classes.icon} />);
+        case 1: return (<UnknownIcon className={classes.icon} />);
+        case 2: return (<ConnectedIcon className={classes.icon} />);
         default: return <span></span>;
     };
 };

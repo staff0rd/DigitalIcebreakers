@@ -13,6 +13,7 @@ import CardFooter from "../layout/components/Card/CardFooter.js";
 import { useDispatch } from "react-redux";
 import CardTitle from '../layout/components/Card/CardTitle';
 import { useParams } from 'react-router-dom';
+import FormContainer from '../components/FormContainer';
 
 interface RouteParams {
   id: string;
@@ -37,7 +38,7 @@ export default function JoinLobby() {
   }
 
   return (
-    <div>
+    <FormContainer>
       <GridContainer>
         <GridItem xs={12} sm={12} md={8}>
           <Card>
@@ -64,6 +65,6 @@ export default function JoinLobby() {
           </Card>
         </GridItem>
       </GridContainer>
-    </div>
+    </FormContainer>
   );
 }
