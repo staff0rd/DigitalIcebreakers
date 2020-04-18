@@ -71,7 +71,7 @@ export default () => {
                                     {g.title}
                                 </h2>
                                 <p className={classes.cardCategory}>
-                                    A description of this game.
+                                    {g.description}
                                 </p>
                             </CardBody>
                             <CardFooter chart>

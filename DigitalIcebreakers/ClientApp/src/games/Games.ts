@@ -24,31 +24,36 @@ export default [{
         client: DoggosVsKittehsClient,
         presenter: DoggosVsKittehsPresenter,
         title: "Doggos vs Kittehs",
+        description: "Audience polling - Furry friend edition",
         isGame: true
     }, {
         name: "yes-no-maybe",
         client: YesNoMaybeClient,
         presenter: YesNoMaybePresenter,
-        title: "Yes, No, Maybe"
+        title: "Yes, No, Maybe",
+        description: "Audience polling - ask your audience questions and get real-time feedback"
     }, {
         name: "buzzer",
         client: BuzzerClient,
         presenter: BuzzerPresenter,
         title: "Buzzer",
-        fullscreen: true
+        fullscreen: true,
+        description: "Let your audience get a feel for low latency"
     }, {
         name: "splat",
         client: SplatClient,
         presenter: SplatPresenter,
         title: "Splat",
-        fullscreen: true
+        fullscreen: true,
+        description: "It's paint-ball for audiences and presenters"
     }, {
         name: "pong",
         client: PongClient,
         presenter: PongPresenter,
         title: "Pong",
         fullscreen: true,
-        isGame: true
+        isGame: true,
+        description: 'Mob pong for large audiences - red vs blue!'
     // }, {
     //     name: "ideawall",
     //     client: IdeaWallClient,
@@ -70,7 +75,8 @@ export default [{
         presenter: BroadcastPresenter,
         title: "Broadcast",
         fullscreen: true,
-        isGame: false
+        isGame: false,
+        description: 'Demonstration of two-way, real-time presenter and audience participation',
     // }, {
     //     name: "slideshow",
     //     client: <SlideshowClient,
@@ -84,6 +90,7 @@ export default [{
         client: ReactClient,
         presenter: ReactPresenter,
         fullscreen: true,
-        isGame: true
+        isGame: true,
+        description: 'Test audience reflexes in this all-vs-all shape-matching game',
     }];
 
