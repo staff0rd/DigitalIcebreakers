@@ -11,7 +11,7 @@ import { toggleDrawer } from '../../store/shell/actions';
 import { useSelector } from '../../store/useSelector';
 import Sidebar from "../components/Sidebar/Sidebar.js";
 
-import getRoutes from "../routes";
+import useRoutes from "../routes";
 
 import styles from "../assets/jss/material-dashboard-react/layouts/adminStyle";
 
@@ -41,11 +41,7 @@ export default function Admin({ isAdmin, currentGame, lobbyId, ...rest }) {
   // ref to help us initialize PerfectScrollbar on windows devices
   const mainPanel = React.createRef();
   const showDrawer = useSelector(state => state.shell.showDrawer)
-  const players = useSelector(state => state.lobby.players && state.lobby.players.length || 0);
   
-  const handleDrawerToggle = () => {
-    toggleDrawer();
-  };
   const getRoute = () => {
     return window.location.pathname !== "/admin/maps";
   };
@@ -73,7 +69,7 @@ export default function Admin({ isAdmin, currentGame, lobbyId, ...rest }) {
     };
   }, [mainPanel]);
 
-  const routes = getRoutes(isAdmin, players, lobbyId, currentGame);
+  const routes = useRoutes();
 
   return (
     <div className={classes.wrapper}>

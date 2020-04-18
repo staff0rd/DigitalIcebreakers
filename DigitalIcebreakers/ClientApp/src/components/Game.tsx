@@ -12,7 +12,7 @@ export const Game =  () => {
         return <div>No such game</div>;
     else
         return (
-            <div className="full-height">
+            <div>
                 {isAdmin ? game.presenter : game.client}
             </div>
         );
