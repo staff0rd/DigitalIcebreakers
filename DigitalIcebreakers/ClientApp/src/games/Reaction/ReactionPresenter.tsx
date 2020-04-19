@@ -104,9 +104,7 @@ class ReactionPresenter extends BaseGame<PropsFromRedux, ReactState> {
             const bottomShapes = this.getOtherShapes();
             const size = this.app.screen.height * .7;
             const mainShape = new ShapeView(size, this.state.shape);
-            mainShape.view.position.set(this.app.screen.width/2, size/2);    
-            console.log(this.app.screen.width);
-            mainShape.view.addChild(new PIXI.Graphics().beginFill(Colors.BlueGrey.C500).drawCircle(0, 0, 5))       
+            mainShape.view.position.set(this.app.screen.width/2, size/2);         
             const bottomShapesContainer = new PIXI.Container();
             const views = [mainShape];
 
