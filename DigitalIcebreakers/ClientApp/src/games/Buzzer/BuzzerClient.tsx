@@ -1,55 +1,31 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '../pixi/Button';
-import { BaseGameProps, BaseGame } from '../BaseGame'
 import { Pixi } from '../pixi/Pixi';
 import { Colors } from '../../Colors'
-import { connect, ConnectedProps } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { clientMessage } from '../../store/lobby/actions'
+import { useResizeListener } from '../pixi/useResizeListener';
 
-const connector = connect(
-    null,
-    { clientMessage }
-);
   
-type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
-
-class BuzzerClient extends BaseGame<PropsFromRedux, {}> {
-    private button: Button;
-    app?: PIXI.Application;
-
-    constructor(props: PropsFromRedux) {
-        super(props);
-        this.button = new Button(this.up, this.down);
-    }
-
-    init(app?: PIXI.Application) {
-        if (app)
-        {
-            this.app = app;
-        }
-        
-        if (this.app)
-        {
-            this.app.stage.addChild(this.button);
-            this.button.x = this.app.renderer.width / 4;
-            this.button.y = this.app.renderer.height / 4;
-            this.button.render(Colors.Blue.C400, Colors.Red.C400, 0, 0, this.app.renderer.width / 2, this.app.renderer.height / 2);
-        }
-    }
-
-    down = () => {
-        this.props.clientMessage("down");
-    }
+export default () => {
+    const [pixi, setPixi] = useState<PIXI.Application>();
+    const dispatch = useDispatch();
+    const [button] = useState(new Button(() => dispatch(clientMessage("up")), () => dispatch(clientMessage("down"))));
     
-    up = () => {
-        this.props.clientMessage("up");
+    const resize = () => {
+        if (pixi)
+        {
+            pixi.stage.addChild(button);
+            button.x = pixi.renderer.width / 4;
+            button.y = pixi.renderer.height / 4;
+            button.render(Colors.Blue.C400, Colors.Red.C400, 0, 0, pixi.renderer.width / 2, pixi.renderer.height / 2);
+        }
     }
 
-    render() {
-        return (
-            <Pixi backgroundColor={Colors.BlueGrey.C400} onAppChange={(app) => this.init(app)} />
-        );
-    }
+    useResizeListener(resize);
+    useEffect(resize, [pixi]);
+
+    return (
+        <Pixi backgroundColor={Colors.BlueGrey.C400} onAppChange={(app) => setPixi(app)} />
+    );
 }
-
-export default connector(BuzzerClient);
