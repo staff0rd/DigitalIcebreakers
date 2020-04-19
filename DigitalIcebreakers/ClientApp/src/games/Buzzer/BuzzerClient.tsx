@@ -16,9 +16,9 @@ export default () => {
         if (pixi)
         {
             pixi.stage.addChild(button);
-            button.x = pixi.renderer.width / 4;
-            button.y = pixi.renderer.height / 4;
-            button.render(Colors.Blue.C400, Colors.Red.C400, 0, 0, pixi.renderer.width / 2, pixi.renderer.height / 2);
+            button.x = pixi.screen.width / 4;
+            button.y = pixi.screen.height / 4;
+            button.render(Colors.Blue.C400, Colors.Red.C400, 0, 0, pixi.screen.width / 2, pixi.screen.height / 2);
         }
     }
 
