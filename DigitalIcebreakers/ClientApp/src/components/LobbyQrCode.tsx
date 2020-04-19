@@ -9,9 +9,6 @@ const useStylesLg = makeStyles((theme) => ({
         display: 'flex',
         flexDirection: 'column',
         textAlign: 'center',
-        [theme.breakpoints.down("sm")]: {
-            padding: theme.spacing(0, 0, 0, 5), 
-        },
     },
     header: {
         display: 'flex-inline',
