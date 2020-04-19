@@ -5,6 +5,7 @@ import { Pixi } from '../pixi/Pixi';
 import { useDispatch } from 'react-redux';
 import { clientMessage } from '../../store/lobby/actions';
 import { setGameMessageCallback, clearGameMessageCallback } from '../../store/connection/actions';
+import { useResizeListener } from '../pixi/useResizeListener';
 
 interface TeamColors {
     up: number,
@@ -18,14 +19,11 @@ export const PongClient = () =>  {
     
     const message = (action: string) => () => dispatch(clientMessage(action));
 
-    const topButton = new Button(message("release"), message("up"));
-    const bottomButton = new Button(message("release"), message("down"));
-
-    const appHandler = (app?: PIXI.Application) => {
-        if (app)
-        {
-            setApp(app);
+    const appHandler = (newApp?: PIXI.Application) => {
+        if (newApp) {
+            setApp(newApp);
         }
+        resize();
     };
 
     useEffect(() => {
@@ -45,18 +43,34 @@ export const PongClient = () =>  {
         return () => { dispatch(clearGameMessageCallback()); };
     }, [dispatch]);
 
-    if (app) {
-        topButton.x = app.renderer.width / 4;
-        topButton.y = app.renderer.height / 8;
-        topButton.render(teamColors.up, teamColors.down, 0, 0, app.renderer.width / 2, app.renderer.height / 16 * 5);
-        
-        bottomButton.x = app.renderer.width / 4;
-        bottomButton.y = app.renderer.height / 16 * 9;
-        bottomButton.render(teamColors.up, teamColors.down, 0, 0, app.renderer.width / 2, app.renderer.height / 16 * 5);
-        
-        app.stage.addChild(topButton, bottomButton);
+    const resize = () => {
+        if (app)
+        {
+            console.log('sizing buttons');
+            app.stage.removeChildren();
+
+            const topButton = new Button(message("release"), message("up"));
+            const bottomButton = new Button(message("release"), message("down"));
+            
+            const width = app.screen.width / 2;
+
+            topButton.x = app.screen.width / 4;
+            topButton.y = app.screen.height / 8;
+            topButton.render(teamColors.up, teamColors.down, 0, 0, width, app.screen.height / 16 * 5);
+            
+            bottomButton.x = app.screen.width / 4;
+            bottomButton.y = app.screen.height / 16 * 9;
+            bottomButton.render(teamColors.up, teamColors.down, 0, 0, width, app.screen.height / 16 * 5);
+            
+            app.stage.addChild(topButton, bottomButton);
+
+            console.log('button width: ' + width);
+        }
     }
 
+    resize();
+
+    useResizeListener(resize);
     
     return (
         <Pixi backgroundColor={Colors.ClientBackground} onAppChange={appHandler}  />

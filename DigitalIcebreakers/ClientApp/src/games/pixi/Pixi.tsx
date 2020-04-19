@@ -23,28 +23,23 @@ const useStyles = makeStyles(theme => ({
 
 export const Pixi: React.FC<PixiProps> = (props) => {
     const classes = useStyles();
-    const newPixi = () => {
-        return new PIXI.Application({ autoResize: true, backgroundColor: props.backgroundColor || 0xFFFFFF })
-    }
-
     const [app, setApp] = useState<PIXI.Application | null>(null);
     const pixiElement = useRef<HTMLDivElement>(null);
     
     const onResize = useCallback(() => {
-        console.log('resize');
         if (app && pixiElement.current) {
             const size = { width: pixiElement.current!.clientWidth, height: pixiElement.current!.clientHeight };
             app.renderer.resize(size.width, size.height);
-            console.log('resized', size);
+            console.log(`resized pixi to ${size.width}x${size.height}`);
         } else {
             console.log('no app to resize');
         }
-        props.onAppChange();
     },  [app]);
 
     useEffect(() => {
-        const pixi = newPixi();
+        const pixi = new PIXI.Application({ autoResize: true, backgroundColor: props.backgroundColor || 0xFFFFFF });
         setApp(pixi);
+        props.onAppChange(pixi);
     }, [])
 
     useEffect(() => {
@@ -52,7 +47,6 @@ export const Pixi: React.FC<PixiProps> = (props) => {
         if (element && app) {
             element.appendChild(app.view);
             onResize();
-            props.onAppChange(app);
         }  
     }, [app, pixiElement.current]);
 

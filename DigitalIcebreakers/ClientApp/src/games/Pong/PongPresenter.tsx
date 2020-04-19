@@ -172,26 +172,29 @@ class PongPresenter extends BaseGame<PropsFromRedux, PongPresenterState> {
     init(app?: PIXI.Application) {
         if (app)
             this.app = app;
-        
-        const paddleWidth = this.app.screen.width/(this.state.paddleWidth || defaultWidth);
-        const paddleHeight = this.app.screen.height/(this.state.paddleHeight || defaultHeight);
 
-        this.app.stage.removeChildren();
+        if (this.app) {
+            
+            const paddleWidth = this.app.screen.width/(this.state.paddleWidth || defaultWidth);
+            const paddleHeight = this.app.screen.height/(this.state.paddleHeight || defaultHeight);
 
-        this.leftPaddle = this.getBlock(Colors.LeftPaddleUp, paddleWidth, paddleHeight);
-        this.rightPaddle = this.getBlock(Colors.RightPaddleUp, paddleWidth, paddleHeight);
-        this.ball = this.getBlock(Colors.Ball, paddleWidth, paddleWidth);
+            this.app.stage.removeChildren();
 
-        this.leftPaddle.position.set(paddleWidth, this.app.screen.height/2);
-        this.rightPaddle.position.set(this.app.screen.width - paddleWidth, this.app.screen.height/2);
-        this.ball.position.set(this.app.screen.width/2, this.app.screen.height/2);
+            this.leftPaddle = this.getBlock(Colors.LeftPaddleUp, paddleWidth, paddleHeight);
+            this.rightPaddle = this.getBlock(Colors.RightPaddleUp, paddleWidth, paddleHeight);
+            this.ball = this.getBlock(Colors.Ball, paddleWidth, paddleWidth);
 
-        this.score = new PIXI.Text("", { fontSize: this.app.renderer.width / 15, fill: Colors.Score});
-        this.updateScore();
+            this.leftPaddle.position.set(paddleWidth, this.app.screen.height/2);
+            this.rightPaddle.position.set(this.app.screen.width - paddleWidth, this.app.screen.height/2);
+            this.ball.position.set(this.app.screen.width/2, this.app.screen.height/2);
 
-        this.app.stage.addChild<PIXI.Container>(this.score, this.leftPaddle, this.rightPaddle, this.ball);
+            this.score = new PIXI.Text("", { fontSize: this.app.renderer.width / 15, fill: Colors.Score});
+            this.updateScore();
 
-        this.setSpeed();
+            this.app.stage.addChild<PIXI.Container>(this.score, this.leftPaddle, this.rightPaddle, this.ball);
+
+            this.setSpeed();
+        }
 
         this.setMenuItems();
     }
