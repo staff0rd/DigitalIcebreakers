@@ -1,10 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Glyphicon  } from 'react-bootstrap';
+import Button from '../../layout/components/CustomButtons/Button';
 import { useDispatch } from 'react-redux';
+import Notifications from "@material-ui/icons/Notifications";
 import { setGameMessageCallback, clearGameMessageCallback } from '../../store/connection/actions';
 import { clientMessage } from '../../store/lobby/actions';
+import { makeStyles } from '@material-ui/core';
+
+const useStyles = makeStyles(theme => ({
+    wrapper: {
+        textAlign: 'center',
+        height: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column',
+    },
+    button: {
+        height: 100,
+        width: 150,
+    },
+}));
 
 export const BroadcastClient = () => {
+    const classes = useStyles();
     const [clientText, setClientText] = useState<string>("");
     const dispatch = useDispatch();
 
@@ -20,13 +38,11 @@ export const BroadcastClient = () => {
     }
 
     return (
-        <div className="vcenter">
-            <div style={{textAlign: "center"}}>
-                <h1>{clientText}</h1>
-                <Button bsStyle="primary" bsSize="large" style={{ height: '100px', width: '150px' }} onClick={ding}>
-                    <Glyphicon glyph="bell" />
-                </Button>
-            </div>
+        <div className={classes.wrapper}>
+            <h1>{clientText}</h1>
+            <Button className={classes.button} color="primary" onClick={ding}>
+                <Notifications />
+            </Button>
         </div>
     );
 }
