@@ -88,6 +88,7 @@ class PongPresenter extends BaseGame<PropsFromRedux, PongPresenterState> {
     }
 
     componentDidMount() {
+        window.addEventListener("resize", () => setTimeout(() => this.resize(), 510));
         this.props.setGameMessageCallback(({ payload }: GameMessage<PaddleDy>) => {
             this.setState(payload);
         });
@@ -172,7 +173,9 @@ class PongPresenter extends BaseGame<PropsFromRedux, PongPresenterState> {
     init(app?: PIXI.Application) {
         if (app)
             this.app = app;
-
+        this.resize();
+    }
+    resize() {
         if (this.app) {
             
             const paddleWidth = this.app.screen.width/(this.state.paddleWidth || defaultWidth);

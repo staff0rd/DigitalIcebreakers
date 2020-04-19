@@ -138,7 +138,7 @@ namespace DigitalIcebreakers.Hubs
                 case "broadcast": return new Broadcast(_send, _lobbys);
                 case "startstopcontinue": return new StartStopContinue(_send, _lobbys);
                 case "slideshow": return new Slideshow(_send, _lobbys);
-                case "react": return new Reaction(_send, _lobbys);
+                case "reaction": return new Reaction(_send, _lobbys);
                 case "splat": return new Splat(_send, _lobbys);
                 default: throw new ArgumentOutOfRangeException("Unknown game");
             }

@@ -21,11 +21,17 @@ export const Pixi: React.FC<PixiProps> = (props) => {
     const [app, setApp] = useState<PIXI.Application | null>(null);
     const pixiElement = useRef<HTMLDivElement>(null);
     
-    const onResize = useCallback(() => {
-        if (app && pixiElement.current) {
+    const resize = (pixi: PIXI.Application) => {
+        if (pixiElement.current) {
             const size = { width: pixiElement.current!.clientWidth, height: pixiElement.current!.clientHeight };
-            app.renderer.resize(size.width, size.height);
+            pixi.renderer.resize(size.width, size.height);
             console.log(`resized pixi to ${size.width}x${size.height}`);
+        }
+    }
+
+    const onResize = useCallback(() => {
+        if (app) {
+            resize(app);
         } else {
             console.log('no app to resize');
         }
@@ -33,6 +39,7 @@ export const Pixi: React.FC<PixiProps> = (props) => {
 
     useEffect(() => {
         const pixi = new PIXI.Application({ autoResize: true, backgroundColor: props.backgroundColor || 0xFFFFFF });
+        resize(pixi);
         setApp(pixi);
         props.onAppChange(pixi);
     }, [])

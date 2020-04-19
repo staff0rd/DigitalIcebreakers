@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button, Table } from 'react-bootstrap';
 import { BaseGameProps, BaseGame } from '../BaseGame'
 import { Shape } from './Shape';
 import { Colors, ColorUtils } from '../../Colors';
@@ -12,9 +11,11 @@ import { ConnectedProps, connect } from 'react-redux';
 import { clientMessage, adminMessage } from '../../store/lobby/actions';
 import { setGameMessageCallback, clearGameMessageCallback } from '../../store/connection/actions';
 import { GameMessage } from '../GameMessage'
-
+import Button from '../../layout/components/CustomButtons/Button';
+import Table from '../../layout/components/Table/Table';
 import { Pixi } from '../pixi/Pixi';
 import { RootState } from '../../store/RootState';
+import ContentContainer from '../../components/ContentContainer';
 
 interface Choice {
     id: string;
@@ -91,15 +92,23 @@ class ReactionPresenter extends BaseGame<PropsFromRedux, ReactState> {
     }
 
     init(app?: PIXI.Application) {
-        this.app = app;
+        if (app) {
+            this.app = app;
+        }
+        this.resize();
+    }
+
+    resize() {
         if (this.app && this.state.shape) {
             this.app.stage.removeChildren();
             const bottomShapes = this.getOtherShapes();
             const size = this.app.screen.height * .7;
-            const main = new ShapeView(size, this.state.shape);
-            main.view.position.set(this.app.screen.width/2, size/2);           
+            const mainShape = new ShapeView(size, this.state.shape);
+            mainShape.view.position.set(this.app.screen.width/2, size/2);    
+            console.log(this.app.screen.width);
+            mainShape.view.addChild(new PIXI.Graphics().beginFill(Colors.BlueGrey.C500).drawCircle(0, 0, 5))       
             const bottomShapesContainer = new PIXI.Container();
-            const views = [main]
+            const views = [mainShape];
 
             let smallShapeWidth: number = 0;
             const shapeMargin = 20;
@@ -113,7 +122,7 @@ class ReactionPresenter extends BaseGame<PropsFromRedux, ReactState> {
                 });
             bottomShapesContainer.position.set(this.app.screen.width/2 - (bottomShapes.length-1) * (smallShapeWidth + shapeMargin) / 2, this.app.screen.height - shapeMargin + smallShapeWidth/2);
             bottomShapesContainer.pivot.set(0, bottomShapesContainer.height);
-            this.app.stage.addChild(main.view, bottomShapesContainer);
+            this.app.stage.addChild(mainShape.view, bottomShapesContainer);
             this.setState({views: views}, () => this.resetTimeout(true));
         }
     }
@@ -234,7 +243,7 @@ class ReactionPresenter extends BaseGame<PropsFromRedux, ReactState> {
             showScores: false
         }, () => {
             this.props.adminMessage(shuffle(shapes));
-            this.init(this.app);
+            this.resize();
         });
     }
 
@@ -244,20 +253,19 @@ class ReactionPresenter extends BaseGame<PropsFromRedux, ReactState> {
             if (this.app)
                 this.app.view.parentElement && this.app.view.parentElement.removeChild(this.app.view);
             
-                const scores = this.state.scores
-                .sort((a,b) => b.score - a.score)
-                .map((p, ix) => <tr key={ix}><td>{p.score}</td><td>{p.name}</td></tr>);
+                const scores: any[] = this.state.scores
+                    .sort((a,b) => b.score - a.score)
+                    .map((p, ix) => [p.score, p.name]);
 
-            return <div>
-                <h1>Scores</h1>
-                <Table striped bordered>
-                    <tbody>
-                    {scores}
-                    </tbody>
-                </Table>
+            return (
+                <ContentContainer header="Scores">
+                <Table
+              tableData={scores}
+            />
                 <Button className="primary" onClick={() => this.again() }>Again</Button>
                 <div ref={this.againProgress} style={{marginTop: 15, width: 500, height: 50, backgroundColor: ColorUtils.toHtml(Colors.Red.C400)}}></div>
-            </div>;
+                </ContentContainer>
+            );
         } else {
             return <Pixi backgroundColor={Colors.White} onAppChange={(app) => this.init(app)} />
         }

@@ -32,29 +32,39 @@ class ReactionClient extends BaseGame<PropsFromRedux, ReactionClientState> {
     }
 
     componentDidMount() {
+        window.addEventListener("resize", () => setTimeout(() => this.resize(), 501));
         this.props.setGameMessageCallback((newState: ReactionClientState) => {
             console.log(newState);
             this.setState(newState, () => this.init(this.app));
         });
     }
 
+    componentWillUnmount() {
+        window.removeEventListener("resize", () => this.resize());
+    }
+
     init(app?: PIXI.Application) {
         this.app = app || this.app;
+        this.resize();
+    }
+    
+    resize() {
         if (this.app) {
-           this.app.stage.removeChildren();
-           const margin = 25;
-           const radius = Math.min(
-               (this.app.screen.width - (3*margin)) / 4,
-               ((this.app.screen.height - (this.state.shapes.length/2 + 1) * margin)) / 4
-               );
-           for (let i = 0; i < this.state.shapes.length; i += 2) {
-                const g1 = this.drawShape(this.state.shapes[i], radius);
-                const g2 = this.drawShape(this.state.shapes[i+1], radius, radius * 3 + margin)
-                const container = new PIXI.Container();
-                container.addChild(g1, g2);
-                container.position.set(this.app.screen.width/2 - container.width/2, margin + (i/2 * (radius*2 + margin)))
-                this.app.stage.addChild(container);
-           }
+            console.log('performing layout');
+            this.app.stage.removeChildren();
+            const margin = 25;
+            const radius = Math.min(
+                (this.app.screen.width - (3*margin)) / 4,
+                ((this.app.screen.height - (this.state.shapes.length/2 + 1) * margin)) / 6
+                );
+            for (let i = 0; i < this.state.shapes.length; i += 2) {
+                    const g1 = this.drawShape(this.state.shapes[i], radius);
+                    const g2 = this.drawShape(this.state.shapes[i+1], radius, radius * 3 + margin)
+                    const container = new PIXI.Container();
+                    container.addChild(g1, g2);
+                    container.position.set(this.app.screen.width/2 - container.width/2, margin + (i/2 * (radius*2 + margin)))
+                    this.app.stage.addChild(container);
+            }
         }
     }
 
