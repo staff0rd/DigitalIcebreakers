@@ -9,7 +9,7 @@ import { clientMessage } from '../../store/lobby/actions';
 import React from 'react';
 import { setGameMessageCallback } from '../../store/connection/actions'
 
-type ReactClientState = {
+type ReactionClientState = {
     shapes: Shape[];
     selectedId?: number;
 }
@@ -21,7 +21,7 @@ const connector = connect(
   
 type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
 
-class ReactClient extends BaseGame<PropsFromRedux, ReactClientState> {
+class ReactionClient extends BaseGame<PropsFromRedux, ReactionClientState> {
     app?: PIXI.Application;
 
     constructor(props: PropsFromRedux) {
@@ -32,7 +32,7 @@ class ReactClient extends BaseGame<PropsFromRedux, ReactClientState> {
     }
 
     componentDidMount() {
-        this.props.setGameMessageCallback((newState: ReactClientState) => {
+        this.props.setGameMessageCallback((newState: ReactionClientState) => {
             console.log(newState);
             this.setState(newState, () => this.init(this.app));
         });
@@ -90,4 +90,4 @@ class ReactClient extends BaseGame<PropsFromRedux, ReactClientState> {
     }
 }
 
-export default connector(ReactClient);
+export default connector(ReactionClient);

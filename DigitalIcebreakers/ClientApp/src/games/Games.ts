@@ -16,8 +16,8 @@ import { PongClient } from './Pong/PongClient';
 import { StartStopContinueClient } from './StartStopContinue/StartStopContinueClient';
 // import { SlideshowClient } from './Slideshow/SlideshowClient';
 // import { SlideshowPresenter } from './Slideshow/SlideshowPresenter';
-import ReactClient from './React/ReactClient';
-import ReactPresenter from './React/ReactPresenter';
+import ReactionClient from './Reaction/ReactionClient';
+import ReactionPresenter from './Reaction/ReactionPresenter';
 
 export default [{
         name: "doggos-vs-kittehs",
@@ -86,9 +86,9 @@ export default [{
     //     isGame: false
     }, {
         title: "Reaction",
-        name: "react",
-        client: ReactClient,
-        presenter: ReactPresenter,
+        name: "reaction",
+        client: ReactionClient,
+        presenter: ReactionPresenter,
         fullscreen: true,
         isGame: true,
         description: 'Test audience reflexes in this all-vs-all shape-matching game',

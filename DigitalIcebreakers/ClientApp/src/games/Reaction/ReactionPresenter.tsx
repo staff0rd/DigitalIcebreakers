@@ -50,7 +50,7 @@ type Payload = {
     selectedId: number;
 }
 
-class ReactPresenter extends BaseGame<PropsFromRedux, ReactState> {
+class ReactionPresenter extends BaseGame<PropsFromRedux, ReactState> {
     private timeout: NodeJS.Timeout|undefined;
     private againProgressElement?: HTMLDivElement;
     private againTween?: GSAPStatic.Tween;
@@ -264,4 +264,4 @@ class ReactPresenter extends BaseGame<PropsFromRedux, ReactState> {
     }
 }
 
-export default connector(ReactPresenter);
+export default connector(ReactionPresenter);

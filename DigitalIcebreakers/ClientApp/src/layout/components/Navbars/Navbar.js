@@ -8,8 +8,8 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
   header: {
-    float: 'right',
-    display: 'inline-block',
+    position: 'fixed',
+    right: 0,
   }
 });
 
