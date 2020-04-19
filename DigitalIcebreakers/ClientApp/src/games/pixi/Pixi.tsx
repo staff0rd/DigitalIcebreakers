@@ -13,11 +13,6 @@ const useStyles = makeStyles(theme => ({
     pixi: {
         width: '100%',
         height: '100%',
-        [theme.breakpoints.down("sm")]: {
-            '& canvas': {
-                marginTop: -50,
-            },
-        }
     },
 }));
 

@@ -1,12 +1,11 @@
 import { Pixi } from '../pixi/Pixi';
 import { Colors } from '../../Colors';
 import { Graph } from '../pixi/Graph';
-import { BaseGameProps, BaseGame } from '../BaseGame';
-import { YesNoMaybeState } from '../YesNoMaybe/YesNoMaybePresenter';
-import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import React, { useState, useEffect } from 'react';
 import { setGameMessageCallback } from '../../store/connection/actions';
 import { GameMessage } from '../GameMessage';
+import { useDispatch } from 'react-redux';
+import { useResizeListener } from '../pixi/useResizeListener';
 
 interface Payload {
     doggos: number;
@@ -14,55 +13,54 @@ interface Payload {
     undecided: number;
 }
 
-const connector = connect(
-    null,
-    { setGameMessageCallback }
-);
-  
-type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
-
-class DoggosVsKittehsPresenter extends BaseGame<PropsFromRedux, YesNoMaybeState> {
-    displayName = DoggosVsKittehsPresenter.name
-    graph!: Graph;
-    app?: PIXI.Application;
+export default () => {
+    const dispatch = useDispatch();
+    const [app, setApp] = useState<PIXI.Application>();
+    let graph: Graph;
     
-    constructor(props: PropsFromRedux) {
-        super(props);
-        this.state = {
-            yes: 0,
-            no: 0,
-            maybe: 0
-        };
-    }
+    const [state, setState] = useState({
+        yes: 0,
+        no: 0,
+        maybe: 0
+    });
 
-    init(app?: PIXI.Application) {
-        var data = [
-            {label: "Doggos", value: this.state.yes, color: Colors.Red.C500},
-            {label: "Undecided", value: this.state.maybe, color: Colors.Grey.C500},
-            {label: "Kittehs", value: this.state.no, color: Colors.Blue.C500}
-        ]
+    const resize = () => {
         if (app) {
-            this.app = app;
-        }
-
-        if (this.app) {
-            this.graph = new Graph(this.app!, data)
+            var data = [
+                {label: "Doggos", value: state.yes, color: Colors.Red.C500},
+                {label: "Undecided", value: state.maybe, color: Colors.Grey.C500},
+                {label: "Kittehs", value: state.no, color: Colors.Blue.C500}
+            ]
+            app.stage.removeChildren();
+            console.log('set new graph');
+            graph = new Graph(app, data);
+        } else {
+            console.log('no app');
         }
     }
 
-    componentDidMount() {
-        this.props.setGameMessageCallback(({ payload }: GameMessage<Payload>) => {
-            this.setState({
+    useEffect(() => resize(), [app]);
+
+    useResizeListener(resize);
+
+    const init = (newApp?: PIXI.Application) => {
+        console.log('app init');
+        if (newApp) {
+            setApp(newApp);
+            resize();
+        }
+    }
+
+    useEffect(() => {
+        dispatch(setGameMessageCallback(({ payload }: GameMessage<Payload>) => {
+            setState({
                 yes: payload.doggos,
                 no: payload.kittehs,
                 maybe: payload.undecided
-            }, () => this.init(this.app));
-        });
-    }
+            });
+            init();
+        }));
+    }, []);
 
-    render() {
-        return <Pixi onAppChange={(app) => this.init(app)} />
-    }
+    return <Pixi onAppChange={(app) => init(app)} />
 }
-
-export default connector(DoggosVsKittehsPresenter);
