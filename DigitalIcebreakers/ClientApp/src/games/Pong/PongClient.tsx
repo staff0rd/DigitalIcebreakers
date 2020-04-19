@@ -21,8 +21,11 @@ export const PongClient = () =>  {
     const topButton = new Button(message("release"), message("up"));
     const bottomButton = new Button(message("release"), message("down"));
 
-    const appHandler = (app: PIXI.Application) => {
-        setApp(app);
+    const appHandler = (app?: PIXI.Application) => {
+        if (app)
+        {
+            setApp(app);
+        }
     };
 
     useEffect(() => {

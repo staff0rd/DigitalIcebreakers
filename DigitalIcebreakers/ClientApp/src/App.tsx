@@ -143,18 +143,4 @@ const Main = () => {
     return (
         <Layout isAdmin={lobby.isAdmin} currentGame={lobby.currentGame} lobbyId={lobby.id} />
     ); 
-        /*
-        <Layout>
-            <Switch>
-                <Route path='/createLobby' render={() => <CreateLobby /> } />
-                <Route path='/closeLobby' render={closeLobby }  />
-                <Route path='/lobbyClosed' component={LobbyClosed} />
-                <Route path='/game/:name' render={game} />
-                <Route path='/newGame' render={newGame} />
-                <Route path='/join/:id' render={props => <Join {...props} /> }  />
-                <Route exact path='/' render={() => <Lobby  /> } /> 
-            </Switch>
-        </Layout>
-        */
-    
 }

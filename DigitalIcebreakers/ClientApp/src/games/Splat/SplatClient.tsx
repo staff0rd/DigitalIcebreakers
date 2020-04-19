@@ -22,14 +22,17 @@ export class SplatClient extends BaseGame<PropsFromRedux, {}> {
         this.button = new Button(this.up, this.down);
     }
 
-    init(app: PIXI.Application) {
-        this.app = app;
+    init(app?: PIXI.Application) {
+        if (app) {
+            this.app = app;
+        }
         
-        this.app.stage.addChild(this.button);
-
-        this.button.x = this.app.renderer.width / 4;
-        this.button.y = this.app.renderer.height / 4;
-        this.button.render(Colors.Blue.C400, Colors.Red.C400, 0, 0, this.app.renderer.width / 2, this.app.renderer.height / 2);
+        if (this.app) {
+            this.app.stage.addChild(this.button);
+            this.button.x = this.app.renderer.width / 4;
+            this.button.y = this.app.renderer.height / 4;
+            this.button.render(Colors.Blue.C400, Colors.Red.C400, 0, 0, this.app.renderer.width / 2, this.app.renderer.height / 2);
+        }
     }
 
     down = () => {

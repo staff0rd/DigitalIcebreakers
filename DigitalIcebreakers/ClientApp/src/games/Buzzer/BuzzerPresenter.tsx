@@ -1,9 +1,11 @@
 import React from 'react';
-import { ListGroup, ListGroupItem } from 'react-bootstrap';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
 import { BaseGame, BaseGameProps } from '../BaseGame'
 import { connect, ConnectedProps } from 'react-redux';
 import { setGameMessageCallback } from '../../store/connection/actions';
 import { GameMessage } from '../GameMessage';
+import ContentContainer from '../../components/ContentContainer';
 
 const connector = connect(
     null,
@@ -54,21 +56,19 @@ class BuzzerPresenter extends BaseGame<PropsFromRedux, BuzzerState> {
     }
 
     render() {
-      
-        const players = (this.state.players || []).map((p, ix) => {
-            if (p.state === "down")
-                return <ListGroupItem key={ix} active>{p.name}</ListGroupItem>;
-            else
-                return <ListGroupItem key={ix}>{p.name}</ListGroupItem>;
-        });
-
         return (
-            <div>
-                <h2>Buzzer</h2>
-                <ListGroup>
-                    {players}
-                </ListGroup>
-            </div>
+            <ContentContainer header="Buzzer">
+                <List component="nav">
+                    { (this.state.players || []).map((p, ix) => (
+                        <ListItem
+                            button
+                            selected={p.state === 'down'}
+                        >
+                            {p.name}
+                        </ListItem>
+                        ))}
+                </List>
+            </ContentContainer>
         );
     }
 }

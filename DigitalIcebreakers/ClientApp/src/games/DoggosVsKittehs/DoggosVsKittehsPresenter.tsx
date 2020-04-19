@@ -36,15 +36,18 @@ class DoggosVsKittehsPresenter extends BaseGame<PropsFromRedux, YesNoMaybeState>
     }
 
     init(app?: PIXI.Application) {
-        this.app = app;
         var data = [
             {label: "Doggos", value: this.state.yes, color: Colors.Red.C500},
             {label: "Undecided", value: this.state.maybe, color: Colors.Grey.C500},
             {label: "Kittehs", value: this.state.no, color: Colors.Blue.C500}
         ]
+        if (app) {
+            this.app = app;
+        }
 
-        if (this.app)
-            this.graph = new Graph(this.app, data);
+        if (this.app) {
+            this.graph = new Graph(this.app!, data)
+        }
     }
 
     componentDidMount() {

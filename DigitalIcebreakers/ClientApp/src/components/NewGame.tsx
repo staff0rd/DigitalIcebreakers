@@ -49,16 +49,6 @@ export default () => {
         dispatch(startNewGame(name));
     }
 
-    // const getListItems = (items: IGame[]) => {
-    //     return items
-    //         .filter((g: IGame) => !g.disabled)
-    //         .map((g,ix) => {
-    //         return (
-    //             <ListGroupItem key={ix} onClick={() => newGame(g.name)}>{g.title}</ListGroupItem>
-    //         );
-    //     });
-    // };
-
     return (
         <ContentContainer>
             <h2>New game</h2>
@@ -76,7 +66,7 @@ export default () => {
                             </CardBody>
                             <CardFooter chart>
                             <div>
-                                <Button color="primary">Play</Button>
+                                <Button color="primary" onClick={() => newGame(g.name)}>Play</Button>
                             </div>
                             </CardFooter>
                         </Card>

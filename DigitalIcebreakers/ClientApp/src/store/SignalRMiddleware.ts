@@ -41,7 +41,7 @@ export const SignalRMiddleware = () => {
             dispatch(setLobby(response.lobbyId, response.lobbyName, response.isAdmin, response.players, response.currentGame));
             dispatch(setUser(user));
             if (response.currentGame) {
-                history.push(`/game/${response.currentGame}`);
+                history.push(`/game/`);
             }
             else {
                 history.push("/");
@@ -92,13 +92,11 @@ export const SignalRMiddleware = () => {
                     break;
                 }
                 case START_NEW_GAME: {
-                    // TODO: restore
-                    //this.setMenuItems([]);
                     invoke("newGame", action.name);
                     break;
                 }
                 case SET_LOBBY_GAME: {
-                    history.push(`/game/${action.game}`);
+                    history.push(`/game/`);
                     break;
                 }
                 case CONNECTION_CONNECT: {
@@ -161,7 +159,7 @@ export const SignalRMiddleware = () => {
                         const isJoin = history.location.pathname.startsWith('/join/');
                         if (!isJoin || action.ignoreJoin) {
                             if (getState().lobby.currentGame) {
-                                history.push(`/game/${getState().lobby.currentGame}`);
+                                history.push(`/game`);
                             } else {
                                 history.push("/");
                             }

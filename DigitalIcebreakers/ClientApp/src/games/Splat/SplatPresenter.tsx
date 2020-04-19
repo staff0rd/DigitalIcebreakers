@@ -24,8 +24,10 @@ class SplatPresenter extends BaseGame<PropsFromRedux, {}> {
         };
     }
 
-    init(app: PIXI.Application) {
-        this.app = app;
+    init(app?: PIXI.Application) {
+        if (app) {
+            this.app = app;
+        }
     }
 
     componentDidMount() {

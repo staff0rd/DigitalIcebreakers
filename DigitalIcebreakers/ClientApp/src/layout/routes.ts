@@ -10,9 +10,12 @@ import Lobby from '../components/Lobby';
 import Home from '../components/Home'
 import NewGame from "../components/NewGame";
 import { useSelector } from '../store/useSelector';
+import Games from '../games/Games';
+import Game from '../components/Game';
 
 export default () => {
   const lobby = useSelector(state => state.lobby);
+  const game = useSelector(state => Games.find(g => g.name === state.lobby.currentGame));
   return [
     lobby.id && {
       path: "/",
@@ -30,19 +33,19 @@ export default () => {
       icon: AddCircle,
       component: CreateLobby,
     },
-    lobby.id && {
+    lobby.id && lobby.isAdmin && {
       path: "/new-game",
       name: "New Game",
       icon: SportsEsports,
       component: NewGame,
     },
-    lobby.currentGame && {
+    game && {
       path: "/game",
-      name: "New Game",
+      name: game.title,
       icon: SportsEsports,
-      component: NewGame,
+      component: Game,
     },
-    lobby.id && {
+    lobby.id && lobby.isAdmin && {
       path: "/close-lobby",
       name: "Close Lobby",
       icon: Cancel,
