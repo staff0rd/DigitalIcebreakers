@@ -2,7 +2,6 @@ import React from 'react';
 import { PongColors as Colors } from './PongColors';
 import * as PIXI from "pixi.js";
 import ReactAnimationFrame from 'react-animation-frame';
-import { clamp } from '../../util/clamp';
 import { BaseGame, BaseGameProps } from '../BaseGame'
 import { between } from '../../Random';
 import { connect, ConnectedProps } from 'react-redux';
