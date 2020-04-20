@@ -5,15 +5,24 @@ import { Graph } from '../pixi/Graph';
 import { Pixi } from '../pixi/Pixi';
 import { useDispatch } from 'react-redux';
 import { adminMessage } from '../../store/lobby/actions';
-import { setGameMessageCallback } from '../../store/connection/actions';
+import { setGameMessageCallback, clearGameMessageCallback } from '../../store/connection/actions';
 import { setMenuItems } from '../../store/shell/actions';
 import { GameMessage } from '../GameMessage';
 import { useResizeListener } from '../pixi/useResizeListener';
+import YesNoMaybeClient from './YesNoMaybeClient';
 
 interface YesNoMaybeState {
     yes: number;
     no: number;
     maybe: number;
+}
+
+const useGame = <T,>(gameMessageCallback: (response: GameMessage<T>) => void) => {
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(setGameMessageCallback(gameMessageCallback));
+        return () => { dispatch(clearGameMessageCallback()); }
+    }, []);
 }
   
 export default () => {
@@ -31,11 +40,13 @@ export default () => {
             setPixi(app);
         }
     };
+
+    useGame(
+        ({ payload }: GameMessage<YesNoMaybeState>) => setState(payload)
+    );
       
     useEffect(() => {
-        dispatch(setGameMessageCallback(({ payload }: GameMessage<YesNoMaybeState>) => {
-            setState(payload);
-        }));
+        
         const header = (
             <Button onClick={reset}>Reset</Button>
         );
