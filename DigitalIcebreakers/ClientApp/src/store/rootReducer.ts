@@ -7,11 +7,13 @@ import { shellReducer } from './shell/reducers';
 import { yesNoMaybeReducer } from '../games/YesNoMaybe/YesNoMaybeReducer';
 import { doggosVsKittehsReducer } from '../games/DoggosVsKittehs/DoggosVsKittehsReducer';
 import { buzzerReducer } from '../games/Buzzer/BuzzerReducer';
+import { splatReducer } from '../games/Splat/SplatReducer';
 
 const gamesReducer = combineReducers<GamesState>({
     yesnomaybe: yesNoMaybeReducer,
     doggosVsKittehs: doggosVsKittehsReducer,
     buzzer: buzzerReducer,
+    splat: splatReducer,
 });
 
 export const rootReducer = combineReducers<RootState>({

@@ -1,4 +1,3 @@
-import { Events } from '../../Events';
 import * as PIXI from "pixi.js";
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { makeStyles } from "@material-ui/core/styles"
@@ -6,7 +5,7 @@ import { useResizeListener } from './useResizeListener';
 
 interface PixiProps {
     backgroundColor?: number;
-    onAppChange: (app?: PIXI.Application) => void;
+    onAppChange?: (app: PIXI.Application) => void;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -16,9 +15,9 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export const Pixi: React.FC<PixiProps> = (props) => {
+export const Pixi = ({backgroundColor, onAppChange}: PixiProps) => {
     const classes = useStyles();
-    const [app, setApp] = useState<PIXI.Application | null>(null);
+    const [app, setApp] = useState<PIXI.Application>();
     const pixiElement = useRef<HTMLDivElement>(null);
     
     const resize = (pixi: PIXI.Application) => {
@@ -38,10 +37,10 @@ export const Pixi: React.FC<PixiProps> = (props) => {
     },  [app]);
 
     useEffect(() => {
-        const pixi = new PIXI.Application({ autoResize: true, backgroundColor: props.backgroundColor || 0xFFFFFF });
+        const pixi = new PIXI.Application({ autoResize: true, backgroundColor: backgroundColor || 0xFFFFFF });
         resize(pixi);
         setApp(pixi);
-        props.onAppChange(pixi);
+        onAppChange && onAppChange(pixi);
     }, [])
 
     useEffect(() => {

@@ -1,58 +1,31 @@
-import React from 'react';
-import { BaseGame, BaseGameProps } from '../BaseGame'
-import { connect, ConnectedProps } from 'react-redux';
-import { setGameMessageCallback } from '../../store/connection/actions';
+import React, { useState, useEffect } from 'react';
 import { Colors, ColorUtils } from '../../Colors';
 import { between } from '../../Random';
 import { Pixi } from '../pixi/Pixi';
-import { GameMessage } from '../GameMessage';
+import { useSelector } from '../../store/useSelector';
 
-const connector = connect(
-    null,
-    { setGameMessageCallback }
-);
-  
-type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
+export default () => {
+    const [app, setApp] = useState<PIXI.Application>();
 
-class SplatPresenter extends BaseGame<PropsFromRedux, {}> {
-    app?: PIXI.Application;
-    constructor(props: PropsFromRedux) {
-        super(props);
+    const splats = useSelector(state => state.games.splat.count);
 
-        this.state = {
-            players: []
-        };
-    }
-
-    init(app?: PIXI.Application) {
+    const draw = () => {
         if (app) {
-            this.app = app;
+            while(app.stage.children.length < splats) {
+                const x = between(0, app.screen.width);
+                const y = between(0, app.screen.height);
+                const circle = new PIXI.Graphics()
+                    .beginFill(ColorUtils.randomColor().shades[4].shade)
+                    .drawCircle(x, y, between(30, 100))
+                    .endFill();
+                app.stage.addChild(circle);
+            }
         }
     }
 
-    componentDidMount() {
-        this.props.setGameMessageCallback(({ id, name, payload }: GameMessage<string>) => {
-            this.setState(prevState => {
-                switch (payload) {
-                    case "down": {
-                        const x = between(0, this.app!.screen.width);
-                        const y = between(0, this.app!.screen.height);
-                        const circle = new PIXI.Graphics()
-                            .beginFill(ColorUtils.randomColor().shades[4].shade)
-                            .drawCircle(x, y, between(30, 100))
-                            .endFill();
-                        this.app!.stage.addChild(circle);
-                    }
-                }
-            });
-        });
-    }
-
-    render() {
-        return (
-            <Pixi backgroundColor={Colors.White} onAppChange={(app) => this.init(app)} />
-        );
-    }
+    useEffect(() => draw(), [app, splats]);
+    
+    return (
+        <Pixi backgroundColor={Colors.White} onAppChange={(app) => setApp(app)} />
+    );
 }
-
-export default connector(SplatPresenter);

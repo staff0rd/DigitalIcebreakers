@@ -2,18 +2,17 @@ import { Pixi } from '../pixi/Pixi';
 import { Colors } from '../../Colors';
 import { Graph } from '../pixi/Graph';
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { useResizeListener } from '../pixi/useResizeListener';
 import { useSelector } from '../../store/useSelector';
 
 export default () => {
-    const dispatch = useDispatch();
     const [app, setApp] = useState<PIXI.Application>();
+
     let graph: Graph;
     
     const state = useSelector(state => state.games.doggosVsKittehs);
 
-    const resize = () => {
+    const draw = () => {
         if (app) {
             var data = [
                 {label: "Doggos", value: state.yes, color: Colors.Red.C500},
@@ -28,17 +27,9 @@ export default () => {
         }
     }
 
-    useEffect(() => resize(), [app, state]);
+    useEffect(() => draw(), [app, state]);
 
-    useResizeListener(resize);
+    useResizeListener(draw);
 
-    const init = (newApp?: PIXI.Application) => {
-        console.log('app init');
-        if (newApp) {
-            setApp(newApp);
-            resize();
-        }
-    }
-
-    return <Pixi onAppChange={(app) => init(app)} />
+    return <Pixi onAppChange={(app) => setApp(app)} />
 }
