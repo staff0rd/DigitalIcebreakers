@@ -1,5 +1,4 @@
-import { createReducer } from '@reduxjs/toolkit';
-import { createGameMessageReceivedAction } from '../../store/actionHelpers';
+import { createReceiveGameMessageReducer } from '../../store/actionHelpers';
 
 export interface YesNoMaybeState {
     yes: number;
@@ -9,8 +8,7 @@ export interface YesNoMaybeState {
 
 export const Name='yes-no-maybe';
 
-const receiveGameMessage = createGameMessageReceivedAction<YesNoMaybeState>(Name, "presenter", "receive-game-message");
-
-export const yesNoMaybeReducer = createReducer<YesNoMaybeState>({yes: 0, no: 0, maybe: 0}, builder => {
-    builder.addCase(receiveGameMessage, (state, action) => action.payload.payload);
-});
+export const yesNoMaybeReducer = createReceiveGameMessageReducer<YesNoMaybeState>(
+    Name,
+    {yes: 0, no: 0, maybe: 0},
+    (_, action) => action.payload.payload);
