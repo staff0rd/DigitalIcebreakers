@@ -162,10 +162,14 @@ class PongPresenter extends BaseGame<PropsFromRedux, {}> {
         return `${this.props.score[0]}-${this.props.score[1]}`;
     }
 
-    componentDidUpdate() {
+    componentDidUpdate(prevProps: PropsFromRedux) {
         if (this.app) {
             this.score.text = this.getScore();
             this.setPaddleSizes(); 
+            if (prevProps.ballSpeed != this.props.ballSpeed) {
+                this.ballDx = this.ballDx / prevProps.ballSpeed * this.props.ballSpeed;
+                this.ballDy = this.ballDy / prevProps.ballSpeed * this.props.ballSpeed;
+            }
         }
     }
 
@@ -185,22 +189,6 @@ class PongPresenter extends BaseGame<PropsFromRedux, {}> {
         g.pivot.set(width/2, height/2);
         return g;
     }
-
-    // updatePaddleHeight = (value: number) => {
-    //     this.setState({paddleHeight: clamp(value, 2, 20)}, this.init);
-    // }
-
-    // updatePaddleWidth = (value: number) => {
-    //     this.setState({paddleWidth: value}, this.init);
-    // }
-
-    // updatePaddleSpeed = (value: number) => {
-    //     this.setState({paddleSpeed: value}, this.init);
-    // }
-
-    // updateBallSpeed = (value: number)  => {
-    //     this.setState({ballSpeed: value}, this.init);
-    // }
 
     render() {
         return <Pixi backgroundColor={Colors.Background} onAppChange={(app) => this.init(app)} />

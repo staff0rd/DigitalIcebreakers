@@ -33,6 +33,9 @@ export const rightScores = createGameAction(Name, "presenter", "right-scores");
 export const leftScores = createGameAction(Name, "presenter", "left-scores");
 export const resetScores = createGameAction(Name, "presenter", "reset-scores");
 export const setPaddleHeight = createGameActionWithPayload<number>(Name, "presenter", "set-paddle-height");
+export const setPaddleWidth = createGameActionWithPayload<number>(Name, "presenter", "set-paddle-width");
+export const setPaddleSpeed = createGameActionWithPayload<number>(Name, "presenter", "set-paddle-speed");
+export const setBallSpeed = createGameActionWithPayload<number>(Name, "presenter", "set-ball-speed");
 
 const adminReducer = createReceiveGameMessageReducer<PongPresenterState>(
     Name, 
@@ -66,6 +69,18 @@ const adminReducer = createReceiveGameMessageReducer<PongPresenterState>(
         builder.addCase(setPaddleHeight, (state, { payload }) => ({
             ...state,
             paddleHeight: clamp(payload, 2, 20),
+        }));
+        builder.addCase(setPaddleWidth, (state, { payload }) => ({
+            ...state,
+            paddleWidth: payload,
+        }));
+        builder.addCase(setPaddleSpeed, (state, { payload }) => ({
+            ...state,
+            paddleSpeed: clamp(payload, 1, 100),
+        }));
+        builder.addCase(setBallSpeed, (state, { payload }) => ({
+            ...state,
+            ballSpeed: payload,
         }));
     }
 );
