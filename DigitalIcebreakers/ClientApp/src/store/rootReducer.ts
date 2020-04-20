@@ -6,10 +6,12 @@ import { lobbyReducer } from './lobby/reducers'
 import { shellReducer } from './shell/reducers';
 import { yesNoMaybeReducer } from '../games/YesNoMaybe/YesNoMaybeReducer';
 import { doggosVsKittehsReducer } from '../games/DoggosVsKittehs/DoggosVsKittehsReducer';
+import { buzzerReducer } from '../games/Buzzer/BuzzerReducer';
 
 const gamesReducer = combineReducers<GamesState>({
     yesnomaybe: yesNoMaybeReducer,
     doggosVsKittehs: doggosVsKittehsReducer,
+    buzzer: buzzerReducer,
 });
 
 export const rootReducer = combineReducers<RootState>({
