@@ -2,27 +2,16 @@ import { Pixi } from '../pixi/Pixi';
 import { Colors } from '../../Colors';
 import { Graph } from '../pixi/Graph';
 import React, { useState, useEffect } from 'react';
-import { setGameMessageCallback } from '../../store/connection/actions';
-import { GameMessage } from '../GameMessage';
 import { useDispatch } from 'react-redux';
 import { useResizeListener } from '../pixi/useResizeListener';
-
-interface Payload {
-    doggos: number;
-    kittehs: number;
-    undecided: number;
-}
+import { useSelector } from '../../store/useSelector';
 
 export default () => {
     const dispatch = useDispatch();
     const [app, setApp] = useState<PIXI.Application>();
     let graph: Graph;
     
-    const [state, setState] = useState({
-        yes: 0,
-        no: 0,
-        maybe: 0
-    });
+    const state = useSelector(state => state.games.doggosVsKittehs);
 
     const resize = () => {
         if (app) {
@@ -50,17 +39,6 @@ export default () => {
             resize();
         }
     }
-
-    useEffect(() => {
-        dispatch(setGameMessageCallback(({ payload }: GameMessage<Payload>) => {
-            setState({
-                yes: payload.doggos,
-                no: payload.kittehs,
-                maybe: payload.undecided
-            });
-            init();
-        }));
-    }, []);
 
     return <Pixi onAppChange={(app) => init(app)} />
 }
