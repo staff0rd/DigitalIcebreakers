@@ -16,7 +16,7 @@ const useStyles = makeStyles(theme => ({
         marginRight: "15px",
         textAlign: "center",
         verticalAlign: "middle",
-        color: "rgba(" + hexToRgb(whiteColor) + ", 0.8)"
+        color: "#535353"
     }
 }));
 
