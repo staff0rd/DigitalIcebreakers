@@ -2,10 +2,16 @@ import { ConnectionState } from './connection/types'
 import { UserState } from './user/types';
 import { LobbyState } from './lobby/types';
 import { ShellState } from './shell/types'
+import { YesNoMaybeState } from '../games/YesNoMaybe/YesNoMaybeReducer';
+
+export interface GamesState {
+    yesnomaybe: YesNoMaybeState,
+}
 
 export interface RootState {
     connection: ConnectionState
     user: UserState
     lobby: LobbyState
-    shell: ShellState
+    shell: ShellState,
+    games: GamesState,
 }

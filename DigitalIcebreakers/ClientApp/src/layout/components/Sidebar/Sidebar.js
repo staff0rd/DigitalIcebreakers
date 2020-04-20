@@ -16,6 +16,7 @@ import { useLocation } from 'react-router';
 import SidebarFooter from '../../../components/SidebarFooter';
 import { useSelector } from '../../../store/useSelector';
 import LobbyQrCode from "../../../components/LobbyQrCode";
+import Games from "../../../games/Games";
 
 const useStyles = (showQrCode) =>  makeStyles(theme => styles(showQrCode)(theme));
 
@@ -23,9 +24,11 @@ export default function Sidebar(props) {
   const dispatch = useDispatch();
   const location = useLocation();
   const lobby = useSelector(state => state.lobby);
-  const gameMenu = useSelector(state => state.shell.menuItems);
   const isLobby = location.pathname === '/';
   const classes = useStyles(lobby.id && !isLobby)();
+  const gameName = useSelector(state => state.lobby.currentGame);
+  const game = Games.find(g => g.name == gameName);
+  const gameMenu = game && game.menu;
 
   // verifies if routeName is the one active (in browser input)
   function activeRoute(routeName) {
@@ -80,11 +83,11 @@ export default function Sidebar(props) {
               />
             </ListItem>
           </NavLink>
-          { prop.path === '/game' && location.pathname === prop.path && gameMenu.length ? (
+          { prop.path === '/game' && gameMenu && (
             <ListItem>
-            {gameMenu}
+            {gameMenu()}
             </ListItem>
-          ) : "" }
+          )}
         </>
         );
       })}

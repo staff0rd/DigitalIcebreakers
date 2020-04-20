@@ -5,54 +5,28 @@ import { Graph } from '../pixi/Graph';
 import { Pixi } from '../pixi/Pixi';
 import { useDispatch } from 'react-redux';
 import { adminMessage } from '../../store/lobby/actions';
-import { setGameMessageCallback, clearGameMessageCallback } from '../../store/connection/actions';
-import { setMenuItems } from '../../store/shell/actions';
-import { GameMessage } from '../GameMessage';
 import { useResizeListener } from '../pixi/useResizeListener';
-import YesNoMaybeClient from './YesNoMaybeClient';
+import { useSelector } from '../../store/useSelector';
 
-interface YesNoMaybeState {
-    yes: number;
-    no: number;
-    maybe: number;
-}
-
-const useGame = <T,>(gameMessageCallback: (response: GameMessage<T>) => void) => {
+export const YesNoMaybeMenu = () => {
     const dispatch = useDispatch();
-    useEffect(() => {
-        dispatch(setGameMessageCallback(gameMessageCallback));
-        return () => { dispatch(clearGameMessageCallback()); }
-    }, []);
+    const reset = () => {
+        dispatch(adminMessage("reset"));
+    }
+    return (
+        <Button onClick={reset}>Reset</Button>
+    );
 }
-  
+
 export default () => {
-    const dispatch = useDispatch();
     const [pixi, setPixi] = useState<PIXI.Application>();
-    const [state, setState] = useState({
-        yes: 0,
-        no: 0,
-        maybe: 0
-    });
+    const state = useSelector(state => state.games.yesnomaybe);
 
     const init = (app?: PIXI.Application) => {
         if (app) {
-            console.log('!!!!!!!!!! SET PIXI');
             setPixi(app);
         }
     };
-
-    useGame(
-        ({ payload }: GameMessage<YesNoMaybeState>) => setState(payload)
-    );
-      
-    useEffect(() => {
-        
-        const header = (
-            <Button onClick={reset}>Reset</Button>
-        );
-        dispatch(setMenuItems([header]));
-        return () => { dispatch(setMenuItems([])); };
-    }, []);
 
     const resize = () => {
         const data = [
@@ -68,10 +42,6 @@ export default () => {
         }
     } 
     
-    const reset = () => {
-        dispatch(adminMessage("reset"));
-    }
-
     useResizeListener(resize);
     useEffect(() => resize(), [pixi, state]);
     

@@ -41,7 +41,7 @@ export const SignalRMiddleware = () => {
             dispatch(setLobby(response.lobbyId, response.lobbyName, response.isAdmin, response.players, response.currentGame));
             dispatch(setUser(user));
             if (response.currentGame) {
-                history.push('game');
+                dispatch(setLobbyGame(response.currentGame));
             }
             else {
                 history.push("/");
@@ -65,7 +65,7 @@ export const SignalRMiddleware = () => {
             ReactAI.ai().trackMetric("userConnected", getDuration(connectionStarted!));
             dispatch(updateConnectionStatus(ConnectionStatus.Connected));
         });
-        connection.on("newGame", (name) => {
+        connection.on("newgame", (name) => {
             ReactAI.ai().trackEvent("Joining new game");
             connection.off("gameMessage");
             dispatch(setMenuItems([]));
@@ -97,6 +97,10 @@ export const SignalRMiddleware = () => {
                 }
                 case SET_LOBBY_GAME: {
                     history.push('/game');
+                    const isAdmin = getState().lobby.isAdmin;
+                    connection.on("gameMessage", (args: any) => {
+                        dispatch({ type: `${action.game}-${isAdmin ? 'presenter' : 'client'}-receive-game-message`, payload: args });
+                    });
                     break;
                 }
                 case CONNECTION_CONNECT: {
@@ -158,8 +162,9 @@ export const SignalRMiddleware = () => {
                     if (history.location) {
                         const isJoin = history.location.pathname.startsWith('/join/');
                         if (!isJoin || action.ignoreJoin) {
-                            if (getState().lobby.currentGame) {
-                                history.push(`/game`);
+                            const currentGame = getState().lobby.currentGame;
+                            if (currentGame) {
+                                dispatch(setLobbyGame(currentGame));
                             } else {
                                 history.push("/");
                             }

@@ -3,8 +3,9 @@ import DoggosVsKittehsClient from './DoggosVsKittehs/DoggosVsKittehsClient';
 import DoggosVsKittehsPresenter from './DoggosVsKittehs/DoggosVsKittehsPresenter';
 import { BroadcastClient } from './Broadcast/BroadcastClient';
 import { BroadcastPresenter } from './Broadcast/BroadcastPresenter';
-import YesNoMaybePresenter from './YesNoMaybe/YesNoMaybePresenter';
+import YesNoMaybePresenter, { YesNoMaybeMenu } from './YesNoMaybe/YesNoMaybePresenter';
 import YesNoMaybeClient from './YesNoMaybe/YesNoMaybeClient';
+import { Name as YesNoMaybeName, yesNoMaybeReducer } from './YesNoMaybe/YesNoMaybeReducer';
 import { IdeaWallClient } from './IdeaWall/IdeaWallClient';
 import IdeaWallPresenter, { StartStopContinueLanes } from './IdeaWall/IdeaWallPresenter';
 import BuzzerClient from './Buzzer/BuzzerClient';
@@ -27,11 +28,12 @@ export default [{
         description: "Audience polling - Furry friend edition",
         isGame: true
     }, {
-        name: "yes-no-maybe",
+        name: YesNoMaybeName,
         client: YesNoMaybeClient,
         presenter: YesNoMaybePresenter,
+        menu: YesNoMaybeMenu,
         title: "Yes, No, Maybe",
-        description: "Audience polling - ask your audience questions and get real-time feedback"
+        description: "Audience polling - ask your audience questions and get real-time feedback",
     }, {
         name: "buzzer",
         client: BuzzerClient,
