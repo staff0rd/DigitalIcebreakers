@@ -39,7 +39,7 @@ export default () => {
         }
     }
 
-    useEffect(() => resize(), [app]);
+    useEffect(() => resize(), [app, state]);
 
     useResizeListener(resize);
 

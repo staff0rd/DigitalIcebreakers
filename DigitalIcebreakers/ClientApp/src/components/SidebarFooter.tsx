@@ -9,9 +9,9 @@ const useStyles = makeStyles((theme) => ({
     sidebarFooter: {
         bottom: 0,
         position: 'fixed',
-        width: '100%',
         padding: '15px 30px',
         backgroundColor: '#191919',
+        width: '200px',
     },
     text: {
         ...defaultFont as CSSProperties,

@@ -41,7 +41,7 @@ export const SignalRMiddleware = () => {
             dispatch(setLobby(response.lobbyId, response.lobbyName, response.isAdmin, response.players, response.currentGame));
             dispatch(setUser(user));
             if (response.currentGame) {
-                history.push(`/game/`);
+                history.push('game');
             }
             else {
                 history.push("/");
@@ -96,7 +96,7 @@ export const SignalRMiddleware = () => {
                     break;
                 }
                 case SET_LOBBY_GAME: {
-                    history.push(`/game/`);
+                    history.push('/game');
                     break;
                 }
                 case CONNECTION_CONNECT: {

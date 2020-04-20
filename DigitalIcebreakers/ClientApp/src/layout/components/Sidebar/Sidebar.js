@@ -23,8 +23,10 @@ export default function Sidebar(props) {
   const dispatch = useDispatch();
   const location = useLocation();
   const lobby = useSelector(state => state.lobby);
+  const gameMenu = useSelector(state => state.shell.menuItems);
   const isLobby = location.pathname === '/';
   const classes = useStyles(lobby.id && !isLobby)();
+
   // verifies if routeName is the one active (in browser input)
   function activeRoute(routeName) {
     return location.pathname === routeName;
@@ -45,6 +47,7 @@ export default function Sidebar(props) {
           [" " + classes.whiteFont]: activeRoute(prop.path)
         });
         return (
+          <>
           <NavLink
             to={prop.path}
             className={activePro + classes.item}
@@ -77,6 +80,12 @@ export default function Sidebar(props) {
               />
             </ListItem>
           </NavLink>
+          { prop.path === '/game' && location.pathname === prop.path && gameMenu.length ? (
+            <ListItem>
+            {gameMenu}
+            </ListItem>
+          ) : "" }
+        </>
         );
       })}
     </List>

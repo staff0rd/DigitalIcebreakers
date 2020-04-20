@@ -131,7 +131,7 @@ const sidebarStyle = (showQrCode: boolean) => (theme: any) => ({
     marginTop: showQrCode ? 0 : "20px",
     paddingLeft: "0",
     paddingTop: "0",
-    paddingBottom: "0",
+    paddingBottom: "50px",
     marginBottom: "0",
     listStyle: "none",
     position: "unset"

@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { Button, Navbar, FormGroup } from 'react-bootstrap';
+import Button from '../../layout/components/CustomButtons/Button';
 import { Colors } from '../../Colors';
 import { Graph } from '../pixi/Graph';
 import { Pixi } from '../pixi/Pixi';
@@ -37,15 +37,10 @@ export default () => {
             setState(payload);
         }));
         const header = (
-            <Fragment>
-                <Navbar.Form>
-                    <FormGroup>
-                        <Button bsStyle="primary" onClick={reset}>Reset</Button>
-                    </FormGroup>
-                </Navbar.Form>
-            </Fragment>
+            <Button onClick={reset}>Reset</Button>
         );
         dispatch(setMenuItems([header]));
+        return () => { dispatch(setMenuItems([])); };
     }, []);
 
     const resize = () => {
