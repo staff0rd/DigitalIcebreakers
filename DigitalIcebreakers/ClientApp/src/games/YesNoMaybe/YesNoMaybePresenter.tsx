@@ -1,22 +1,9 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import Button from '../../layout/components/CustomButtons/Button';
 import { Colors } from '../../Colors';
 import { Graph } from '../pixi/Graph';
 import { Pixi } from '../pixi/Pixi';
-import { useDispatch } from 'react-redux';
-import { adminMessage } from '../../store/lobby/actions';
 import { useResizeListener } from '../pixi/useResizeListener';
 import { useSelector } from '../../store/useSelector';
-
-export const YesNoMaybeMenu = () => {
-    const dispatch = useDispatch();
-    const reset = () => {
-        dispatch(adminMessage("reset"));
-    }
-    return (
-        <Button onClick={reset}>Reset</Button>
-    );
-}
 
 export default () => {
     const [pixi, setPixi] = useState<PIXI.Application>();

@@ -1,6 +1,18 @@
-import React, { Component } from 'react';
-import {FormGroup, FormControl, Button, ControlLabel } from "react-bootstrap";
-import './Stepper.css'
+import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyle = makeStyles(theme => ({
+    container: {
+        margin: '0px 6px',
+    },
+    stepper: {
+        width: '70px',
+    },
+    label: {
+        color: '#9d9d9d',
+        fontSize: '15px',
+    }
+}));
 
 export class Stepper extends Component {
     displayName = Stepper.name
@@ -28,3 +40,5 @@ export class Stepper extends Component {
         )
     }
 }
+
+export default Stepper;

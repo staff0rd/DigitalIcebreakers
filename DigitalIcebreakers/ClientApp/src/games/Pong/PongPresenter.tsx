@@ -1,55 +1,35 @@
-import React, { Fragment } from 'react';
-import { Navbar, Button } from 'react-bootstrap';
+import React from 'react';
 import { PongColors as Colors } from './PongColors';
 import * as PIXI from "pixi.js";
 import ReactAnimationFrame from 'react-animation-frame';
-import { Stepper } from '../../components/Stepper';
 import { clamp } from '../../util/clamp';
-import { setGameMessageCallback } from '../../store/connection/actions';
-import { setMenuItems } from '../../store/shell/actions';
 import { BaseGame, BaseGameProps } from '../BaseGame'
 import { between } from '../../Random';
 import { connect, ConnectedProps } from 'react-redux';
 import { Pixi } from '../pixi/Pixi';
-import { GameMessage } from '../GameMessage';
+import { RootState } from '../../store/RootState';
+import { rightScores, leftScores } from './PongReducer';
 
 const connector = connect(
-    null,
-    { setGameMessageCallback, setMenuItems }
+    (state: RootState) => state.games.pong.presenter,
+    {
+        rightScores,
+        leftScores,
+    }
 );
 
 type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
 
-const defaultPaddleSpeed = 200;
-const defaultHeight = 5;
-const defaultWidth = 55;
 const defaultMaxBounceAngle = 45;
-const defaultBallSpeed = 3;
 
 function getRadians(degrees: number) {
     return degrees * Math.PI / 180;
 }
 
-type PongPresenterState = {
-    left: number,
-    right: number,
-    paddleWidth: number,
-    paddleHeight: number,
-    paddleSpeed: number,
-    ballSpeed: number,
-    gameOver: boolean,
-    score: number[]
-}
-
-interface PaddleDy {
-    left: number;
-    right: number;
-}
-
-class PongPresenter extends BaseGame<PropsFromRedux, PongPresenterState> {
+class PongPresenter extends BaseGame<PropsFromRedux, {}> {
     app!: PIXI.Application;
     score!: PIXI.Text;
-    ballDx = defaultBallSpeed;
+    ballDx = 0;
     ballDy = 0;
     leftPaddle!: PIXI.Graphics;
     rightPaddle!: PIXI.Graphics;
@@ -57,41 +37,14 @@ class PongPresenter extends BaseGame<PropsFromRedux, PongPresenterState> {
 
     constructor(props: PropsFromRedux) {
         super(props);
-
+        this.ballDx = props.ballSpeed;
         this.state = {
-            left: 0,
-            right: 0,
-            paddleWidth: defaultWidth,
-            paddleHeight: defaultHeight,
-            paddleSpeed: defaultPaddleSpeed,
-            ballSpeed: defaultBallSpeed,
             gameOver: false,
-            score: [0, 0]
         };
-    }
-    
-    setMenuItems() {
-        const header = (
-            <Fragment>
-                <Navbar.Form>
-                    <Stepper label="Paddle height" step={1} value={this.state.paddleHeight} onChange={this.updatePaddleHeight} />
-                    <Stepper label="Paddle width" step={-5} value={this.state.paddleWidth} onChange={this.updatePaddleWidth} />
-                    <Stepper label="Paddle speed" step={25} value={this.state.paddleSpeed} onChange={this.updatePaddleSpeed} />
-                    <Stepper label="Ball speed" step={1} value={this.state.ballSpeed} onChange={this.updateBallSpeed} />
-                </Navbar.Form>
-                <Navbar.Form>
-                    <Button bsStyle="primary" onClick={this.resetScore}>Reset score</Button>
-                </Navbar.Form>
-            </Fragment>
-        );
-        this.props.setMenuItems([header]);
     }
 
     componentDidMount() {
         window.addEventListener("resize", () => setTimeout(() => this.resize(), 510));
-        this.props.setGameMessageCallback(({ payload }: GameMessage<PaddleDy>) => {
-            this.setState(payload);
-        });
     }
 
     clampPaddle(paddle: PIXI.Graphics) {
@@ -106,8 +59,8 @@ class PongPresenter extends BaseGame<PropsFromRedux, PongPresenterState> {
         var normalizedRelativeIntersect = relativeIntersect / (paddle.height / 2);
         var bounceAngle = normalizedRelativeIntersect * defaultMaxBounceAngle + 180 * direction;
         
-        this.ballDx = this.state.ballSpeed * Math.cos(getRadians(bounceAngle));
-        this.ballDy = this.state.ballSpeed * Math.sin(getRadians(bounceAngle));
+        this.ballDx = this.props.ballSpeed * Math.cos(getRadians(bounceAngle));
+        this.ballDy = this.props.ballSpeed * Math.sin(getRadians(bounceAngle));
 
         if (direction === 0)
             this.ballDy *= -1;
@@ -130,17 +83,17 @@ class PongPresenter extends BaseGame<PropsFromRedux, PongPresenterState> {
             if (this.paddleIntersection(this.leftPaddle))
                 this.paddleHit(this.leftPaddle, 0);
             else {
-                this.setState((prevState) => { score: [prevState.score[0], prevState.score[1]++]}, this.updateScore); // eslint-disable-line
+                this.props.rightScores();
                 console.log("death to blue");
-                this.init();
+                this.resize();
             }
         } else if (this.ball.x > this.rightPaddle.x - this.rightPaddle.width) { // we've reached the right bounds
             if (this.paddleIntersection(this.rightPaddle)) {
                 this.paddleHit(this.rightPaddle, -1);
             } else {
-                this.setState((prevState) => { score: [prevState.score[0]++, prevState.score[1]] }, this.updateScore); // eslint-disable-line
+                this.props.leftScores();
                 console.log("death to red");
-                this.init();
+                this.resize();
             }
         }
     }
@@ -156,30 +109,30 @@ class PongPresenter extends BaseGame<PropsFromRedux, PongPresenterState> {
             this.ball.y += this.ballDy;
             this.ball.x += this.ballDx;
         }
+        
+        if (this.leftPaddle && this.rightPaddle) {
+            this.leftPaddle.y -= this.props.paddleSpeed * delta * this.props.left;
+            this.rightPaddle.y -= this.props.paddleSpeed * delta * this.props.right;
 
-        if (!this.state.gameOver) {
-            if (this.leftPaddle && this.rightPaddle) {
-                this.leftPaddle.y -= this.state.paddleSpeed * delta * this.state.left;
-                this.rightPaddle.y -= this.state.paddleSpeed * delta * this.state.right;
+            this.clampPaddle(this.leftPaddle);
+            this.clampPaddle(this.rightPaddle);
 
-                this.clampPaddle(this.leftPaddle);
-                this.clampPaddle(this.rightPaddle);
+            this.checkHit();
+        }
+        
+    }
 
-                this.checkHit();
-            }
+    init(app: PIXI.Application) {
+        if (app) {
+            this.app = app;
+            this.resize();
         }
     }
 
-    init(app?: PIXI.Application) {
-        if (app)
-            this.app = app;
-        this.resize();
-    }
     resize() {
         if (this.app) {
-            
-            const paddleWidth = this.app.screen.width/(this.state.paddleWidth || defaultWidth);
-            const paddleHeight = this.app.screen.height/(this.state.paddleHeight || defaultHeight);
+            const paddleWidth = this.app.screen.width/(this.props.paddleWidth);
+            const paddleHeight = this.app.screen.height/(this.props.paddleHeight);
 
             this.app.stage.removeChildren();
 
@@ -191,21 +144,24 @@ class PongPresenter extends BaseGame<PropsFromRedux, PongPresenterState> {
             this.rightPaddle.position.set(this.app.screen.width - paddleWidth, this.app.screen.height/2);
             this.ball.position.set(this.app.screen.width/2, this.app.screen.height/2);
 
-            this.score = new PIXI.Text("", { fontSize: this.app.renderer.width / 15, fill: Colors.Score});
-            this.updateScore();
+            this.score = new PIXI.Text(this.getScore(), { fontSize: this.app.renderer.width / 15, fill: Colors.Score});
+            this.score.anchor.set(.5, 0);
+            this.score.position.set(this.app.screen.width / 2, 0);
 
             this.app.stage.addChild<PIXI.Container>(this.score, this.leftPaddle, this.rightPaddle, this.ball);
 
             this.setSpeed();
         }
-
-        this.setMenuItems();
     }
 
-    updateScore() {
-        this.score.text = `${this.state.score[0]}-${this.state.score[1]}`;
-        this.score.anchor.set(.5, 0);
-        this.score.position.set(this.app.renderer.width / 2, 0);
+    getScore() {
+        return `${this.props.score[0]}-${this.props.score[1]}`;
+    }
+
+    componentDidUpdate() {
+        if (this.app) {
+            this.score.text = this.getScore();   
+        }
     }
 
     setSpeed() {
@@ -213,8 +169,8 @@ class PongPresenter extends BaseGame<PropsFromRedux, PongPresenterState> {
 
         const angle = between(defaultMaxBounceAngle, defaultMaxBounceAngle * 3) * direction;
 
-        this.ballDx = this.state.ballSpeed * Math.sin(getRadians(angle));
-        this.ballDy = this.state.ballSpeed * Math.cos(getRadians(angle));
+        this.ballDx = this.props.ballSpeed * Math.sin(getRadians(angle));
+        this.ballDy = this.props.ballSpeed * Math.cos(getRadians(angle));
     }
 
     getBlock(color: number, width: number, height: number) {
@@ -225,25 +181,21 @@ class PongPresenter extends BaseGame<PropsFromRedux, PongPresenterState> {
         return g;
     }
 
-    updatePaddleHeight = (value: number) => {
-        this.setState({paddleHeight: clamp(value, 2, 20)}, this.init);
-    }
+    // updatePaddleHeight = (value: number) => {
+    //     this.setState({paddleHeight: clamp(value, 2, 20)}, this.init);
+    // }
 
-    updatePaddleWidth = (value: number) => {
-        this.setState({paddleWidth: value}, this.init);
-    }
+    // updatePaddleWidth = (value: number) => {
+    //     this.setState({paddleWidth: value}, this.init);
+    // }
 
-    updatePaddleSpeed = (value: number) => {
-        this.setState({paddleSpeed: value}, this.init);
-    }
+    // updatePaddleSpeed = (value: number) => {
+    //     this.setState({paddleSpeed: value}, this.init);
+    // }
 
-    updateBallSpeed = (value: number)  => {
-        this.setState({ballSpeed: value}, this.init);
-    }
-
-    resetScore = ()  => {
-        this.setState({score: [0, 0]}, this.init);
-    }
+    // updateBallSpeed = (value: number)  => {
+    //     this.setState({ballSpeed: value}, this.init);
+    // }
 
     render() {
         return <Pixi backgroundColor={Colors.Background} onAppChange={(app) => this.init(app)} />

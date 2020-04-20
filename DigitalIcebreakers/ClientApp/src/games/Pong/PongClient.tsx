@@ -4,17 +4,12 @@ import { PongColors as Colors } from './PongColors'
 import { Pixi } from '../pixi/Pixi';
 import { useDispatch } from 'react-redux';
 import { clientMessage } from '../../store/lobby/actions';
-import { setGameMessageCallback, clearGameMessageCallback } from '../../store/connection/actions';
 import { useResizeListener } from '../pixi/useResizeListener';
-
-interface TeamColors {
-    up: number,
-    down: number
-}
+import { useSelector } from '../../store/useSelector';
 
 export const PongClient = () =>  {
-    const [teamColors, setTeamColors] = useState<TeamColors>({up: 0xFFFFFF, down: 0xFFFFFF});
     const [app, setApp] = useState<PIXI.Application>();
+    const teamColors = useSelector(state => state.games.pong.client); 
     const dispatch = useDispatch();
     
     const message = (action: string) => () => dispatch(clientMessage(action));
@@ -27,20 +22,7 @@ export const PongClient = () =>  {
     };
 
     useEffect(() => {
-        dispatch(setGameMessageCallback((response: string) => {
-            const result = response.split(":");
-            if (result[0] === "team") {
-                switch(result[1]) {
-                    case "0": setTeamColors({ up: Colors.LeftPaddleUp, down: Colors.LeftPaddleDown }); break;
-                    case "1": setTeamColors({ up: Colors.RightPaddleUp, down: Colors.RightPaddleDown }); break;
-                    default: console.log(`Unexpected response: ${response}`);
-                }
-            } else {
-                console.log(`Unexpected response: ${response}`)
-            }
-        }));
         dispatch(clientMessage("join"));
-        return () => { dispatch(clearGameMessageCallback()); };
     }, [dispatch]);
 
     const resize = () => {
@@ -68,7 +50,7 @@ export const PongClient = () =>  {
         }
     }
 
-    resize();
+    useEffect(resize, [app, teamColors])
 
     useResizeListener(resize);
     

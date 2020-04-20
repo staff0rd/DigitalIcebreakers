@@ -3,7 +3,8 @@ import DoggosVsKittehsClient from './DoggosVsKittehs/DoggosVsKittehsClient';
 import DoggosVsKittehsPresenter from './DoggosVsKittehs/DoggosVsKittehsPresenter';
 import { BroadcastClient } from './Broadcast/BroadcastClient';
 import { BroadcastPresenter } from './Broadcast/BroadcastPresenter';
-import YesNoMaybePresenter, { YesNoMaybeMenu } from './YesNoMaybe/YesNoMaybePresenter';
+import YesNoMaybePresenter from './YesNoMaybe/YesNoMaybePresenter';
+import { YesNoMaybeMenu } from "./YesNoMaybe/YesNoMaybeMenu";
 import YesNoMaybeClient from './YesNoMaybe/YesNoMaybeClient';
 import { Name as YesNoMaybeName, yesNoMaybeReducer } from './YesNoMaybe/YesNoMaybeReducer';
 import { IdeaWallClient } from './IdeaWall/IdeaWallClient';
@@ -14,6 +15,7 @@ import SplatClient from './Splat/SplatClient';
 import SplatPresenter from './Splat/SplatPresenter';
 import PongPresenter from './Pong/PongPresenter';
 import { PongClient } from './Pong/PongClient';
+import PongMenu from './Pong/PongMenu';
 import { StartStopContinueClient } from './StartStopContinue/StartStopContinueClient';
 // import { SlideshowClient } from './Slideshow/SlideshowClient';
 // import { SlideshowPresenter } from './Slideshow/SlideshowPresenter';
@@ -52,6 +54,7 @@ export default [{
         name: "pong",
         client: PongClient,
         presenter: PongPresenter,
+        menu: PongMenu,
         title: "Pong",
         fullscreen: true,
         isGame: true,
