@@ -28,7 +28,7 @@ export default function Sidebar(props) {
   const classes = useStyles(lobby.id && !isLobby)();
   const gameName = useSelector(state => state.lobby.currentGame);
   const game = Games.find(g => g.name == gameName);
-  const gameMenu = game && game.menu;
+  const GameMenu = game && game.menu;
 
   // verifies if routeName is the one active (in browser input)
   function activeRoute(routeName) {
@@ -83,10 +83,8 @@ export default function Sidebar(props) {
               />
             </ListItem>
           </NavLink>
-          { prop.path === '/game' && gameMenu && (
-            <ListItem>
-            {gameMenu()}
-            </ListItem>
+          { prop.path === '/game' && location.pathname === '/game' && GameMenu && (
+            <GameMenu />
           )}
         </>
         );

@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux'
 import { createReceiveReducer, createReceiveGameMessageReducer, createGameActionWithPayload, createGameAction } from '../../store/actionHelpers';
 import { PongColors as Colors } from './PongColors';
+import { clamp } from '../../util/clamp';
 
 export const Name = "pong";
 
@@ -31,6 +32,7 @@ export interface PongPresenterState extends PaddleDy {
 export const rightScores = createGameAction(Name, "presenter", "right-scores");
 export const leftScores = createGameAction(Name, "presenter", "left-scores");
 export const resetScores = createGameAction(Name, "presenter", "reset-scores");
+export const setPaddleHeight = createGameActionWithPayload<number>(Name, "presenter", "set-paddle-height");
 
 const adminReducer = createReceiveGameMessageReducer<PongPresenterState>(
     Name, 
@@ -60,6 +62,10 @@ const adminReducer = createReceiveGameMessageReducer<PongPresenterState>(
         builder.addCase(resetScores, (state) => ({
             ...state,
             score: [0, 0],
+        }));
+        builder.addCase(setPaddleHeight, (state, { payload }) => ({
+            ...state,
+            paddleHeight: clamp(payload, 2, 20),
         }));
     }
 );

@@ -129,15 +129,19 @@ class PongPresenter extends BaseGame<PropsFromRedux, {}> {
         }
     }
 
+    setPaddleSizes() {
+        const paddleWidth = this.app.screen.width/(this.props.paddleWidth);
+        const paddleHeight = this.app.screen.height/(this.props.paddleHeight);
+        this.leftPaddle = this.getBlock(Colors.LeftPaddleUp, paddleWidth, paddleHeight, this.leftPaddle);
+        this.rightPaddle = this.getBlock(Colors.RightPaddleUp, paddleWidth, paddleHeight, this.rightPaddle);
+        return {paddleWidth, paddleHeight};
+    }
+
     resize() {
         if (this.app) {
-            const paddleWidth = this.app.screen.width/(this.props.paddleWidth);
-            const paddleHeight = this.app.screen.height/(this.props.paddleHeight);
+            const { paddleWidth } = this.setPaddleSizes();
 
             this.app.stage.removeChildren();
-
-            this.leftPaddle = this.getBlock(Colors.LeftPaddleUp, paddleWidth, paddleHeight);
-            this.rightPaddle = this.getBlock(Colors.RightPaddleUp, paddleWidth, paddleHeight);
             this.ball = this.getBlock(Colors.Ball, paddleWidth, paddleWidth);
 
             this.leftPaddle.position.set(paddleWidth, this.app.screen.height/2);
@@ -160,7 +164,8 @@ class PongPresenter extends BaseGame<PropsFromRedux, {}> {
 
     componentDidUpdate() {
         if (this.app) {
-            this.score.text = this.getScore();   
+            this.score.text = this.getScore();
+            this.setPaddleSizes(); 
         }
     }
 
@@ -173,8 +178,8 @@ class PongPresenter extends BaseGame<PropsFromRedux, {}> {
         this.ballDy = this.props.ballSpeed * Math.cos(getRadians(angle));
     }
 
-    getBlock(color: number, width: number, height: number) {
-        const g = new PIXI.Graphics();
+    getBlock(color: number, width: number, height: number, g: PIXI.Graphics = new PIXI.Graphics()) {
+        g.clear();
         g.beginFill(color);
         g.drawRect(0, 0, width, height);
         g.pivot.set(width/2, height/2);
