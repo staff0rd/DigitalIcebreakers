@@ -70,8 +70,8 @@ export default () => {
                     <div className={classes.modal}>
                         <h3>{title}</h3>
                         <p>{body}</p>
-                        <Button onClick={() => ok()}>Ok</Button>
-                        <Button color='primary' onClick={() => setOpen(false)}>Cancel</Button>
+                        <Button color='primary' onClick={() => ok()}>Ok</Button>
+                        <Button onClick={() => setOpen(false)}>Cancel</Button>
                     </div>
             </Modal>
         </>

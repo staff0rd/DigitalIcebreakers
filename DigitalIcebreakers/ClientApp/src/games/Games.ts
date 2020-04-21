@@ -67,6 +67,7 @@ export default [{
         menu: IdeaWallMenu,
         title: "Idea Wall",
         fullscreen: true,
+        description: "A virtual wall of ideas. Stick 'em to the wall and move them around",
         isGame: false,
     //}, {
     //     name: "startstopcontinue",
