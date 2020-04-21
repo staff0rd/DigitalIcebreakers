@@ -9,6 +9,7 @@ import YesNoMaybeClient from './YesNoMaybe/YesNoMaybeClient';
 import { Name as YesNoMaybeName, yesNoMaybeReducer } from './YesNoMaybe/YesNoMaybeReducer';
 import { IdeaWallClient } from './IdeaWall/IdeaWallClient';
 import IdeaWallPresenter, { StartStopContinueLanes } from './IdeaWall/IdeaWallPresenter';
+import IdeaWallMenu from './IdeaWall/IdeaWallMenu';
 import BuzzerClient from './Buzzer/BuzzerClient';
 import BuzzerPresenter from './Buzzer/BuzzerPresenter';
 import SplatClient from './Splat/SplatClient';
@@ -59,14 +60,15 @@ export default [{
         fullscreen: true,
         isGame: true,
         description: 'Mob pong for large audiences - red vs blue!'
-    // }, {
-    //     name: "ideawall",
-    //     client: IdeaWallClient,
-    //     presenter: IdeaWallPresenter dynamicSize={false} {...props} storageKey="ideawall:ideas" />,
-    //     title: "Idea Wall",
-    //     fullscreen: true,
-    //     isGame: false
-    // }, {
+    }, {
+        name: "ideawall",
+        client: IdeaWallClient,
+        presenter: IdeaWallPresenter,
+        menu: IdeaWallMenu,
+        title: "Idea Wall",
+        fullscreen: true,
+        isGame: false,
+    //}, {
     //     name: "startstopcontinue",
     //     client: <StartStopContinueClient,
     //     presenter: <IdeaWallPresenter dynamicSize={true} {...props} storageKey="startstopcontinue:ideas" lanes={StartStopContinueLanes} />,

@@ -77,7 +77,9 @@ export class SlideshowPresenter extends BaseGame<PropsFromRedux, SlideshowPresen
     }
 
     initReveal() {
-        const state = this.getFromStorage(this.props.storageKey);
+        const state: any = false;
+        throw "method below not implemented";
+        // state = this.getFromStorage(this.props.storageKey);
         Reveal.uninitialize();
         Reveal.initialize({
             transition: 'none',
@@ -99,7 +101,7 @@ export class SlideshowPresenter extends BaseGame<PropsFromRedux, SlideshowPresen
             maxScale: 1
         });
 
-        if (state) {
+        if (false && state) {
             Reveal.slide( state.indexh, state.indexv, state.indexf);
         }
     }
@@ -111,7 +113,8 @@ export class SlideshowPresenter extends BaseGame<PropsFromRedux, SlideshowPresen
     reportState() {
         const state = Reveal.getState();
         this.props.adminMessage(state);
-        this.saveToStorage(this.props.storageKey, state);
+        throw "method below not implemented"
+        //this.saveToStorage(this.props.storageKey, state);
     }
 
     render() {

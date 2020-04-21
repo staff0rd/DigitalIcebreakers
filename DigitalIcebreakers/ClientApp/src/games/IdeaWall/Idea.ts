@@ -1,4 +1,5 @@
 export interface Idea {
+    id: string;
     playerName: string;
     idea: string;
     color: number;

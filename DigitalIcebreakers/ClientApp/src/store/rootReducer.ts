@@ -8,7 +8,8 @@ import { yesNoMaybeReducer } from '../games/YesNoMaybe/YesNoMaybeReducer';
 import { doggosVsKittehsReducer } from '../games/DoggosVsKittehs/DoggosVsKittehsReducer';
 import { buzzerReducer } from '../games/Buzzer/BuzzerReducer';
 import { splatReducer } from '../games/Splat/SplatReducer';
-import { pongReducer } from '../games/Pong/PongReducer'
+import { pongReducer } from '../games/Pong/PongReducer';
+import { ideaWallReducer } from '../games/IdeaWall/IdeaWallReducer';
 
 const gamesReducer = combineReducers<GamesState>({
     yesnomaybe: yesNoMaybeReducer,
@@ -16,6 +17,7 @@ const gamesReducer = combineReducers<GamesState>({
     buzzer: buzzerReducer,
     splat: splatReducer,
     pong: pongReducer,
+    ideawall: ideaWallReducer,
 });
 
 export const rootReducer = combineReducers<RootState>({

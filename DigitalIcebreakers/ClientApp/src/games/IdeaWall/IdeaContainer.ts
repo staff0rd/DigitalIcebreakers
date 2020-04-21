@@ -3,6 +3,7 @@ import * as PIXI from "pixi.js";
 import { IdeaView } from './IdeaView';
 import { Point } from './Point';
 import { intersects } from '../../util/intersects';
+import { Idea } from './Idea';
 
 export interface Lane {
     name: string;
@@ -89,15 +90,22 @@ export class IdeaContainer {
     }
 
     add(idea: IdeaView, isNew: boolean = false) {
-        if (isNew) {
+        if (idea.idea.x === undefined || idea.idea.y === undefined) {
             const point = this.getNextFreeSpot(idea.idea.lane);
             idea.x = point.x
             idea.y = point.y;
-            this.ideaContainer.addChild(idea);
             idea.onDragEnd();
+        } else {
+            idea.x = idea.idea.x;
+            idea.y = idea.idea.y;
         }
-        else 
-            this.ideaContainer.addChild(idea);
+
+        this.ideaContainer.addChild(idea);
+    }
+
+    containsIdea(idea: Idea): boolean
+    {
+        return !!this.ideaContainer.children.find(i => (i as IdeaView).idea && (i as IdeaView).idea.id === idea.id);
     }
 
     public get laneWidth()  {

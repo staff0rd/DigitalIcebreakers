@@ -1,40 +1,23 @@
 import React, { Fragment } from 'react';
 import { Button, Navbar, FormGroup, Modal } from 'react-bootstrap';
-import { Colors } from '../../Colors';
-import * as Random from '../../Random';
 import { Events } from '../../Events';
 import { IdeaContainer, Lane } from './IdeaContainer';
 import { IdeaView } from './IdeaView';
 import { BaseGameProps, BaseGame } from '../BaseGame'
 import { Idea } from './Idea'
-import { setGameMessageCallback } from '../../store/connection/actions';
-import { setMenuItems } from '../../store/shell/actions'
 import { connect, ConnectedProps } from 'react-redux';
 import { Pixi } from '../pixi/Pixi';
-import { GameMessage } from '../GameMessage';
+import { ideaUpdatedAction, clearIdeasAction, loadIdeasAction, arrangeIdeasAction } from './IdeaWallReducer';
+import { RootState } from '../../store/RootState';
 
 const WIDTH = 200;
 const MARGIN = 5;
-
-const IDEA_COLORS = [
-    Colors.Amber.A200,
-    Colors.Green.A200,
-    Colors.LightGreen.A200,
-    Colors.LightBlue.A200,
-    Colors.DeepPurple.A100,
-    Colors.Red.A100
-];
 
 export const StartStopContinueLanes: Lane[] = [
     { name: "Start", id: 0 },
     { name: "Stop", id: 1 },
     { name: "Continue", id: 2 },
 ]
-
-interface ServerIdea { 
-    content: string;
-    lane: number;
-}
 
 interface ModalProperties {
     title: string;
@@ -57,8 +40,8 @@ interface IdeaWallPresenterState {
 
 
 const connector = connect(
-    null,
-    { setGameMessageCallback, setMenuItems }
+    (state: RootState) => state.games.ideawall,
+    { ideaUpdatedAction, clearIdeasAction, loadIdeasAction, arrangeIdeasAction }
 );
   
 type PropsFromRedux = ConnectedProps<typeof connector> & IdeaWallPresenterProps;
@@ -86,37 +69,21 @@ class IdeaWallPresenter extends BaseGame<PropsFromRedux, IdeaWallPresenterState>
         
     }
     
-    getRandomColor() {
-        return Random.pick(IDEA_COLORS);
-    }
-    
-    saveIdeas() {
-        this.saveToStorage(this.props.storageKey, this.state.ideas);
-    }
-    
-    getIdeas() {
-        return this.getFromStorage(this.props.storageKey);
-    }
-    
-    clearIdeas() {
-        this.clearStorage(this.props.storageKey);
-        this.setState({ideas: []}, () => this.init(this.app));
-        this.ideaContainer!.reset();
-    }
-    
-    init(app?: PIXI.Application) {
+    init(app: PIXI.Application) {
         this.app = app;
+        this.draw();
+    }
+
+    draw() {
         if (this.app) {
             this.app.stage.removeChildren();
             this.ideaContainer = new IdeaContainer(this.app, WIDTH, MARGIN, this.props.lanes || []);
             this.ideaContainer.addToStage(this.app.stage);
-            this.setState({ ideas: this.getIdeas() || []}, () => {
-                this.ideaContainer!.clear();
-                this.state.ideas.forEach(idea => {
-                    this.addIdeaToContainer(idea);
-                })
+
+            this.ideaContainer!.clear();
+            this.props.ideas.forEach(idea => {
+                this.addIdeaToContainer(idea);
             });
-            this.setMenuItems();
         }
     }
 
@@ -138,51 +105,13 @@ class IdeaWallPresenter extends BaseGame<PropsFromRedux, IdeaWallPresenterState>
         });
     }
 
-    confirmClear = () => {
-        this.setState({
-            showModal: true,
-            modal: {
-                title: "Clear all ideas?",
-                body: "All ideas will be removed!",
-                action: () => {
-                    this.clearIdeas();
-                    this.closeModal();
-                }
-            }
-        });
-    }
-
-    toggleNames = () => {
-        this.setState((prevState) => {
-            return { showNames: !prevState.showNames};
-        }, () => this.init(this.app));
-    }
-
-    setMenuItems() {
-        const header = (
-            <Fragment>
-                <Navbar.Form>
-                    <FormGroup>
-                        <Button bsStyle="primary" onClick={this.confirmClear}>Clear</Button>{' '}
-                        <Button bsStyle="primary" onClick={this.toggleNames}>Toggle names</Button>{' '}
-                        <Button bsStyle="primary" onClick={this.confirmArrange}>Arrange</Button>
-                    </FormGroup>
-                </Navbar.Form>
-            </Fragment>
-        );
-
-        this.props.setMenuItems([header]);
+    ideaUpdated = (idea: Idea) => {
+        this.props.ideaUpdatedAction(idea);
     }
 
     addIdeaToContainer(idea: Idea, isNew: boolean = false) {
-        const view = new IdeaView(idea, this.props.dynamicSize ? 0 : WIDTH, MARGIN, this.state.showNames, this.ideaContainer!.laneWidth, () => this.saveIdeas());
+        const view = new IdeaView(idea, this.props.dynamicSize ? 0 : WIDTH, MARGIN, this.props.showNames, this.ideaContainer!.laneWidth, (idea) => this.ideaUpdated(idea));
         this.ideaContainer!.add(view, isNew);
-    }
-
-    getNewIdea(playerName: string, idea: string | ServerIdea) : Idea {
-        let content = (idea as ServerIdea).content || idea as string;
-        let lane = (idea as ServerIdea).lane || 0;
-        return {playerName: playerName, idea: content, lane: lane, color: this.getRandomColor(), x: undefined, y: undefined};
     }
 
     componentDidMount() {
@@ -192,18 +121,27 @@ class IdeaWallPresenter extends BaseGame<PropsFromRedux, IdeaWallPresenterState>
         
         resize();
         Events.add('onresize', 'ideawall', resize);
-        this.init(this.app);
-        this.props.setGameMessageCallback(({ name, payload }: GameMessage<string>) => {
-            const newIdea = this.getNewIdea(name, payload);
-            this.addIdeaToContainer(newIdea, true);
-            const ideas = [...this.state.ideas, newIdea];
-            this.setState({
-                ideas: ideas
-            }, () => {
-                this.saveIdeas();
-                this.init(this.app);
-            });
-        });
+        this.props.loadIdeasAction();
+        this.draw();
+    }
+
+    componentDidUpdate() {
+        if (this.app) {
+            if (this.props.ideas.length) {
+                this.props.ideas.forEach(idea => {
+                    if (!this.ideaContainer!.containsIdea(idea)) {
+                        this.addIdeaToContainer(idea, true);
+                    }
+                });
+            } else {
+                this.ideaContainer!.reset();
+            }
+            if (this.props.pendingArrange) {
+                this.ideaContainer!.arrange();
+                this.props.arrangeIdeasAction(false);
+            }
+            this.draw();
+        }
     }
 
     componentWillUnmount() {

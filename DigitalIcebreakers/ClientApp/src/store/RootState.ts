@@ -5,7 +5,8 @@ import { ShellState } from './shell/types'
 import { YesNoMaybeState } from '../games/YesNoMaybe/YesNoMaybeReducer';
 import { Player } from '../games/Buzzer/BuzzerReducer';
 import { SplatState } from '../games/Splat/SplatReducer';
-import { TeamColors, PaddleDy, PongPresenterState } from '../games/Pong/PongReducer';
+import { TeamColors, PongPresenterState } from '../games/Pong/PongReducer';
+import { IdeaWallState } from '../games/IdeaWall/IdeaWallReducer';
 
 export interface GamesState {
     yesnomaybe: YesNoMaybeState,
@@ -15,7 +16,8 @@ export interface GamesState {
     pong: {
         client: TeamColors,
         presenter: PongPresenterState,
-    }
+    },
+    ideawall: IdeaWallState,
 }
 
 export interface RootState {

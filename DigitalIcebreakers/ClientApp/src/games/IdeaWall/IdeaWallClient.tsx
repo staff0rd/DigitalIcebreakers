@@ -5,10 +5,6 @@ import { clientMessage } from '../../store/lobby/actions';
 
 const MAX_CHARACTERS = 50;
 
-interface IdeaWallClientState {
-    idea: string;
-}
-
 export const IdeaWallClient = () => {
     const [idea, setIdea] = useState<string>("");
     const dispatch = useDispatch();

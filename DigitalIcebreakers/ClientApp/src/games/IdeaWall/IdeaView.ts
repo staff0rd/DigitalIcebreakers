@@ -10,17 +10,17 @@ export class IdeaView extends PIXI.Container {
     title: PIXI.Text;
     body: PIXI.Text;
     pointerData: Point | undefined;
-    updatePosition: (x: number, y: number) => void;
+    ideaUpdated: (idea: Idea) => void;
     idea: Idea;
     size: number;
 
-    constructor(idea: Idea, size: number, margin: number, showName: boolean, laneWidth: number, updatePosition: (x: number, y: number) => void) {
+    constructor(idea: Idea, size: number, margin: number, showName: boolean, laneWidth: number, ideaUpdated: (idea: Idea) => void) {
         super();
 
-        this.idea = idea;
+        this.idea = { ...idea };
         this.size = size;
 
-        this.updatePosition = updatePosition;
+        this.ideaUpdated = ideaUpdated;
         
         this.interactive = true;
         this.buttonMode = true;
@@ -74,7 +74,7 @@ export class IdeaView extends PIXI.Container {
         this.pointerData = undefined;
         this.idea.x = this.x;
         this.idea.y = this.y;
-        this.updatePosition(this.x, this.y);
+        this.ideaUpdated(this.idea);
     }
 
     onDragMove = (event: PIXI.interaction.InteractionEvent) => {
