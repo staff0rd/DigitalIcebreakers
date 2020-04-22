@@ -17,6 +17,7 @@ interface PollPlayerState {
 
 interface PollPresenterState {
     questions: Question[],
+    currentQuestionId: string | undefined,
 }
 
 const storage = new StorageManager(window.localStorage);
@@ -32,6 +33,7 @@ const presenterReducer = createReceiveGameMessageReducer<PollPresenterState>(
     Name, 
     {
         questions: storage.getFromStorage(storageKey) || [],
+        currentQuestionId: undefined,
     },
     (state, _) => ({
         ...state,
