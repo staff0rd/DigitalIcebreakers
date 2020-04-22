@@ -27,7 +27,7 @@ import PollingPresenter from './Polling/PollingPresenter';
 import PollingClient from './Polling/PollingClient';
 import { RouteLink } from '../layout/routes';
 import LiveHelp from '@material-ui/icons/LiveHelp';
-import QuestionList from './Polling/components/QuestionList';
+import EditQuestions from './Polling/components/EditQuestions';
 import EditQuestion from './Polling/components/EditQuestion';
 
 interface Game {
@@ -108,7 +108,7 @@ const games: Game[] = [{
         presenter: PollingPresenter,
         description: 'Add questions and poll your audience',
         routes: [{
-            component: QuestionList,
+            component: EditQuestions,
             path: '/questions',
             icon: LiveHelp,
             name: 'Questions'

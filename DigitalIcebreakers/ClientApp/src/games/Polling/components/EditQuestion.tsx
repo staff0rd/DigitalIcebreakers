@@ -4,29 +4,38 @@ import CardTitle from '../../../layout/components/Card/CardTitle';
 import CardFooter from '../../../layout/components/Card/CardFooter';
 import CardBody from '../../../layout/components/Card/CardBody';
 import Button from '../../../layout/components/CustomButtons/Button';
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
-import ArrowUpward from '@material-ui/icons/ArrowUpward'
-import ArrowDownward from '@material-ui/icons/ArrowDownward'
-import Delete from '@material-ui/icons/Delete'
-import Edit from '@material-ui/icons/Edit'
+import Grid from '@material-ui/core/Grid';
 import { useSelector } from '../../../store/useSelector';
 import ContentContainer from '../../../components/ContentContainer';
-import IconButton from '@material-ui/core/IconButton';
 import { makeStyles } from '@material-ui/core/styles';
-import { useParams } from 'react-router';
+import { useParams, useHistory } from 'react-router';
 import CustomInput from '../../../layout/components/CustomInput/CustomInput';
 import SnackbarContent from '../../../layout/components/Snackbar/SnackbarContent';
 import { Question } from '../Question';
-import Check from "@material-ui/icons/Check";
-import Checkbox from '@material-ui/core/Checkbox';
 import styles from "../../../layout/assets/jss/material-dashboard-react/components/tasksStyle";
 import Typography from '@material-ui/core/Typography';
-import Table from '../../../layout/components/Table/Table';
 import EditAnswers from './EditAnswers';
 import { guid } from '../../../util/guid';
+import { grayColor } from '../../../layout/assets/jss/material-dashboard-react'
+import { useDispatch } from 'react-redux';
+import { updateQuestionAction, deleteQuestionAction } from '../PollingReducer';
 
 const useTaskStyles = makeStyles(styles);
+
+const useStyles = makeStyles(theme => ({
+    header: {
+        marginBottom: theme.spacing(3),
+        marginTop: theme.spacing(2),
+    },
+    formControl: {
+        margin: 0,
+        padding: 0,
+    },
+    noResponses: {
+        color: grayColor[0],
+        fontStyle: 'italic',
+    },
+}));
 
 
 type Props = {
@@ -34,55 +43,81 @@ type Props = {
 }
 
 const QuestionEditor = ({ question }: Props) => {
+    const dispatch = useDispatch()
+    const totalQuestions = useSelector(state => state.games.polling.presenter.questions.length);
     const [text, setText] = useState(question.text);
-    const [visibility, setVisibility] = useState(question.isVisible);
     const [answers, setAnswers] = useState(question.answers);
     const taskClasses = useTaskStyles();
+    const classes = useStyles();
+    const history = useHistory();
+
+    const isValid = () => {
+        return text.length < 3
+    }
+
+    const saveQuestion = () => {
+        dispatch(updateQuestionAction({
+             id: question.id,
+             answers,
+             responses: question.responses,
+             text: text,
+        }));
+        history.push('/questions');
+    }
+
+    const deleteQuestion = () => {
+        dispatch(deleteQuestionAction(question));
+        history.push('/questions');
+    }
+
     return (
         <ContentContainer>
             <Card>
                 <CardTitle title="Edit question" />
                 <CardBody>
-                    <CustomInput
-                        labelText="Question text"
-                        id="question-text"
-                        formControlProps={{
-                            fullWidth: true
-                        }}
-                        value={question.text}
-                        onChange={(e) => setText(e.target.value)}
-                        error={text.length < 3}
-                    />
-                    <Typography>
-                        Enabled
-                    </Typography>
-                    <Checkbox
-                        checked={visibility}
-                        onClick={() => setVisibility(!visibility)}
-                        checkedIcon={<Check className={taskClasses.checkedIcon} />}
-                        icon={<Check className={taskClasses.uncheckedIcon} />}
-                        classes={{
-                            checked: taskClasses.checked,
-                            root: taskClasses.root
-                        }}
-                    />
-                    <Typography>
-                        Answers
-                    </Typography>
-                    <EditAnswers answers={answers} setAnswers={setAnswers} />
-                    { answers.length < 3 && (
-                        <Button onClick={() => setAnswers([...answers, {id: guid(), text: 'A new answer'}])}>Add answer</Button>
-                    )}
-                    <Typography>
-                        Responses
-                    </Typography>
-
+                    <Grid container>
+                        <Grid item xs={12}>
+                            <Typography className={classes.header} variant='h5'>
+                                Question
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <CustomInput
+                            labelText="Question text"
+                            id="question-text"
+                            formControlProps={{
+                                fullWidth: true,
+                                className: classes.formControl,
+                            }}
+                            value={text}
+                            onChange={(e) => setText(e.target.value)}
+                            error={isValid()}
+                        />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Typography className={classes.header} variant='h5'>
+                                Answers
+                            </Typography>
+                            <EditAnswers answers={answers} setAnswers={setAnswers} />
+                            <Button onClick={() => setAnswers([...answers, {id: guid(), text: 'A new answer'}])}>Add answer</Button>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Typography className={classes.header} variant='h5'>
+                                Responses
+                            </Typography>
+                            {question.responses.length === 0 && (
+                                <Typography className={classes.noResponses}>
+                                    No responses
+                                </Typography>
+                            )}
+                        </Grid>
+                    </Grid>
                 </CardBody>
                 <CardFooter>
-                    <Button>
+                    <Button color='primary' onClick={() => saveQuestion()} disabled={isValid()} >
                         Save
                     </Button>
-                    <Button>
+                    <Button onClick={() => deleteQuestion()} disabled={totalQuestions < 2}>
                         Delete
                     </Button>
                 </CardFooter>

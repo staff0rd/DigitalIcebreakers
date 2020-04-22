@@ -1,11 +1,9 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import Card from '../../../layout/components/Card/Card';
 import CardTitle from '../../../layout/components/Card/CardTitle';
 import CardFooter from '../../../layout/components/Card/CardFooter';
 import CardBody from '../../../layout/components/Card/CardBody';
 import Button from '../../../layout/components/CustomButtons/Button';
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import ArrowUpward from '@material-ui/icons/ArrowUpward'
 import ArrowDownward from '@material-ui/icons/ArrowDownward'
 import IconButton from '@material-ui/core/IconButton';
@@ -25,11 +23,19 @@ import Paper from '@material-ui/core/Paper';
 import { useHistory, NavLink } from 'react-router-dom';
 import { guid } from '../../../util/guid';
 import { useDispatch } from 'react-redux';
-import { addQuestionAction } from '../PollingReducer';
+import { addQuestionAction, importQuestionsAction, deleteQuestionAction } from '../PollingReducer';
+import array from '../../../util/array';
+import { saveAs } from 'file-saver';
 
 const useStyles = makeStyles(theme => ({
     table: {
 
+    },
+    answers: {
+        paddingLeft: 15,
+    },
+    file: {
+        display: 'none',
     },
 }));
 
@@ -37,11 +43,39 @@ export default () => {
     const classes = useStyles();
     const history = useHistory();
     const dispatch = useDispatch();
-    const questions = useSelector(state => state.games.polling.presenter.questions.sort((a,b) => a.order - b.order));
+    const questions = useSelector(state => state.games.polling.presenter.questions);
     const addQuestion = () => {
         const id = guid();
         dispatch(addQuestionAction(id));
         history.push(`/questions/${id}`)
+    }
+    const fileUpload = useRef<HTMLInputElement>(null);
+
+    const exportQuestions = () => {
+        const fileName = 'questions.json';
+        const fileToSave = new Blob([JSON.stringify(questions, null, 4)], {
+            type: 'application/json',
+        });
+        saveAs(fileToSave, fileName);
+    }
+
+    const importQuestions = () => {
+        if (null !== fileUpload.current) {
+            const file = fileUpload.current.files![0];
+            if (file) {
+                var reader = new FileReader();
+                reader.readAsText(file, "UTF-8");
+                reader.onload = (evt: ProgressEvent<FileReader>) => {
+                    if (evt.target && typeof evt.target.result === "string") {
+                        const questions = JSON.parse(evt.target.result);
+                        dispatch(importQuestionsAction(questions));
+                        if (fileUpload.current !== null) {
+                            fileUpload.current.value = '';   
+                        }
+                    }
+                }
+            }
+        }
     }
     return (
         <ContentContainer>
@@ -53,7 +87,6 @@ export default () => {
                             <TableHead>
                                 <TableRow>
                                     <TableCell>Question</TableCell>
-                                    <TableCell><VisibilityIcon /></TableCell>
                                     <TableCell>Answers</TableCell>
                                     <TableCell>Responses</TableCell>
                                     <TableCell></TableCell>
@@ -61,14 +94,13 @@ export default () => {
                             </TableHead>
                             <TableBody>
                             {questions
-                                .map((question) => (
+                                .map((question, ix) => (
                                 <TableRow key={question.id}>
                                     <TableCell component="th" scope="row">
                                         {question.text}
                                     </TableCell>
-                                    <TableCell>{question.isVisible}</TableCell>
                                     <TableCell>
-                                        <ul>
+                                        <ul className={classes.answers}>
                                             {question.answers.map(a => (
                                                 <li>
                                                     {a.text}
@@ -85,13 +117,19 @@ export default () => {
                                                 <Edit />
                                             </IconButton>
                                         </NavLink>
-                                        <IconButton>
+                                        <IconButton
+                                            disabled={ix === 0}
+                                            onClick={() => dispatch(importQuestionsAction(array.moveUp(questions, questions.indexOf(question))))}
+                                        >
                                             <ArrowUpward />
                                         </IconButton>
-                                        <IconButton>
+                                        <IconButton
+                                            disabled={ix === questions.length - 1}
+                                            onClick={() => dispatch(importQuestionsAction(array.moveDown(questions, questions.indexOf(question))))}
+                                        >
                                             <ArrowDownward />
                                         </IconButton>
-                                        <IconButton>
+                                        <IconButton disabled={questions.length === 1} onClick={() => dispatch(deleteQuestionAction(question))}>
                                             <Delete />
                                         </IconButton>
                                     </TableCell>
@@ -102,10 +140,18 @@ export default () => {
                         </TableContainer>
                 </CardBody>
                 <CardFooter>
-                    <Button onClick={() => addQuestion()}>Add question</Button>
-                    <Button>Clear all questions</Button>
-                    <Button>Import questions</Button>
-                    <Button>Export questions</Button>
+                    <Button color='primary' onClick={() => addQuestion()}>Add question</Button>
+                    <Button onClick={() => dispatch(importQuestionsAction([questions[0]]))}>Clear all questions</Button>
+                    <Button onClick={() => (fileUpload.current as any).click()}>Import questions</Button>
+                    <Button onClick={() => exportQuestions()}>Export questions</Button>
+                    <input
+                        ref={fileUpload}
+                        type="file"
+                        id="file-upload"
+                        accept="application/json"
+                        className={classes.file}
+                        onChange={() => importQuestions()}
+                    />
                 </CardFooter>
             </Card>
         </ContentContainer>

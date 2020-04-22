@@ -1,7 +1,7 @@
-export class StorageManager {
+class StorageManager {
     myStorage: Storage;
     constructor(storage: Storage) {
-        this.myStorage = window.localStorage;
+        this.myStorage = storage;
     }
     saveToStorage(storageKey: string, object: object) {
         if (this.myStorage) {
@@ -22,3 +22,5 @@ export class StorageManager {
         }
     }
 }
+
+export default StorageManager;
