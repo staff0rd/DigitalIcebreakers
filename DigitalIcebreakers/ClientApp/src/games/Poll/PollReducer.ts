@@ -4,23 +4,23 @@ import { Question } from './Question';
 import { guid } from '../../util/guid';
 import StorageManager from '../../store/StorageManager';
 
-export const Name = "polling";
+export const Name = "poll";
 
-export interface PollingState {
-    player: PollingPlayerState,
-    presenter: PollingPresenterState,
+export interface PollState {
+    player: PollPlayerState,
+    presenter: PollPresenterState,
 }
 
-interface PollingPlayerState {
+interface PollPlayerState {
 
 }
 
-interface PollingPresenterState {
+interface PollPresenterState {
     questions: Question[],
 }
 
 const storage = new StorageManager(window.localStorage);
-const storageKey = "polling:questions";
+const storageKey = "poll:questions";
 
 export const exportQuestionsAction = createGameAction(Name, "presenter", "export-questions");
 export const addQuestionAction = createGameActionWithPayload<string>(Name, "presenter", "add-question");
@@ -28,7 +28,7 @@ export const updateQuestionAction = createGameActionWithPayload<Question>(Name, 
 export const deleteQuestionAction = createGameActionWithPayload<Question>(Name, "presenter", "delete-question");
 export const importQuestionsAction = createGameActionWithPayload<Question[]>(Name, "presenter", "import-questions");
 
-const presenterReducer = createReceiveGameMessageReducer<PollingPresenterState>(
+const presenterReducer = createReceiveGameMessageReducer<PollPresenterState>(
     Name, 
     {
         questions: storage.getFromStorage(storageKey) || [],
@@ -82,7 +82,7 @@ const presenterReducer = createReceiveGameMessageReducer<PollingPresenterState>(
     }
 );
 
-const playerReducer = createReceiveReducer<PollingPlayerState>(
+const playerReducer = createReceiveReducer<PollPlayerState>(
     Name,
     {
         
@@ -93,7 +93,7 @@ const playerReducer = createReceiveReducer<PollingPlayerState>(
     "client"
 );
 
-export const pollingReducer = combineReducers<PollingState>({
+export const pollReducer = combineReducers<PollState>({
     player: playerReducer,
     presenter: presenterReducer,
 });

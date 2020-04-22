@@ -22,13 +22,13 @@ import { StartStopContinueClient } from './StartStopContinue/StartStopContinueCl
 // import { SlideshowPresenter } from './Slideshow/SlideshowPresenter';
 import ReactionClient from './Reaction/ReactionClient';
 import ReactionPresenter from './Reaction/ReactionPresenter';
-import { Name as PollingName } from './Polling/PollingReducer';
-import PollingPresenter from './Polling/PollingPresenter';
-import PollingClient from './Polling/PollingClient';
+import { Name as PollName } from './Poll/PollReducer';
+import PollPresenter from './Poll/PollPresenter';
+import PollClient from './Poll/PollClient';
 import { RouteLink } from '../layout/routes';
 import LiveHelp from '@material-ui/icons/LiveHelp';
-import EditQuestions from './Polling/components/EditQuestions';
-import EditQuestion from './Polling/components/EditQuestion';
+import EditQuestions from './Poll/components/EditQuestions';
+import EditQuestion from './Poll/components/EditQuestion';
 
 interface Game {
     name: string;
@@ -102,11 +102,11 @@ const games: Game[] = [{
         presenter: ReactionPresenter,
         description: 'Test audience reflexes in this all-vs-all shape-matching game',
     },{
-        title: 'Polling',
-        name: PollingName,
-        client: PollingClient,
-        presenter: PollingPresenter,
-        description: 'Add questions and poll your audience',
+        title: 'Poll',
+        name: PollName,
+        client: PollClient,
+        presenter: PollPresenter,
+        description: 'Audience polling: Add questions and poll your audience',
         routes: [{
             component: EditQuestions,
             path: '/questions',

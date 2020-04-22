@@ -23,7 +23,7 @@ import Paper from '@material-ui/core/Paper';
 import { useHistory, NavLink } from 'react-router-dom';
 import { guid } from '../../../util/guid';
 import { useDispatch } from 'react-redux';
-import { addQuestionAction, importQuestionsAction, deleteQuestionAction } from '../PollingReducer';
+import { addQuestionAction, importQuestionsAction, deleteQuestionAction } from '../PollReducer';
 import array from '../../../util/array';
 import { saveAs } from 'file-saver';
 
@@ -43,7 +43,7 @@ export default () => {
     const classes = useStyles();
     const history = useHistory();
     const dispatch = useDispatch();
-    const questions = useSelector(state => state.games.polling.presenter.questions);
+    const questions = useSelector(state => state.games.poll.presenter.questions);
     const addQuestion = () => {
         const id = guid();
         dispatch(addQuestionAction(id));

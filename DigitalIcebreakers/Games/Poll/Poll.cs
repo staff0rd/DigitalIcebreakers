@@ -3,11 +3,11 @@ using Newtonsoft.Json.Linq;
 
 namespace DigitalIcebreakers.Games
 {
-    public class Polling : Game, IGame
+    public class Poll : Game, IGame
     {
-        public override string Name => "polling";
+        public override string Name => "poll";
 
-        public Polling(Sender sender, LobbyManager lobbyManager) : base(sender, lobbyManager) {}
+        public Poll(Sender sender, LobbyManager lobbyManager) : base(sender, lobbyManager) {}
 
         public override async Task OnReceivePlayerMessage(JToken payload, string connectionId)
         {   

@@ -7,7 +7,7 @@ import { Player } from '../games/Buzzer/BuzzerReducer';
 import { SplatState } from '../games/Splat/SplatReducer';
 import { TeamColors, PongPresenterState } from '../games/Pong/PongReducer';
 import { IdeaWallState } from '../games/IdeaWall/IdeaWallReducer';
-import { PollingState } from '../games/Polling/PollingReducer';
+import { PollState } from '../games/Poll/PollReducer';
 
 export interface GamesState {
     yesnomaybe: YesNoMaybeState,
@@ -19,7 +19,7 @@ export interface GamesState {
         presenter: PongPresenterState,
     },
     ideawall: IdeaWallState,
-    polling: PollingState,
+    poll: PollState,
 }
 
 export interface RootState {

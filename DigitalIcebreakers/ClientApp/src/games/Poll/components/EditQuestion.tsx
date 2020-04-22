@@ -18,7 +18,7 @@ import EditAnswers from './EditAnswers';
 import { guid } from '../../../util/guid';
 import { grayColor } from '../../../layout/assets/jss/material-dashboard-react'
 import { useDispatch } from 'react-redux';
-import { updateQuestionAction, deleteQuestionAction } from '../PollingReducer';
+import { updateQuestionAction, deleteQuestionAction } from '../PollReducer';
 
 const useTaskStyles = makeStyles(styles);
 
@@ -44,7 +44,7 @@ type Props = {
 
 const QuestionEditor = ({ question }: Props) => {
     const dispatch = useDispatch()
-    const totalQuestions = useSelector(state => state.games.polling.presenter.questions.length);
+    const totalQuestions = useSelector(state => state.games.poll.presenter.questions.length);
     const [text, setText] = useState(question.text);
     const [answers, setAnswers] = useState(question.answers);
     const taskClasses = useTaskStyles();
@@ -128,7 +128,7 @@ const QuestionEditor = ({ question }: Props) => {
 
 export default () => {
     const questionId = useParams<{ id: string }>().id;
-    const question = useSelector(state => state.games.polling.presenter.questions.find(q => q.id === questionId));
+    const question = useSelector(state => state.games.poll.presenter.questions.find(q => q.id === questionId));
 
     return question ? (
         <QuestionEditor question={question} />
