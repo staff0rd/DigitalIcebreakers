@@ -4,7 +4,7 @@ import { ServerIdea } from "./ServerIdea";
 import { guid } from "../../util/guid";
 import Random from "../../Random";
 import { Colors } from "../../Colors";
-import { StorageManager } from '../../store/StorageManager';
+import StorageManager from '../../store/StorageManager';
 
 const IDEA_COLORS = [
     Colors.Amber.A200,
