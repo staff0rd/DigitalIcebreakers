@@ -41,6 +41,21 @@ interface Game {
 }
 
 const games: Game[] = [{
+        title: 'Poll',
+        name: PollName,
+        client: PollClient,
+        presenter: PollPresenter,
+        description: 'Audience polling: Add questions and poll your audience',
+        routes: [{
+            component: EditQuestions,
+            path: '/questions',
+            icon: LiveHelp,
+            name: 'Questions'
+        },{
+            component: EditQuestion,
+            path: '/questions/:id'
+        }]
+    },{
         name: "doggos-vs-kittehs",
         client: DoggosVsKittehsClient,
         presenter: DoggosVsKittehsPresenter,
@@ -101,21 +116,6 @@ const games: Game[] = [{
         client: ReactionClient,
         presenter: ReactionPresenter,
         description: 'Test audience reflexes in this all-vs-all shape-matching game',
-    },{
-        title: 'Poll',
-        name: PollName,
-        client: PollClient,
-        presenter: PollPresenter,
-        description: 'Audience polling: Add questions and poll your audience',
-        routes: [{
-            component: EditQuestions,
-            path: '/questions',
-            icon: LiveHelp,
-            name: 'Questions'
-        },{
-            component: EditQuestion,
-            path: '/questions/:id'
-        }]
     }
 ];
 

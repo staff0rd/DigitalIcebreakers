@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import ContentContainer from '../../components/ContentContainer';
 import { useSelector } from '../../store/useSelector';
 import { makeStyles } from '@material-ui/core/styles';
-import classes from '*.module.css';
-import Button from '../../layout/components/CustomButtons/Button';
 import IconButton from '@material-ui/core/IconButton';
 import NavigateBefore from '@material-ui/icons/NavigateBefore';
 import NavigateNext from '@material-ui/icons/NavigateNext';
 import BarChart from '@material-ui/icons/BarChart';
 import { Question } from './Question';
 import { Typography } from '@material-ui/core';
+import { adminMessage } from '../../store/lobby/actions'
+import { useDispatch } from 'react-redux';
+import { setCurrentQuestionAction } from './PollReducer';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -41,21 +41,50 @@ const useStyles = makeStyles(theme => ({
 
 export default () => {
     const classes = useStyles();
-    const current = useSelector(state => state.games.poll.presenter);
-    const [question, setQuestion] = useState<Question | undefined>(current.questions[0]);
-    const previousQuestion = useSelector(state => {
+    const dispatch = useDispatch();
+    const { questions, currentQuestionId } = useSelector(state => state.games.poll.presenter);
+    const question = questions.find(q => q.id === currentQuestionId);
+    useEffect(() => {
+        if (questions.length && !currentQuestionId) {
+            dispatch(setCurrentQuestionAction(questions[0].id));
+        }
+    })
+    const responses = useSelector(state => {
         if (question) {
-            const ix = current.questions.indexOf(question);
+            const q = state.games.poll.presenter.questions.find(q => q.id === question.id);
+            if (q) {
+                return q.responses.length;
+            }
+        }
+        return 0;
+    })
+    const getCurrentQuestionIndex = () => question ? questions.indexOf(question) : -1;
+    const previousQuestionId = {
+
+        if (question) {
+            const ix = 
             if (ix > 0)
-                return current.questions[ix - 1];
+                return state.games.poll.presenter.questions[ix - 1];
         }
     })
-    const nextQuestion = useSelector(state => {
+    const nextQuestionId = useSelector(state => {
         if (question) {
-            const ix = current.questions.indexOf(question);
-            return current.questions[ix + 1];
+            const ix = state.games.poll.presenter.questions.indexOf(question);
+            return state.games.poll.presenter.questions[ix + 1];
         }
     })
+
+    useEffect(() => {
+        if (question) {
+            dispatch(adminMessage({
+                questionId: question.id,
+                answers: question.answers,
+            }));
+        }
+        else{
+            dispatch(adminMessage(null))
+        }
+    }, [question]);
 
     return (
         <>
@@ -65,7 +94,7 @@ export default () => {
                 </h1>
                 <div className={classes.responses}>
                     <Typography variant='overline'>Responses</Typography>
-                    <Typography>{question ? question.responses.length : 0}</Typography>
+                    <Typography>{responses}</Typography>
                 </div>
             </div>
             <div className={classes.buttons}>

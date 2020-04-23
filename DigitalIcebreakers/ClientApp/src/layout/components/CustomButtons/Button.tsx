@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, DOMAttributes } from "react";
 // nodejs library that concatenates classes
 import classNames from "classnames";
 // nodejs library to set properties for components
@@ -22,11 +22,9 @@ type Color =
   "white" |
   "transparent";
 
-  type Size =
-    "sm" |
-    "lg";
+type Size = "sm" | "lg";
 
-type Props = {
+interface Props extends Partial<DOMAttributes<HTMLButtonElement>> {
   color?: Color,
   size?: Size,
   simple?: boolean,
@@ -38,7 +36,7 @@ type Props = {
   className?: string,
   muiClasses?: object,
   children?: ReactNode
-} & Partial<ButtonProps>;
+};
 
 export default function RegularButton(props: Props) {
   const classes = useStyles();

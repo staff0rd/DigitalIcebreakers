@@ -1,4 +1,4 @@
-import { createAction, createReducer, CaseReducer, Action, ActionReducerMapBuilder } from '@reduxjs/toolkit';
+import { createAction, createReducer, CaseReducer, Action, ActionReducerMapBuilder, ActionCreator, PayloadActionCreator } from '@reduxjs/toolkit';
 
 import { GameMessage } from "../games/GameMessage";
 
@@ -11,36 +11,36 @@ export type ActionWithPayload<T> = {
 export const createGameAction = (gameName: string, interfaceType: InterfaceType, actionType: string) =>
     createAction(`${gameName}-${interfaceType}-${actionType}`);
 
-export const createGameActionWithPayload = <T,>(gameName: string, interfaceType: InterfaceType, actionType: string) => 
-    createAction<T>(`${gameName}-${interfaceType}-${actionType}`);
+export const createGameActionWithPayload = <P,>(gameName: string, interfaceType: InterfaceType, actionType: string) => 
+    createAction<P>(`${gameName}-${interfaceType}-${actionType}`);
 
-export const createGameMessageReceivedAction = <T,>(gameName: string, interfaceType: InterfaceType, actionType: string) =>
-    createGameActionWithPayload<GameMessage<T>>(gameName, interfaceType, actionType);
+export const createGameMessageReceivedAction = <P,>(gameName: string, interfaceType: InterfaceType, actionType: string) =>
+    createGameActionWithPayload<GameMessage<P>>(gameName, interfaceType, actionType);
 
-export const createReceiveGameMessageReducer = <Payload, ReduxState = Payload>(
+export const createReceiveGameMessageReducer = <P, ReduxState = P>(
     gameName: string,
     initialState: ReduxState,
-    caseReducer: CaseReducer<ReduxState, ActionWithPayload<GameMessage<Payload>>>,
+    caseReducer: CaseReducer<ReduxState, ActionWithPayload<GameMessage<P>>>,
     interfaceType: InterfaceType = "presenter",
     builderCallback?: (builder: ActionReducerMapBuilder<ReduxState>) => void
 ) => {
-    const receiveGameMessage = createGameMessageReceivedAction<Payload>(gameName, interfaceType, "receive-game-message");
+    const receiveGameMessage = createGameMessageReceivedAction<P>(gameName, interfaceType, "receive-game-message");
     return createReducer<ReduxState>(initialState, builder => {
         builder.addCase(receiveGameMessage, caseReducer);
         builderCallback && builderCallback(builder);
     })
 }
 
-export const createReceiveReducer = <ReduxState>(
+export const createReceiveReducer = <ReduxState, P = string>(
     gameName: string,
     initialState: ReduxState,
-    caseReducer: CaseReducer<ReduxState, ActionWithPayload<string>>,
+    caseReducer: CaseReducer<ReduxState, ActionWithPayload<P>>,
     interfaceType: InterfaceType = "presenter",
     builderCallback?: (builder: ActionReducerMapBuilder<ReduxState>) => void
 ) => {
-    const receiveGameMessage = createGameActionWithPayload<string>(gameName, interfaceType, "receive-game-message");
+    const receiveGameMessage = createGameActionWithPayload<P>(gameName, interfaceType, "receive-game-message");
     return createReducer<ReduxState>(initialState, builder => {
-        builder.addCase(receiveGameMessage, caseReducer);
+        builder.addCase(receiveGameMessage as any, caseReducer);
         builderCallback && builderCallback(builder);
     })
 }
