@@ -80,7 +80,7 @@ export default () => {
     const previousQuestion = () => previousQuestionId && dispatch(setCurrentQuestionAction(previousQuestionId));
     
     useEffect(() => {
-        if (question && !showResponses) {
+        if (question) {
             dispatch(adminMessage({
                 questionId: question.id,
                 answers: question.answers,
@@ -89,7 +89,7 @@ export default () => {
         else{
             dispatch(adminMessage(null))
         }
-    }, [question, showResponses]);
+    }, [question]);
 
 
     const QuestionView = () => {

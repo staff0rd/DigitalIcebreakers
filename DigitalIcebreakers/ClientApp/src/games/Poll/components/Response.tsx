@@ -1,12 +1,17 @@
 import React from 'react';
 import { useSelector } from '../../../store/useSelector';
 import { currentQuestionSelector } from '../PollReducer';
-import ChartistGraph from 'react-chartist';
 import Card from '../../../layout/components/Card/Card';
 import CardHeader from '../../../layout/components/Card/CardHeader';
 import CardBody from '../../../layout/components/Card/CardBody';
 import { makeStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
+import {
+    BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
+  } from 'recharts';
+import Paper from '@material-ui/core/Paper';
+import { primaryColor } from '../../../layout/assets/jss/material-dashboard-react'
+import CustomisedAxisTick from './CustomisedAccessTick';
 
 const useStyles = makeStyles(theme => ({
     container: {
@@ -14,8 +19,9 @@ const useStyles = makeStyles(theme => ({
         width: '80%',
         height: '80%',
     },
-    card: {
+    paper: {
         height: '100%',
+        padding: theme.spacing(3),
     },
     cardHeader: {
         height: '100%',
@@ -46,59 +52,33 @@ export default () => {
         }
     }) : [];
 
-    const data = {
-        labels: answers.map(a => a.answer),
-        series: answers.map(a => a.responses),
-      };
-   
-      var options = {
-        high: Math.max(...answers.map(a => a.responses)) + 1,
-        low: 0,
-      };
-   
-      var type = 'Bar'
-      var delays = 80,
-        durations = 500;
-        var delays2 = 80,
-        durations2 = 500;
-      const animation = {
-        draw: function(data: any): any {
-          if (data.type === "bar") {
-            data.element.animate({
-              opacity: {
-                begin: (data.index + 1) * delays2,
-                dur: durations2,
-                from: 0,
-                to: 1,
-                easing: "ease"
-              }
-            });
-          }
-        }
-      }
+    const data = answers.map(a => ({ name: a.answer, count: a.responses }));
 
     return (
         <>
             {question && (    
                 <div className={classes.container}>
-                
-                    <Card className={classes.card} chart>
-                        <CardHeader className={classes.cardHeader} color="success">
-                            <ChartistGraph
-                                className={classNames("ct-chart", classes.chart)}
-                                data={data}
-                                type="Bar"
-                                options={options}
-                                
-                                listener={animation}
+                    <ResponsiveContainer width="100%" height="80%">
+                        <BarChart
+                            layout='vertical'
+                            data={data}
+                            margin={{
+                            top: 5, right: 30, left: 20, bottom: 5,
+                            }}
+                        >
+                            <XAxis type="number" />
+                            <YAxis
+                                dataKey="name"
+                                type="category"
+                                tick={<CustomisedAxisTick maxLines={3} />}
+                                width={100}
+                                tickLine={false}
                             />
-                        </CardHeader>
-                        <CardBody>
-                            <h2 className={classes.question}>{question.text}</h2>
-                        </CardBody>
-                    </Card>
-                    </div>
-                
+                            <Bar dataKey="count" fill={primaryColor[0]} />
+                        </BarChart>
+                    </ResponsiveContainer>
+                    <h2 className={classes.question}>{question.text}</h2>
+                </div>
             )}
         </>
     )
