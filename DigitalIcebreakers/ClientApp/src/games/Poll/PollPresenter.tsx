@@ -5,11 +5,12 @@ import IconButton from '@material-ui/core/IconButton';
 import NavigateBefore from '@material-ui/icons/NavigateBefore';
 import NavigateNext from '@material-ui/icons/NavigateNext';
 import BarChart from '@material-ui/icons/BarChart';
-import { Question } from './Question';
+import LiveHelp from '@material-ui/icons/LiveHelp';
 import { Typography } from '@material-ui/core';
 import { adminMessage } from '../../store/lobby/actions'
 import { useDispatch } from 'react-redux';
-import { setCurrentQuestionAction } from './PollReducer';
+import { setCurrentQuestionAction, toggleResponsesAction, currentQuestionSelector } from './PollReducer';
+import Response from './components/Response';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -42,14 +43,17 @@ const useStyles = makeStyles(theme => ({
 export default () => {
     const classes = useStyles();
     const dispatch = useDispatch();
+    const {
+        currentQuestionId,
+        question
+    } = useSelector(currentQuestionSelector);
+
     const { 
-        currentQuestionId,  
         questionIds,
-        question,
+        showResponses,
     } = useSelector(state => ({
-        currentQuestionId: state.games.poll.presenter.currentQuestionId,
         questionIds: state.games.poll.presenter.questions.map(q => q.id),
-        question: state.games.poll.presenter.questions.find(q => q.id === (state.games.poll.presenter.currentQuestionId || "")),
+        showResponses: state.games.poll.presenter.showResponses,
     }));
     
     useEffect(() => {
@@ -76,7 +80,7 @@ export default () => {
     const previousQuestion = () => previousQuestionId && dispatch(setCurrentQuestionAction(previousQuestionId));
     
     useEffect(() => {
-        if (question) {
+        if (question && !showResponses) {
             dispatch(adminMessage({
                 questionId: question.id,
                 answers: question.answers,
@@ -85,11 +89,12 @@ export default () => {
         else{
             dispatch(adminMessage(null))
         }
-    }, [question]);
+    }, [question, showResponses]);
 
-    return (
-        <>
-            <div className={classes.root}>
+
+    const QuestionView = () => {
+        return (
+            <>
                 <h1 className={classes.question}>
                     { question ? question.text : 'No questions' }
                 </h1>
@@ -97,13 +102,21 @@ export default () => {
                     <Typography variant='overline'>Responses</Typography>
                     <Typography>{responses}</Typography>
                 </div>
+            </>
+        );
+    }
+
+    return (
+        <>
+            <div className={classes.root}>
+                { showResponses ? <Response /> : <QuestionView />}
             </div>
             <div className={classes.buttons}>
                 <IconButton disabled={!previousQuestionId} onClick={() => previousQuestion()}>
                     <NavigateBefore />
                 </IconButton>
-                <IconButton>
-                    <BarChart />
+                <IconButton onClick={() => dispatch(toggleResponsesAction())}>
+                    { showResponses ? <LiveHelp /> : <BarChart /> }
                 </IconButton>
                 <IconButton disabled={!nextQuestionId} onClick={() => nextQuestion()}>
                     <NavigateNext />

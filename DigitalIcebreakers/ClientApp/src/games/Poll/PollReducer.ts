@@ -6,6 +6,8 @@ import StorageManager from '../../store/StorageManager';
 import { AvailableAnswers } from './AvailableAnswers';
 import { Answer } from './Answer';
 import { SelectedAnswer } from './SelectedAnswer';
+import { RootState } from '../../store/RootState';
+import { createSelector } from '@reduxjs/toolkit';
 
 export const Name = "poll";
 
@@ -22,27 +24,39 @@ interface PollPlayerState extends AvailableAnswers {
 interface PollPresenterState {
     questions: Question[],
     currentQuestionId: string | undefined,
+    showResponses: boolean,
 }
 
 const storage = new StorageManager(window.localStorage);
 const storageKey = "poll:questions";
 
 export const exportQuestionsAction = createGameAction(Name, "presenter", "export-questions");
+export const toggleResponsesAction = createGameAction(Name, "presenter", "toggle-responses");
 export const addQuestionAction = createGameActionWithPayload<string>(Name, "presenter", "add-question");
 export const updateQuestionAction = createGameActionWithPayload<Question>(Name, "presenter", "update-question");
 export const deleteQuestionAction = createGameActionWithPayload<Question>(Name, "presenter", "delete-question");
 export const importQuestionsAction = createGameActionWithPayload<Question[]>(Name, "presenter", "import-questions");
 export const setCurrentQuestionAction = createGameActionWithPayload<string>(Name, "presenter", "set-current-question");
-
-
 export const selectAnswerAction = createGameActionWithPayload<string>(Name, "client", "select-answer");
 export const lockAnswerAction = createGameAction(Name, "client", "lock-answer");
+
+export const currentQuestionSelector = createSelector(
+    (state: RootState) => ({
+        currentQuestionId: state.games.poll.presenter.currentQuestionId,
+        questions: state.games.poll.presenter.questions,
+    }),
+    (state) => ({
+        currentQuestionId: state.currentQuestionId,
+        question: state.questions.find(q => q.id === (state.currentQuestionId || ""))
+    })
+);
 
 const presenterReducer = createReceiveGameMessageReducer<SelectedAnswer, PollPresenterState>(
     Name, 
     {
         questions: storage.getFromStorage(storageKey) || [],
         currentQuestionId: undefined,
+        showResponses: true,
     },
     (state, { payload: { id: playerId, name: playerName, payload: { questionId, selectedId: answerId, }, }}) => {
         const question = state.questions.find(q => q.id === questionId && state.currentQuestionId === questionId);
@@ -113,6 +127,10 @@ const presenterReducer = createReceiveGameMessageReducer<SelectedAnswer, PollPre
         builder.addCase(setCurrentQuestionAction, (state, { payload: currentQuestionId }) => ({
             ...state,
             currentQuestionId,
+        }));
+        builder.addCase(toggleResponsesAction, (state) => ({
+            ...state,
+            showResponses: !state.showResponses
         }));
     }
 );
