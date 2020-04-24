@@ -29,7 +29,7 @@ export default () => {
     },
     !lobby.id && {
       path: "/create-lobby",
-      name: "Host",
+      name: "Present",
       icon: AddCircle,
       component: CreateLobby,
     },

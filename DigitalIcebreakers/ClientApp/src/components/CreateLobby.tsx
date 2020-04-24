@@ -37,7 +37,7 @@ export default function CreateLobby() {
       <GridContainer>
         <GridItem xs={12} sm={12} md={8}>
           <Card>
-            <CardTitle title="Host" subTitle="Create a lobby for your audience to join" />
+            <CardTitle title="Present" subTitle="Create a lobby for your audience to join" />
             <CardBody>
               <GridContainer>
                 <GridItem xs={12} sm={12} md={6}>

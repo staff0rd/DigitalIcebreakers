@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, DOMAttributes } from "react";
 // nodejs library that concatenates classes
 import classNames from "classnames";
 // nodejs library to set properties for components
@@ -38,7 +38,7 @@ type Props = {
   className?: string,
   muiClasses?: object,
   children?: ReactNode
-} & Partial<ButtonProps>;
+} & Partial<DOMAttributes<HTMLButtonElement>>;
 
 export default function RegularButton(props: Props) {
   const classes = useStyles();
