@@ -4,6 +4,7 @@ import Moment from 'react-moment';
 
 export function Changelog() {
     const changelogs = [
+        new ChangelogItem(2020, 4, 24, "added #poll"),
         new ChangelogItem(2020, 4, 20, "reskin"),
         new ChangelogItem(2020, 4, 15, "added #splat + dev tutorial"),
         new ChangelogItem(2019, 11, 17, "added #reaction"),
