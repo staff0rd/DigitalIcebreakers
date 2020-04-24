@@ -11,6 +11,8 @@ import { adminMessage } from '../../store/lobby/actions'
 import { useDispatch } from 'react-redux';
 import { setCurrentQuestionAction, toggleResponsesAction, currentQuestionSelector } from './PollReducer';
 import Response from './components/Response';
+import Button from '../../layout/components/CustomButtons/Button';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -41,6 +43,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default () => {
+    const history = useHistory();
     const classes = useStyles();
     const dispatch = useDispatch();
     const {
@@ -96,7 +99,7 @@ export default () => {
         return (
             <>
                 <h1 className={classes.question}>
-                    { question ? question.text : 'No questions' }
+                    {question!.text}
                 </h1>
                 <div className={classes.responses}>
                     <Typography variant='overline'>Responses</Typography>
@@ -109,7 +112,16 @@ export default () => {
     return (
         <>
             <div className={classes.root}>
-                { showResponses ? <Response /> : <QuestionView />}
+                { question ? ( showResponses ? <Response /> : <QuestionView /> ) : (
+                    <>
+                        <h1 className={classes.question}>
+                            No questions
+                        </h1>
+                        <Button color='primary' onClick={() => history.push('/questions')}>
+                            Add some
+                        </Button>
+                    </>
+                )}
             </div>
             <div className={classes.buttons}>
                 <IconButton disabled={!previousQuestionId} onClick={() => previousQuestion()}>

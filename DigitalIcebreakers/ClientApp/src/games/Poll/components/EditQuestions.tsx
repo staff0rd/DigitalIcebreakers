@@ -23,7 +23,7 @@ import Paper from '@material-ui/core/Paper';
 import { useHistory, NavLink } from 'react-router-dom';
 import { guid } from '../../../util/guid';
 import { useDispatch } from 'react-redux';
-import { addQuestionAction, importQuestionsAction, deleteQuestionAction } from '../PollReducer';
+import { addQuestionAction, importQuestionsAction, deleteQuestionAction, clearResponsesAction } from '../PollReducer';
 import array from '../../../util/array';
 import { saveAs } from 'file-saver';
 
@@ -141,7 +141,8 @@ export default () => {
                 </CardBody>
                 <CardFooter>
                     <Button color='primary' onClick={() => addQuestion()}>Add question</Button>
-                    <Button onClick={() => dispatch(importQuestionsAction([questions[0]]))}>Clear all questions</Button>
+                    <Button onClick={() => dispatch(importQuestionsAction([]))}>Clear all questions</Button>
+                    <Button onClick={() => dispatch(clearResponsesAction())}>Clear all responses</Button>
                     <Button onClick={() => (fileUpload.current as any).click()}>Import questions</Button>
                     <Button onClick={() => exportQuestions()}>Export questions</Button>
                     <input

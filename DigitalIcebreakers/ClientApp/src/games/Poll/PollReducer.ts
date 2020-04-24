@@ -32,6 +32,7 @@ const storageKey = "poll:questions";
 
 export const exportQuestionsAction = createGameAction(Name, "presenter", "export-questions");
 export const toggleResponsesAction = createGameAction(Name, "presenter", "toggle-responses");
+export const clearResponsesAction = createGameAction(Name, "presenter", "clear-responses");
 export const addQuestionAction = createGameActionWithPayload<string>(Name, "presenter", "add-question");
 export const updateQuestionAction = createGameActionWithPayload<Question>(Name, "presenter", "update-question");
 export const deleteQuestionAction = createGameActionWithPayload<Question>(Name, "presenter", "delete-question");
@@ -56,7 +57,7 @@ const presenterReducer = createReceiveGameMessageReducer<SelectedAnswer, PollPre
     {
         questions: storage.getFromStorage(storageKey) || [],
         currentQuestionId: undefined,
-        showResponses: true,
+        showResponses: false,
     },
     (state, { payload: { id: playerId, name: playerName, payload: { questionId, selectedId: answerId, }, }}) => {
         const question = state.questions.find(q => q.id === questionId && state.currentQuestionId === questionId);
@@ -131,6 +132,13 @@ const presenterReducer = createReceiveGameMessageReducer<SelectedAnswer, PollPre
         builder.addCase(toggleResponsesAction, (state) => ({
             ...state,
             showResponses: !state.showResponses
+        }));
+        builder.addCase(clearResponsesAction, (state) => ({
+            ...state,
+            questions: state.questions.map(q => ({
+                ...q,
+                responses: [],
+            })),
         }));
     }
 );
