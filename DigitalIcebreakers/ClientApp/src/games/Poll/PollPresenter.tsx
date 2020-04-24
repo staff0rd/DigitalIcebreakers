@@ -60,7 +60,7 @@ export default () => {
     }));
     
     useEffect(() => {
-        if (questionIds.length && !currentQuestionId) {
+        if (questionIds.length && !questionIds.find(f => currentQuestionId)) {
             dispatch(setCurrentQuestionAction(questionIds[0]));
         }
     }, [questionIds, currentQuestionId])
