@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import DoggosVsKittehsClient from './DoggosVsKittehs/DoggosVsKittehsClient';
 import DoggosVsKittehsPresenter from './DoggosVsKittehs/DoggosVsKittehsPresenter';
 import { BroadcastClient } from './Broadcast/BroadcastClient';
@@ -22,14 +22,47 @@ import { StartStopContinueClient } from './StartStopContinue/StartStopContinueCl
 // import { SlideshowPresenter } from './Slideshow/SlideshowPresenter';
 import ReactionClient from './Reaction/ReactionClient';
 import ReactionPresenter from './Reaction/ReactionPresenter';
+import { Name as PollName } from './Poll/PollReducer';
+import PollPresenter from './Poll/PollPresenter';
+import PollClient from './Poll/PollClient';
+import { RouteLink } from '../layout/routes';
+import LiveHelp from '@material-ui/icons/LiveHelp';
+import EditQuestions from './Poll/components/EditQuestions';
+import EditQuestion from './Poll/components/EditQuestion';
 
-export default [{
+interface Game {
+    name: string;
+    client: ReactNode;
+    presenter: ReactNode;
+    title: string;
+    description: string;
+    menu?: ReactNode;
+    routes?: RouteLink[];
+    isNew?: boolean;
+}
+
+const games: Game[] = [{
+        isNew: true,
+        title: 'Poll',
+        name: PollName,
+        client: PollClient,
+        presenter: PollPresenter,
+        description: 'Audience polling: Add questions and poll your audience',
+        routes: [{
+            component: EditQuestions,
+            path: '/questions',
+            icon: LiveHelp,
+            name: 'Questions'
+        },{
+            component: EditQuestion,
+            path: '/questions/:id'
+        }]
+    },{
         name: "doggos-vs-kittehs",
         client: DoggosVsKittehsClient,
         presenter: DoggosVsKittehsPresenter,
         title: "Doggos vs Kittehs",
         description: "Audience polling - Furry friend edition",
-        isGame: true
     }, {
         name: YesNoMaybeName,
         client: YesNoMaybeClient,
@@ -42,14 +75,13 @@ export default [{
         client: BuzzerClient,
         presenter: BuzzerPresenter,
         title: "Buzzer",
-        fullscreen: true,
         description: "Let your audience get a feel for low latency"
     }, {
+        isNew: true,
         name: "splat",
         client: SplatClient,
         presenter: SplatPresenter,
         title: "Splat",
-        fullscreen: true,
         description: "It's paint-ball for audiences and presenters"
     }, {
         name: "pong",
@@ -57,8 +89,6 @@ export default [{
         presenter: PongPresenter,
         menu: PongMenu,
         title: "Pong",
-        fullscreen: true,
-        isGame: true,
         description: 'Mob pong for large audiences - red vs blue!'
     }, {
         name: "ideawall",
@@ -66,39 +96,30 @@ export default [{
         presenter: IdeaWallPresenter,
         menu: IdeaWallMenu,
         title: "Idea Wall",
-        fullscreen: true,
         description: "A virtual wall of ideas. Stick 'em to the wall and move them around",
-        isGame: false,
     //}, {
     //     name: "startstopcontinue",
     //     client: <StartStopContinueClient,
     //     presenter: <IdeaWallPresenter dynamicSize={true} {...props} storageKey="startstopcontinue:ideas" lanes={StartStopContinueLanes} />,
     //     title: "Start Stop Continue",
-    //     fullscreen: true,
-    //     isGame: false,
-    //     disabled: true
     }, {
         name: "broadcast",
         client: BroadcastClient,
         presenter: BroadcastPresenter,
         title: "Broadcast",
-        fullscreen: true,
-        isGame: false,
         description: 'Demonstration of two-way, real-time presenter and audience participation',
     // }, {
     //     name: "slideshow",
     //     client: <SlideshowClient,
     //     presenter: <SlideshowPresenter {...props} storageKey="slideshow:state" />,
     //     title: "Slideshow",
-    //     fullscreen: true,
-    //     isGame: false
     }, {
         title: "Reaction",
         name: "reaction",
         client: ReactionClient,
         presenter: ReactionPresenter,
-        fullscreen: true,
-        isGame: true,
         description: 'Test audience reflexes in this all-vs-all shape-matching game',
-    }];
+    }
+];
 
+export default games;

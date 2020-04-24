@@ -22,11 +22,9 @@ type Color =
   "white" |
   "transparent";
 
-  type Size =
-    "sm" |
-    "lg";
+type Size = "sm" | "lg";
 
-type Props = {
+interface Props extends Partial<DOMAttributes<HTMLButtonElement>> {
   color?: Color,
   size?: Size,
   simple?: boolean,
@@ -38,7 +36,7 @@ type Props = {
   className?: string,
   muiClasses?: object,
   children?: ReactNode
-} & Partial<DOMAttributes<HTMLButtonElement>>;
+};
 
 export default function RegularButton(props: Props) {
   const classes = useStyles();

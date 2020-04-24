@@ -140,6 +140,7 @@ namespace DigitalIcebreakers.Hubs
                 case "slideshow": return new Slideshow(_send, _lobbys);
                 case "reaction": return new Reaction(_send, _lobbys);
                 case "splat": return new Splat(_send, _lobbys);
+                case "poll": return new Poll(_send, _lobbys);
                 default: throw new ArgumentOutOfRangeException("Unknown game");
             }
         }

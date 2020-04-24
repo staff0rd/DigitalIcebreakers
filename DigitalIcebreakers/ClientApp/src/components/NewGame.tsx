@@ -10,7 +10,8 @@ import CardHeader from '../layout/components/Card/CardHeader';
 import CardIcon from '../layout/components/Card/CardIcon';
 import GridContainer from '../layout/components/Grid/GridContainer';
 import GridItem from '../layout/components/Grid/GridItem';
-import { Icon } from '@material-ui/core';
+import FiberNew from '@material-ui/icons/FiberNew'
+
 import { makeStyles } from '@material-ui/core/styles';
 import { grayColor } from '../layout/assets/jss/material-dashboard-react';
 import Button from "../layout/components/CustomButtons/Button";
@@ -39,6 +40,12 @@ const useStyles = makeStyles(theme => ({
           lineHeight: 1
         },
       },
+      icon: {
+          display: 'flex',
+          position: 'absolute',
+          right: 0,
+          width: '24px',
+      },
 }));
 
 export default () => {
@@ -56,6 +63,11 @@ export default () => {
                 { Games.map(g => (
                     <GridItem xs={12} sm={12} md={4}>
                         <Card>
+                            { g.isNew && (
+                                <CardIcon className={classes.icon} color="info">
+                                    <FiberNew />
+                                </CardIcon>
+                            )}
                             <CardBody>
                                 <h2 className={classes.cardTitle}>
                                     {g.title}
