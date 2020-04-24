@@ -42,13 +42,22 @@ const useStyles = makeStyles(theme => ({
 export default () => {
     const classes = useStyles();
     const dispatch = useDispatch();
-    const { questions, currentQuestionId } = useSelector(state => state.games.poll.presenter);
-    const question = questions.find(q => q.id === currentQuestionId);
+    const { 
+        currentQuestionId,  
+        questionIds,
+        question,
+    } = useSelector(state => ({
+        currentQuestionId: state.games.poll.presenter.currentQuestionId,
+        questionIds: state.games.poll.presenter.questions.map(q => q.id),
+        question: state.games.poll.presenter.questions.find(q => q.id === (state.games.poll.presenter.currentQuestionId || "")),
+    }));
+    
     useEffect(() => {
-        if (questions.length && !currentQuestionId) {
-            dispatch(setCurrentQuestionAction(questions[0].id));
+        if (questionIds.length && !currentQuestionId) {
+            dispatch(setCurrentQuestionAction(questionIds[0]));
         }
-    })
+    }, [questionIds, currentQuestionId])
+
     const responses = useSelector(state => {
         if (question) {
             const q = state.games.poll.presenter.questions.find(q => q.id === question.id);
@@ -58,22 +67,14 @@ export default () => {
         }
         return 0;
     })
-    const getCurrentQuestionIndex = () => question ? questions.indexOf(question) : -1;
-    const previousQuestionId = {
+    const currentQuestionIndex = currentQuestionId ? questionIds.indexOf(currentQuestionId) : -1;
+    const previousQuestionId = currentQuestionIndex > 0 ? questionIds[currentQuestionIndex-1] : null;
+    const nextQuestionId = currentQuestionIndex != -1 && currentQuestionIndex < questionIds.length + 1 ? 
+        questionIds[currentQuestionIndex+1] : null;
 
-        if (question) {
-            const ix = 
-            if (ix > 0)
-                return state.games.poll.presenter.questions[ix - 1];
-        }
-    })
-    const nextQuestionId = useSelector(state => {
-        if (question) {
-            const ix = state.games.poll.presenter.questions.indexOf(question);
-            return state.games.poll.presenter.questions[ix + 1];
-        }
-    })
-
+    const nextQuestion = () => nextQuestionId && dispatch(setCurrentQuestionAction(nextQuestionId));
+    const previousQuestion = () => previousQuestionId && dispatch(setCurrentQuestionAction(previousQuestionId));
+    
     useEffect(() => {
         if (question) {
             dispatch(adminMessage({
@@ -98,13 +99,13 @@ export default () => {
                 </div>
             </div>
             <div className={classes.buttons}>
-                <IconButton disabled={!previousQuestion} onClick={() => setQuestion(previousQuestion)}>
+                <IconButton disabled={!previousQuestionId} onClick={() => previousQuestion()}>
                     <NavigateBefore />
                 </IconButton>
                 <IconButton>
                     <BarChart />
                 </IconButton>
-                <IconButton disabled={!nextQuestion} onClick={() => setQuestion(nextQuestion)}>
+                <IconButton disabled={!nextQuestionId} onClick={() => nextQuestion()}>
                     <NavigateNext />
                 </IconButton>
             </div>
