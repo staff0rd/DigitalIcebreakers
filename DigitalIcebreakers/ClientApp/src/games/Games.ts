@@ -38,9 +38,11 @@ interface Game {
     description: string;
     menu?: ReactNode;
     routes?: RouteLink[];
+    isNew?: boolean;
 }
 
 const games: Game[] = [{
+        isNew: true,
         title: 'Poll',
         name: PollName,
         client: PollClient,
@@ -75,6 +77,7 @@ const games: Game[] = [{
         title: "Buzzer",
         description: "Let your audience get a feel for low latency"
     }, {
+        isNew: true,
         name: "splat",
         client: SplatClient,
         presenter: SplatPresenter,
