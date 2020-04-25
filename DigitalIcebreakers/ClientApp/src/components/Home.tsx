@@ -13,6 +13,7 @@ const useStyles = makeStyles(theme => ({
     },
     image: {
         maxHeight: '320px',
+        maxWidth: '100%',
     },
     buttonContainer: {
         display: 'flex',
