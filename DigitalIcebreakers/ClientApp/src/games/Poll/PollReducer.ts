@@ -97,7 +97,9 @@ const presenterReducer = createReceiveGameMessageReducer<SelectedAnswer, PollPre
                 }],
             }];
             storage.saveToStorage(storageKey, questions);
+            const currentQuestionId = state.questions.length ? state.currentQuestionId : action.payload; // TODO: Why? This is being done because the currentQuestionSelector is not being recalculated unless save is hit
             return {
+                currentQuestionId,
                 ...state,
                 questions,
             };
