@@ -24,7 +24,7 @@
     "react-router": "^5.1.2",
     "react-router-bootstrap": "^0.25.0",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "3.4.1",
+    "react-scripts": "https://gitpkg.now.sh/staff0rd/create-react-app/packages/react-scripts?update-immer-react-scripts",
     "recharts": "^1.8.5",
     "redux": "^4.0.4",
     "reveal.js": "staff0rd/reveal.js"
