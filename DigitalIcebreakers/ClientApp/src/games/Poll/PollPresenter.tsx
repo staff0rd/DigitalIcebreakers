@@ -92,7 +92,7 @@ export default () => {
         else{
             dispatch(adminMessage(null))
         }
-    }, [question]);
+    }, [currentQuestionId]);
 
 
     const QuestionView = () => {
