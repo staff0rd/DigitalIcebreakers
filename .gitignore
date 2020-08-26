@@ -265,3 +265,4 @@ __pycache__/
 # secret json
 *.secret.json
 .DS_Store
+.sonarqube
