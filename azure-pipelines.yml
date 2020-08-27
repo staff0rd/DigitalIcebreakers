@@ -48,6 +48,12 @@ steps:
     command: pull
     arguments: osimis/yq
 
+- script: dotnet nbgv get-version -v AssemblyInformationalVersion
+  displayName: version
+
+- script: cat ./DigitalIcebreakers/DigitalIcebreakers.csproj
+  displayName: csproj
+
 - script: "cat ./DigitalIcebreakers/DigitalIcebreakers.csproj | docker run -i --entrypoint xq osimis/yq -x --arg version $(dotnet nbgv get-version -v AssemblyInformationalVersion) '. * {Project: { PropertyGroup: {Version: $version}}}' | tee ./out.csproj && mv ./out.csproj ./DigitalIcebreakers/DigitalIcebreakers.csproj"
   displayName: update csproj version
 
