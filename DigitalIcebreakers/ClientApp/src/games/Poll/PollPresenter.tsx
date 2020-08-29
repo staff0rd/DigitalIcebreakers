@@ -48,36 +48,25 @@ export default () => {
     const dispatch = useDispatch();
     const {
         currentQuestionId,
-        question
+        question,
+        questionIds,
+        responseCount,
+        nextQuestionId,
+        previousQuestionId,
     } = useSelector(currentQuestionSelector);
 
     const { 
-        questionIds,
         showResponses,
     } = useSelector(state => ({
-        questionIds: state.games.poll.presenter.questions.map(q => q.id),
         showResponses: state.games.poll.presenter.showResponses,
     }));
     
+    // TODO: move this garbage to the reducer
     useEffect(() => {
         if (questionIds.length && !questionIds.find(f => currentQuestionId)) {
             dispatch(setCurrentQuestionAction(questionIds[0]));
         }
     }, [questionIds, currentQuestionId])
-
-    const responses = useSelector(state => {
-        if (question) {
-            const q = state.games.poll.presenter.questions.find(q => q.id === question.id);
-            if (q) {
-                return q.responses.length;
-            }
-        }
-        return 0;
-    })
-    const currentQuestionIndex = currentQuestionId ? questionIds.indexOf(currentQuestionId) : -1;
-    const previousQuestionId = currentQuestionIndex > 0 ? questionIds[currentQuestionIndex-1] : null;
-    const nextQuestionId = currentQuestionIndex != -1 && currentQuestionIndex < questionIds.length + 1 ? 
-        questionIds[currentQuestionIndex+1] : null;
 
     const nextQuestion = () => nextQuestionId && dispatch(setCurrentQuestionAction(nextQuestionId));
     const previousQuestion = () => previousQuestionId && dispatch(setCurrentQuestionAction(previousQuestionId));
@@ -103,7 +92,7 @@ export default () => {
                 </h1>
                 <div className={classes.responses}>
                     <Typography variant='overline'>Responses</Typography>
-                    <Typography>{responses}</Typography>
+                    <Typography>{responseCount}</Typography>
                 </div>
             </>
         );

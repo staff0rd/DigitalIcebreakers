@@ -46,10 +46,24 @@ export const currentQuestionSelector = createSelector(
         currentQuestionId: state.games.poll.presenter.currentQuestionId,
         questions: state.games.poll.presenter.questions,
     }),
-    (state) => ({
-        currentQuestionId: state.currentQuestionId,
-        question: state.questions.find(q => q.id === (state.currentQuestionId || ""))
-    })
+    (state) => { 
+        const question = state.questions.find(q => q.id === (state.currentQuestionId || ""));
+        const currentQuestionId = state.currentQuestionId;
+        const responseCount = (question?.responses?.length) || 0;
+        const questionIds = state.questions.map(q => q.id);
+        const currentQuestionIndex = currentQuestionId ? questionIds.indexOf(currentQuestionId) : -1;
+        const previousQuestionId = currentQuestionIndex > 0 ? questionIds[currentQuestionIndex-1] : null;
+        const nextQuestionId = currentQuestionIndex != -1 && currentQuestionIndex < questionIds.length + 1 ? 
+        questionIds[currentQuestionIndex+1] : null;
+        return {
+            currentQuestionId,
+            question,
+            questionIds,
+            responseCount,
+            previousQuestionId,
+            nextQuestionId,
+        };
+    }
 );
 
 const presenterReducer = createReceiveGameMessageReducer<SelectedAnswer, PollPresenterState>(
