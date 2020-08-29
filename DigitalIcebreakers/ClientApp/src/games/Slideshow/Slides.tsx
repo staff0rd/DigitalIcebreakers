@@ -123,7 +123,7 @@ export class Slides extends Component<SlidesProps, SlidesState> {
 				</section>
 
 				<section data-background-color="#ffffff">
-					<h3>setTimeout(() => location.reload(true), 1000);</h3>
+					<h3>setTimeout(() {'=>'} location.reload(true), 1000);</h3>
 				</section>
 
 				{this.diagram("diagrams.001.png")}

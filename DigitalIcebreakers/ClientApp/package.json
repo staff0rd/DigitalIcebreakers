@@ -52,7 +52,7 @@
     "eslint-plugin-jsx-a11y": "6.2.3",
     "eslint-plugin-react": "7.16.0",
     "nerdbank-gitversioning": "^3.1.74",
-    "typescript": "3.6.4"
+    "typescript": "^3.9.7"
   },
   "scripts": {
     "start": "react-scripts start",
