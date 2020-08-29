@@ -27,7 +27,7 @@ export default () => {
         }
     }
 
-    useEffect(() => draw(), [app, state]);
+    useEffect(() => draw(), [app, state, draw]);
 
     useResizeListener(draw);
 
