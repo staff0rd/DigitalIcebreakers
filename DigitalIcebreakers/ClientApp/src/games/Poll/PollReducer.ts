@@ -122,9 +122,14 @@ const presenterReducer = createReceiveGameMessageReducer<SelectedAnswer, PollPre
         });
         builder.addCase(importQuestionsAction, (state, { payload: questions}) => {
             storage.saveToStorage(storageKey, questions);
+            let currentQuestionId: string | undefined;
+            if (questions.length) {
+                currentQuestionId = questions[0].id;
+            }
             return {
                 ...state,
                 questions,
+                currentQuestionId,
             };
         });
         builder.addCase(setCurrentQuestionAction, (state, { payload: currentQuestionId }) => ({
