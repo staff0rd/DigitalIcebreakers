@@ -101,8 +101,8 @@ export default () => {
                                     </TableCell>
                                     <TableCell>
                                         <ul className={classes.answers}>
-                                            {question.answers.map(a => (
-                                                <li>
+                                            {question.answers.map((a, ix) => (
+                                                <li key={ix.toString()}>
                                                     {a.text}
                                                 </li>
                                             ))}
