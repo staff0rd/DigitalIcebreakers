@@ -53,6 +53,9 @@ describe('PollReducer', () =>{
             let currentQuestion = currentQuestionSelector(store.getState());
             expect(currentQuestion.nextQuestionId).toBe('1a07c811-4e82-5be4-03e1-8fe8abd2198e');
             store.dispatch(setCurrentQuestionAction(currentQuestion.nextQuestionId!));
+
+            currentQuestion = currentQuestionSelector(store.getState());
+            expect(currentQuestion.question?.text).toBe('Question 2');
             expect(currentQuestion.question?.answers[0].text).toBe('Question 2 Answer');
         });
 
