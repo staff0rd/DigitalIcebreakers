@@ -42,6 +42,10 @@ steps:
   workingDirectory: ./DigitalIcebreakers/ClientApp
   displayName: update client app version
 
+- script: npm run test-ci
+  workingDirectory: ./DigitalIcebreakers/ClientApp
+  displayName: front-end tests
+
 - task: Docker@2
   displayName: Pull yq
   inputs:
@@ -50,9 +54,6 @@ steps:
 
 - script: dotnet nbgv get-version -v AssemblyInformationalVersion
   displayName: version
-
-- script: cat ./DigitalIcebreakers/DigitalIcebreakers.csproj
-  displayName: csproj
 
 - script: "cat ./DigitalIcebreakers/DigitalIcebreakers.csproj | docker run -i --entrypoint xq osimis/yq -x --arg version $(dotnet nbgv get-version -v AssemblyInformationalVersion) '. * {Project: { PropertyGroup: {Version: $version}}}' | tee ./out.csproj && mv ./out.csproj ./DigitalIcebreakers/DigitalIcebreakers.csproj"
   displayName: update csproj version
