@@ -58,7 +58,7 @@ export default () => {
         <>
             {question && (    
                 <div className={classes.container}>
-                    <ResponsiveContainer width="100%" height="80%">
+                    <ResponsiveContainer width="100%" height="80%" key={question?.id}>
                         <BarChart
                             layout='vertical'
                             data={data}
