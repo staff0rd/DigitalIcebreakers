@@ -11,6 +11,13 @@ import Delete from '@material-ui/icons/Delete'
 import array from '../../../util/array';
 import CustomInput from '../../../layout/components/CustomInput/CustomInput';
 import { makeStyles } from '@material-ui/core/styles';
+import Check from "@material-ui/icons/Check";
+import styles from "../../../layout/assets/jss/material-dashboard-react/components/tasksStyle";
+import Checkbox from '@material-ui/core/Checkbox';
+import Typography from '@material-ui/core/Typography';
+import { setCorrectAnswer } from './setCorrectAnswer';
+
+const useLayoutStyles = makeStyles(styles);
 
 const useStyles = makeStyles(theme => ({
     cell: {
@@ -27,16 +34,22 @@ const useStyles = makeStyles(theme => ({
     formControl: {
         margin: 0,
         padding: 0,
+    },
+    correctLabel: {
+        verticalAlign: 'middle',
+        display: 'inline',
     }
 }));
 
 type Props = {
     answers: Answer[];
     setAnswers: (answers: Answer[]) => void;
+    questionId: string;
 }
 
-export default ({ answers, setAnswers } : Props) => {
+export default ({ answers, setAnswers, questionId } : Props) => {
     const classes = useStyles();
+    const layoutClasses = useLayoutStyles();
     return (
         <Table aria-label="answers" size='small'>
             <TableBody>
@@ -56,6 +69,18 @@ export default ({ answers, setAnswers } : Props) => {
                         onChange={(e) => setAnswers(answers.map(a => a.id !== answer.id ? a : { ...answer, text: e.target.value }))}
                         error={answer.text.length < 1}
                     />
+                    </TableCell>
+                    <TableCell className={classes.cell}>
+                    <Checkbox
+                        checked={answer.correct}
+                        onClick={() => setAnswers(setCorrectAnswer(answers, answer))}
+                        checkedIcon={<Check className={layoutClasses.checkedIcon} />}
+                        icon={<Check className={layoutClasses.uncheckedIcon} />}
+                    />
+                        <Typography className={classes.correctLabel}>
+                            Correct
+                        </Typography>
+
                     </TableCell>
                     <TableCell className={classes.cell} >
                         <IconButton onClick={() => setAnswers(array.moveUp(answers, answers.indexOf(answer)))} disabled={ix === 0}>

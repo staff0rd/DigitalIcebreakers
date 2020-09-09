@@ -88,7 +88,8 @@ export const presenterReducer = createReceiveGameMessageReducer<SelectedAnswer, 
                 text: 'Change this text to your question',
                 answers: [{
                     id: guid(),
-                    text: 'An answer'
+                    text: 'An answer',
+                    correct: false,
                 }],
             }];
             storage.saveToStorage(storageKey, questions);

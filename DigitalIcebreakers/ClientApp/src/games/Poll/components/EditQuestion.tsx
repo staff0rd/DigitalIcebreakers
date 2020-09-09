@@ -98,8 +98,8 @@ const QuestionEditor = ({ question }: Props) => {
                             <Typography className={classes.header} variant='h5'>
                                 Answers
                             </Typography>
-                            <EditAnswers answers={answers} setAnswers={setAnswers} />
-                            <Button onClick={() => setAnswers([...answers, {id: guid(), text: 'A new answer'}])}>Add answer</Button>
+                            <EditAnswers answers={answers} setAnswers={setAnswers} questionId={question.id} />
+                            <Button onClick={() => setAnswers([...answers, {id: guid(), text: 'A new answer', correct: false}])}>Add answer</Button>
                         </Grid>
                         <Grid item xs={12}>
                             <Typography className={classes.header} variant='h5'>
