@@ -142,6 +142,7 @@ namespace DigitalIcebreakers.Hubs
                 case "splat": return new Splat(_send, _lobbys);
                 case "poll": return new Poll(_send, _lobbys);
                 case "namepicker": return new NamePicker(_send, _lobbys);
+                case "trivia": return new Trivia(_send, _lobbys);
                 default: throw new ArgumentOutOfRangeException("Unknown game");
             }
         }
