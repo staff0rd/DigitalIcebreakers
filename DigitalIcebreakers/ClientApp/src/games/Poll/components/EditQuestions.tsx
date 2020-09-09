@@ -23,7 +23,7 @@ import Paper from '@material-ui/core/Paper';
 import { useHistory, NavLink } from 'react-router-dom';
 import { guid } from '../../../util/guid';
 import { useDispatch } from 'react-redux';
-import { addQuestionAction, importQuestionsAction, deleteQuestionAction, clearResponsesAction } from '../reducers/PollReducer';
+import { addQuestionAction, importQuestionsAction, deleteQuestionAction, clearResponsesAction } from '../reducers/presenterReducer';
 import array from '../../../util/array';
 import { saveAs } from 'file-saver';
 

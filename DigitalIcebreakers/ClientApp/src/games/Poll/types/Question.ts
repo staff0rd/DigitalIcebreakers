@@ -1,5 +1,4 @@
 import { Answer } from "./Answer";
-import { GameMessage } from "../GameMessage";
 import { Response } from './Response';
 
 export type Question = {
