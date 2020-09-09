@@ -1,4 +1,5 @@
 import { ConnectionState } from './connection/types'
+import { ConnectionState } from './connection/types'
 import { UserState } from './user/types';
 import { LobbyState } from './lobby/types';
 import { ShellState } from './shell/types'
@@ -7,7 +8,7 @@ import { Player } from '../games/Buzzer/BuzzerReducer';
 import { SplatState } from '../games/Splat/SplatReducer';
 import { TeamColors, PongPresenterState } from '../games/Pong/PongReducer';
 import { IdeaWallState } from '../games/IdeaWall/IdeaWallReducer';
-import { PollState } from '../games/Poll/PollReducer';
+import { PollState } from '../games/Poll/types/PollState';
 import { NamePickerState } from '../games/NamePicker/NamePickerReducer';
 
 export interface GamesState {

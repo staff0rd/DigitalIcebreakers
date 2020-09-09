@@ -9,10 +9,10 @@ import LiveHelp from '@material-ui/icons/LiveHelp';
 import { Typography } from '@material-ui/core';
 import { adminMessage } from '../../store/lobby/actions'
 import { useDispatch } from 'react-redux';
-import { setCurrentQuestionAction, toggleResponsesAction, currentQuestionSelector } from './PollReducer';
 import Response from './components/Response';
 import Button from '../../layout/components/CustomButtons/Button';
 import { useHistory } from 'react-router-dom';
+import { currentQuestionSelector, setCurrentQuestionAction, toggleResponsesAction } from './reducers/presenterReducer';
 
 const useStyles = makeStyles(theme => ({
     root: {

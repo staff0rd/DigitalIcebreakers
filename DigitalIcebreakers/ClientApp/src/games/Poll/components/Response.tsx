@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from '../../../store/useSelector';
-import { currentQuestionSelector } from '../PollReducer';
+import { currentQuestionSelector } from '../reducers/PollReducer';
 import Card from '../../../layout/components/Card/Card';
 import CardHeader from '../../../layout/components/Card/CardHeader';
 import CardBody from '../../../layout/components/Card/CardBody';

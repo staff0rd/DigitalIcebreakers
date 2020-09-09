@@ -18,7 +18,7 @@ import EditAnswers from './EditAnswers';
 import { guid } from '../../../util/guid';
 import { grayColor } from '../../../layout/assets/jss/material-dashboard-react'
 import { useDispatch } from 'react-redux';
-import { updateQuestionAction, deleteQuestionAction } from '../PollReducer';
+import { updateQuestionAction, deleteQuestionAction } from '../reducers/PollReducer';
 
 const useTaskStyles = makeStyles(styles);
 

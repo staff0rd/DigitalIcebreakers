@@ -1,5 +1,5 @@
-import { currentQuestionSelector, importQuestionsAction, setCurrentQuestionAction } from './PollReducer';
-import { rootReducer } from '../../store/rootReducer'
+import { currentQuestionSelector, importQuestionsAction, setCurrentQuestionAction } from './presenterReducer';
+import { rootReducer } from '../../../store/rootReducer'
 import { configureStore } from '@reduxjs/toolkit';
 
 const twoQuestions = [

@@ -8,7 +8,7 @@ import { useSelector } from '../../store/useSelector';
 import Typography from '@material-ui/core/Typography';
 import Button from '../../layout/components/CustomButtons/Button';
 import { makeStyles } from '@material-ui/core/styles';
-import { selectAnswerAction, lockAnswerAction } from './PollReducer';
+import { selectAnswerAction, lockAnswerAction } from './reducers/playerReducer';
 import { infoColor } from '../../layout/assets/jss/material-dashboard-react';
 
 const useStyles = makeStyles(theme => ({
