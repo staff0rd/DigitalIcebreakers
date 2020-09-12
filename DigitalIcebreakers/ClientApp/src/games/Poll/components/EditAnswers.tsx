@@ -15,7 +15,7 @@ import Check from "@material-ui/icons/Check";
 import styles from "../../../layout/assets/jss/material-dashboard-react/components/tasksStyle";
 import Checkbox from '@material-ui/core/Checkbox';
 import Typography from '@material-ui/core/Typography';
-import { setCorrectAnswer } from './setCorrectAnswer';
+import { toggleCorrectAnswer } from './toggleCorrectAnswer';
 
 const useLayoutStyles = makeStyles(styles);
 
@@ -73,7 +73,7 @@ export default ({ answers, setAnswers, questionId } : Props) => {
                     <TableCell className={classes.cell}>
                     <Checkbox
                         checked={answer.correct}
-                        onClick={() => setAnswers(setCorrectAnswer(answers, answer))}
+                        onClick={() => setAnswers(toggleCorrectAnswer(answers, answer))}
                         checkedIcon={<Check className={layoutClasses.checkedIcon} />}
                         icon={<Check className={layoutClasses.uncheckedIcon} />}
                     />
