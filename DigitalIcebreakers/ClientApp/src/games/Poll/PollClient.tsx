@@ -39,7 +39,7 @@ export default () => {
     const lockAnswer = () => {
         dispatch(clientMessage({
             questionId,
-            selectedId: selectedAnswerId,
+            answerId: selectedAnswerId,
          }));
          dispatch(lockAnswerAction());
     }

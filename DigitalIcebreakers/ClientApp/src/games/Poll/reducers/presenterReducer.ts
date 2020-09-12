@@ -53,7 +53,7 @@ export const presenterReducer = createReceiveGameMessageReducer<SelectedAnswer, 
         currentQuestionId: undefined,
         showResponses: false,
     },
-    (state, { payload: { id: playerId, name: playerName, payload: { questionId, selectedId: answerId, }, } }) => {
+    (state, { payload: { id: playerId, name: playerName, payload: { questionId, answerId, }, } }) => {
         const question = state.questions.find(q => q.id === questionId && state.currentQuestionId === questionId);
         if (!question) {
             return state;

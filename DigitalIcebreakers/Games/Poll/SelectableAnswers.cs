@@ -1,4 +1,4 @@
-public class AvailableAnswers
+public class SelectableAnswers
 {
     public string QuestionId { get; set; }
 

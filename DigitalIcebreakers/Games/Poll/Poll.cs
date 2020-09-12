@@ -7,7 +7,7 @@ namespace DigitalIcebreakers.Games
     {
         public override string Name => "poll";
 
-        AvailableAnswers _lastAnswers;
+        SelectableAnswers _lastAnswers;
 
         public Poll(Sender sender, LobbyManager lobbyManager) : base(sender, lobbyManager) {}
 
@@ -20,7 +20,7 @@ namespace DigitalIcebreakers.Games
 
         public async override Task OnReceivePresenterMessage(JToken payload, string connectionId)
         {
-            var answers = payload.ToObject<AvailableAnswers>();
+            var answers = payload.ToObject<SelectableAnswers>();
             _lastAnswers = answers;
             await SendToPlayers(connectionId, answers);
         }
