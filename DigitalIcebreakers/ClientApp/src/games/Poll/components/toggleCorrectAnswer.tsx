@@ -15,6 +15,6 @@ export const toggleCorrectAnswer = (answers: Answer[], answer: Answer) => {
         }
         return a;
     });
-    result.forEach(console.log);
+
     return result;
 };
