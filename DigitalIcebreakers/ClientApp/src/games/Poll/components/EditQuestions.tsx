@@ -12,7 +12,7 @@ import Edit from '@material-ui/icons/Edit'
 import { useSelector } from '../../../store/useSelector';
 import ContentContainer from '../../../components/ContentContainer';
 import { makeStyles } from '@material-ui/core/styles';
-
+import Check from "@material-ui/icons/Check";
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -32,10 +32,20 @@ const useStyles = makeStyles(theme => ({
 
     },
     answers: {
-        paddingLeft: 15,
+        paddingLeft: 0,
+        listStyle: 'none',
     },
     file: {
         display: 'none',
+    },
+    checked: {
+        '&::before': { content: '"☑️"'}, 
+    },
+    unchecked: {
+        '&::before': {
+            content: '"☐"',
+            paddingRight: 8,
+        }, 
     },
 }));
 
@@ -102,7 +112,7 @@ export default () => {
                                     <TableCell>
                                         <ul className={classes.answers}>
                                             {question.answers.map((a, ix) => (
-                                                <li key={ix.toString()}>
+                                                <li className={a.correct ? classes.checked : classes.unchecked} key={ix.toString()}>
                                                     {a.text}
                                                 </li>
                                             ))}
