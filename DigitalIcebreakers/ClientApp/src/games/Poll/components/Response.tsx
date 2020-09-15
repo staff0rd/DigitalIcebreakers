@@ -1,18 +1,12 @@
 import React from 'react';
 import { useSelector } from '../../../store/useSelector';
 import { currentQuestionSelector } from '../reducers/presenterReducer';
-import Card from '../../../layout/components/Card/Card';
-import CardHeader from '../../../layout/components/Card/CardHeader';
-import CardBody from '../../../layout/components/Card/CardBody';
 import { makeStyles } from '@material-ui/core/styles';
-import classNames from 'classnames';
 import {
-    BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
+    BarChart, Bar, XAxis, YAxis, ResponsiveContainer
   } from 'recharts';
-import Paper from '@material-ui/core/Paper';
 import { primaryColor } from '../../../layout/assets/jss/material-dashboard-react'
 import CustomisedAxisTick from './CustomisedAccessTick';
-import { Answer } from '../types/Answer';
 
 const useStyles = makeStyles(theme => ({
     container: {
