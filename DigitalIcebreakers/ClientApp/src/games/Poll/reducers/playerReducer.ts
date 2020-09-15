@@ -16,8 +16,7 @@ export const playerReducer = createReceiveReducer<PollPlayerState, AvailableAnsw
     (state, { payload: availableAnswers }) => ({
         ...state,
         ...availableAnswers,
-        answerLocked: false,
-        selectedAnswerId: undefined,
+        answerLocked: !!availableAnswers.selectedAnswerId,
     }),
     "client",
     (builder) => {
