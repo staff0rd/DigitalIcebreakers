@@ -12,6 +12,7 @@ import {
 import Paper from '@material-ui/core/Paper';
 import { primaryColor } from '../../../layout/assets/jss/material-dashboard-react'
 import CustomisedAxisTick from './CustomisedAccessTick';
+import { Answer } from '../types/Answer';
 
 const useStyles = makeStyles(theme => ({
     container: {
@@ -44,11 +45,11 @@ export default () => {
     } = useSelector(currentQuestionSelector)
 
     const answers = question ? question.answers.map(a => {
-        const answer = a.text;
+        const answer = a.correct ? `✅ ${a.text}` : a.text;
         const responses = (question ? question.responses : []).filter(r => r.answerId === a.id).length;
         return {
             answer,
-            responses,
+            responses
         }
     }) : [];
 
