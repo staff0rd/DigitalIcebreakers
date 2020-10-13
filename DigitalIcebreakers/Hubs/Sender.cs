@@ -42,6 +42,13 @@ namespace DigitalIcebreakers
         {
             var players = lobby.Players.Where(p => !p.IsAdmin).Select(p => new User { Id = p.ExternalId, Name = p.Name }).ToList();
             await _clients.Self(player.ConnectionId).SendAsync("Reconnect", new Reconnect { PlayerId = player.Id, PlayerName = player.Name, LobbyName = lobby.Name, LobbyId = lobby.Id, IsAdmin = player.IsAdmin, Players = players, CurrentGame = lobby.CurrentGame?.Name });
+            
+            if (player.IsAdmin)
+                await _clients.Admin(lobby).SendAsync("Players", 
+                    lobby.Players
+                    .Where(p => p.IsConnected && !p.IsAdmin)
+                    .Select(p => new { id =  p.ExternalId, name = p.Name })
+                    .ToArray());
         }
 
         public async Task PlayerLeft(Lobby lobby, Player player)

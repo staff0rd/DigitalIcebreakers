@@ -4,7 +4,7 @@ import { CONNECTION_CONNECT, SET_CONNECTION_STATUS, SET_GAME_MESSAGE_CALLBACK, C
 import { updateConnectionStatus, connectionConnect } from './connection/actions'
 import ReactAI from '../app-insights-deprecated'
 import { ConnectionStatus } from '../ConnectionStatus'
-import { setLobby, clearLobby, playerJoinedLobby, playerLeftLobby, setLobbyGame } from './lobby/actions'
+import { setLobby, clearLobby, playerJoinedLobby, playerLeftLobby, setLobbyGame, setLobbyPlayers } from './lobby/actions'
 import { setUser } from './user/actions'
 import history from '../history'
 import { CLEAR_LOBBY, SET_LOBBY_GAME, START_NEW_GAME, JOIN_LOBBY, CLOSE_LOBBY, CREATE_LOBBY, GAME_MESSAGE_CLIENT, GAME_MESSAGE_ADMIN, LobbyActionTypes } from './lobby/types'
@@ -52,6 +52,9 @@ export const SignalRMiddleware = () => {
         });
         connection.on("left", (user) => {
             dispatch(playerLeftLobby(user));
+        });
+        connection.on("players", (players) => {
+            dispatch(setLobbyPlayers(players));
         });
         connection.onclose(() => {
             ReactAI.ai().trackEvent("Connection closed");
