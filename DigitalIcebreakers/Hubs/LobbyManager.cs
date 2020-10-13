@@ -76,6 +76,12 @@ namespace DigitalIcebreakers
             return GetLobbyAdmin(connectionId).ConnectionId == connectionId;
         }
 
+        public Player GetPlayerByExternalId(Guid externalId)
+        {
+            var player = _lobbys.SelectMany(p => p.Players).SingleOrDefault(p => p.ExternalId == externalId);
+            return player;
+        }
+
         public Player GetPlayerByConnectionId(string connectionId)
         {
             var player = _lobbys.SelectMany(p => p.Players).SingleOrDefault(p => p.ConnectionId == connectionId);

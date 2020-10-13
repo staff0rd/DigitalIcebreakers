@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
@@ -62,6 +63,11 @@ namespace DigitalIcebreakers.Games
         public Player GetPlayerByConnectionId(string connectionId)
         {
             return _lobbys.GetPlayerByConnectionId(connectionId);
+        }
+
+        public Player GetPlayerByExternalId(Guid externalId)
+        {
+            return _lobbys.GetPlayerByExternalId(externalId);
         }
 
         public int GetPlayerCount(string connectionId)

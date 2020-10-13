@@ -3,6 +3,9 @@ import DoggosVsKittehsClient from './DoggosVsKittehs/DoggosVsKittehsClient';
 import DoggosVsKittehsPresenter from './DoggosVsKittehs/DoggosVsKittehsPresenter';
 import { BroadcastClient } from './Broadcast/BroadcastClient';
 import { BroadcastPresenter } from './Broadcast/BroadcastPresenter';
+import NamePickerClient from './NamePicker/NamePickerClient';
+import NamePickerPresenter from './NamePicker/NamePickerPresenter';
+import NamePickerMenu from './NamePicker/NamePickerMenu';
 import YesNoMaybePresenter from './YesNoMaybe/YesNoMaybePresenter';
 import { YesNoMaybeMenu } from "./YesNoMaybe/YesNoMaybeMenu";
 import YesNoMaybeClient from './YesNoMaybe/YesNoMaybeClient';
@@ -63,6 +66,14 @@ const games: Game[] = [{
         presenter: DoggosVsKittehsPresenter,
         title: "Doggos vs Kittehs",
         description: "Audience polling - Furry friend edition",
+    },{
+        name: "namepicker",
+        isNew: true,
+        menu: NamePickerMenu,
+        client: NamePickerClient,
+        presenter: NamePickerPresenter,
+        title: "Name Picker",
+        description: "Pick a name, out of a hat! (or a swirling void)",
     }, {
         name: YesNoMaybeName,
         client: YesNoMaybeClient,
