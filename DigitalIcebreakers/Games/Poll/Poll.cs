@@ -7,7 +7,7 @@ namespace DigitalIcebreakers.Games
     {
         public override string Name => "poll";
 
-        static AvailableAnswers _lastAnswers;
+        AvailableAnswers _lastAnswers;
 
         public Poll(Sender sender, LobbyManager lobbyManager) : base(sender, lobbyManager) {}
 
