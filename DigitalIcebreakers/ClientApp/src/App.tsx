@@ -66,7 +66,7 @@ export default class App extends Component<{}, AppState> {
 
         window.onresize = () => Events.emit('onresize');
 
-        this.store.dispatch(connectionConnect());
+        this.connect();
     }
 
     private getUser() {
