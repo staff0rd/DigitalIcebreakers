@@ -41,7 +41,9 @@ namespace DigitalIcebreakers
             services.AddSingleton<List<Lobby>>();
             services.AddScoped<ClientHelper>();
             services.AddScoped<LobbyManager>();
+
             services.AddSingleton<LobbyLogger>();
+            services.AddHostedService<TimeoutLobbyService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

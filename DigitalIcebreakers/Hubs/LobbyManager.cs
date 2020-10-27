@@ -1,17 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace DigitalIcebreakers
 {
     public class LobbyManager
     {
-        private List<Lobby> _lobbys;
+        private readonly List<Lobby> _lobbys;
         static int lobbyNumber = 0;
+
+        private readonly ILogger<LobbyManager> _logger;
         
-        public LobbyManager(List<Lobby> lobbys)
+        public LobbyManager(List<Lobby> lobbys, ILogger<LobbyManager> logger)
         {
             _lobbys = lobbys;
+            _logger = logger;
         }
 
         public Lobby CreateLobby(string lobbyId, string lobbyName, Player player)
@@ -32,7 +36,7 @@ namespace DigitalIcebreakers
             return lobby;
         }
 
-        public void CloseInactive(int timeoutInSeconds)
+        public void CloseInactive(int timeoutInSeconds = 3600)
         {
             var now = DateTime.Now;
             foreach (var lobby in _lobbys.ToArray())
@@ -40,6 +44,8 @@ namespace DigitalIcebreakers
                 var timeout = DateTime.Now.Subtract(lobby.LastModified).TotalSeconds;
                 if (timeout >= timeoutInSeconds)
                 {
+                    _logger.LogWarning("Closing {lobbyName} (#{lobbyNumber}, {lobbyPlayers} players) due to inactivity, last update {lastModified}", 
+                        lobby.Name, lobby.Number, lobby.PlayerCount, lobby.LastModified);
                     _lobbys.Remove(_lobbys.SingleOrDefault(p => p.Id == lobby.Id));
                 }
             }
