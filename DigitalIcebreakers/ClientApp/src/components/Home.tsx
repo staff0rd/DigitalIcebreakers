@@ -44,6 +44,9 @@ export const Home = () => {
           >
             Present
           </Button>
+                    <Button color='primary' size='lg' onClick={() => history.push('/join-lobby')}>
+                        Join
+                    </Button>
         </div>
         <p>
           Feature requests, suggestions, bugs &amp; feedback to{" "}

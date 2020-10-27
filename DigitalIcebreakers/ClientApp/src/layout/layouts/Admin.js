@@ -22,6 +22,15 @@ const switchRoutes = (routes) => (
     {routes.map((prop, key) => (
       <Route exact path={prop.path} component={prop.component} key={key} />
     ))}
+    <Route render={({location}) => {
+        if (location.pathname.length === 5) {
+          console.log(`redirecting to /join-lobby${location.pathname} from ${location.pathname}`);
+          return <Redirect to={`/join-lobby${location.pathname}`} />
+        }
+        console.log('redirecting to / from ' + location.pathname)
+        return <Redirect to="/" />
+      }} 
+    />
     {/* <Redirect from="/admin" to="/admin/dashboard" /> */}
   </Switch>
 );

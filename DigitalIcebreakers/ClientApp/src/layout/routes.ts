@@ -1,10 +1,13 @@
 import AddCircle from "@material-ui/icons/AddCircle";
+import LiveTv from "@material-ui/icons/LiveTv";
+import GroupAdd from "@material-ui/icons/GroupAdd";
 import People from "@material-ui/icons/People";
 import SportsEsports from "@material-ui/icons/SportsEsports";
 import Cancel from "@material-ui/icons/Cancel";
 import CreateLobby from "../components/CreateLobby";
 import CloseLobby from "../components/CloseLobby";
 import JoinLobby from "../components/JoinLobby";
+import Join from "../components/Join";
 import LobbyClosed from "../components/LobbyClosed";
 import { Lobby } from "../components/Lobby";
 import { Home } from "../components/Home";
@@ -13,6 +16,7 @@ import { useSelector } from "../store/useSelector";
 import Games from "../games/Games";
 import { Game } from "../components/Game";
 import { ReactNode } from "react";
+import Blank from './Blank';
 
 export interface RouteLink {
   path: string;
@@ -44,15 +48,24 @@ const useRoutes = () => {
     !lobby.id && {
       path: "/create-lobby",
       name: "Present",
-      icon: AddCircle,
+      icon: LiveTv,
       component: CreateLobby,
     },
-    lobby.id &&
+    !lobby.id && {
+      path: "/join-lobby/:id?",
+      name: "Join",
+      icon: GroupAdd,
+      component: Join,
+    },
       lobby.isAdmin && {
         path: "/new-game",
         name: "New Activity",
         icon: AddCircle,
         component: NewGame,
+    },
+    !game && {
+      path: "/game",
+      component: Blank,
       },
     game && {
       path: "/game",

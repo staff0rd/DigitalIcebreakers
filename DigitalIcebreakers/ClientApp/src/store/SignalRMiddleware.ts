@@ -226,7 +226,8 @@ export const SignalRMiddleware = () => {
         }
         case GO_TO_DEFAULT_URL: {
           if (history.location) {
-            const isJoin = history.location.pathname.startsWith("/join/");
+                        const isJoin = history.location.pathname.startsWith('/join/') ||
+                            history.location.pathname.startsWith('/join-lobby/');
             if (!isJoin || action.ignoreJoin) {
               const currentGame = getState().lobby.currentGame;
               if (currentGame) {
