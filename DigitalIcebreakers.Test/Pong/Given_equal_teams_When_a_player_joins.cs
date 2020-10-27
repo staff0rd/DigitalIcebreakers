@@ -21,7 +21,7 @@ namespace DigitalIcebreakers.Test.Pong
             var game = new DigitalIcebreakers.Games.Pong(gameHub.Sender, gameHub.Lobbys, _leftTeam, _rightTeam);
             var lobby = ObjectMother.CreateLobby(gameHub, Guid.NewGuid(), game);
             lobby.Players.Add(ObjectMother.GetPlayer(playerId));
-            lobby.CurrentGame = game;
+            lobby.NewGame(game);
             var payload = JsonConvert.SerializeObject(new {
                 client = "join"
             });

@@ -8,7 +8,7 @@ namespace DigitalIcebreakers
 {
     public class Lobby
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
         public List<Player> Players = new List<Player>();
 
@@ -18,9 +18,15 @@ namespace DigitalIcebreakers
 
         public int PlayerCount => GetConnectedPlayers().Count();
 
-        public IGame CurrentGame { get; set; }
+        public IGame CurrentGame { get; private set; }
         
         public int Number { get; set; }
+        public DateTime LastModified { get; private set; }
+
+        public Lobby()
+        {
+            LastModified = DateTime.Now;
+        }
 
         internal Player[] GetConnectedPlayers()
         {
@@ -30,6 +36,17 @@ namespace DigitalIcebreakers
         internal Player[] GetTotalPlayers()
         {
             return Players.Where(p => !p.IsAdmin).ToArray();
+        }
+
+        public void NewGame(IGame game)
+        {
+            CurrentGame = game;
+            LastModified = DateTime.Now;
+        }
+
+        public void EndGame()
+        {
+            CurrentGame = null;
         }
     }
 }

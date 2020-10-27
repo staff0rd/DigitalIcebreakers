@@ -14,7 +14,7 @@ namespace DigitalIcebreakers
             _lobbys = lobbys;
         }
 
-        public Lobby CreateLobby(Guid lobbyId, string lobbyName, Player player)
+        public Lobby CreateLobby(string lobbyId, string lobbyName, Player player)
         {
             var lobby = new Lobby
             {
@@ -30,6 +30,19 @@ namespace DigitalIcebreakers
             _lobbys.Add(lobby);
 
             return lobby;
+        }
+
+        public void CloseInactive(int timeoutInSeconds)
+        {
+            var now = DateTime.Now;
+            foreach (var lobby in _lobbys.ToArray())
+            {
+                var timeout = DateTime.Now.Subtract(lobby.LastModified).TotalSeconds;
+                if (timeout >= timeoutInSeconds)
+                {
+                    _lobbys.Remove(_lobbys.SingleOrDefault(p => p.Id == lobby.Id));
+                }
+            }
         }
 
         internal IEnumerable<Lobby> GetByAdminId(Guid adminId)
@@ -60,7 +73,7 @@ namespace DigitalIcebreakers
             return GetLobbyByConnectionId(connectionId).Admin;
         }
 
-        public Lobby GetLobbyById(Guid lobbyId)
+        public Lobby GetLobbyById(string lobbyId)
         {
             return _lobbys.SingleOrDefault(p => p.Id == lobbyId);
         }

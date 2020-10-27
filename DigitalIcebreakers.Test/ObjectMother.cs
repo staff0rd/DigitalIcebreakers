@@ -42,8 +42,8 @@ namespace DigitalIcebreakers.Test
 
         public static Lobby CreateLobby(MockGameHub hub, Guid adminId, Game game)
         {
-            var lobby  = hub.Lobbys.CreateLobby(Guid.NewGuid(), "my lobby", GetPlayer(adminId, true));
-            lobby.CurrentGame = game;
+            var lobby  = hub.Lobbys.CreateLobby(new LobbyIdService().GetCode(), "my lobby", GetPlayer(adminId, true));
+            lobby.NewGame(game);
             return lobby;
         }
 

@@ -11,7 +11,7 @@ namespace DigitalIcebreakers
 
         public string PlayerName { get; set; }
 
-        public Guid LobbyId { get; set; }
+        public string LobbyId { get; set; }
 
         public string LobbyName { get; internal set; }
 
