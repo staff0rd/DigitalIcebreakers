@@ -19,8 +19,8 @@ namespace DigitalIcebreakers.Test
         public Given_a_player_exists_in_a_lobby_When_joining_another_lobby()
         {
             var lobbyIds = new LobbyIdService();
-            _lobbyIdNew = lobbyIds.GetCode();
-            _lobbyIdOld = lobbyIds.GetCode();
+            _lobbyIdNew = "NEW";
+            _lobbyIdOld = "OLD";
             var playerId = Guid.NewGuid();
             _lobbys = new List<Lobby> {
                 new Lobby { Id = _lobbyIdOld, Players = new List<Player> { new Player { Id = Guid.NewGuid(), IsAdmin = true }, new Player { Id = playerId } } },

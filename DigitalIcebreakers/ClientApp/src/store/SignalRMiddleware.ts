@@ -211,7 +211,7 @@ export const SignalRMiddleware = () => {
           break;
         }
         case CREATE_LOBBY: {
-          invoke("createLobby", guid(), action.name, getState().user);
+          invoke("createLobby", action.name, getState().user);
           break;
         }
         case GAME_MESSAGE_ADMIN: {

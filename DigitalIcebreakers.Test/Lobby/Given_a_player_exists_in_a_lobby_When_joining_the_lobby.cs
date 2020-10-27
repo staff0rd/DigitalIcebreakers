@@ -9,7 +9,7 @@ namespace DigitalIcebreakers.Test
 {
         public class Given_a_player_exists_in_a_lobby_When_joining_the_lobby
     {
-        string _lobbyIdOld = new LobbyIdService().GetCode();
+        string _lobbyIdOld = "OLD";
 
         List<Lobby> _lobbys;
 

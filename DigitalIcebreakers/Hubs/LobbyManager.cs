@@ -8,21 +8,23 @@ namespace DigitalIcebreakers
     public class LobbyManager
     {
         private readonly List<Lobby> _lobbys;
+        private readonly LobbyIdService _lobbyIds;
         static int lobbyNumber = 0;
 
         private readonly ILogger<LobbyManager> _logger;
         
-        public LobbyManager(List<Lobby> lobbys, ILogger<LobbyManager> logger)
+        public LobbyManager(List<Lobby> lobbys, ILogger<LobbyManager> logger, LobbyIdService lobbyIds)
         {
             _lobbys = lobbys;
             _logger = logger;
+            _lobbyIds = lobbyIds;
         }
 
-        public Lobby CreateLobby(string lobbyId, string lobbyName, Player player)
+        public Lobby CreateLobby(string lobbyName, Player player)
         {
             var lobby = new Lobby
             {
-                Id = lobbyId,
+                Id = _lobbyIds.GetCode(_lobbys),
                 Number = ++lobbyNumber,
                 Players = new List<Player>
                 {

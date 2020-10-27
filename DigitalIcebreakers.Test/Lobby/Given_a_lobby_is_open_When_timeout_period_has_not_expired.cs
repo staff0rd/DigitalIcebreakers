@@ -17,7 +17,7 @@ namespace DigitalIcebreakers.Test
         [TestInitialize]
         public void Setup()
         {
-            lobbys = new LobbyManager(new List<Lobby> { new Lobby { Id = "lobby" } });
+            lobbys = ObjectMother.GetLobbyManager(new List<Lobby> { new Lobby { Id = "lobby" } });
             lobbys.CloseInactive(1);
         }
 

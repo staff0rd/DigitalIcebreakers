@@ -21,7 +21,8 @@ namespace DigitalIcebreakers.Hubs
         protected readonly Sender _send;
         protected virtual string ConnectionId => Context.ConnectionId;
 
-        public GameHub(LobbyLogger logger, LobbyManager lobbyManager, IOptions<AppSettings> settings, ClientHelper clients)
+        public GameHub(LobbyLogger logger, LobbyManager lobbyManager, IOptions<AppSettings> settings,
+            ClientHelper clients)
         {
             _lobbys = lobbyManager;
             _logger = logger;
@@ -35,17 +36,17 @@ namespace DigitalIcebreakers.Hubs
             return _lobbys.GetLobbyByConnectionId(ConnectionId).Players.Count(p => !p.IsAdmin && p.IsConnected);
         }
 
-        public async Task CreateLobby(string id, string name, User user)
+        public async Task CreateLobby(string name, User user)
         {
             _lobbys.GetByAdminId(user.Id)
                 .ToList()
                 .ForEach(async l => await CloseLobby(l));
                 
-            var lobby = _lobbys.CreateLobby(id, name, new Player { ConnectionId = Context.ConnectionId, Id = user.Id, IsAdmin = true, IsConnected = true, Name = user.Name });
+            var lobby = _lobbys.CreateLobby(name, new Player { ConnectionId = Context.ConnectionId, Id = user.Id, IsAdmin = true, IsConnected = true, Name = user.Name });
 
             _logger.Log("Created", lobby);
 
-            await Connect(user, id);
+            await Connect(user, lobby.Id);
         }
 
         public async Task CloseLobby()

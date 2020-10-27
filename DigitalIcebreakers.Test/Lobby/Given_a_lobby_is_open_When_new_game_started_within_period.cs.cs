@@ -1,10 +1,6 @@
-using DigitalIcebreakers;
-using DigitalIcebreakers.Test;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace DigitalIcebreakers.Test
@@ -18,7 +14,7 @@ namespace DigitalIcebreakers.Test
         public async Task Setup()
         {
             var lobby = new Lobby { Id = "lobby" };
-            lobbys = new LobbyManager(new List<Lobby> { lobby });
+            lobbys = ObjectMother.GetLobbyManager(new List<Lobby> { lobby });
             await Task.Delay(1000);
             lobby.NewGame(null);
             lobbys.CloseInactive(1);

@@ -20,10 +20,10 @@ namespace DigitalIcebreakers.Test
         public Given_no_lobby_exists_for_the_user_When_creating_a_new_lobby()
         {
             var playerId = Guid.NewGuid();
-            _lobbys = new List<Lobby> { new Lobby { Id = _lobbyIds.GetCode(), Players = new List<Player> { new Player { Id = Guid.NewGuid(), IsAdmin = true } } } };
+            _lobbys = new List<Lobby> { new Lobby { Id = "OLD", Players = new List<Player> { new Player { Id = Guid.NewGuid(), IsAdmin = true } } } };
 
             var gameHub = ObjectMother.GetMockGameHub(playerId, _lobbys);
-            gameHub.CreateLobby(_lobbyIds.GetCode(), null, new User(playerId, "")).Wait();
+            gameHub.CreateLobby(null, new User(playerId, "")).Wait();
         }
 
         [Fact]
