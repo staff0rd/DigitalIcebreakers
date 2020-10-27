@@ -83,7 +83,7 @@ namespace DigitalIcebreakers
 
         public Lobby GetLobbyById(string lobbyId)
         {
-            return _lobbys.SingleOrDefault(p => p.Id == lobbyId);
+            return _lobbys.SingleOrDefault(p => p.Id.ToLower() == lobbyId.ToLower());
         }
 
         public Lobby GetLobbyByConnectionId(string connectionId)

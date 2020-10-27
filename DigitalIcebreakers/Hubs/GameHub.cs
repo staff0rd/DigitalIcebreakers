@@ -75,7 +75,7 @@ namespace DigitalIcebreakers.Hubs
             var player = GetOrCreatePlayer(user, ConnectionId);
             var lobby = _lobbys.GetLobbyByConnectionId(ConnectionId);
 
-            if (lobbyId != null && lobby != null && lobbyId != lobby.Id)
+            if (lobbyId != null && _lobbys.GetLobbyById(lobbyId) != lobby)
                 await LeaveLobby(player, lobby);
             else
             {
@@ -162,12 +162,13 @@ namespace DigitalIcebreakers.Hubs
         {
             var player = GetOrCreatePlayer(user, ConnectionId);
             var existingLobby = _lobbys.GetLobbyByConnectionId(ConnectionId);
-            if (existingLobby != null && existingLobby.Id != lobbyId)
+            var lobby = _lobbys.GetLobbyById(lobbyId);
+
+            if (existingLobby != null && existingLobby != lobby)
             {
                 await LeaveLobby(player, existingLobby);
             }
            
-            var lobby = _lobbys.GetLobbyById(lobbyId);
             if (lobby == null)            
             {
                 await _send.CloseLobby(ConnectionId);
