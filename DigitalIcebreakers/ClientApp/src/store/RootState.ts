@@ -1,5 +1,4 @@
 import { ConnectionState } from './connection/types'
-import { ConnectionState } from './connection/types'
 import { UserState } from './user/types';
 import { LobbyState } from './lobby/types';
 import { ShellState } from './shell/types'

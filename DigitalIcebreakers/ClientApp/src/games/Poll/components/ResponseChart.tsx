@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export default () => {
+const ResponseChart = () => {
     const classes = useStyles();
     const {
         question
@@ -78,3 +78,5 @@ export default () => {
         </>
     )
 }
+
+export default ResponseChart;
