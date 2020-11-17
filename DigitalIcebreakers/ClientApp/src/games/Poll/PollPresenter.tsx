@@ -96,18 +96,17 @@ const PollPresenter = () => {
     const QuestionOrScoreBoard = () => {
         if (showScoreBoard) {
             return <ScoreBoard />
-        } else if (question) {
-            return <QuestionDisplay />
-        } else {
-            return <NoQuestions />;
-        }
+        } 
+        return (
+            <div className={classes.root}>
+                { question ? <QuestionDisplay /> : <NoQuestions /> }
+            </div>
+        )
     }
 
     return (
         <>
-            <div className={classes.root}>
-                <QuestionOrScoreBoard />
-            </div>
+            <QuestionOrScoreBoard />  
             <PollButtons
                 gotoNextQuestion={gotoNextQuestion}
                 gotoPreviousQuestion={gotoPreviousQuestion}

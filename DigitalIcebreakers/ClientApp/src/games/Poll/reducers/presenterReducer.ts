@@ -21,6 +21,56 @@ export const deleteQuestionAction = createGameActionWithPayload<Question>(Name, 
 export const importQuestionsAction = createGameActionWithPayload<Question[]>(Name, "presenter", "import-questions");
 export const setCurrentQuestionAction = createGameActionWithPayload<string>(Name, "presenter", "set-current-question");
 
+type UserScore = {
+    name: string;
+    score: number;
+}
+
+const sort = (userScores: UserScore[]) => {
+    return userScores.sort((n1,n2) => {
+        if (n1.score > n2.score) {
+            return 1;
+        }
+    
+        if (n1.score < n2.score) {
+            return -1;
+        }
+    
+        return 0;
+    });
+
+}
+
+
+export const scoreBoardSelector = createSelector(
+    (state: RootState) => ({
+        questions: state.games.poll.presenter.questions,
+        users: state.lobby.players,
+    }),
+    (state) => {
+        const correctResponsesAsIds = state.questions.map(q => {
+            const correctAnswer = q.answers.find(a => a.correct);
+            const correctResponses = q.responses.filter(r => r.answerId == correctAnswer?.id);
+            const correctUserIds = correctResponses.map(r => r.playerId);
+            return correctUserIds;
+        });
+
+        /// https://schneidenbach.gitbooks.io/typescript-cookbook/content/functional-programming/flattening-array-of-arrays.html
+        const flattened = ([] as string[]).concat(...correctResponsesAsIds);
+
+        const scores = state.users.map(u => ({
+            name: u.name,
+            score: flattened.filter(id => id === u.id).length,
+        }));
+
+        const sorted = sort(scores);
+        
+        return {
+            scores: sorted,
+        };
+    }
+)
+
 export const currentQuestionSelector = createSelector(
     (state: RootState) => ({
         currentQuestionId: state.games.poll.presenter.currentQuestionId,

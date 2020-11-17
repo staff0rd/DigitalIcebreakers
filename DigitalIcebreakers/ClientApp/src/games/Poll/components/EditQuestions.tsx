@@ -147,7 +147,7 @@ export default () => {
                             ))}
                             </TableBody>
                         </Table>
-                        </TableContainer>
+                    </TableContainer>
                 </CardBody>
                 <CardFooter>
                     <Button color='primary' onClick={() => addQuestion()}>Add question</Button>
