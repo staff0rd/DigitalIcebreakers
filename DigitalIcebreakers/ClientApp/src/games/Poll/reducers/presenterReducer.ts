@@ -180,10 +180,17 @@ export const presenterReducer = createReceiveGameMessageReducer<SelectedAnswer, 
                 currentQuestionId,
             };
         });
-        builder.addCase(setCurrentQuestionAction, (state, { payload: currentQuestionId }) => ({
-            ...state,
-            currentQuestionId,
-        }));
+        builder.addCase(setCurrentQuestionAction, (state, { payload: currentQuestionId }) => {
+            const newQuestion = state.questions.find(q => q.id === currentQuestionId);
+            let showResponses = state.showResponses;
+            if (newQuestion && newQuestion.answers.filter(a => a.correct).length)
+                showResponses = false;
+            return {
+                ...state,
+                showResponses,
+                currentQuestionId,
+            }
+        });
         builder.addCase(toggleShowResponsesAction, (state) => ({
             ...state,
             showResponses: !state.showResponses
