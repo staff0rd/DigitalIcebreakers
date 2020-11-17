@@ -4,10 +4,12 @@ import IconButton from '@material-ui/core/IconButton';
 import NavigateBefore from '@material-ui/icons/NavigateBefore';
 import NavigateNext from '@material-ui/icons/NavigateNext';
 import ScoreIcon from '@material-ui/icons/Score';
+import CloseIcon from '@material-ui/icons/Close';
 import BarChart from '@material-ui/icons/BarChart';
 import LiveHelp from '@material-ui/icons/LiveHelp';
-import { toggleResponsesAction } from '../reducers/presenterReducer';
+import { toggleShowResponsesAction, toggleShowScoreBoardAction } from '../reducers/presenterReducer';
 import { makeStyles } from "@material-ui/core/styles";
+import { useSelector } from '../../../store/useSelector';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -23,28 +25,36 @@ type Props = {
     gotoPreviousQuestion: Function;
     nextQuestionId: string | null;
     previousQuestionId: string | null;
-    isShowingResponseChart: boolean;
 }
 
 const PollButtons = (props: Props) => {
     const dispatch = useDispatch();
+    const {
+        showResponses,
+        showScoreBoard,
+     } = useSelector(state => ({
+         showResponses: state.games.poll.presenter.showResponses,
+         showScoreBoard: state.games.poll.presenter.showScoreBoard
+     }));
     const classes = useStyles();
     const {
         gotoNextQuestion,
         gotoPreviousQuestion,
         nextQuestionId,
         previousQuestionId,
-        isShowingResponseChart,
     } = props;
     return (
         <div className={classes.root}>
-            <IconButton disabled={!previousQuestionId} onClick={() => gotoPreviousQuestion()}>
+            <IconButton disabled={!previousQuestionId || showScoreBoard} onClick={() => gotoPreviousQuestion()}>
                 <NavigateBefore />
             </IconButton>
-            <IconButton onClick={() => dispatch(toggleResponsesAction())}>
-                { isShowingResponseChart ? <LiveHelp /> : <BarChart /> }
+            <IconButton disabled={showScoreBoard} onClick={() => dispatch(toggleShowResponsesAction())}>
+                { showResponses ? <LiveHelp /> : <BarChart /> }
             </IconButton>
-            <IconButton disabled={!nextQuestionId} onClick={() => gotoNextQuestion()}>
+            <IconButton onClick={() => dispatch(toggleShowScoreBoardAction())}>
+                { showScoreBoard ? <CloseIcon /> : <ScoreIcon /> }
+            </IconButton>
+            <IconButton disabled={!nextQuestionId || showScoreBoard} onClick={() => gotoNextQuestion()}>
                 <NavigateNext />
             </IconButton>
         </div>

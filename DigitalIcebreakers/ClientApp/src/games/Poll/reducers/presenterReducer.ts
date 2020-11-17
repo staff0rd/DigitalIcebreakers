@@ -12,7 +12,8 @@ export const storage = new StorageManager(window.localStorage);
 export const storageKey = "poll:questions";
 
 export const exportQuestionsAction = createGameAction(Name, "presenter", "export-questions");
-export const toggleResponsesAction = createGameAction(Name, "presenter", "toggle-responses");
+export const toggleShowResponsesAction = createGameAction(Name, "presenter", "toggle-show-responses");
+export const toggleShowScoreBoardAction = createGameAction(Name, "presenter", "toggle-show-scoreboard");
 export const clearResponsesAction = createGameAction(Name, "presenter", "clear-responses");
 export const addQuestionAction = createGameActionWithPayload<string>(Name, "presenter", "add-question");
 export const updateQuestionAction = createGameActionWithPayload<Question>(Name, "presenter", "update-question");
@@ -52,6 +53,7 @@ export const presenterReducer = createReceiveGameMessageReducer<SelectedAnswer, 
         questions: storage.getFromStorage(storageKey) || [],
         currentQuestionId: undefined,
         showResponses: false,
+        showScoreBoard: false,
     },
     (state, { payload: { id: playerId, name: playerName, payload: { questionId, answerId, }, } }) => {
         const question = state.questions.find(q => q.id === questionId && state.currentQuestionId === questionId);
@@ -132,9 +134,13 @@ export const presenterReducer = createReceiveGameMessageReducer<SelectedAnswer, 
             ...state,
             currentQuestionId,
         }));
-        builder.addCase(toggleResponsesAction, (state) => ({
+        builder.addCase(toggleShowResponsesAction, (state) => ({
             ...state,
             showResponses: !state.showResponses
+        }));
+        builder.addCase(toggleShowScoreBoardAction, (state) => ({
+            ...state,
+            showScoreBoard: !state.showScoreBoard
         }));
         builder.addCase(clearResponsesAction, (state) => ({
             ...state,
