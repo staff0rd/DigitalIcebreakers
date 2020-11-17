@@ -25,7 +25,7 @@ import { StartStopContinueClient } from './StartStopContinue/StartStopContinueCl
 // import { SlideshowPresenter } from './Slideshow/SlideshowPresenter';
 import ReactionClient from './Reaction/ReactionClient';
 import ReactionPresenter from './Reaction/ReactionPresenter';
-import { Name as PollName } from './Poll/PollReducer';
+import { Name as PollName } from './Poll';
 import PollPresenter from './Poll/PollPresenter';
 import PollClient from './Poll/PollClient';
 import { RouteLink } from '../layout/routes';

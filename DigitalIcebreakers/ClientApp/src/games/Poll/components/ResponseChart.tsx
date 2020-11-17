@@ -1,15 +1,10 @@
 import React from 'react';
 import { useSelector } from '../../../store/useSelector';
-import { currentQuestionSelector } from '../PollReducer';
-import Card from '../../../layout/components/Card/Card';
-import CardHeader from '../../../layout/components/Card/CardHeader';
-import CardBody from '../../../layout/components/Card/CardBody';
+import { currentQuestionSelector } from '../reducers/presenterReducer';
 import { makeStyles } from '@material-ui/core/styles';
-import classNames from 'classnames';
 import {
-    BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
+    BarChart, Bar, XAxis, YAxis, ResponsiveContainer
   } from 'recharts';
-import Paper from '@material-ui/core/Paper';
 import { primaryColor } from '../../../layout/assets/jss/material-dashboard-react'
 import CustomisedAxisTick from './CustomisedAccessTick';
 
@@ -37,18 +32,18 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export default () => {
+const ResponseChart = () => {
     const classes = useStyles();
     const {
         question
     } = useSelector(currentQuestionSelector)
 
     const answers = question ? question.answers.map(a => {
-        const answer = a.text;
+        const answer = a.correct ? `✅ ${a.text}` : a.text;
         const responses = (question ? question.responses : []).filter(r => r.answerId === a.id).length;
         return {
             answer,
-            responses,
+            responses
         }
     }) : [];
 
@@ -83,3 +78,5 @@ export default () => {
         </>
     )
 }
+
+export default ResponseChart;
