@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
   
 export default () => {
     const dispatch = useDispatch();
-    const { questionId, answers, selectedAnswerId, answerLocked } = useSelector(state => state.games.poll.player);
+    const { questionId, answers, selectedAnswerId, answerLocked, canAnswer } = useSelector(state => state.games.poll.player);
     const classes = useStyles();
     const lockAnswer = () => {
         dispatch(clientMessage({
@@ -45,11 +45,12 @@ export default () => {
     }
     return (
         <ContentContainer>
+            { canAnswer ? (
             <List>    
                 { answers.map(answer => (
                     <ListItem
                         button
-                        disabled = {answerLocked}
+                        disabled = {answerLocked || !canAnswer}
                         className={classes.item}
                         onClick={() => dispatch(selectAnswerAction(answer.id))}
                         selected={selectedAnswerId === answer.id}
@@ -69,6 +70,7 @@ export default () => {
                     Lock In &amp; Send
                 </Button>
             </List>
+            ) : <h2>Wait for next question...</h2> }
         </ContentContainer>
     )
 }

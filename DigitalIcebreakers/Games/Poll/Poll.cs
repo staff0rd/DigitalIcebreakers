@@ -12,6 +12,8 @@ namespace DigitalIcebreakers.Games
 
         SelectableAnswers _lastAnswers;
 
+        bool CanAnswer = true;
+
         Dictionary<Player, List<SelectedAnswer>> _playerAnswers = new Dictionary<Player, List<SelectedAnswer>>();
 
         public Poll(Sender sender, LobbyManager lobbyManager) : base(sender, lobbyManager) {}
@@ -54,12 +56,23 @@ namespace DigitalIcebreakers.Games
         }
 
         public async override Task OnReceivePresenterMessage(JToken payload, string connectionId)
-        {
-            var answers = payload.ToObject<SelectableAnswers>();
-            if (answers != null)
-            {
-                _lastAnswers = answers;
-                await SendToEachPlayer(connectionId, GetCurrentAnswersPayloadForPlayer);
+        {             
+            if (payload.HasValues) {
+                var canAnswer = payload.Value<bool?>("canAnswer");
+                if (canAnswer.HasValue)
+                {
+                    CanAnswer = canAnswer.Value;
+                    await SendToPlayers(connectionId, new CanAnswerPayload { CanAnswer = CanAnswer });
+                }
+                else
+                {
+                    var answers = payload.ToObject<SelectableAnswers>();
+                    if (answers != null)
+                    {
+                        _lastAnswers = answers;
+                        await SendToEachPlayer(connectionId, GetCurrentAnswersPayloadForPlayer);
+                    }
+                }
             }
         }
 
@@ -72,6 +85,7 @@ namespace DigitalIcebreakers.Games
                 if (player != null)
                 {
                     await SendToPlayer(connectionId, GetCurrentAnswersPayloadForPlayer(player));
+                    await SendToPlayer(connectionId, new CanAnswerPayload { CanAnswer = CanAnswer });
                 }
                 else
                 {

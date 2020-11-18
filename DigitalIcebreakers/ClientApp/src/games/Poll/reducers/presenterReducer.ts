@@ -28,11 +28,11 @@ type UserScore = {
 
 const sort = (userScores: UserScore[]) => {
     return userScores.sort((n1,n2) => {
-        if (n1.score > n2.score) {
+        if (n1.score < n2.score) {
             return 1;
         }
     
-        if (n1.score < n2.score) {
+        if (n1.score > n2.score) {
             return -1;
         }
     
@@ -80,6 +80,7 @@ export const currentQuestionSelector = createSelector(
         const question = state.questions.find(q => q.id === (state.currentQuestionId || ""));
         const currentQuestionId = state.currentQuestionId;
         const responseCount = (question?.responses?.length) || 0;
+        const isTriviaMode = !!state.questions.filter(q => q.answers.find(a => a.correct)).length;
         const questionIds = state.questions.map(q => q.id);
         const currentQuestionIndex = currentQuestionId ? questionIds.indexOf(currentQuestionId) : -1;
         const previousQuestionId = currentQuestionIndex > 0 ? questionIds[currentQuestionIndex-1] : null;
@@ -92,6 +93,7 @@ export const currentQuestionSelector = createSelector(
             responseCount,
             previousQuestionId,
             nextQuestionId,
+            isTriviaMode,
         };
     }
 );

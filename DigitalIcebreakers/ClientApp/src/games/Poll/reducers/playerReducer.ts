@@ -6,18 +6,31 @@ import { Name } from '..';
 export const selectAnswerAction = createGameActionWithPayload<string>(Name, "client", "select-answer");
 export const lockAnswerAction = createGameAction(Name, "client", "lock-answer");
 
-export const playerReducer = createReceiveReducer<PollPlayerState, AvailableAnswers>(
+interface CanAnswer {
+    canAnswer: boolean;
+}
+
+type Payload = AvailableAnswers & CanAnswer;
+
+export const playerReducer = createReceiveReducer<PollPlayerState, Payload>(
     Name,
     {
         answers: [],
         questionId: '',
         answerLocked: false,
+        canAnswer: true,
     },
-    (state, { payload: availableAnswers }) => ({
-        ...state,
-        ...availableAnswers,
-        answerLocked: !!availableAnswers.selectedAnswerId,
-    }),
+    (state, { payload: availableAnswers }) => {
+        console.log('payload:', availableAnswers)
+        if (availableAnswers.canAnswer !== undefined) {
+            return { ...state, canAnswer: availableAnswers.canAnswer };
+        }  
+        return {
+            ...state,
+            ...availableAnswers,
+            answerLocked: !!availableAnswers.selectedAnswerId,
+        }
+},
     "client",
     (builder) => {
         builder.addCase(selectAnswerAction, (state, { payload: selectedAnswerId }) => ({

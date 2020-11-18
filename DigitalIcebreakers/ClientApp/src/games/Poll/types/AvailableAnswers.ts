@@ -1,6 +1,6 @@
 import { Answer } from "./Answer";
 
-export type AvailableAnswers = {
+export interface AvailableAnswers {
     questionId: string;
     answers: Answer[];
     selectedAnswerId?: string;

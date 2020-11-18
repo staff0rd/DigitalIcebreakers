@@ -6,3 +6,8 @@ public class SelectableAnswers
 
     public string SelectedAnswerId { get; set; }
 }
+
+public class CanAnswerPayload
+{
+    public bool CanAnswer { get; set; }
+}

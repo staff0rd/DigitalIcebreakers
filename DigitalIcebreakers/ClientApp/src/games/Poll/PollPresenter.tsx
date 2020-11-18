@@ -37,7 +37,9 @@ const PollPresenter = () => {
         responseCount,
         nextQuestionId,
         previousQuestionId,
+        isTriviaMode,
     } = useSelector(currentQuestionSelector);
+
     const {
         showResponses,
         showScoreBoard,
@@ -45,6 +47,8 @@ const PollPresenter = () => {
          showResponses: state.games.poll.presenter.showResponses,
          showScoreBoard: state.games.poll.presenter.showScoreBoard
      }));
+
+     const canAnswer = (!showResponses && !showScoreBoard) || !isTriviaMode;
     
     // TODO: move this garbage to the reducer
     useEffect(() => {
@@ -67,6 +71,10 @@ const PollPresenter = () => {
             dispatch(adminMessage(null))
         }
     }, [currentQuestionId]);
+
+    useEffect(() => {
+        dispatch(adminMessage({ canAnswer }));
+    }, [canAnswer]);
 
     const NoQuestions = () => {
         return (
