@@ -102,7 +102,7 @@ const PollPresenter = () => {
     }
 
     const QuestionOrScoreBoard = () => {
-        if (showScoreBoard) {
+        if (isTriviaMode && showScoreBoard) {
             return <ScoreBoard />
         } 
         return (
@@ -120,6 +120,7 @@ const PollPresenter = () => {
                 gotoPreviousQuestion={gotoPreviousQuestion}
                 previousQuestionId={previousQuestionId}
                 nextQuestionId={nextQuestionId}
+                isTriviaMode={isTriviaMode}
             />
         </>
     )

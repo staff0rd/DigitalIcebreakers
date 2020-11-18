@@ -25,6 +25,7 @@ type Props = {
     gotoPreviousQuestion: Function;
     nextQuestionId: string | null;
     previousQuestionId: string | null;
+    isTriviaMode: boolean;
 }
 
 const PollButtons = (props: Props) => {
@@ -42,6 +43,7 @@ const PollButtons = (props: Props) => {
         gotoPreviousQuestion,
         nextQuestionId,
         previousQuestionId,
+        isTriviaMode,
     } = props;
     return (
         <div className={classes.root}>
@@ -51,9 +53,11 @@ const PollButtons = (props: Props) => {
             <IconButton disabled={showScoreBoard} onClick={() => dispatch(toggleShowResponsesAction())}>
                 { showResponses ? <LiveHelp /> : <BarChart /> }
             </IconButton>
-            <IconButton onClick={() => dispatch(toggleShowScoreBoardAction())}>
-                { showScoreBoard ? <CloseIcon /> : <ScoreIcon /> }
-            </IconButton>
+            { isTriviaMode && 
+                <IconButton onClick={() => dispatch(toggleShowScoreBoardAction())}>
+                    { showScoreBoard ? <CloseIcon /> : <ScoreIcon /> }
+                </IconButton>
+            }
             <IconButton disabled={!nextQuestionId || showScoreBoard} onClick={() => gotoNextQuestion()}>
                 <NavigateNext />
             </IconButton>
