@@ -67,7 +67,7 @@ namespace DigitalIcebreakers
 
         public Lobby GetLobbyByConnectionId(string connectionId)
         {
-            var player = GetPlayerByConnectionId(connectionId);
+            var player = GetPlayerByConnectionId(connectionId, true);
             return _lobbys.SingleOrDefault(p => p.Players.Contains(player));
         }
 
@@ -82,15 +82,15 @@ namespace DigitalIcebreakers
             return player;
         }
 
-        public Player GetPlayerByConnectionId(string connectionId)
+        public Player GetPlayerByConnectionId(string connectionId, bool includeAdmin = false)
         {
-            var player = _lobbys.SelectMany(p => p.Players).SingleOrDefault(p => p.ConnectionId == connectionId);
+            var player = _lobbys.SelectMany(p => p.Players).SingleOrDefault(p => p.ConnectionId == connectionId && (includeAdmin || !p.IsAdmin));
             return player;
         }
 
         public void GetPlayerAndLobby(string connectionId, out Player player, out Lobby lobby)
         {
-            player = GetPlayerByConnectionId(connectionId);
+            player = GetPlayerByConnectionId(connectionId, true);
             lobby = GetLobbyByConnectionId(connectionId);
         }
     }

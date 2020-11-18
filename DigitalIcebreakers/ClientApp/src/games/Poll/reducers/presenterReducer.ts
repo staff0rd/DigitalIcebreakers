@@ -97,7 +97,7 @@ export const currentQuestionSelector = createSelector(
 );
 
 
-export const presenterReducer = createReceiveGameMessageReducer<SelectedAnswer, PollPresenterState>(
+export const presenterReducer = createReceiveGameMessageReducer<SelectedAnswer[], PollPresenterState>(
     Name,
     {
         questions: storage.getFromStorage(storageKey) || [],
@@ -105,18 +105,15 @@ export const presenterReducer = createReceiveGameMessageReducer<SelectedAnswer, 
         showResponses: false,
         showScoreBoard: false,
     },
-    (state, { payload: { id: playerId, name: playerName, payload: { questionId, answerId, }, } }) => {
-        const question = state.questions.find(q => q.id === questionId && state.currentQuestionId === questionId);
-        if (!question) {
-            return state;
-        }
+    (state, { payload: { id: playerId, name: playerName, payload: answers, } }) => {
         const questions: Question[] = state.questions.map(q => {
-            if (q.id === question.id) {
+            const answer = answers.find(a => a.questionId === q.id);
+            if (answer) {
                 return {
                     ...q,
                     responses: [
                         ...q.responses.filter(r => r.playerId !== playerId),
-                        { playerName, playerId, answerId },
+                        { playerName, playerId, answerId: answer.answerId },
                     ]
                 };
             }

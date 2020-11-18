@@ -21,7 +21,7 @@ namespace DigitalIcebreakers.Games
             var player = GetPlayerByConnectionId(connectionId);
             var selectedAnswer = CacheAnswer(player, payload.ToObject<SelectedAnswer>());
 
-            await SendToPresenter(connectionId, selectedAnswer, player);
+            await SendToPresenter(connectionId, new [] { selectedAnswer }, player);
         }
 
         private SelectedAnswer CacheAnswer(Player player, SelectedAnswer selectedAnswer)
@@ -59,21 +59,33 @@ namespace DigitalIcebreakers.Games
             if (answers != null)
             {
                 _lastAnswers = answers;
-                await SendToEachPlayer(connectionId, GetAnswersPayload);
+                await SendToEachPlayer(connectionId, GetCurrentAnswersPayloadForPlayer);
             }
         }
 
         public async override Task OnReceiveSystemMessage(JToken payload, string connectionId)
         {
-            string system = payload.ToString();
-            var player = GetPlayerByConnectionId(connectionId);
-            switch (system)
+            string action = payload.ToString();
+            if (action == "join")
             {
-                case "join": await SendToPlayer(connectionId, GetAnswersPayload(player)); break;
+                var player = GetPlayerByConnectionId(connectionId) ;
+                if (player != null)
+                {
+                    await SendToPlayer(connectionId, GetCurrentAnswersPayloadForPlayer(player));
+                }
+                else
+                {
+                    var admin = GetAdminByConnectionId(connectionId);
+                    if (admin != null)
+                    {
+                        var cached = _playerAnswers.Select(a => SendToPresenter(connectionId, a.Value.ToArray(), a.Key));
+                        await Task.WhenAll(cached.ToArray());
+                    }
+                }
             }
         }
 
-        private SelectableAnswers GetAnswersPayload(Player player)
+        private SelectableAnswers GetCurrentAnswersPayloadForPlayer(Player player)
         {
             return new SelectableAnswers
             {

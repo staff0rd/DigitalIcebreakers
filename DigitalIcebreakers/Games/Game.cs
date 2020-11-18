@@ -75,6 +75,16 @@ namespace DigitalIcebreakers.Games
             return _lobbys.GetPlayerByConnectionId(connectionId);
         }
 
+        public Player GetAdminByConnectionId(string connectionId)
+        {
+            var admin = _lobbys.GetLobbyAdmin(connectionId);
+            if (admin.ConnectionId == connectionId) 
+            {
+                return admin;
+            }
+            return null;
+        }
+
         public Player GetPlayerByExternalId(Guid externalId)
         {
             return _lobbys.GetPlayerByExternalId(externalId);

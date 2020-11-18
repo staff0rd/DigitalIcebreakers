@@ -39,6 +39,8 @@ namespace DigitalIcebreakers.Games
         public async override Task OnReceiveSystemMessage(JToken payload, string connectionId)
         {
             var player = GetPlayerByConnectionId(connectionId);
+            if (player == null)
+                return;
             var externalId = player.ExternalId;
             string system = payload.ToString();
             switch (system)
