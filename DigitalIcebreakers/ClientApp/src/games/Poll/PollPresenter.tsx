@@ -75,6 +75,7 @@ const PollPresenter = () => {
 
     useEffect(() => {
         dispatch(adminMessage({ canAnswer }));
+        return () => { dispatch(adminMessage({ canAnswer: false })); };
     }, [canAnswer]);
 
     const NoQuestions = () => {
