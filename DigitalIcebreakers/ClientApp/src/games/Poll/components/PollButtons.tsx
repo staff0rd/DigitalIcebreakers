@@ -47,7 +47,7 @@ const PollButtons = (props: Props) => {
     } = props;
     return (
         <div className={classes.root}>
-            <IconButton disabled={!previousQuestionId || showScoreBoard} onClick={() => gotoPreviousQuestion()}>
+            <IconButton disabled={!previousQuestionId} onClick={() => gotoPreviousQuestion()}>
                 <NavigateBefore />
             </IconButton>
             <IconButton disabled={showScoreBoard} onClick={() => dispatch(toggleShowResponsesAction())}>
@@ -58,7 +58,7 @@ const PollButtons = (props: Props) => {
                     { showScoreBoard ? <CloseIcon /> : <ScoreIcon /> }
                 </IconButton>
             }
-            <IconButton disabled={!nextQuestionId || showScoreBoard} onClick={() => gotoNextQuestion()}>
+            <IconButton disabled={!nextQuestionId} onClick={() => gotoNextQuestion()}>
                 <NavigateNext />
             </IconButton>
         </div>

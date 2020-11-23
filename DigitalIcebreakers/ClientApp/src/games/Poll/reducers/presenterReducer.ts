@@ -186,6 +186,7 @@ export const presenterReducer = createReceiveGameMessageReducer<SelectedAnswer[]
                 showResponses = false;
             return {
                 ...state,
+                showScoreBoard: false,
                 showResponses,
                 currentQuestionId,
             }
