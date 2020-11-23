@@ -109,6 +109,7 @@ namespace DigitalIcebreakers.Games
                 Answers = _lastAnswers.Answers,
                 QuestionId = _lastAnswers.QuestionId,
                 SelectedAnswerId = GetCachedAnswer(player, _lastAnswers.QuestionId)?.AnswerId,
+                Question = _lastAnswers.Question,
             };
         }
     }

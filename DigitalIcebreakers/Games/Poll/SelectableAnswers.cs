@@ -5,6 +5,8 @@ public class SelectableAnswers
     public Answer[] Answers { get; set; }
 
     public string SelectedAnswerId { get; set; }
+
+    public string Question { get; set; }
 }
 
 public class CanAnswerPayload

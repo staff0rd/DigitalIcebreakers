@@ -4,4 +4,5 @@ export interface AvailableAnswers {
     questionId: string;
     answers: Answer[];
     selectedAnswerId?: string;
+    question: string;
 }

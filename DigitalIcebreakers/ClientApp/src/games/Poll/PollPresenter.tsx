@@ -65,6 +65,7 @@ const PollPresenter = () => {
             dispatch(adminMessage({
                 questionId: question.id,
                 answers: question.answers,
+                question: question.text,
             }));
         }
         else{

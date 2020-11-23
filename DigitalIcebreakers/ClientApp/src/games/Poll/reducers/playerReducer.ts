@@ -19,6 +19,7 @@ export const playerReducer = createReceiveReducer<PollPlayerState, Payload>(
         questionId: '',
         answerLocked: false,
         canAnswer: true,
+        question: '',
     },
     (state, { payload: availableAnswers }) => {
         console.log('payload:', availableAnswers)
