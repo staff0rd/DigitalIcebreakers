@@ -32,7 +32,7 @@ export default () => {
             </div>
             <ContentContainer>
                 <div className={classes.buttonContainer}>
-                    <Button color='primary' size='lg' onClick={() => history.push('/create-lobby')}>
+                    <Button color='primary' size='lg' onClick={() => history.push('/create-lobby')} data-testid='present-button'>
                         Present
                     </Button>
                 </div>

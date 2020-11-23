@@ -32,6 +32,7 @@ export default () => {
       name: `Lobby (${lobby.players.length})`,
       icon: People,
       component: Lobby,
+      testId: 'menu-lobby',
     },
     !lobby.id && {
       path: "/",

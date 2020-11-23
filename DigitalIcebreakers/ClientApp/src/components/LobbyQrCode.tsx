@@ -61,7 +61,7 @@ export default ({ lg }: Props) => {
                 Phone camera 👇
             </h1>
         )}
-        <a href={joinUrl} className={classes.link}>
+        <a href={joinUrl} className={classes.link} data-testid='qrcode-link'>
             <QRCode className={classes.qrCode} value={joinUrl} renderAs="svg" />
         </a>
     </div>);
