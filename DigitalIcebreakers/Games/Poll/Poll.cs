@@ -84,7 +84,10 @@ namespace DigitalIcebreakers.Games
                 var player = GetPlayerByConnectionId(connectionId) ;
                 if (player != null)
                 {
-                    await SendToPlayer(connectionId, GetCurrentAnswersPayloadForPlayer(player));
+                    if (_lastAnswers != null)
+                    {
+                        await SendToPlayer(connectionId, GetCurrentAnswersPayloadForPlayer(player));
+                    }
                     await SendToPlayer(connectionId, new CanAnswerPayload { CanAnswer = CanAnswer });
                 }
                 else
