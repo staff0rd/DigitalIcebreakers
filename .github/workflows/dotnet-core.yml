@@ -1,48 +1,49 @@
-name: .NET Core
+name: .NET Core build
 
 on:
-  push:
-    branches: [ master ]
   pull_request:
     branches: [ master ]
 
 jobs:
   build:
 
-    runs-on: windows-latest
+    strategy:
+      matrix:
+        os: [ ubuntu-16.04, windows-2019 ]
+        dotnet: [ 3.1.301 ]
+        node: [ 12 ]
+
+    runs-on: ${{ matrix.os }}
 
     steps:
-    - name: Checkout git repository
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
 
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.301
+      - name: Checkout git repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
 
-    - name: Setup Node
-      uses: actions/setup-node@v1
-      with:
-        node-version: '12.16.3'
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ matrix.dotnet }}
 
-    - name: Install dotnet tools
-      run: dotnet tool restore
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
 
-    - name: Install C# dependencies
-      run: dotnet restore
+      - name: Install dotnet tools
+        run: dotnet tool restore
 
-    - name: C# build
-      run: dotnet build --configuration Release --no-restore
+      - name: Install C# dependencies
+        run: dotnet restore
 
-    - name: Run C# tests
-      run: dotnet test --no-restore --verbosity normal
+      - name: Run C# build
+        run: dotnet build --configuration Release --no-restore
 
-    - name: Update client app version
-      run: npm run set-version
-      working-directory: ./DigitalIcebreakers/ClientApp
+      - name: Run C# tests
+        run: dotnet test --no-restore --verbosity normal
 
-    - name: Front-end tests
-      run: npm run test-ci
-      working-directory: ./DigitalIcebreakers/ClientApp
+      - name: Front-end tests
+        run: npm run test-ci
+        working-directory: ./DigitalIcebreakers/ClientApp
