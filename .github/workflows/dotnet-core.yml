@@ -25,13 +25,20 @@ jobs:
       with:
         node-version: '12.16.3'
 
-    - run: npm install
-
     - name: Install dotnet tools
       run: dotnet tool restore
-    - name: Install dependencies
+
+    - name: Install C# dependencies
       run: dotnet restore
-    - name: Build
+
+    - name: C# build
       run: dotnet build --configuration Release --no-restore
-    - name: Test
+
+    - name: Run C# tests
       run: dotnet test --no-restore --verbosity normal
+
+    - name: Update client app version
+      run: npm run set-version
+
+    - name: Front-end tests
+      run: npm run test-ci
