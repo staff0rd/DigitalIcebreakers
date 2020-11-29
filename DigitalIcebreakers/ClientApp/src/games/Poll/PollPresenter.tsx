@@ -1,18 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from '../../store/useSelector';
 import { makeStyles } from '@material-ui/core/styles';
-import IconButton from '@material-ui/core/IconButton';
-import NavigateBefore from '@material-ui/icons/NavigateBefore';
-import NavigateNext from '@material-ui/icons/NavigateNext';
-import BarChart from '@material-ui/icons/BarChart';
-import LiveHelp from '@material-ui/icons/LiveHelp';
-import { Typography } from '@material-ui/core';
 import { adminMessage } from '../../store/lobby/actions'
 import { useDispatch } from 'react-redux';
-import { setCurrentQuestionAction, toggleResponsesAction, currentQuestionSelector } from './PollReducer';
-import Response from './components/Response';
+import ResponseChart from './components/ResponseChart';
 import Button from '../../layout/components/CustomButtons/Button';
 import { useHistory } from 'react-router-dom';
+import PollButtons from './components/PollButtons';
+import ScoreBoard from './components/ScoreBoard';
+import QuestionAndResponseCount from './components/QuestionAndResponseCount';
+import { currentQuestionSelector, setCurrentQuestionAction } from './reducers/presenterReducer';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -27,22 +24,9 @@ const useStyles = makeStyles(theme => ({
         padding: 0,
         textAlign: 'center',
     },
-    responses: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'column',
-        marginTop: 25,
-    },
-    buttons: {
-        position: 'fixed',
-        bottom:0,
-        right:0,
-        padding: '16px',
-    }
 }));
 
-export default () => {
+const PollPresenter = () => {
     const history = useHistory();
     const classes = useStyles();
     const dispatch = useDispatch();
@@ -53,13 +37,18 @@ export default () => {
         responseCount,
         nextQuestionId,
         previousQuestionId,
+        isTriviaMode,
     } = useSelector(currentQuestionSelector);
 
-    const { 
+    const {
         showResponses,
-    } = useSelector(state => ({
-        showResponses: state.games.poll.presenter.showResponses,
-    }));
+        showScoreBoard,
+     } = useSelector(state => ({
+         showResponses: state.games.poll.presenter.showResponses,
+         showScoreBoard: state.games.poll.presenter.showScoreBoard
+     }));
+
+     const canAnswer = (!showResponses && !showScoreBoard) || !isTriviaMode;
     
     // TODO: move this garbage to the reducer
     useEffect(() => {
@@ -68,14 +57,15 @@ export default () => {
         }
     }, [questionIds, currentQuestionId])
 
-    const nextQuestion = () => nextQuestionId && dispatch(setCurrentQuestionAction(nextQuestionId));
-    const previousQuestion = () => previousQuestionId && dispatch(setCurrentQuestionAction(previousQuestionId));
+    const gotoNextQuestion = () => nextQuestionId && dispatch(setCurrentQuestionAction(nextQuestionId));
+    const gotoPreviousQuestion = () => previousQuestionId && dispatch(setCurrentQuestionAction(previousQuestionId));
     
     useEffect(() => {
         if (question) {
             dispatch(adminMessage({
                 questionId: question.id,
                 answers: question.answers,
+                question: question.text,
             }));
         }
         else{
@@ -83,46 +73,59 @@ export default () => {
         }
     }, [currentQuestionId]);
 
+    useEffect(() => {
+        dispatch(adminMessage({ canAnswer }));
+        return () => { dispatch(adminMessage({ canAnswer: false })); };
+    }, [canAnswer]);
 
-    const QuestionView = () => {
+    const NoQuestions = () => {
         return (
             <>
                 <h1 className={classes.question}>
-                    {question!.text}
+                    No questions
                 </h1>
-                <div className={classes.responses}>
-                    <Typography variant='overline'>Responses</Typography>
-                    <Typography>{responseCount}</Typography>
-                </div>
+                <Button color='primary' onClick={() => history.push('/questions')}>
+                    Add some
+                </Button>
             </>
         );
     }
 
+    const QuestionDisplay = () => {
+        if (showResponses) {
+            return <ResponseChart />
+        }
+        else return (
+            <QuestionAndResponseCount
+                responseCount={responseCount}
+                question={question!}
+            />
+        );
+    }
+
+    const QuestionOrScoreBoard = () => {
+        if (isTriviaMode && showScoreBoard) {
+            return <ScoreBoard />
+        } 
+        return (
+            <div className={classes.root}>
+                { question ? <QuestionDisplay /> : <NoQuestions /> }
+            </div>
+        )
+    }
+
     return (
         <>
-            <div className={classes.root}>
-                { question ? ( showResponses ? <Response /> : <QuestionView /> ) : (
-                    <>
-                        <h1 className={classes.question}>
-                            No questions
-                        </h1>
-                        <Button color='primary' onClick={() => history.push('/questions')}>
-                            Add some
-                        </Button>
-                    </>
-                )}
-            </div>
-            <div className={classes.buttons}>
-                <IconButton disabled={!previousQuestionId} onClick={() => previousQuestion()}>
-                    <NavigateBefore />
-                </IconButton>
-                <IconButton onClick={() => dispatch(toggleResponsesAction())}>
-                    { showResponses ? <LiveHelp /> : <BarChart /> }
-                </IconButton>
-                <IconButton disabled={!nextQuestionId} onClick={() => nextQuestion()}>
-                    <NavigateNext />
-                </IconButton>
-            </div>
+            <QuestionOrScoreBoard />  
+            <PollButtons
+                gotoNextQuestion={gotoNextQuestion}
+                gotoPreviousQuestion={gotoPreviousQuestion}
+                previousQuestionId={previousQuestionId}
+                nextQuestionId={nextQuestionId}
+                isTriviaMode={isTriviaMode}
+            />
         </>
     )
 }
+
+export default PollPresenter;

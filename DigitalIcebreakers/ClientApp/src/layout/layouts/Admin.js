@@ -15,8 +15,6 @@ import useRoutes from "../routes";
 
 import styles from "../assets/jss/material-dashboard-react/layouts/adminStyle";
 
-import logo from "../../img/icon.svg";
-
 let ps;
 
 const switchRoutes = (routes) => (
@@ -76,7 +74,7 @@ export default function Admin({ isAdmin, currentGame, lobbyId, ...rest }) {
       <Sidebar
         routes={routes}
         logoText={"Digital Icebreakers"}
-        logo={logo}
+        logo='/img/icon.svg'
         open={showDrawer}
         color="blue"
         {...rest}

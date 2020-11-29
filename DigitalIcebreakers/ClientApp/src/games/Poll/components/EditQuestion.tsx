@@ -11,14 +11,14 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useParams, useHistory } from 'react-router';
 import CustomInput from '../../../layout/components/CustomInput/CustomInput';
 import SnackbarContent from '../../../layout/components/Snackbar/SnackbarContent';
-import { Question } from '../Question';
+import { Question } from '../types/Question';
 import styles from "../../../layout/assets/jss/material-dashboard-react/components/tasksStyle";
 import Typography from '@material-ui/core/Typography';
 import EditAnswers from './EditAnswers';
 import { guid } from '../../../util/guid';
 import { grayColor } from '../../../layout/assets/jss/material-dashboard-react'
 import { useDispatch } from 'react-redux';
-import { updateQuestionAction, deleteQuestionAction } from '../PollReducer';
+import { updateQuestionAction, deleteQuestionAction } from '../reducers/presenterReducer';
 
 const useTaskStyles = makeStyles(styles);
 
@@ -98,8 +98,8 @@ const QuestionEditor = ({ question }: Props) => {
                             <Typography className={classes.header} variant='h5'>
                                 Answers
                             </Typography>
-                            <EditAnswers answers={answers} setAnswers={setAnswers} />
-                            <Button onClick={() => setAnswers([...answers, {id: guid(), text: 'A new answer'}])}>Add answer</Button>
+                            <EditAnswers answers={answers} setAnswers={setAnswers} questionId={question.id} />
+                            <Button onClick={() => setAnswers([...answers, {id: guid(), text: 'A new answer', correct: false}])}>Add answer</Button>
                         </Grid>
                         <Grid item xs={12}>
                             <Typography className={classes.header} variant='h5'>

@@ -10,7 +10,7 @@ import { buzzerReducer } from '../games/Buzzer/BuzzerReducer';
 import { splatReducer } from '../games/Splat/SplatReducer';
 import { pongReducer } from '../games/Pong/PongReducer';
 import { ideaWallReducer } from '../games/IdeaWall/IdeaWallReducer';
-import { pollReducer } from '../games/Poll/PollReducer';
+import { pollReducer } from '../games/Poll/reducers/PollReducer';
 import { namePickerReducer } from '../games/NamePicker/NamePickerReducer';
 
 const gamesReducer = combineReducers<GamesState>({

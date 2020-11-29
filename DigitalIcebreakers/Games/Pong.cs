@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DigitalIcebreakers.Hubs;
-using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json.Linq;
 
 namespace DigitalIcebreakers.Games
@@ -41,6 +39,8 @@ namespace DigitalIcebreakers.Games
         public async override Task OnReceiveSystemMessage(JToken payload, string connectionId)
         {
             var player = GetPlayerByConnectionId(connectionId);
+            if (player == null)
+                return;
             var externalId = player.ExternalId;
             string system = payload.ToString();
             switch (system)

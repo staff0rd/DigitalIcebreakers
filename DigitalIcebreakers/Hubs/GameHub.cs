@@ -94,8 +94,8 @@ namespace DigitalIcebreakers.Hubs
                 if (!player.IsAdmin)
                 {
                     await _send.Joined(lobby, player);
-                    await SystemMessage("join");
                 }
+                await SystemMessage("join");
             }
             else {
                 _logger.LogInformation("{player} {action} ({transportType})", player, "connected", this.GetTransportType());

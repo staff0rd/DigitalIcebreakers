@@ -59,7 +59,7 @@ export default function Sidebar(props) {
             key={key}
             onClick={() => dispatch(toggleDrawer(false))}
           >
-            <ListItem button className={classes.itemLink + listItemClasses}>
+            <ListItem button className={classes.itemLink + listItemClasses} data-testid={prop.testId}>
               {typeof prop.icon === "string" ? (
                 <Icon
                   className={classNames(classes.itemIcon, whiteFontClasses, {

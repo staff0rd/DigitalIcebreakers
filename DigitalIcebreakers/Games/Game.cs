@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
@@ -60,9 +61,28 @@ namespace DigitalIcebreakers.Games
             await _sender.SendGameMessageToPlayers(lobby, payload);
         }
 
+        public async Task SendToEachPlayer(string connectionId, Func<Player, object> payloadFunction)
+        {
+            var lobby = _lobbys.GetLobbyByConnectionId(connectionId);
+            
+            await Task.WhenAll(
+                lobby.GetPlayers()
+                .Select(player => _sender.SendGameMessageToPlayer(player, payloadFunction(player))));
+        }
+
         public Player GetPlayerByConnectionId(string connectionId)
         {
             return _lobbys.GetPlayerByConnectionId(connectionId);
+        }
+
+        public Player GetAdminByConnectionId(string connectionId)
+        {
+            var admin = _lobbys.GetLobbyAdmin(connectionId);
+            if (admin.ConnectionId == connectionId) 
+            {
+                return admin;
+            }
+            return null;
         }
 
         public Player GetPlayerByExternalId(Guid externalId)

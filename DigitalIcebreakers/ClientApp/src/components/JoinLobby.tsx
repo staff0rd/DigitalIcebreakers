@@ -60,7 +60,7 @@ export default function JoinLobby() {
               </GridContainer>
             </CardBody>
             <CardFooter>
-              <Button color="primary" onClick={onSubmit}>Join</Button>
+              <Button color="primary" onClick={onSubmit} data-testid='join-lobby-button'>Join</Button>
             </CardFooter>
           </Card>
         </GridItem>

@@ -55,7 +55,7 @@ export default function CreateLobby() {
               </GridContainer>
             </CardBody>
             <CardFooter>
-              <Button color="primary" onClick={onClick}>Create</Button>
+              <Button color="primary" onClick={onClick} data-testid='create-lobby-button'>Create</Button>
             </CardFooter>
           </Card>
         </GridItem>
