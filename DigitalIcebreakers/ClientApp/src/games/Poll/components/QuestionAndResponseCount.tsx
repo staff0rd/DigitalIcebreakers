@@ -22,14 +22,21 @@ const useStyles = makeStyles(theme => ({
 type Props = {
     question: Question;
     responseCount: number;
+    playerCount: number;
 }
 
 const QuestionAndResponseCount = (props: Props) => {
     const {
         question,
         responseCount,
+        playerCount
     } = props;
     const classes = useStyles();
+
+    const countMessage = responseCount !== playerCount ?
+        `${responseCount} out of possible ${playerCount}` :
+        `All ${playerCount} player(s) have answered`;
+
     return (
         <>
             <h1 className={classes.question}>
@@ -37,7 +44,7 @@ const QuestionAndResponseCount = (props: Props) => {
             </h1>
             <div className={classes.responseCount}>
                 <Typography variant='overline'>Responses</Typography>
-                <Typography>{responseCount}</Typography>
+                <Typography>{countMessage}</Typography>
             </div>
         </>
     );

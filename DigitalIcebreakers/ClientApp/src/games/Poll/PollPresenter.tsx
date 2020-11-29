@@ -43,10 +43,12 @@ const PollPresenter = () => {
     const {
         showResponses,
         showScoreBoard,
-     } = useSelector(state => ({
-         showResponses: state.games.poll.presenter.showResponses,
-         showScoreBoard: state.games.poll.presenter.showScoreBoard
-     }));
+        playerCount
+    } = useSelector(state => ({
+        showResponses: state.games.poll.presenter.showResponses,
+        showScoreBoard: state.games.poll.presenter.showScoreBoard,
+        playerCount: state.lobby.players.length
+    }));
 
      const canAnswer = (!showResponses && !showScoreBoard) || !isTriviaMode;
     
@@ -98,6 +100,7 @@ const PollPresenter = () => {
         else return (
             <QuestionAndResponseCount
                 responseCount={responseCount}
+                playerCount={playerCount}
                 question={question!}
             />
         );
