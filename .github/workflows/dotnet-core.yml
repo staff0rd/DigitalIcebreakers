@@ -39,6 +39,8 @@ jobs:
 
     - name: Update client app version
       run: npm run set-version
+      working-directory: ./DigitalIcebreakers/ClientApp
 
     - name: Front-end tests
       run: npm run test-ci
+      working-directory: ./DigitalIcebreakers/ClientApp
