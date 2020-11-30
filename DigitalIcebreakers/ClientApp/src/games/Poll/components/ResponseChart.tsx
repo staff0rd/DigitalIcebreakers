@@ -69,7 +69,7 @@ const ResponseChart = () => {
                                 width={100}
                                 tickLine={false}
                             />
-                            <Bar dataKey="count" fill={primaryColor[0]} />
+                            <Bar dataKey="count" fill={primaryColor[0]} isAnimationActive={false} />
                         </BarChart>
                     </ResponsiveContainer>
                     <h2 className={classes.question}>{question.text}</h2>
