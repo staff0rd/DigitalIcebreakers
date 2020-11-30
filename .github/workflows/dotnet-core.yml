@@ -43,6 +43,7 @@ jobs:
 
       - name: Run C# tests
         run: dotnet test --no-restore --verbosity normal
+        working-directory: ./DigitalIcebreakers/DigitalIcebreakers.Test
 
       - name: Front-end tests
         run: npm run test-ci
