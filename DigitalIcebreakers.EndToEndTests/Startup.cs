@@ -1,8 +1,8 @@
-using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Shouldly;
+using PlaywrightSharp;
+
 
 namespace DigitalIcebreakers.EndToEndTests
 {
@@ -11,8 +11,16 @@ namespace DigitalIcebreakers.EndToEndTests
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton((x) => x.GetRequiredService<IConfiguration>().Get<TestSettings>());
+            services.AddSingleton<DisposableServices>();
+            Playwright.InstallAsync().Wait();
+            services.AddSingleton<IPlaywright>((x) => {
+                var playwright = Playwright.CreateAsync().Result;
+                x.GetRequiredService<DisposableServices>().Services.Add(playwright);
+                return playwright;
+            });
+            services.AddSingleton<BrowserFactory>();
         }
-
+        
         public void ConfigureHost(IHostBuilder hostBuilder)
         {
             var config = new ConfigurationBuilder()

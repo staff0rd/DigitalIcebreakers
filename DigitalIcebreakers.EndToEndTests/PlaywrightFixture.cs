@@ -1,59 +1,42 @@
 using System;
 using System.Threading.Tasks;
 using Xunit;
-using PlaywrightSharp;
-using Microsoft.Extensions.Configuration;
-using Shouldly;
 
 namespace DigitalIcebreakers.EndToEndTests
 {
+    public static class ObjectMother
+    {
+        public class Presenter
+        {
+
+        }
+    }
     public class PlaywrightFixture : IDisposable, IAsyncLifetime
     {
-        public IPlaywright PlaywrightDriver { get; private set; }
-        public PlaywrightSharp.Chromium.IChromiumBrowser LobbyBrowser { get; private set; }
-        public IPage LobbyPage { get; private set; }
-        public string LobbyUrl { get; private set; }
+        private readonly DisposableServices _disposableServices;
+        
 
-        private readonly TestSettings _settings;
-
-        public PlaywrightFixture(TestSettings settings)
+        public PlaywrightFixture(DisposableServices disposableServices)
         {
-            _settings = settings;
+            _disposableServices = disposableServices;
         }
 
         public void Dispose()
         {
-            if (PlaywrightDriver != null)
-                PlaywrightDriver.Dispose();
+            _disposableServices.Services.ForEach(service => service.Dispose());
         }
 
         public async Task DisposeAsync()
         {
-            if (LobbyBrowser != null)
-                await LobbyBrowser.DisposeAsync();
+            foreach ( var service in _disposableServices.ServicesAsync)
+            {
+                await service.DisposeAsync();
+            }
         }
 
-        public async Task InitializeAsync()
+        public Task InitializeAsync()
         {
-            await Playwright.InstallAsync();
-            PlaywrightDriver = await Playwright.CreateAsync();
-            await InitialiseLobby();
-        }
-
-        private async Task InitialiseLobby()
-        {
-            LobbyBrowser = await PlaywrightDriver.Chromium.LaunchAsync(headless: _settings.Headless);
-            LobbyPage = await LobbyBrowser.NewPageAsync();
-            await LobbyPage.GoToAsync(_settings.Url);
-            var presentButton = await LobbyPage.GetByTestId("present-button");
-            presentButton.ShouldNotBeNull();
-            await presentButton.ClickAsync();
-            var createButton = await LobbyPage.GetByTestId("create-lobby-button");
-            createButton.ShouldNotBeNull();
-            await createButton.ClickAsync();
-            var qrCode = await LobbyPage.GetByTestId("qrcode-link");
-            qrCode.ShouldNotBeNull();
-            LobbyUrl = await qrCode.GetAttributeAsync("href");
+            return Task.CompletedTask;
         }
     }
 
