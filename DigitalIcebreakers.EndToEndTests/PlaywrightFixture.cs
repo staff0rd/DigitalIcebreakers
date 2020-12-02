@@ -10,16 +10,15 @@ namespace DigitalIcebreakers.EndToEndTests
     public class PlaywrightFixture : IDisposable, IAsyncLifetime
     {
         public IPlaywright PlaywrightDriver { get; private set; }
-        public bool Headless { get; private set; }
         public PlaywrightSharp.Chromium.IChromiumBrowser LobbyBrowser { get; private set; }
         public IPage LobbyPage { get; private set; }
         public string LobbyUrl { get; private set; }
 
-        public string Url { get; private set; }
-        public PlaywrightFixture(IConfiguration config)
+        private readonly TestSettings _settings;
+
+        public PlaywrightFixture(TestSettings settings)
         {
-            Url = config.GetValue<string>("Url") ?? "http://0.0.0.0:5000";
-            Headless = config.GetValue<bool?>("Headless") ?? true;
+            _settings = settings;
         }
 
         public void Dispose()
@@ -43,9 +42,9 @@ namespace DigitalIcebreakers.EndToEndTests
 
         private async Task InitialiseLobby()
         {
-            LobbyBrowser = await PlaywrightDriver.Chromium.LaunchAsync(headless: Headless);
+            LobbyBrowser = await PlaywrightDriver.Chromium.LaunchAsync(headless: _settings.Headless);
             LobbyPage = await LobbyBrowser.NewPageAsync();
-            await LobbyPage.GoToAsync(Url);
+            await LobbyPage.GoToAsync(_settings.Url);
             var presentButton = await LobbyPage.GetByTestId("present-button");
             presentButton.ShouldNotBeNull();
             await presentButton.ClickAsync();
