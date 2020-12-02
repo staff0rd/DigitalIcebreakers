@@ -9,5 +9,10 @@ namespace DigitalIcebreakers.EndToEndTests
         {
             return page.QuerySelectorAsync($"[data-testid={testId}");
         }
+        public static async Task ClickByTestId(this IPage page, string testId)
+        {
+            var element = await page.QuerySelectorAsync($"[data-testid={testId}");
+            await element.ClickAsync();
+        }
     }
 }

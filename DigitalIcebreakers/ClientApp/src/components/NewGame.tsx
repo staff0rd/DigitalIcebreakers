@@ -78,7 +78,7 @@ export default () => {
                             </CardBody>
                             <CardFooter chart>
                             <div>
-                                <Button color="primary" onClick={() => newGame(g.name)}>Play</Button>
+                                <Button data-testid={`game-${g.name}`} color="primary" onClick={() => newGame(g.name)}>Play</Button>
                             </div>
                             </CardFooter>
                         </Card>

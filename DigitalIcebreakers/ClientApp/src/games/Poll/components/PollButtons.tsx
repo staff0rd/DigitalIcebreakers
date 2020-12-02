@@ -50,7 +50,7 @@ const PollButtons = (props: Props) => {
             <IconButton disabled={!previousQuestionId} onClick={() => gotoPreviousQuestion()}>
                 <NavigateBefore />
             </IconButton>
-            <IconButton disabled={showScoreBoard} onClick={() => dispatch(toggleShowResponsesAction())}>
+            <IconButton data-testid='show-responses' disabled={showScoreBoard} onClick={() => dispatch(toggleShowResponsesAction())}>
                 { showResponses ? <LiveHelp /> : <BarChart /> }
             </IconButton>
             { isTriviaMode && 

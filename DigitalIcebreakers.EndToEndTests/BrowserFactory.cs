@@ -21,9 +21,9 @@ namespace DigitalIcebreakers.EndToEndTests
             _disposableServices = disposableServices;
         }
 
-        private async Task<IChromiumBrowser> Create()
+        private async Task<IChromiumBrowser> Create(bool? headless = null)
         {
-            var browser = await _playwright.Chromium.LaunchAsync(headless: _settings.Headless);
+            var browser = await _playwright.Chromium.LaunchAsync(headless: headless ?? _settings.Headless);
             _disposableServices.ServicesAsync.Add(browser);
             return browser;
         }
@@ -45,13 +45,13 @@ namespace DigitalIcebreakers.EndToEndTests
             return (browser, page, url);
         }
 
-        public async Task<(IChromiumBrowser Browser, IPage Page)> CreatePlayer(string lobbyUrl)
+        public async Task<(IChromiumBrowser Browser, IPage Page)> CreatePlayer(string lobbyUrl, string playerName = "test-user", bool? headless = null)
         {
-            var browser = await Create();
+            var browser = await Create(headless);
             var page = await browser.NewPageAsync();
             await page.GoToAsync(lobbyUrl);
             var userNameTextbox = await page.QuerySelectorAsync("[id=user-name]");
-            await userNameTextbox.TypeAsync("test-user");
+            await userNameTextbox.TypeAsync(playerName);
             var joinButton = await page.GetByTestId("join-lobby-button");
             await joinButton.ClickAsync();
             return (browser, page);
