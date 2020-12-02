@@ -10,6 +10,9 @@ import Button from '../../layout/components/CustomButtons/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import { selectAnswerAction, lockAnswerAction } from './reducers/playerReducer';
 import { infoColor } from '../../layout/assets/jss/material-dashboard-react';
+import { createSelector } from '@reduxjs/toolkit';
+import { RootState } from '../../store/RootState';
+import { shuffle } from '../../Random';
 
 const useStyles = makeStyles(theme => ({
     item: {
@@ -31,10 +34,18 @@ const useStyles = makeStyles(theme => ({
         width: '100%',
     }
 }));
-  
+
+const answerSelector = createSelector(
+    (state: RootState) => state.games.poll.player.answers,
+    (answers) =>  shuffle([...answers]),
+);
+
 export default () => {
     const dispatch = useDispatch();
-    const { questionId, answers, selectedAnswerId, answerLocked, canAnswer, question } = useSelector(state => state.games.poll.player);
+    const { questionId, selectedAnswerId, answerLocked, canAnswer, question } = useSelector(state => state.games.poll.player);
+    
+    const answers = useSelector(answerSelector);
+
     const classes = useStyles();
     const lockAnswer = () => {
         dispatch(clientMessage({
