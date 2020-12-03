@@ -13,6 +13,7 @@ namespace DigitalIcebreakers.EndToEndTests
         private readonly BrowserFactory _browsers;
         private (IChromiumBrowser Browser, IPage Page, string Url) _presenter;
         private (IChromiumBrowser Browser, IPage Page)[] _players;
+        private const string _correctAnswerId = "fa9cb6a8-a1e4-3337-f987-0cbca07bb88d";
 
         public TriviaTests(BrowserFactory browsers)
         {
@@ -48,7 +49,10 @@ namespace DigitalIcebreakers.EndToEndTests
             });
             await Task.WhenAll(tasks);
             await _presenter.Page.ClickByTestId("show-responses");
-            await Task.Delay(10000);
+            var answer = await _presenter.Page.GetByTestId($"answer-{_correctAnswerId}");
+            var countElement = await answer.QuerySelectorAsync(".count");
+            var count = int.Parse(await countElement.GetTextContentAsync());
+            count.ShouldBe(_players.Count());
         }
     }
 }

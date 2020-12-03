@@ -9,6 +9,9 @@ import { primaryColor } from '../../../layout/assets/jss/material-dashboard-reac
 import CustomisedAxisTick from './CustomisedAccessTick';
 
 const useStyles = makeStyles(theme => ({
+    data: {
+        display: 'none',
+    },
     container: {
         padding: theme.spacing(3),
         width: '80%',
@@ -42,6 +45,7 @@ const ResponseChart = () => {
         const answer = a.correct ? `✅ ${a.text}` : a.text;
         const responses = (question ? question.responses : []).filter(r => r.answerId === a.id).length;
         return {
+            id: a.id,
             answer,
             responses
         }
@@ -53,6 +57,13 @@ const ResponseChart = () => {
         <>
             {question && (    
                 <div className={classes.container}>
+                    <ul className={classes.data}>
+                        { answers.map(a => (
+                            <li className={classes.data} data-testid={`answer-${a.id}`}>
+                                <span className='count'>{a.responses}</span>
+                            </li>
+                        ))}
+                    </ul>
                     <ResponsiveContainer width="100%" height="80%" key={question?.id}>
                         <BarChart
                             layout='vertical'
