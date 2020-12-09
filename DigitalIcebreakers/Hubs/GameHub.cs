@@ -222,16 +222,26 @@ namespace DigitalIcebreakers.Hubs
                 var admin = message["admin"];
                 var client = message["client"];
 
-                if (system != null) {
-                    await lobby.CurrentGame.OnReceiveSystemMessage(system, ConnectionId);
-                }
+                try {
+                    if (system != null) {
+                        _logger.LogDebug($"system: {system}");
+                        await lobby.CurrentGame.OnReceiveSystemMessage(system, ConnectionId);
+                    }
 
-                if (admin != null && _lobbys.PlayerIsAdmin(ConnectionId)) {
-                    await lobby.CurrentGame.OnReceivePresenterMessage(admin, ConnectionId);
-                }
+                    if (admin != null && _lobbys.PlayerIsAdmin(ConnectionId)) {
+                        _logger.LogDebug($"admin: {admin}");
+                        await lobby.CurrentGame.OnReceivePresenterMessage(admin, ConnectionId);
+                    }
 
-                if (client != null) {
-                    await lobby.CurrentGame.OnReceivePlayerMessage(client, ConnectionId);
+                    if (client != null) {
+                        _logger.LogDebug($"client: {client}");
+                        await lobby.CurrentGame.OnReceivePlayerMessage(client, ConnectionId);
+                    }
+                } catch (Exception e)
+                {
+                    // TODO: this occurs because a presenter is sending a message to a game that 
+                    // hasn't yet been selected. Race condition during EndToEndTests
+                    _logger.LogError(e.Message);
                 }
             }
         }

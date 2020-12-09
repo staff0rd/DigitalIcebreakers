@@ -9,7 +9,7 @@ import { ShapeView } from './ShapeView';
 import * as gsap from "gsap";
 import { ConnectedProps, connect } from 'react-redux';
 import { clientMessage, adminMessage } from '../../store/lobby/actions';
-import { setGameMessageCallback, clearGameMessageCallback } from '../../store/connection/actions';
+import { setGameMessageCallback } from '../../store/connection/actions';
 import { GameMessage } from '../GameMessage'
 import Button from '../../layout/components/CustomButtons/Button';
 import Table from '../../layout/components/Table/Table';
@@ -42,7 +42,7 @@ const connector = connect(
     (state: RootState) => { return {
         players: state.lobby.players
     }},
-    { clientMessage, adminMessage, setGameMessageCallback, clearGameMessageCallback }
+    { clientMessage, adminMessage, setGameMessageCallback }
 );
   
 type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
@@ -179,10 +179,6 @@ class ReactionPresenter extends BaseGame<PropsFromRedux, ReactState> {
         this.timeout && clearTimeout(this.timeout);
         if (restart)
             this.timeout = setTimeout(() => this.updateScores(), 2000);
-    }
-
-    componentWillUnmount() {
-        this.props.clearGameMessageCallback();
     }
     
     componentDidMount() {

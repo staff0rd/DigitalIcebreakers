@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from '../../store/useSelector';
 import { makeStyles } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
-import { clearGameMessageCallback, setGameMessageCallback } from '../../store/connection/actions';
+import { setGameMessageCallback } from '../../store/connection/actions';
 import { Colors, ColorUtils } from '../../Colors';
 
 const useStyles = makeStyles(() => ({
@@ -24,10 +24,7 @@ export default () => {
 
     useEffect(() => {
         dispatch(setGameMessageCallback(setSelectedId));
-        return () => {
-            dispatch(clearGameMessageCallback());
-        }
-    }, [selectedId, dispatch]);
+    }, [dispatch]);
 
     const getBackgroundColor = () => {
         if (selectedId) {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Button from '../../layout/components/CustomButtons/Button';
 import { useDispatch } from 'react-redux';
 import Notifications from "@material-ui/icons/Notifications";
-import { setGameMessageCallback, clearGameMessageCallback } from '../../store/connection/actions';
+import { setGameMessageCallback } from '../../store/connection/actions';
 import { clientMessage } from '../../store/lobby/actions';
 import { makeStyles } from '@material-ui/core';
 
@@ -28,10 +28,7 @@ export const BroadcastClient = () => {
 
     useEffect(() => {
         dispatch(setGameMessageCallback(setClientText));
-        return () => {
-            dispatch(clearGameMessageCallback());
-        }
-    }, [clientText, dispatch]);
+    }, [dispatch]);
 
     const ding = () => {
         dispatch(clientMessage(1));
@@ -39,7 +36,7 @@ export const BroadcastClient = () => {
 
     return (
         <div className={classes.wrapper}>
-            <h1>{clientText}</h1>
+            <h1 data-testid='client-text'>{clientText}</h1>
             <Button className={classes.button} color="primary" onClick={ding}>
                 <Notifications />
             </Button>

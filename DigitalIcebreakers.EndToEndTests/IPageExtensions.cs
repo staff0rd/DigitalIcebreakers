@@ -14,5 +14,9 @@ namespace DigitalIcebreakers.EndToEndTests
             var element = await page.QuerySelectorAsync($"[data-testid={testId}");
             await element.ClickAsync();
         }
+        public static async Task<string> GetTextContentByTestId(this IPage page, string testId)
+        {
+            return await page.GetTextContentAsync($"[data-testid={testId}");
+        }
     }
 }

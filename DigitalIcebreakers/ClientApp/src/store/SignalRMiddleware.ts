@@ -1,6 +1,6 @@
 import { MiddlewareAPI, Dispatch } from '@reduxjs/toolkit'
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr'
-import { CONNECTION_CONNECT, SET_CONNECTION_STATUS, SET_GAME_MESSAGE_CALLBACK, CLEAR_GAME_MESSAGE_CALLBACK, ConnectionActionTypes } from './connection/types'
+import { CONNECTION_CONNECT, SET_CONNECTION_STATUS, SET_GAME_MESSAGE_CALLBACK, ConnectionActionTypes } from './connection/types'
 import { updateConnectionStatus, connectionConnect } from './connection/actions'
 import ReactAI from '../app-insights-deprecated'
 import { ConnectionStatus } from '../ConnectionStatus'
@@ -81,14 +81,12 @@ export const SignalRMiddleware = () => {
         return (next: Dispatch) => (action: LobbyActionTypes | ConnectionActionTypes | UserActionTypes | ShellActionTypes) => {
             switch (action.type) {
                 case SET_GAME_MESSAGE_CALLBACK: {
+                    connection.off("gameMessage");
                     connection.on("gameMessage", (args: any) => {
+                        console.log('gameMessage: ', args);
                         action.callback(args)
                     });
                     return;
-                }
-                case CLEAR_GAME_MESSAGE_CALLBACK: {
-                    connection.off("gameMessage");
-                    break;
                 }
                 case CLEAR_LOBBY: {
                     history.push('/lobby-closed');

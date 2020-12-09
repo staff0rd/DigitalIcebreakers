@@ -1,6 +1,6 @@
 import React, {useState, useEffect, ChangeEvent} from 'react';
 import { useDispatch } from 'react-redux';
-import { setGameMessageCallback, clearGameMessageCallback } from '../../store/connection/actions';
+import { setGameMessageCallback } from '../../store/connection/actions';
 import { adminMessage } from '../../store/lobby/actions';
 import { GameMessage } from '../GameMessage';
 import ContentContainer from '../../components/ContentContainer';
@@ -22,11 +22,10 @@ export const BroadcastPresenter = () => {
     useEffect(() => {
         dispatch(setGameMessageCallback(({ payload }: GameMessage<string>) => {
             if (payload === "d") {
-                setDingCount(dingCount+1);
+                setDingCount(prevDingCount => prevDingCount+1);
             }
         }));
-        return () => { dispatch(clearGameMessageCallback()); };
-    });
+    }, []);
 
     const updateClientText = (e: ChangeEvent<HTMLInputElement>) => {
         const target = e.target as HTMLInputElement;
