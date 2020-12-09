@@ -22,7 +22,6 @@ export const playerReducer = createReceiveReducer<PollPlayerState, Payload>(
         question: '',
     },
     (state, { payload: availableAnswers }) => {
-        console.log('payload:', availableAnswers)
         if (availableAnswers.canAnswer !== undefined) {
             return { ...state, canAnswer: availableAnswers.canAnswer };
         }  
