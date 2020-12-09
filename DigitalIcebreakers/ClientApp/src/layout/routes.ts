@@ -46,7 +46,7 @@ export default () => {
     },
     lobby.id && lobby.isAdmin && {
       path: "/new-game",
-      name: "New Game",
+      name: "New Activity",
       icon: AddCircle,
       component: NewGame,
     },

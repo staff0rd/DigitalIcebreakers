@@ -5,7 +5,7 @@
 Digital Icebreakers is a platform for presenters and audiences to collaborate, play, and experiment together.
 
 ## How it works
-A presenter creates a *Lobby* and audience members join by pointing their phone cameras at the presenter's screen and scanning the QR code. The presenter can then guide the audience through games and experiences by clicking *New Game*.  Try it out on [digitalicebreakers.com](https://digitalicebreakers.com).
+A presenter creates a *Lobby* and audience members join by pointing their phone cameras at the presenter's screen and scanning the QR code. The presenter can then guide the audience through games and experiences by clicking *New Activity*.  Try it out on [digitalicebreakers.com](https://digitalicebreakers.com).
 
 ## Build
 
@@ -46,14 +46,14 @@ I will create a game called *Splat* to illustrate what is required for a (rather
 
 #### Running & Testing
 
-In Visual Studio Code, you can hit F5 and this will compile both the `Backend` and `Frontend` and launch a browser.  Once the site loads, click Host > Create, and move the window to half of your screen.  Right-click the URL at the top of the page and select *Open Link in Incognito Window* - this new window will connect as a `Client`. On the first window click *New Game > Splat*. You should see the `Client` window update with button - clicking the button will update the `Presenter`.
+In Visual Studio Code, you can hit F5 and this will compile both the `Backend` and `Frontend` and launch a browser.  Once the site loads, click Host > Create, and move the window to half of your screen.  Right-click the URL at the top of the page and select *Open Link in Incognito Window* - this new window will connect as a `Client`. On the first window click *New Activity > Splat*. You should see the `Client` window update with button - clicking the button will update the `Presenter`.
 
 ## Contributing
 
 * Jump in and build your own games & experiences immediately!
 * Suggest new features and/or games
 * Post feedback on your experience while using Digital Icebreakers with your group/talk/presentation
-* If you want to make architectural improvements (of which many are needed), start a conversation first to improve the likelyhood your PR is merged.
+* If you want to make architectural improvements (of which many are needed), start a conversation first to improve the likelihood your PR is merged.
 
 ## Help
 

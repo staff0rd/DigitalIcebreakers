@@ -58,7 +58,7 @@ export default () => {
 
     return (
         <ContentContainer>
-            <h2>New game</h2>
+            <h2>New activity</h2>
             <GridContainer>
                 { Games.map(g => (
                     <GridItem xs={12} sm={12} md={4}>

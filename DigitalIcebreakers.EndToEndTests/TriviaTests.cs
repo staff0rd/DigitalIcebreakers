@@ -23,7 +23,7 @@ namespace DigitalIcebreakers.EndToEndTests
         public async Task InitializeAsync()
         {
             _presenter = await _browsers.CreatePresenter();
-            await _presenter.Page.ClickAsync("text='New Game'");
+            await _presenter.Page.ClickAsync("text='New Activity'");
             await _presenter.Page.ClickByTestId("game-poll");
             await _presenter.Page.ClickAsync("text='Questions'");
             var element = await _presenter.Page.QuerySelectorAsync("[type=file]");
