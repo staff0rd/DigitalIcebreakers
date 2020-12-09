@@ -10,8 +10,8 @@ namespace DigitalIcebreakers.EndToEndTests
     public class LobbyTests : IAsyncLifetime
     {
         private readonly BrowserFactory _browsers;
-        private (IChromiumBrowser Browser, IPage Page, string Url) _presenter;
-        private (IChromiumBrowser Browser, IPage Page) _player;
+        private Presenter _presenter;
+        private Player _player;
 
         public LobbyTests(BrowserFactory browsers)
         {

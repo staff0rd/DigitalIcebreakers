@@ -11,8 +11,8 @@ namespace DigitalIcebreakers.EndToEndTests
     public class TriviaTests : IAsyncLifetime
     {
         private readonly BrowserFactory _browsers;
-        private (IChromiumBrowser Browser, IPage Page, string Url) _presenter;
-        private (IChromiumBrowser Browser, IPage Page)[] _players;
+        private Presenter _presenter;
+        private Player[] _players;
         private const string _correctAnswerId = "fa9cb6a8-a1e4-3337-f987-0cbca07bb88d";
 
         public TriviaTests(BrowserFactory browsers)

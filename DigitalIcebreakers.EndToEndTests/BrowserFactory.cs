@@ -28,7 +28,7 @@ namespace DigitalIcebreakers.EndToEndTests
             return browser;
         }
 
-        public async Task<(IChromiumBrowser Browser, IPage Page, string Url)> CreatePresenter()
+        public async Task<Presenter> CreatePresenter()
         {
             var browser = await Create();
             var page = await browser.NewPageAsync();
@@ -42,10 +42,10 @@ namespace DigitalIcebreakers.EndToEndTests
             var qrCode = await page.GetByTestId("qrcode-link");
             qrCode.ShouldNotBeNull();
             var url = await qrCode.GetAttributeAsync("href");
-            return (browser, page, url);
+            return new Presenter(browser, page, url);
         }
 
-        public async Task<(IChromiumBrowser Browser, IPage Page)> CreatePlayer(string lobbyUrl, string playerName = "test-user", bool? headless = null)
+        public async Task<Player> CreatePlayer(string lobbyUrl, string playerName = "test-user", bool? headless = null)
         {
             var browser = await Create(headless);
             var page = await browser.NewPageAsync();
@@ -54,7 +54,7 @@ namespace DigitalIcebreakers.EndToEndTests
             await userNameTextbox.TypeAsync(playerName);
             var joinButton = await page.GetByTestId("join-lobby-button");
             await joinButton.ClickAsync();
-            return (browser, page);
+            return new Player(browser, page);
         }
     }
 }
