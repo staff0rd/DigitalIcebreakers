@@ -29,11 +29,13 @@ namespace DigitalIcebreakers.EndToEndTests
         }
 
         [Fact]
-        public async Task Questions_are_displayed_on_Player_after_leaving_Broadcast()
+        public async Task Answers_are_displayed_on_Player_after_leaving_Broadcast()
         {
             await _presenter.LoadTriviaQuestions();
             await _presenter.StartBroadcast();
             await _presenter.StartTrivia();
+
+            await Task.Delay(1000);
 
             var element = await _player.Page.QuerySelectorAsync("text='Correct'");
             element.ShouldNotBeNull();

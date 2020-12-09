@@ -20,7 +20,6 @@ namespace DigitalIcebreakers.EndToEndTests
         public async Task InitializeAsync()
         {
             _presenter = await _browsers.CreatePresenter();
-            await _presenter.StartBroadcast();
             _player = await _browsers.CreatePlayer(_presenter.Url);
         }
 
@@ -30,12 +29,25 @@ namespace DigitalIcebreakers.EndToEndTests
         }
 
         [Fact]
-        public async Task Broadcasted_text_appears_on_client()
+        public async Task Broadcasted_text_appears_on_player()
         {
+            await _presenter.StartBroadcast();
             await _presenter.Page.TypeAsync("[type=text]", "abcde");
 
-            var element = await _player.Page.QuerySelectorAsync("text='abcde'");
-            element.ShouldNotBeNull();
+            var text = await _player.Page.GetTextContentByTestId("client-text");
+            text.ShouldBe("abcde");
+        }
+
+        [Fact]
+        public async Task Broadcasted_text_appears_on_player_after_refresh()
+        {
+            await _presenter.StartBroadcast();
+            await _presenter.Page.TypeAsync("[type=text]", "abc");
+            await _player.Page.ReloadAsync();
+            await _presenter.Page.TypeAsync("[type=text]", "de");
+
+            var text = await _player.Page.GetTextContentByTestId("client-text");
+            text.ShouldBe("abcde");
         }
     }
 }

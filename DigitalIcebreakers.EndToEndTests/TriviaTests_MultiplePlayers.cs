@@ -23,7 +23,7 @@ namespace DigitalIcebreakers.EndToEndTests
         public async Task InitializeAsync()
         {
             _presenter = await _browsers.CreatePresenter();
-            await _presenter.StartTrivia(); 
+            await _presenter.LoadTriviaQuestions();
             
             _players = await Task.WhenAll(Enumerable.Range(1, 2)
                 .ToList()
@@ -39,7 +39,7 @@ namespace DigitalIcebreakers.EndToEndTests
         public async Task Selected_answers_display_correctly()
         {
             var tasks = _players.Select(async p => {
-                await p.Page.ClickAsync("text='Correct'");
+                await p.Page.ClickAsync("text='Correct'", timeout: 1000);
                 await p.Page.ClickAsync(@"text='Lock In & Send'");
             });
             await Task.WhenAll(tasks);
