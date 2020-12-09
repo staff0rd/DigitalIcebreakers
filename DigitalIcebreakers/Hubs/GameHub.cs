@@ -229,12 +229,12 @@ namespace DigitalIcebreakers.Hubs
                     }
 
                     if (admin != null && _lobbys.PlayerIsAdmin(ConnectionId)) {
-                        _logger.LogDebug($"admin: {admin}");
+                        _logger.LogDebug($"admin: {admin.ToString(Formatting.None)}");
                         await lobby.CurrentGame.OnReceivePresenterMessage(admin, ConnectionId);
                     }
 
                     if (client != null) {
-                        _logger.LogDebug($"client: {client}");
+                        _logger.LogDebug($"client: {client.ToString(Formatting.None)}");
                         await lobby.CurrentGame.OnReceivePlayerMessage(client, ConnectionId);
                     }
                 } catch (Exception e)
