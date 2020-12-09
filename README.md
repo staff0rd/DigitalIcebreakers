@@ -35,7 +35,7 @@ I will create a game called *Splat* to illustrate what is required for a (rather
 #### Implement the Backend
 
 1. Add `Splat.cs` to `DigitalIcebreakers/Games`. I've just copied `Buzzer.cs` because the messaging is the same - I've just changed the class name and set the `Name` property.
-1. Add the `Splat` construtor to `GameHub.GetGame` .
+1. Add the `Splat` constructor to `GameHub.GetGame` .
 
 #### Implement the Frontend
 
