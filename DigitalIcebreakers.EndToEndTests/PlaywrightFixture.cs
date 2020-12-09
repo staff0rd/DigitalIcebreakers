@@ -4,13 +4,6 @@ using Xunit;
 
 namespace DigitalIcebreakers.EndToEndTests
 {
-    public static class ObjectMother
-    {
-        public class Presenter
-        {
-
-        }
-    }
     public class PlaywrightFixture : IDisposable, IAsyncLifetime
     {
         private readonly DisposableServices _disposableServices;
