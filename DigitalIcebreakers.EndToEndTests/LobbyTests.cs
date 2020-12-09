@@ -1,8 +1,6 @@
 using System.Threading.Tasks;
 using Xunit;
-using PlaywrightSharp;
 using Shouldly;
-using PlaywrightSharp.Chromium;
 
 namespace DigitalIcebreakers.EndToEndTests
 {

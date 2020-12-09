@@ -20,13 +20,23 @@ namespace DigitalIcebreakers.EndToEndTests
             await _page.ClickByTestId($"game-{gameId}");
         }
 
-        public async Task StartTrivia()
+        public async Task LoadTriviaQuestions()
         {
-            await StartGame("poll");
+            await StartTrivia();
             await _page.ClickAsync("text='Questions'");
             var element = await _page.QuerySelectorAsync("[type=file]");
             await element.SetInputFilesAsync("./questions.json");
             await _page.ClickAsync("text='Poll'");
+        }
+
+        public async Task StartBroadcast()
+        {
+            await StartGame("broadcast");
+        }
+
+        public async Task StartTrivia()
+        {
+            await StartGame("poll");
         }
     }
 }
