@@ -66,7 +66,6 @@ export default () => {
             setId(undefined);
             setPickStarted(undefined);
             app?.stage.children.forEach(t => t.alpha = 1);
-            debugger;
             dispatch(adminMessage({}));
         }
     }, [shouldPick]);
