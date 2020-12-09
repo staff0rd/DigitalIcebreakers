@@ -33,15 +33,9 @@ namespace DigitalIcebreakers.EndToEndTests
             var browser = await Create();
             var page = await browser.NewPageAsync();
             await page.GoToAsync(_settings.Url);
-            var presentButton = await page.GetByTestId("present-button");
-            presentButton.ShouldNotBeNull();
-            await presentButton.ClickAsync();
-            var createButton = await page.GetByTestId("create-lobby-button");
-            createButton.ShouldNotBeNull();
-            await createButton.ClickAsync();
-            var qrCode = await page.GetByTestId("qrcode-link");
-            qrCode.ShouldNotBeNull();
-            var url = await qrCode.GetAttributeAsync("href");
+            await page.ClickAsync("text='Present'", delay: 1000);
+            await page.ClickAsync("text='Create'", timeout: 2000);
+            var url = await page.GetAttributeAsync("[data-testid=qrcode-link]", "href", 1000);
             return new Presenter(browser, page, url);
         }
 
