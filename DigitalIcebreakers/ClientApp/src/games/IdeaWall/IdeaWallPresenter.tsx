@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Button, Navbar, FormGroup, Modal } from 'react-bootstrap';
+import { Button, Modal } from 'react-bootstrap';
 import { Events } from '../../Events';
 import { IdeaContainer, Lane } from './IdeaContainer';
 import { IdeaView } from './IdeaView';
