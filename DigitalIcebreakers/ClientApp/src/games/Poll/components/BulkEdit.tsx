@@ -8,6 +8,10 @@ import { useSelector } from 'store/useSelector';
 import Alert from '@material-ui/lab/Alert';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
+import { useDispatch } from 'react-redux';
+import { importQuestionsAction } from '../reducers/presenterReducer';
+import { Question } from '../types/Question';
+import { guid } from 'util/guid';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -28,8 +32,74 @@ type BulkEditProps = {
     setOpen: (open: boolean) => void,
 };
 
+export enum ErrorMessages {
+    FIRST_LINE_SHOULD_BE_QUESTION = 'First line should be a question, starting with a dash',
+    ONLY_ONE_ANSWER_PER_QUESTION = 'A question may have maximum one answer',
+}
+
+type ValidateResponse = {
+    isValid: boolean,
+    questions: Question[],
+    errorMessage: string | undefined,
+    errorLine: number | undefined,
+};
+
+export const validate = (questionsAndAnswers: string) : ValidateResponse => {
+    let questions: Question[] = [];
+    let errorMessage: string | undefined;
+    let errorLine: number | undefined;
+    
+    questionsAndAnswers
+        .split('\n')
+        .map(line => line.trim()) 
+        .filter(line => line) // remove empty lines 
+        .forEach((line, ix) => {
+            if (line.startsWith('-')) {
+                const trimmed = line.substr(1).trim();
+                questions.push({
+                    answers: [],
+                    id: guid(),
+                    responses: [],
+                    text: trimmed,
+                });
+            } else if (ix === 0) {
+                errorLine = 1;
+                errorMessage = ErrorMessages.FIRST_LINE_SHOULD_BE_QUESTION;
+                return;
+            } else if (line.startsWith('*')) {
+                const trimmed = line.substr(1).trim();
+                const currentAnswers = questions[questions.length-1].answers;
+                if (currentAnswers.find(a => a.correct)) {
+                    errorMessage = ErrorMessages.ONLY_ONE_ANSWER_PER_QUESTION;
+                    errorLine = ix + 1;
+                    return;
+                }
+                currentAnswers.push({
+                    correct: true,
+                    id: guid(),
+                    text: trimmed,
+                });
+            } else {
+                const trimmed = line.trim();
+                questions[questions.length-1].answers.push({
+                    correct: false,
+                    id: guid(),
+                    text: trimmed,
+                });
+            }
+        });
+    return {
+        isValid: errorMessage === undefined,
+        questions,
+        errorMessage,
+        errorLine,
+    }
+};
+
+
 export const BulkEdit = (props: BulkEditProps) => {
     const classes = useStyles();
+    const dispatch = useDispatch();
     const questionsFromState = useSelector(state => state.games.poll.presenter.questions.map(q => {
         const answers = q.answers.map(a => {
             if (a.correct)
@@ -45,7 +115,13 @@ export const BulkEdit = (props: BulkEditProps) => {
         setOpen
     } = props;
     const handleOk =() => {
-        setError(' an error ocurred');
+        const isValid = validate(questions);
+        if (isValid) {
+            // const importableQuestions: Question[] = questions.map(q => ({
+                
+            // }));
+            // dispatch(importQuestionsAction())
+        }
     }
     const handleClose = () => {
         setOpen(false);
