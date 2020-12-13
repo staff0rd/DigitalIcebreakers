@@ -47,6 +47,10 @@ const useStyles = makeStyles(theme => ({
             paddingRight: 8,
         }, 
     },
+    footer: {
+        flexWrap: 'wrap',
+        justifyContent: 'normal',
+    }
 }));
 
 export default () => {
@@ -94,6 +98,22 @@ export default () => {
             <ContentContainer>
                 <Card>
                     <CardTitle title="Questions" subTitle="Edit and arrange your questions here" />
+                    <CardFooter className={classes.footer}>
+                        <Button onClick={() => addQuestion()}>Add question</Button>
+                        <Button onClick={() => setShowBulkEdit(true)}>Bulk edit</Button>
+                        <Button onClick={() => dispatch(importQuestionsAction([]))}>Clear all questions</Button>
+                        <Button onClick={() => dispatch(clearResponsesAction())}>Clear all responses</Button>
+                        <Button onClick={() => (fileUpload.current as any).click()}>Import questions</Button>
+                        <Button onClick={() => exportQuestions()}>Export questions</Button>
+                        <input
+                            ref={fileUpload}
+                            type="file"
+                            id="file-upload"
+                            accept="application/json"
+                            className={classes.file}
+                            onChange={() => importQuestions()}
+                        />
+                    </CardFooter>
                     <CardBody>
                         <TableContainer component={Paper}>
                             <Table className={classes.table} aria-label="simple table">
@@ -152,22 +172,6 @@ export default () => {
                             </Table>
                         </TableContainer>
                     </CardBody>
-                    <CardFooter>
-                        <Button color='primary' onClick={() => addQuestion()}>Add question</Button>
-                        <Button onClick={() => setShowBulkEdit(true)}>Bulk edit</Button>
-                        <Button onClick={() => dispatch(importQuestionsAction([]))}>Clear all questions</Button>
-                        <Button onClick={() => dispatch(clearResponsesAction())}>Clear all responses</Button>
-                        <Button onClick={() => (fileUpload.current as any).click()}>Import questions</Button>
-                        <Button onClick={() => exportQuestions()}>Export questions</Button>
-                        <input
-                            ref={fileUpload}
-                            type="file"
-                            id="file-upload"
-                            accept="application/json"
-                            className={classes.file}
-                            onChange={() => importQuestions()}
-                        />
-                    </CardFooter>
                 </Card>
             </ContentContainer>
         </>

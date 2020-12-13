@@ -18,6 +18,9 @@ import { createSelector } from '@reduxjs/toolkit';
 const useStyles = makeStyles((theme) => ({
     paper: {
         width: '50%',
+        [theme.breakpoints.down('sm')]: {
+            width: '90%',
+        }
     },
     form: {
         marginTop: theme.spacing(2),
