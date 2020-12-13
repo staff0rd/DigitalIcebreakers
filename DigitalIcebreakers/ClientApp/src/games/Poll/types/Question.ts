@@ -1,9 +1,9 @@
 import { Answer } from "./Answer";
-import { Response } from './Response';
+import { Response } from "./Response";
 
 export type Question = {
-    id: string;
-    text: string;
-    answers: Answer[];
-    responses: Response[];
-}
+  id: string;
+  text: string;
+  answers: Answer[];
+  responses: Response[];
+};

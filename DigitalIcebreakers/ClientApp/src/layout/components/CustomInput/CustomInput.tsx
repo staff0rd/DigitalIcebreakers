@@ -2,7 +2,10 @@ import React, { ReactNode } from "react";
 import classNames from "classnames";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
-import FormControl, { FormControlTypeMap, FormControlProps } from "@material-ui/core/FormControl";
+import FormControl, {
+  FormControlTypeMap,
+  FormControlProps,
+} from "@material-ui/core/FormControl";
 import InputLabel, { InputLabelProps } from "@material-ui/core/InputLabel";
 import Input, { InputProps } from "@material-ui/core/Input";
 // @material-ui/icons
@@ -13,16 +16,15 @@ import styles from "../../assets/jss/material-dashboard-react/components/customI
 
 const useStyles = makeStyles(styles);
 
-type Props = { 
-  labelText: ReactNode,
-  labelProps?: InputLabelProps,
-  id: string,
-  inputProps?: InputProps,
-  formControlProps: FormControlProps,
-  error?: boolean,
-  success?: boolean
-} & Partial<InputProps>
-
+type Props = {
+  labelText: ReactNode;
+  labelProps?: InputLabelProps;
+  id: string;
+  inputProps?: InputProps;
+  formControlProps: FormControlProps;
+  error?: boolean;
+  success?: boolean;
+} & Partial<InputProps>;
 
 export default function CustomInput(props: Props) {
   const classes = useStyles();
@@ -38,15 +40,15 @@ export default function CustomInput(props: Props) {
 
   const labelClasses = classNames({
     [" " + classes.labelRootError]: error,
-    [" " + classes.labelRootSuccess]: success && !error
+    [" " + classes.labelRootSuccess]: success && !error,
   });
   const underlineClasses = classNames({
     [classes.underlineError]: error,
     [classes.underlineSuccess]: success && !error,
-    [classes.underline]: true
+    [classes.underline]: true,
   });
   const marginTop = classNames({
-    [classes.marginTop]: labelText === undefined
+    [classes.marginTop]: labelText === undefined,
   });
   return (
     <FormControl
@@ -66,7 +68,7 @@ export default function CustomInput(props: Props) {
         classes={{
           root: marginTop,
           disabled: classes.disabled,
-          underline: underlineClasses
+          underline: underlineClasses,
         }}
         id={id}
         {...rest}
@@ -79,5 +81,3 @@ export default function CustomInput(props: Props) {
     </FormControl>
   );
 }
-
-

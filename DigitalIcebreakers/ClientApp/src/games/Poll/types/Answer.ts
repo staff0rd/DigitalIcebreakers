@@ -1,5 +1,5 @@
 export type Answer = {
-    id: string;
-    text: string;
-    correct: boolean;
-}
+  id: string;
+  text: string;
+  correct: boolean;
+};

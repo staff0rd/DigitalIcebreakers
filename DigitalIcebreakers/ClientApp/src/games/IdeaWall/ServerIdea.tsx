@@ -1,4 +1,4 @@
 export interface ServerIdea {
-    content: string;
-    lane: number;
+  content: string;
+  lane: number;
 }

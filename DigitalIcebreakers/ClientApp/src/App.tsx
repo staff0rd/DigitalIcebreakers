@@ -1,146 +1,145 @@
-import React, { Component } from 'react';
-import { Redirect } from 'react-router';
-import Layout from './layout/layouts/Admin';
-import { guid } from './util/guid';
-import history from './history';
-import { Events } from './Events';
-import { ConnectionStatus } from './ConnectionStatus';
-import { Provider } from 'react-redux'
-import { configureAppStore } from './store/configureAppStore'
-import { EnhancedStore, AnyAction } from '@reduxjs/toolkit';
-import { RootState } from './store/RootState';
-import { connectionConnect } from './store/connection/actions';
-import { Config } from './config';
-import Admin from './layout/layouts/Admin';
-import ReactAI from './app-insights-deprecated';
-import { setUser } from './store/user/actions';
-import { useSelector } from './store/useSelector';
+import React, { Component } from "react";
+import { Redirect } from "react-router";
+import Layout from "./layout/layouts/Admin";
+import { guid } from "./util/guid";
+import history from "./history";
+import { Events } from "./Events";
+import { ConnectionStatus } from "./ConnectionStatus";
+import { Provider } from "react-redux";
+import { configureAppStore } from "./store/configureAppStore";
+import { EnhancedStore, AnyAction } from "@reduxjs/toolkit";
+import { RootState } from "./store/RootState";
+import { connectionConnect } from "./store/connection/actions";
+import { Config } from "./config";
+import Admin from "./layout/layouts/Admin";
+import ReactAI from "./app-insights-deprecated";
+import { setUser } from "./store/user/actions";
+import { useSelector } from "./store/useSelector";
 
 type AppState = {
-    user: User;
-    lobby?: AppLobby,
-    players: User[],
-    menuItems: JSX.Element[],
-    currentGame?: string,
-    isAdmin: boolean
-}
+  user: User;
+  lobby?: AppLobby;
+  players: User[];
+  menuItems: JSX.Element[];
+  currentGame?: string;
+  isAdmin: boolean;
+};
 
 type User = {
-    id: string;
-    name: string;
-}
+  id: string;
+  name: string;
+};
 
 type AppLobby = {
-    name: string,
-    id: string
-}
+  name: string;
+  id: string;
+};
 
 export default class App extends Component<{}, AppState> {
-    displayName = App.name
-    private isDebug = false;
-    private myStorage: Storage;
-    
-    private user: User;
-    private store: EnhancedStore<RootState, AnyAction>;
+  displayName = App.name;
+  private isDebug = false;
+  private myStorage: Storage;
 
-    constructor(props: any, context: any) {
-        super(props, context);
+  private user: User;
+  private store: EnhancedStore<RootState, AnyAction>;
 
-        this.isDebug = true;
+  constructor(props: any, context: any) {
+    super(props, context);
 
-        this.myStorage = window.localStorage;
+    this.isDebug = true;
 
-        this.user = this.getUser();
-        this.state = {
-            user: this.user,
-            isAdmin: false,
-            menuItems: [],
-            players: []
-        };
+    this.myStorage = window.localStorage;
 
-        this.store = configureAppStore();
-        
-        this.store.dispatch(setUser(this.user));
+    this.user = this.getUser();
+    this.state = {
+      user: this.user,
+      isAdmin: false,
+      menuItems: [],
+      players: [],
+    };
 
-        ReactAI.setAppContext({ userId: this.user.id });
+    this.store = configureAppStore();
 
-        window.onresize = () => Events.emit('onresize');
+    this.store.dispatch(setUser(this.user));
 
-        this.connect();
-    }
+    ReactAI.setAppContext({ userId: this.user.id });
 
-    private getUser() {
-        if (this.myStorage) {
-            const raw = this.myStorage.getItem("user");
-            if (raw) {
-                try {
-                const user = JSON.parse(raw);
-                console.log("User retrieved", user);
-                return user;
-                } catch {
-                    this.debug('Could not parse user');
-                }
-            }
+    window.onresize = () => Events.emit("onresize");
+
+    this.connect();
+  }
+
+  private getUser() {
+    if (this.myStorage) {
+      const raw = this.myStorage.getItem("user");
+      if (raw) {
+        try {
+          const user = JSON.parse(raw);
+          console.log("User retrieved", user);
+          return user;
+        } catch {
+          this.debug("Could not parse user");
         }
-
-        const user = { id: guid() };
-        if (this.myStorage)
-            this.myStorage.setItem("user", JSON.stringify(user));
-
-        return user;
+      }
     }
 
-    debug(...a: any[]) {
-        if (this.isDebug)
-            console.log('[app]', ...a);
-    }
+    const user = { id: guid() };
+    if (this.myStorage) this.myStorage.setItem("user", JSON.stringify(user));
 
-    getCurrentLocation() {
-        return history.location || window.location;
-    }
+    return user;
+  }
 
-    connect() {
-        let lobbyId:string|undefined = undefined;
-        if (this.currentLocationIsJoin()) {
-            lobbyId = this.getCurrentLocation().pathname.substr(6);
-        }
-        this.store.dispatch(connectionConnect(lobbyId));
-    }
+  debug(...a: any[]) {
+    if (this.isDebug) console.log("[app]", ...a);
+  }
 
-    currentLocationIsJoin() {
-        return this.getCurrentLocation().pathname.startsWith("/join/");
-    }
+  getCurrentLocation() {
+    return history.location || window.location;
+  }
 
-    setMenuItems = (items: JSX.Element[]) => {
-        this.setState({menuItems: items});
+  connect() {
+    let lobbyId: string | undefined = undefined;
+    if (this.currentLocationIsJoin()) {
+      lobbyId = this.getCurrentLocation().pathname.substr(6);
     }
+    this.store.dispatch(connectionConnect(lobbyId));
+  }
 
-    render() {
-        return (
-            <Provider store={this.store}>
-                <Main />
-            </Provider>
-        );
-    }
+  currentLocationIsJoin() {
+    return this.getCurrentLocation().pathname.startsWith("/join/");
+  }
+
+  setMenuItems = (items: JSX.Element[]) => {
+    this.setState({ menuItems: items });
+  };
+
+  render() {
+    return (
+      <Provider store={this.store}>
+        <Main />
+      </Provider>
+    );
+  }
 }
 
 const Main = () => {
+  const connectionStatus = useSelector((state) => state.connection.status);
+  const lobby = useSelector((state) => state.lobby);
+  const redirect = (condition: boolean, component: any) => {
+    if (condition) return component;
+    else return () => <Redirect to="/" />;
+  };
 
-    const connectionStatus = useSelector(state => state.connection.status);
-    const lobby = useSelector(state => state.lobby);
-    const redirect = (condition: boolean, component: any) => {
-        if (condition)
-            return component;
-        else
-            return () => <Redirect to="/" />
-    }
+  const connected = connectionStatus === ConnectionStatus.Connected;
+  // const game = redirect(connected, () => <Game />);
+  // const newGame = redirect(connected, () => <NewGame />);
+  // const closeLobby = redirect(connected, () => <CloseLobby />);
 
-    const connected = connectionStatus === ConnectionStatus.Connected;
-    // const game = redirect(connected, () => <Game />);
-    // const newGame = redirect(connected, () => <NewGame />);
-    // const closeLobby = redirect(connected, () => <CloseLobby />);
-    
-    return (
-        <Layout isAdmin={lobby.isAdmin} currentGame={lobby.currentGame} lobbyId={lobby.id} />
-    ); 
-}
+  return (
+    <Layout
+      isAdmin={lobby.isAdmin}
+      currentGame={lobby.currentGame}
+      lobbyId={lobby.id}
+    />
+  );
+};

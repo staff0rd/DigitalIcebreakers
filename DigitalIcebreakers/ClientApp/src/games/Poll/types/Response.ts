@@ -1,5 +1,5 @@
 export type Response = {
-    playerName: string;
-    playerId: string;
-    answerId: string;
-}
+  playerName: string;
+  playerId: string;
+  answerId: string;
+};

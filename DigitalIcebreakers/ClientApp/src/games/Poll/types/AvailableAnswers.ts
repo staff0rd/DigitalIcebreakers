@@ -1,8 +1,8 @@
 import { Answer } from "./Answer";
 
 export interface AvailableAnswers {
-    questionId: string;
-    answers: Answer[];
-    selectedAnswerId?: string;
-    question: string;
+  questionId: string;
+  answers: Answer[];
+  selectedAnswerId?: string;
+  question: string;
 }

@@ -1,7 +1,7 @@
-import { AvailableAnswers } from './AvailableAnswers';
+import { AvailableAnswers } from "./AvailableAnswers";
 
 export interface PollPlayerState extends AvailableAnswers {
-    selectedAnswerId?: string;
-    answerLocked: boolean;
-    canAnswer: boolean;
+  selectedAnswerId?: string;
+  answerLocked: boolean;
+  canAnswer: boolean;
 }
