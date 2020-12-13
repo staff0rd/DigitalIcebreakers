@@ -26,7 +26,7 @@ namespace DigitalIcebreakers.EndToEndTests
             await _page.ClickAsync("text='Questions'");
             var element = await _page.QuerySelectorAsync("[type=file]");
             await element.SetInputFilesAsync("./questions.json");
-            await _page.ClickAsync("text='Poll'");
+            await _page.ClickAsync("text='Poll / Trivia'");
         }
 
         public async Task StartBroadcast()
