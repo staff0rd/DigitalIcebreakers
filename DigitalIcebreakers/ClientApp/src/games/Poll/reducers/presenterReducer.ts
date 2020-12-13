@@ -79,10 +79,12 @@ export const currentQuestionSelector = createSelector(
     (state) => { 
         const question = state.questions.find(q => q.id === (state.currentQuestionId || ""));
         const currentQuestionId = state.currentQuestionId;
+        const totalQuestions = state.questions.length;
         const responseCount = (question?.responses?.length) || 0;
         const isTriviaMode = !!state.questions.filter(q => q.answers.find(a => a.correct)).length;
         const questionIds = state.questions.map(q => q.id);
         const currentQuestionIndex = currentQuestionId ? questionIds.indexOf(currentQuestionId) : -1;
+        const currentQuestionNumber = currentQuestionIndex + 1;
         const previousQuestionId = currentQuestionIndex > 0 ? questionIds[currentQuestionIndex-1] : null;
         const nextQuestionId = currentQuestionIndex != -1 && currentQuestionIndex < questionIds.length + 1 ? 
         questionIds[currentQuestionIndex+1] : null;
@@ -94,6 +96,8 @@ export const currentQuestionSelector = createSelector(
             previousQuestionId,
             nextQuestionId,
             isTriviaMode,
+            currentQuestionNumber,
+            totalQuestions,
         };
     }
 );

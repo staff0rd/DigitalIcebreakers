@@ -38,6 +38,8 @@ const PollPresenter = () => {
         nextQuestionId,
         previousQuestionId,
         isTriviaMode,
+        currentQuestionNumber,
+        totalQuestions,
     } = useSelector(currentQuestionSelector);
 
     const {
@@ -102,6 +104,8 @@ const PollPresenter = () => {
                 responseCount={responseCount}
                 playerCount={playerCount}
                 question={question!}
+                currentQuestionNumber={currentQuestionNumber}
+                totalQuestions={totalQuestions}
             />
         );
     }

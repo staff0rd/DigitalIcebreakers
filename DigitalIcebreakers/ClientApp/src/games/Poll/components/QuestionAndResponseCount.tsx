@@ -23,6 +23,8 @@ type Props = {
     question: Question;
     responseCount: number;
     playerCount: number;
+    totalQuestions: number;
+    currentQuestionNumber: number;
 }
 
 export const getCountMessage = (responseCount: number, playerCount: number) => {
@@ -37,7 +39,9 @@ const QuestionAndResponseCount = (props: Props) => {
     const {
         question,
         responseCount,
-        playerCount
+        playerCount,
+        totalQuestions,
+        currentQuestionNumber
     } = props;
     const classes = useStyles();
 
@@ -45,6 +49,7 @@ const QuestionAndResponseCount = (props: Props) => {
 
     return (
         <>
+            <Typography variant='overline'>Question {currentQuestionNumber} of {totalQuestions}</Typography>
             <h1 className={classes.question}>
                 {question.text}
             </h1>
