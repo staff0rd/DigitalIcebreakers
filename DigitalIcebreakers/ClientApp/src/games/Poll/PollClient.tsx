@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import { clientMessage } from '../../store/lobby/actions'
 import ContentContainer from '../../components/ContentContainer';
@@ -10,11 +10,8 @@ import Button from '../../layout/components/CustomButtons/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import { selectAnswerAction, lockAnswerAction } from './reducers/playerReducer';
 import { infoColor } from '../../layout/assets/jss/material-dashboard-react';
-import { createSelector } from '@reduxjs/toolkit';
-import { RootState } from '../../store/RootState';
-import { shuffle } from '../../Random';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
     item: {
         background: 'white',
         padding: 10,
@@ -35,16 +32,11 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-const answerSelector = createSelector(
-    (state: RootState) => state.games.poll.player.answers,
-    (answers) =>  shuffle([...answers]),
-);
-
 export default () => {
     const dispatch = useDispatch();
     const { questionId, selectedAnswerId, answerLocked, canAnswer, question } = useSelector(state => state.games.poll.player);
     
-    const answers = useSelector(answerSelector);
+    const answers = useSelector(state => state.games.poll.player.answers);
 
     const classes = useStyles();
     const lockAnswer = () => {

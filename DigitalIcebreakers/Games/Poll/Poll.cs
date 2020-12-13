@@ -106,7 +106,7 @@ namespace DigitalIcebreakers.Games
         {
             return new SelectableAnswers
             {
-                Answers = _lastAnswers.Answers,
+                Answers = _lastAnswers.Answers.Shuffle().ToArray(),
                 QuestionId = _lastAnswers.QuestionId,
                 SelectedAnswerId = GetCachedAnswer(player, _lastAnswers.QuestionId)?.AnswerId,
                 Question = _lastAnswers.Question,
