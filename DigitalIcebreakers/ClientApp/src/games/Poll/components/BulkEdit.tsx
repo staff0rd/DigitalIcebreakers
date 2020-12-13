@@ -71,7 +71,6 @@ export const validate = (questionsAndAnswers: string) : ValidateResponse => {
         } else if (i === 0) {
             errorLine = 1;
             errorMessage = ErrorMessages.FIRST_LINE_SHOULD_BE_QUESTION;
-            console.log('returning')
             break;
         } else if (line.startsWith('*')) {
             const trimmed = line.substr(1).trim();
