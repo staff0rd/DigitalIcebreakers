@@ -1,5 +1,6 @@
 import { createReceiveGameMessageReducer, createGameAction, createGameActionWithPayload } from '../../../store/actionHelpers';
 import { Question } from '../types/Question';
+import { Response } from '../types/Response';
 import { guid } from '../../../util/guid';
 import { SelectedAnswer } from '../types/SelectedAnswer';
 import { PollPresenterState } from '../types/PollPresenterState';
@@ -7,6 +8,7 @@ import StorageManager from '../../../store/StorageManager';
 import { RootState } from '../../../store/RootState';
 import { createSelector } from '@reduxjs/toolkit';
 import { Name } from '..';
+import { Player } from 'Player';
 
 export const storage = new StorageManager(window.localStorage);
 export const storageKey = "poll:questions";
@@ -23,6 +25,7 @@ export const setCurrentQuestionAction = createGameActionWithPayload<string>(Name
 
 type UserScore = {
     name: string;
+    id: string;
     score: number;
 }
 
@@ -41,6 +44,9 @@ const sort = (userScores: UserScore[]) => {
 
 }
 
+const getPlayersWithNoScore = (players: Player[], scores: UserScore[]) => players
+    .filter(user => !scores.find(score => score.id === user.id))
+    .map(user => ({ name: user.name, score: 0, id: user.id}));
 
 export const scoreBoardSelector = createSelector(
     (state: RootState) => ({
@@ -51,19 +57,25 @@ export const scoreBoardSelector = createSelector(
         const correctResponsesAsIds = state.questions.map(q => {
             const correctAnswer = q.answers.find(a => a.correct);
             const correctResponses = q.responses.filter(r => r.answerId == correctAnswer?.id);
-            const correctUserIds = correctResponses.map(r => r.playerId);
-            return correctUserIds;
+            return correctResponses;
         });
 
         /// https://schneidenbach.gitbooks.io/typescript-cookbook/content/functional-programming/flattening-array-of-arrays.html
-        const flattened = ([] as string[]).concat(...correctResponsesAsIds);
+        const flattened = ([] as Response[]).concat(...correctResponsesAsIds);
 
-        const scores = state.users.map(u => ({
-            name: u.name,
-            score: flattened.filter(id => id === u.id).length,
+        const ids = flattened.map(p => p.playerId);
+        const onlyUnique = <T>(value: T, index: number, self: T[]) => self.indexOf(value) === index;
+        const uniqueIds = ids.filter(onlyUnique);
+
+        const scores = uniqueIds.map(u => ({
+            name: flattened!.find(r => u === r.playerId)!.playerName,
+            id: u,
+            score: flattened.filter(id => id.playerId === u).length,
         }));
-
+        
         const sorted = sort(scores);
+        
+        sorted.push(...getPlayersWithNoScore(state.users, scores));
         
         return {
             scores: sorted,
@@ -79,10 +91,12 @@ export const currentQuestionSelector = createSelector(
     (state) => { 
         const question = state.questions.find(q => q.id === (state.currentQuestionId || ""));
         const currentQuestionId = state.currentQuestionId;
+        const totalQuestions = state.questions.length;
         const responseCount = (question?.responses?.length) || 0;
         const isTriviaMode = !!state.questions.filter(q => q.answers.find(a => a.correct)).length;
         const questionIds = state.questions.map(q => q.id);
         const currentQuestionIndex = currentQuestionId ? questionIds.indexOf(currentQuestionId) : -1;
+        const currentQuestionNumber = currentQuestionIndex + 1;
         const previousQuestionId = currentQuestionIndex > 0 ? questionIds[currentQuestionIndex-1] : null;
         const nextQuestionId = currentQuestionIndex != -1 && currentQuestionIndex < questionIds.length + 1 ? 
         questionIds[currentQuestionIndex+1] : null;
@@ -94,6 +108,8 @@ export const currentQuestionSelector = createSelector(
             previousQuestionId,
             nextQuestionId,
             isTriviaMode,
+            currentQuestionNumber,
+            totalQuestions,
         };
     }
 );
