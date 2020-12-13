@@ -25,6 +25,14 @@ type Props = {
     playerCount: number;
 }
 
+export const getCountMessage = (responseCount: number, playerCount: number) => {
+    if (playerCount === 0)
+        return 'Waiting for players to join...';
+    return responseCount !== playerCount ?
+        `${responseCount} of ${playerCount} players have answered` :
+        `All ${playerCount} players have answered`;
+}
+
 const QuestionAndResponseCount = (props: Props) => {
     const {
         question,
@@ -33,9 +41,7 @@ const QuestionAndResponseCount = (props: Props) => {
     } = props;
     const classes = useStyles();
 
-    const countMessage = responseCount !== playerCount ?
-        `${responseCount} out of possible ${playerCount}` :
-        `All ${playerCount} player(s) have answered`;
+    const countMessage = getCountMessage(responseCount, playerCount);
 
     return (
         <>
