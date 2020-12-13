@@ -1,1 +1,1 @@
-declare module 'react-animation-frame';
+declare module "react-animation-frame";

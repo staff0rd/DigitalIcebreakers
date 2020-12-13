@@ -12,31 +12,31 @@ import styles from "../../assets/jss/material-dashboard-react/components/buttonS
 
 const useStyles = makeStyles(styles);
 
-type Color = 
-  "primary" |
-  "info" |
-  "success" |
-  "warning" |
-  "danger" |
-  "rose" |
-  "white" |
-  "transparent";
+type Color =
+  | "primary"
+  | "info"
+  | "success"
+  | "warning"
+  | "danger"
+  | "rose"
+  | "white"
+  | "transparent";
 
 type Size = "sm" | "lg";
 
 interface Props extends Partial<DOMAttributes<HTMLButtonElement>> {
-  color?: Color,
-  size?: Size,
-  simple?: boolean,
-  round?: boolean,
-  disabled?: boolean,
-  block?: boolean,
-  link?: boolean,
-  justIcon?: boolean,
-  className?: string,
-  muiClasses?: object,
-  children?: ReactNode
-};
+  color?: Color;
+  size?: Size;
+  simple?: boolean;
+  round?: boolean;
+  disabled?: boolean;
+  block?: boolean;
+  link?: boolean;
+  justIcon?: boolean;
+  className?: string;
+  muiClasses?: object;
+  children?: ReactNode;
+}
 
 export default function RegularButton(props: Props) {
   const classes = useStyles();
@@ -64,7 +64,7 @@ export default function RegularButton(props: Props) {
     [classes.block]: block,
     [classes.link]: link,
     [classes.justIcon]: justIcon,
-    [className || ""]: className
+    [className || ""]: className,
   });
   return (
     <Button {...rest} classes={muiClasses} className={btnClasses}>

@@ -8,7 +8,7 @@ import {
   warningColor,
   dangerColor,
   whiteColor,
-  grayColor
+  grayColor,
 } from "../../material-dashboard-react.js";
 
 const headerStyle = () => ({
@@ -25,14 +25,14 @@ const headerStyle = () => ({
     borderRadius: "3px",
     transition: "all 150ms ease 0s",
     minHeight: "50px",
-    display: "block"
+    display: "block",
   },
   container: {
     ...container,
-    minHeight: "50px"
+    minHeight: "50px",
   },
   flex: {
-    flex: 1
+    flex: 1,
   },
   title: {
     ...defaultFont,
@@ -44,37 +44,37 @@ const headerStyle = () => ({
     color: "inherit",
     margin: "0",
     "&:hover,&:focus": {
-      background: "transparent"
-    }
+      background: "transparent",
+    },
   },
   appResponsive: {
-    top: "8px"
+    top: "8px",
   },
   primary: {
     backgroundColor: primaryColor[0],
     color: whiteColor,
-    ...defaultBoxShadow
+    ...defaultBoxShadow,
   },
   info: {
     backgroundColor: infoColor[0],
     color: whiteColor,
-    ...defaultBoxShadow
+    ...defaultBoxShadow,
   },
   success: {
     backgroundColor: successColor[0],
     color: whiteColor,
-    ...defaultBoxShadow
+    ...defaultBoxShadow,
   },
   warning: {
     backgroundColor: warningColor[0],
     color: whiteColor,
-    ...defaultBoxShadow
+    ...defaultBoxShadow,
   },
   danger: {
     backgroundColor: dangerColor[0],
     color: whiteColor,
-    ...defaultBoxShadow
-  }
+    ...defaultBoxShadow,
+  },
 });
 
 export default headerStyle;

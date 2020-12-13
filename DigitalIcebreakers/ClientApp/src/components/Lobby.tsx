@@ -1,6 +1,6 @@
-import React from 'react';
-import LobbyQrCode  from './LobbyQrCode';
+import React from "react";
+import LobbyQrCode from "./LobbyQrCode";
 
 export default () => {
-    return <LobbyQrCode lg />
-}
+  return <LobbyQrCode lg />;
+};

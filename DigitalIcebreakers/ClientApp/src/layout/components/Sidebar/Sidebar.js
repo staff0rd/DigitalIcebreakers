@@ -10,25 +10,26 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Icon from "@material-ui/core/Icon";
 import styles from "../../assets/jss/material-dashboard-react/components/sidebarStyle";
-import { toggleDrawer } from '../../../store/shell/actions';
-import { useDispatch } from 'react-redux';
-import { useLocation } from 'react-router';
-import SidebarFooter from '../../../components/SidebarFooter';
-import { useSelector } from '../../../store/useSelector';
+import { toggleDrawer } from "../../../store/shell/actions";
+import { useDispatch } from "react-redux";
+import { useLocation } from "react-router";
+import SidebarFooter from "../../../components/SidebarFooter";
+import { useSelector } from "../../../store/useSelector";
 import LobbyQrCode from "../../../components/LobbyQrCode";
 import Games from "../../../games/Games";
 
-const useStyles = (showQrCode) =>  makeStyles(theme => styles(showQrCode)(theme));
+const useStyles = (showQrCode) =>
+  makeStyles((theme) => styles(showQrCode)(theme));
 
 export default function Sidebar(props) {
   const dispatch = useDispatch();
   const location = useLocation();
-  const lobby = useSelector(state => state.lobby);
+  const lobby = useSelector((state) => state.lobby);
   const isAdmin = lobby.isAdmin;
-  const isLobby = location.pathname === '/';
+  const isLobby = location.pathname === "/";
   const classes = useStyles(lobby.id && !isLobby)();
-  const gameName = useSelector(state => state.lobby.currentGame);
-  const game = Games.find(g => g.name == gameName);
+  const gameName = useSelector((state) => state.lobby.currentGame);
+  const game = Games.find((g) => g.name == gameName);
   const GameMenu = game && game.menu;
 
   // verifies if routeName is the one active (in browser input)
@@ -38,58 +39,72 @@ export default function Sidebar(props) {
   const { color, logo, logoText, routes } = props;
   var links = (
     <List className={classes.list}>
-      {routes.filter(r => r.name)
+      {routes
+        .filter((r) => r.name)
         .map((prop, key) => {
-        var activePro = " ";
-        var listItemClasses;
-      
-        listItemClasses = classNames({
-          [" " + classes[color]]: activeRoute(prop.path)
-        });
-        
-        const whiteFontClasses = classNames({
-          [" " + classes.whiteFont]: activeRoute(prop.path)
-        });
-        return (
-          <>
-          <NavLink
-            to={prop.path}
-            className={activePro + classes.item}
-            activeClassName="active"
-            key={key}
-            onClick={() => dispatch(toggleDrawer(false))}
-          >
-            <ListItem button className={classes.itemLink + listItemClasses} data-testid={prop.testId}>
-              {typeof prop.icon === "string" ? (
-                <Icon
-                  className={classNames(classes.itemIcon, whiteFontClasses, {
-                    [classes.itemIconRTL]: props.rtlActive
-                  })}
+          var activePro = " ";
+          var listItemClasses;
+
+          listItemClasses = classNames({
+            [" " + classes[color]]: activeRoute(prop.path),
+          });
+
+          const whiteFontClasses = classNames({
+            [" " + classes.whiteFont]: activeRoute(prop.path),
+          });
+          return (
+            <>
+              <NavLink
+                to={prop.path}
+                className={activePro + classes.item}
+                activeClassName="active"
+                key={key}
+                onClick={() => dispatch(toggleDrawer(false))}
+              >
+                <ListItem
+                  button
+                  className={classes.itemLink + listItemClasses}
+                  data-testid={prop.testId}
                 >
-                  {prop.icon}
-                </Icon>
-              ) : (
-                <prop.icon
-                  className={classNames(classes.itemIcon, whiteFontClasses, {
-                    [classes.itemIconRTL]: props.rtlActive
-                  })}
-                />
-              )}
-              <ListItemText
-                primary={props.rtlActive ? prop.rtlName : prop.name}
-                className={classNames(classes.itemText, whiteFontClasses, {
-                  [classes.itemTextRTL]: props.rtlActive
-                })}
-                disableTypography={true}
-              />
-            </ListItem>
-          </NavLink>
-          { isAdmin && prop.path === '/game' && location.pathname === '/game' && GameMenu && (
-            <GameMenu />
-          )}
-        </>
-        );
-      })}
+                  {typeof prop.icon === "string" ? (
+                    <Icon
+                      className={classNames(
+                        classes.itemIcon,
+                        whiteFontClasses,
+                        {
+                          [classes.itemIconRTL]: props.rtlActive,
+                        }
+                      )}
+                    >
+                      {prop.icon}
+                    </Icon>
+                  ) : (
+                    <prop.icon
+                      className={classNames(
+                        classes.itemIcon,
+                        whiteFontClasses,
+                        {
+                          [classes.itemIconRTL]: props.rtlActive,
+                        }
+                      )}
+                    />
+                  )}
+                  <ListItemText
+                    primary={props.rtlActive ? prop.rtlName : prop.name}
+                    className={classNames(classes.itemText, whiteFontClasses, {
+                      [classes.itemTextRTL]: props.rtlActive,
+                    })}
+                    disableTypography={true}
+                  />
+                </ListItem>
+              </NavLink>
+              {isAdmin &&
+                prop.path === "/game" &&
+                location.pathname === "/game" &&
+                GameMenu && <GameMenu />}
+            </>
+          );
+        })}
     </List>
   );
   var brand = (
@@ -97,7 +112,7 @@ export default function Sidebar(props) {
       <NavLink
         to="/"
         className={classNames(classes.logoLink, {
-          [classes.logoLinkRTL]: props.rtlActive
+          [classes.logoLinkRTL]: props.rtlActive,
         })}
       >
         <div className={classes.logoImage}>
@@ -108,9 +123,7 @@ export default function Sidebar(props) {
     </div>
   );
 
-  const qrCode = lobby.id && !isLobby && (
-    <LobbyQrCode />
-  );
+  const qrCode = lobby.id && !isLobby && <LobbyQrCode />;
 
   return (
     <div>
@@ -121,12 +134,12 @@ export default function Sidebar(props) {
           open={props.open}
           classes={{
             paper: classNames(classes.drawerPaper, {
-              [classes.drawerPaperRTL]: props.rtlActive
-            })
+              [classes.drawerPaperRTL]: props.rtlActive,
+            }),
           }}
           onClose={() => dispatch(toggleDrawer())}
           ModalProps={{
-            keepMounted: true // Better open performance on mobile.
+            keepMounted: true, // Better open performance on mobile.
           }}
         >
           {brand}
@@ -135,9 +148,7 @@ export default function Sidebar(props) {
             {links}
             <SidebarFooter />
           </div>
-          <div
-            className={classes.background}
-          />
+          <div className={classes.background} />
         </Drawer>
       </Hidden>
       <Hidden smDown implementation="css">
@@ -147,8 +158,8 @@ export default function Sidebar(props) {
           open
           classes={{
             paper: classNames(classes.drawerPaper, {
-              [classes.drawerPaperRTL]: props.rtlActive
-            })
+              [classes.drawerPaperRTL]: props.rtlActive,
+            }),
           }}
         >
           {brand}
@@ -157,9 +168,7 @@ export default function Sidebar(props) {
             {links}
             <SidebarFooter />
           </div>
-          <div
-            className={classes.background}
-          />
+          <div className={classes.background} />
         </Drawer>
       </Hidden>
     </div>

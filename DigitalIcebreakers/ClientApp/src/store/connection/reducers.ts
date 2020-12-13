@@ -1,26 +1,26 @@
-import { ConnectionStatus } from '../../ConnectionStatus'
+import { ConnectionStatus } from "../../ConnectionStatus";
 import {
-    ConnectionState,
-    ConnectionActionTypes,
-    SET_CONNECTION_STATUS
-} from './types'
+  ConnectionState,
+  ConnectionActionTypes,
+  SET_CONNECTION_STATUS,
+} from "./types";
 
 const initialState: ConnectionState = {
-    status: ConnectionStatus.NotConnected
-}
+  status: ConnectionStatus.NotConnected,
+};
 
 export function connectionReducer(
-    state = initialState,
-    action: ConnectionActionTypes
+  state = initialState,
+  action: ConnectionActionTypes
 ): ConnectionState {
-    switch (action.type) {
-        case SET_CONNECTION_STATUS: {
-            return {
-                ...state,
-                status: action.status
-            }
-        }
-        default:
-            return state
+  switch (action.type) {
+    case SET_CONNECTION_STATUS: {
+      return {
+        ...state,
+        status: action.status,
+      };
     }
+    default:
+      return state;
+  }
 }

@@ -1,8 +1,8 @@
-import { Question } from './Question';
+import { Question } from "./Question";
 
 export interface PollPresenterState {
-    questions: Question[];
-    currentQuestionId: string | undefined;
-    showResponses: boolean;
-    showScoreBoard: boolean;
+  questions: Question[];
+  currentQuestionId: string | undefined;
+  showResponses: boolean;
+  showScoreBoard: boolean;
 }

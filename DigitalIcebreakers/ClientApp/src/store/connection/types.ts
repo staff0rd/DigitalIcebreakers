@@ -1,31 +1,35 @@
 import { ConnectionStatus } from "../../ConnectionStatus";
 
 export interface ConnectionState {
-    status: ConnectionStatus
+  status: ConnectionStatus;
 }
 
-export const SET_CONNECTION_STATUS = 'UPDATE_CONNECTION_STATUS';
-export const CONNECTION_CONNECT = 'CONNECTION_CONNECT';
-export const CONNECTION_RECONNECT = 'CONNECTION_RECONNECT';
-export const SET_GAME_MESSAGE_CALLBACK = 'SET_GAME_MESSAGE_CALLBACK';
+export const SET_CONNECTION_STATUS = "UPDATE_CONNECTION_STATUS";
+export const CONNECTION_CONNECT = "CONNECTION_CONNECT";
+export const CONNECTION_RECONNECT = "CONNECTION_RECONNECT";
+export const SET_GAME_MESSAGE_CALLBACK = "SET_GAME_MESSAGE_CALLBACK";
 
 interface SetConnectionStatusAction {
-    type: typeof SET_CONNECTION_STATUS
-    status: ConnectionStatus
+  type: typeof SET_CONNECTION_STATUS;
+  status: ConnectionStatus;
 }
 
 interface ConnectionConnectAction {
-    type: typeof CONNECTION_CONNECT;
-    lobbyId: string | undefined;
+  type: typeof CONNECTION_CONNECT;
+  lobbyId: string | undefined;
 }
 
 interface ConnectionReconnectAction {
-    type: typeof CONNECTION_RECONNECT;
+  type: typeof CONNECTION_RECONNECT;
 }
 
 interface SetGameMessageCallbackAction {
-    type: typeof SET_GAME_MESSAGE_CALLBACK;
-    callback: Function;
+  type: typeof SET_GAME_MESSAGE_CALLBACK;
+  callback: Function;
 }
 
-export type ConnectionActionTypes = SetConnectionStatusAction | ConnectionConnectAction | ConnectionReconnectAction | SetGameMessageCallbackAction;
+export type ConnectionActionTypes =
+  | SetConnectionStatusAction
+  | ConnectionConnectAction
+  | ConnectionReconnectAction
+  | SetGameMessageCallbackAction;
