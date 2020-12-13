@@ -45,7 +45,7 @@ namespace DigitalIcebreakers.EndToEndTests
             await _presenter.Page.TypeAsync("[type=text]", "abc");
             await _player.Page.ReloadAsync();
             await _presenter.Page.TypeAsync("[type=text]", "de");
-
+            await Task.Delay(300);
             var text = await _player.Page.GetTextContentByTestId("client-text");
             text.ShouldBe("abcde");
         }
