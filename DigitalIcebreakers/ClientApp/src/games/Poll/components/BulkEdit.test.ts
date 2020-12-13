@@ -8,6 +8,13 @@ describe('validate', () => {
         expect(result.errorLine).toBe(1);
     });
 
+    it('should handle first line not question and second line as correct answer and throw', () => {
+        const result = validate('not a question\n* a question');
+        expect(result.isValid).toBeFalsy();
+        expect(result.errorMessage).toBe(ErrorMessages.FIRST_LINE_SHOULD_BE_QUESTION);
+        expect(result.errorLine).toBe(1);
+    })
+
     it('should fail if a question has more than one answer', () => {
         const questionsAndAnswers = `
             - first
