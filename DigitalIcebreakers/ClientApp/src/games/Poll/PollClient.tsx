@@ -35,16 +35,11 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-const answerSelector = createSelector(
-    (state: RootState) => state.games.poll.player.answers,
-    (answers) =>  shuffle([...answers]),
-);
-
 export default () => {
     const dispatch = useDispatch();
     const { questionId, selectedAnswerId, answerLocked, canAnswer, question } = useSelector(state => state.games.poll.player);
     
-    const answers = useSelector(answerSelector);
+    const answers = useSelector(state => state.games.poll.player.answers);
 
     const classes = useStyles();
     const lockAnswer = () => {
