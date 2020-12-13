@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import Card from '../../../layout/components/Card/Card';
 import CardTitle from '../../../layout/components/Card/CardTitle';
 import CardFooter from '../../../layout/components/Card/CardFooter';
@@ -12,7 +12,6 @@ import Edit from '@material-ui/icons/Edit'
 import { useSelector } from '../../../store/useSelector';
 import ContentContainer from '../../../components/ContentContainer';
 import { makeStyles } from '@material-ui/core/styles';
-import Check from "@material-ui/icons/Check";
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -26,6 +25,7 @@ import { useDispatch } from 'react-redux';
 import { addQuestionAction, importQuestionsAction, deleteQuestionAction, clearResponsesAction } from '../reducers/presenterReducer';
 import array from '../../../util/array';
 import { saveAs } from 'file-saver';
+import { BulkEdit } from './BulkEdit';
 
 const useStyles = makeStyles(theme => ({
     table: {
@@ -47,9 +47,14 @@ const useStyles = makeStyles(theme => ({
             paddingRight: 8,
         }, 
     },
+    footer: {
+        flexWrap: 'wrap',
+        justifyContent: 'normal',
+    }
 }));
 
 export default () => {
+    const [showBulkEdit, setShowBulkEdit] = useState<boolean>(false);
     const classes = useStyles();
     const history = useHistory();
     const dispatch = useDispatch();
@@ -88,83 +93,87 @@ export default () => {
         }
     }
     return (
-        <ContentContainer>
-            <Card>
-                <CardTitle title="Questions" subTitle="Edit and arrange your questions here" />
-                <CardBody>
-                    <TableContainer component={Paper}>
-                        <Table className={classes.table} aria-label="simple table">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>Question</TableCell>
-                                    <TableCell>Answers</TableCell>
-                                    <TableCell>Responses</TableCell>
-                                    <TableCell></TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                            {questions
-                                .map((question, ix) => (
-                                <TableRow key={question.id}>
-                                    <TableCell component="th" scope="row">
-                                        {question.text}
-                                    </TableCell>
-                                    <TableCell>
-                                        <ul className={classes.answers}>
-                                            {question.answers.map((a, ix) => (
-                                                <li className={a.correct ? classes.checked : classes.unchecked} key={ix.toString()}>
-                                                    {a.text}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </TableCell>
-                                    <TableCell>{question.responses.length}</TableCell>
-                                    <TableCell>
-                                        <NavLink
-                                            to={`/questions/${question.id}`}
-                                        >
-                                            <IconButton>
-                                                <Edit />
+        <>
+            <BulkEdit open={showBulkEdit} setOpen={setShowBulkEdit} />
+            <ContentContainer>
+                <Card>
+                    <CardTitle title="Questions" subTitle="Edit and arrange your questions here" />
+                    <CardFooter className={classes.footer}>
+                        <Button onClick={() => addQuestion()}>Add question</Button>
+                        <Button onClick={() => setShowBulkEdit(true)}>Bulk edit</Button>
+                        <Button onClick={() => dispatch(importQuestionsAction([]))}>Clear all questions</Button>
+                        <Button onClick={() => dispatch(clearResponsesAction())}>Clear all responses</Button>
+                        <Button onClick={() => (fileUpload.current as any).click()}>Import questions</Button>
+                        <Button onClick={() => exportQuestions()}>Export questions</Button>
+                        <input
+                            ref={fileUpload}
+                            type="file"
+                            id="file-upload"
+                            accept="application/json"
+                            className={classes.file}
+                            onChange={() => importQuestions()}
+                        />
+                    </CardFooter>
+                    <CardBody>
+                        <TableContainer component={Paper}>
+                            <Table className={classes.table} aria-label="simple table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Question</TableCell>
+                                        <TableCell>Answers</TableCell>
+                                        <TableCell>Responses</TableCell>
+                                        <TableCell></TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                {questions
+                                    .map((question, ix) => (
+                                    <TableRow key={question.id}>
+                                        <TableCell component="th" scope="row">
+                                            {question.text}
+                                        </TableCell>
+                                        <TableCell>
+                                            <ul className={classes.answers}>
+                                                {question.answers.map((a, ix) => (
+                                                    <li className={a.correct ? classes.checked : classes.unchecked} key={ix.toString()}>
+                                                        {a.text}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </TableCell>
+                                        <TableCell>{question.responses.length}</TableCell>
+                                        <TableCell>
+                                            <NavLink
+                                                to={`/questions/${question.id}`}
+                                            >
+                                                <IconButton>
+                                                    <Edit />
+                                                </IconButton>
+                                            </NavLink>
+                                            <IconButton
+                                                disabled={ix === 0}
+                                                onClick={() => dispatch(importQuestionsAction(array.moveUp(questions, questions.indexOf(question))))}
+                                            >
+                                                <ArrowUpward />
                                             </IconButton>
-                                        </NavLink>
-                                        <IconButton
-                                            disabled={ix === 0}
-                                            onClick={() => dispatch(importQuestionsAction(array.moveUp(questions, questions.indexOf(question))))}
-                                        >
-                                            <ArrowUpward />
-                                        </IconButton>
-                                        <IconButton
-                                            disabled={ix === questions.length - 1}
-                                            onClick={() => dispatch(importQuestionsAction(array.moveDown(questions, questions.indexOf(question))))}
-                                        >
-                                            <ArrowDownward />
-                                        </IconButton>
-                                        <IconButton disabled={questions.length === 1} onClick={() => dispatch(deleteQuestionAction(question))}>
-                                            <Delete />
-                                        </IconButton>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </CardBody>
-                <CardFooter>
-                    <Button color='primary' onClick={() => addQuestion()}>Add question</Button>
-                    <Button onClick={() => dispatch(importQuestionsAction([]))}>Clear all questions</Button>
-                    <Button onClick={() => dispatch(clearResponsesAction())}>Clear all responses</Button>
-                    <Button onClick={() => (fileUpload.current as any).click()}>Import questions</Button>
-                    <Button onClick={() => exportQuestions()}>Export questions</Button>
-                    <input
-                        ref={fileUpload}
-                        type="file"
-                        id="file-upload"
-                        accept="application/json"
-                        className={classes.file}
-                        onChange={() => importQuestions()}
-                    />
-                </CardFooter>
-            </Card>
-        </ContentContainer>
+                                            <IconButton
+                                                disabled={ix === questions.length - 1}
+                                                onClick={() => dispatch(importQuestionsAction(array.moveDown(questions, questions.indexOf(question))))}
+                                            >
+                                                <ArrowDownward />
+                                            </IconButton>
+                                            <IconButton disabled={questions.length === 1} onClick={() => dispatch(deleteQuestionAction(question))}>
+                                                <Delete />
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </CardBody>
+                </Card>
+            </ContentContainer>
+        </>
     )
 }

@@ -46,11 +46,11 @@ interface Game {
 
 const games: Game[] = [{
         isNew: true,
-        title: 'Poll',
+        title: 'Poll / Trivia',
         name: PollName,
         client: PollClient,
         presenter: PollPresenter,
-        description: 'Audience polling: Add questions and poll your audience',
+        description: 'Audience polling: Add questions and poll your audience. Now with Trivia!',
         routes: [{
             component: EditQuestions,
             path: '/questions',
