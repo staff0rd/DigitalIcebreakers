@@ -4,15 +4,11 @@
   "tools": {
     "microsoft.tye": {
       "version": "0.1.0-alpha.20209.5",
-      "commands": [
-        "tye"
-      ]
+      "commands": ["tye"]
     },
     "nbgv": {
-      "version": "3.3.37",
-      "commands": [
-        "nbgv"
-      ]
+      "version": "3.4.161-alpha",
+      "commands": ["nbgv"]
     }
   }
 }
