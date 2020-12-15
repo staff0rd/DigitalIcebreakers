@@ -2,21 +2,60 @@ name: .NET Core build
 
 on:
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
-  build:
-
+  e2etests:
     strategy:
       matrix:
-        os: [ ubuntu-16.04, windows-2019 ]
-        dotnet: [ 3.1.301 ]
-        node: [ 12 ]
+        os: [ubuntu-16.04]
+        dotnet: [3.1.301]
+        node: [12]
 
     runs-on: ${{ matrix.os }}
 
     steps:
+      - name: Checkout git repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
 
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ matrix.dotnet }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Install dotnet tools
+        run: dotnet tool restore
+
+      - name: Install C# dependencies
+        run: dotnet restore
+
+      - name: build
+        # TODO: Remove CI=false
+        run: CI=false dotnet tye build -v Debug
+
+      - name: start container
+        run: docker run -d -p 5000:80 staff0rd/digitalicebreakers:$(dotnet nbgv get-version -v NuGetPackageVersion)
+
+      - name: run end-to-end tests
+        run: dotnet test
+        working-directory: DigitalIcebreakers.EndToEndTests
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-16.04, windows-2019]
+        dotnet: [3.1.301]
+        node: [12]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
       - name: Checkout git repository
         uses: actions/checkout@v2
         with:
