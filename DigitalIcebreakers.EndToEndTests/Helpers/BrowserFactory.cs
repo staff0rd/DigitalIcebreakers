@@ -2,7 +2,6 @@ using System;
 using PlaywrightSharp;
 using PlaywrightSharp.Chromium;
 using System.Threading.Tasks;
-using Shouldly;
 
 namespace DigitalIcebreakers.EndToEndTests
 {
