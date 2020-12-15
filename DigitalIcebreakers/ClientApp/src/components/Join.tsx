@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import GridItem from "../layout/components/Grid/GridItem";
 import GridContainer from "../layout/components/Grid/GridContainer.js";
 import CustomInput from "../layout/components/CustomInput/CustomInput";
@@ -7,30 +7,44 @@ import Card from "../layout/components/Card/Card.js";
 import CardBody from "../layout/components/Card/CardBody.js";
 import CardFooter from "../layout/components/Card/CardFooter.js";
 import { useDispatch } from "react-redux";
-import { joinLobby } from '../store/lobby/actions'
-import CardTitle from '../layout/components/Card/CardTitle';
-import ContentContainer from './ContentContainer';
+import { joinLobby } from "../store/lobby/actions";
+import CardTitle from "../layout/components/Card/CardTitle";
+import ContentContainer from "./ContentContainer";
+import { useParams } from "react-router";
+
+interface RouteParams {
+  id: string;
+}
 
 export default function Join() {
   const dispatch = useDispatch();
-  
-  const [lobbyCode, setLobbyCode] = useState<string>(''); 
+  const { id } = useParams<RouteParams>();
 
-  const isValid = () => {
-    return lobbyCode.trim().length == 4;
-  }
+  const [lobbyCode, setLobbyCode] = useState<string>("");
 
-  const handleChange: React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = (e) => {
+  useEffect(() => {
+    setLobbyCode(id || "");
+    if (id) {
+      join(id);
+    }
+  }, [id]);
+
+  const isValid = (code: string | undefined) => {
+    return code && code.trim().length == 4;
+  };
+
+  const handleChange: React.ChangeEventHandler<
+    HTMLTextAreaElement | HTMLInputElement
+  > = (e) => {
     setLobbyCode(e.target.value);
     console.log(e.target.value, lobbyCode);
-  }
+  };
 
-  const onClick = () => {
-    if (isValid())
-    {
+  const join = (lobbyCode: string | undefined) => {
+    if (isValid(lobbyCode)) {
       dispatch(joinLobby(lobbyCode!));
     }
-  }
+  };
 
   return (
     <ContentContainer>
@@ -45,17 +59,19 @@ export default function Join() {
                     labelText="Lobby code"
                     id="lobby-code"
                     formControlProps={{
-                      fullWidth: true
+                      fullWidth: true,
                     }}
                     value={lobbyCode}
                     onChange={(e) => handleChange(e)}
-                    error={!isValid()}
+                    error={!isValid(lobbyCode)}
                   />
                 </GridItem>
               </GridContainer>
             </CardBody>
             <CardFooter>
-              <Button color="primary" onClick={onClick}>Join</Button>
+              <Button color="primary" onClick={() => join(lobbyCode)}>
+                Join
+              </Button>
             </CardFooter>
           </Card>
         </GridItem>

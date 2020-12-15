@@ -56,7 +56,7 @@ const LobbyQrCode = ({ lg }: Props) => {
   const smStyles = useStylesSm();
   const classes = lg ? lgStyles : smStyles;
   const lobby = useSelector((state) => state.lobby);
-  const joinUrl = `${Config.baseUrl}/join/${lobby.id}`;
+  const joinUrl = `${Config.baseUrl}/join-lobby/${lobby.id}`;
   return (
     <div className={classes.container}>
       {lg && (
