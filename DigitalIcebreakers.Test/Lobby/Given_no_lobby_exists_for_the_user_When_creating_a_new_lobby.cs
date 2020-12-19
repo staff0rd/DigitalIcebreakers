@@ -4,16 +4,15 @@ using DigitalIcebreakers.Test;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SignalR.Internal;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Shouldly;
 using System;
 using System.Collections.Generic;
+using Xunit;
 
 namespace DigitalIcebreakers.Test
 {
-    [TestClass]
-    public class Given_no_lobby_exists_for_the_user_When_creating_a_new_lobby
+        public class Given_no_lobby_exists_for_the_user_When_creating_a_new_lobby
     {
         List<Lobby> _lobbys;
         public Given_no_lobby_exists_for_the_user_When_creating_a_new_lobby()
@@ -25,7 +24,7 @@ namespace DigitalIcebreakers.Test
             gameHub.CreateLobby(Guid.NewGuid(), null, new User(playerId, "")).Wait();
         }
 
-        [TestMethod]
+        [Fact]
         public void Then_create_a_new_lobby()
         {
             _lobbys.Count.ShouldBe(2);

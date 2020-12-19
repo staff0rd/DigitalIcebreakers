@@ -1,20 +1,18 @@
 ﻿using DigitalIcebreakers.Games;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Shouldly;
 using System;
 using System.Linq;
+using Xunit;
 
 namespace DigitalIcebreakers.Test
 {
-    [TestClass]
     public class Given_a_Client_message_When_received_by_hub
     {
         private MockGameHub _gameHub;
         private MockGame _game;
 
-        [TestInitialize]
-        public void Setup()
+        public Given_a_Client_message_When_received_by_hub()
         {
             var playerId = Guid.NewGuid();
             _gameHub = ObjectMother.GetMockGameHub(playerId);
@@ -27,7 +25,7 @@ namespace DigitalIcebreakers.Test
             Should.NotThrow(async () => { await _gameHub.HubMessage(payload); });
         }
 
-        [TestMethod]
+        [Fact]
         public void Then_is_forwarded_to_Game()
         {
             _game.AdminMessages.ShouldBeEmpty();
