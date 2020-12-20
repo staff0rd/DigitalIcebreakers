@@ -2,11 +2,11 @@ using DigitalIcebreakers.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using DigitalIcebreakers.Logging;
 
 namespace DigitalIcebreakers
 {
@@ -39,9 +39,9 @@ namespace DigitalIcebreakers
             services.Configure<AppSettings>(Configuration);
 
             services.AddSingleton<List<Lobby>>();
-
             services.AddScoped<ClientHelper>();
             services.AddScoped<LobbyManager>();
+            services.AddSingleton<LobbyLogger>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

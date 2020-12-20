@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DigitalIcebreakers.Games;
+using DigitalIcebreakers.Logging;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.Http.Connections.Features;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -16,13 +15,13 @@ namespace DigitalIcebreakers.Hubs
     public class GameHub : Hub
     {
         protected readonly LobbyManager _lobbys;
-        private ILogger<GameHub> _logger;
+        private LobbyLogger _logger;
         private AppSettings _settings;
         private readonly ClientHelper _clients;
         protected readonly Sender _send;
         protected virtual string ConnectionId => Context.ConnectionId;
 
-        public GameHub(ILogger<GameHub> logger, LobbyManager lobbyManager, IOptions<AppSettings> settings, ClientHelper clients)
+        public GameHub(LobbyLogger logger, LobbyManager lobbyManager, IOptions<AppSettings> settings, ClientHelper clients)
         {
             _lobbys = lobbyManager;
             _logger = logger;
@@ -44,7 +43,7 @@ namespace DigitalIcebreakers.Hubs
                 
             var lobby = _lobbys.CreateLobby(id, name, new Player { ConnectionId = Context.ConnectionId, Id = user.Id, IsAdmin = true, IsConnected = true, Name = user.Name });
 
-            _logger.LogInformation("{action} {lobbyName} for {id}", "created", lobby.Name, id);
+            _logger.Log("Created", lobby);
 
             await Connect(user, id);
         }
@@ -60,7 +59,7 @@ namespace DigitalIcebreakers.Hubs
         {
             if (lobby != null)
             {
-                _logger.LogInformation("Lobby {lobbyName} (#{lobbyNumber}, {lobbyPlayers} players) has been {action}", lobby.Name, lobby.Number, lobby.PlayerCount, "closed");
+                _logger.Log("Closed", lobby);
                 _lobbys.Close(lobby);
                 await _send.CloseLobby(ConnectionId,lobby);
             }
@@ -88,7 +87,7 @@ namespace DigitalIcebreakers.Hubs
             player.IsConnected = true;
             if (lobby != null)
             {
-                _logger.LogInformation("{player} {action} to lobby {lobbyName} (#{lobbyNumber}, {lobbyPlayers} players)", player, "re-connected", lobby.Name, lobby.Number, lobby.PlayerCount);
+                _logger.Log(player, "Reconnected", lobby);
                 
                 await _send.Reconnect(lobby, player);
                 if (!player.IsAdmin)
@@ -98,7 +97,7 @@ namespace DigitalIcebreakers.Hubs
                 await SystemMessage("join");
             }
             else {
-                _logger.LogInformation("{player} {action} ({transportType})", player, "connected", this.GetTransportType());
+                _logger.Log(player, "Connected", lobby, "({transportType})", this.GetTransportType());
                 await _send.Connected(ConnectionId);
             }
         }
@@ -118,7 +117,7 @@ namespace DigitalIcebreakers.Hubs
 
             if (lobby != null && player.IsAdmin)
             {
-                _logger.LogInformation("Lobby {lobbyName} (#{lobbyNumber}, {lobbyPlayers} players) has {action} {game}", lobby.Name, lobby.Number, lobby.PlayerCount, "started", name);
+                _logger.Log(lobby, "{action} {game}", new [] { "Started", name });
                 lobby.CurrentGame = GetGame(name);
                 await _send.NewGame(lobby, name);
                 await lobby.CurrentGame.Start(ConnectionId);
@@ -183,7 +182,7 @@ namespace DigitalIcebreakers.Hubs
 
         private async Task LeaveLobby(Player player, Lobby lobby)
         {
-            _logger.LogInformation("{player} has left {lobbyName} (#{lobbyNumber}, {lobbyPlayers} players)", player, lobby.Name, lobby.Number, lobby.PlayerCount);
+            _logger.Log(player, "Left", lobby);
             await _send.PlayerLeft(lobby, player);
             lobby.Players.Remove(player);
         }
@@ -195,7 +194,7 @@ namespace DigitalIcebreakers.Hubs
             _lobbys.GetPlayerAndLobby(ConnectionId, out var player, out var lobby);
             if (player != null)
             {
-                _logger.LogInformation("{player} {action}", player, "disconnected");
+                _logger.Log(player, "Disconnected", lobby);
                 player.IsConnected = false;
                 if (lobby != null)
                 {
@@ -224,24 +223,24 @@ namespace DigitalIcebreakers.Hubs
 
                 try {
                     if (system != null) {
-                        _logger.LogDebug($"system: {system}");
+                        _logger.Debug($"system: {system}");
                         await lobby.CurrentGame.OnReceiveSystemMessage(system, ConnectionId);
                     }
 
                     if (admin != null && _lobbys.PlayerIsAdmin(ConnectionId)) {
-                        _logger.LogDebug($"admin: {admin.ToString(Formatting.None)}");
+                        _logger.Debug($"admin: {admin.ToString(Formatting.None)}");
                         await lobby.CurrentGame.OnReceivePresenterMessage(admin, ConnectionId);
                     }
 
                     if (client != null) {
-                        _logger.LogDebug($"client: {client.ToString(Formatting.None)}");
+                        _logger.Debug($"client: {client.ToString(Formatting.None)}");
                         await lobby.CurrentGame.OnReceivePlayerMessage(client, ConnectionId);
                     }
                 } catch (Exception e)
                 {
                     // TODO: this occurs because a presenter is sending a message to a game that 
                     // hasn't yet been selected. Race condition during EndToEndTests
-                    _logger.LogError(e.Message);
+                    _logger.Error(e.Message);
                 }
             }
         }
