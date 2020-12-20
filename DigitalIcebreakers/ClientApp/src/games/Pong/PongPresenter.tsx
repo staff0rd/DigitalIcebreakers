@@ -124,8 +124,10 @@ class PongPresenter extends BaseGame<PropsFromRedux, {}> {
     }
 
     if (this.leftPaddle && this.rightPaddle) {
-      this.leftPaddle.y -= this.props.paddleSpeed * delta * this.props.left;
-      this.rightPaddle.y -= this.props.paddleSpeed * delta * this.props.right;
+      this.leftPaddle.y -=
+        this.props.paddleSpeed * delta * this.props.leftSpeed;
+      this.rightPaddle.y -=
+        this.props.paddleSpeed * delta * this.props.rightSpeed;
 
       this.clampPaddle(this.leftPaddle);
       this.clampPaddle(this.rightPaddle);
@@ -236,10 +238,16 @@ class PongPresenter extends BaseGame<PropsFromRedux, {}> {
 
   render() {
     return (
-      <Pixi
-        backgroundColor={Colors.Background}
-        onAppChange={(app) => this.init(app)}
-      />
+      <>
+        <div style={{ display: "none" }}>
+          <span id="red-team" data-count={this.props.rightTeam}></span>
+          <span id="blue-team" data-count={this.props.leftTeam}></span>
+        </div>
+        <Pixi
+          backgroundColor={Colors.Background}
+          onAppChange={(app) => this.init(app)}
+        />
+      </>
     );
   }
 }

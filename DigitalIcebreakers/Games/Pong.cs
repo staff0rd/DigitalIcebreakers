@@ -31,9 +31,13 @@ namespace DigitalIcebreakers.Games
                 case "release": Move(0, externalId); break;
                 case "up": Move(1, externalId); break;
                 case "down": Move(-1, externalId); break;
-                case "join": await Join(player); break;
+                case "join": {
+                    await Join(player);
+                    await UpdatePresenterTeamCount(connectionId); 
+                    break;
+                }
             }
-            await UpdatePresenter(connectionId);
+            await UpdatePresenterSpeed(connectionId);
         }
 
         public async override Task OnReceiveSystemMessage(JToken payload, string connectionId)
@@ -48,12 +52,18 @@ namespace DigitalIcebreakers.Games
                 case "leave": Leave(externalId); Move(0, externalId); break;
                 case "join": await Join(player); break;
             }
-            await UpdatePresenter(connectionId);
+            await UpdatePresenterSpeed(connectionId);
+            await UpdatePresenterTeamCount(connectionId);
         }
 
-        private async Task UpdatePresenter(string connectionId)
+        private async Task UpdatePresenterTeamCount(string connectionId)
         {
-            await SendToPresenter(connectionId, new Result(Speed(_leftTeam), Speed(_rightTeam)));
+            await SendToPresenter(connectionId, new Result("teams", _leftTeam.Count, _rightTeam.Count));
+        }
+
+        private async Task UpdatePresenterSpeed(string connectionId)
+        {
+            await SendToPresenter(connectionId, new Result("paddleDy", Speed(_leftTeam), Speed(_rightTeam)));
         }
 
         private decimal Speed(Dictionary<Guid, int> team)
@@ -126,11 +136,14 @@ namespace DigitalIcebreakers.Games
 
         public class Result
         {
-            public Result(decimal left, decimal right)
+            public Result(string command, decimal left, decimal right)
             {
                 Left = left;
                 Right = right;
+                Command = command;
             }
+
+            public string Command { get; set; }
 
             public decimal Left { get; set; }
 

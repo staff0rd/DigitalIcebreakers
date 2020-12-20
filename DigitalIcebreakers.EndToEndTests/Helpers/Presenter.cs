@@ -38,5 +38,10 @@ namespace DigitalIcebreakers.EndToEndTests
         {
             await StartGame("poll");
         }
+
+        public async Task StartPong()
+        {
+            await StartGame("pong");
+        }
     }
 }
