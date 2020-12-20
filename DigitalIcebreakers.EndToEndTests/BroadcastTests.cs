@@ -43,7 +43,7 @@ namespace DigitalIcebreakers.EndToEndTests
         {
             await _presenter.StartBroadcast();
             await _presenter.Page.TypeAsync("[type=text]", "abc");
-            await _player.Page.ReloadAsync();
+            await _player.Page.ReloadAsync(waitUntil: PlaywrightSharp.LifecycleEvent.DOMContentLoaded);
             await _presenter.Page.TypeAsync("[type=text]", "de");
             await Task.Delay(300);
             var text = await _player.Page.GetTextContentByTestId("client-text");

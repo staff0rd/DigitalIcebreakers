@@ -8,6 +8,7 @@ using Newtonsoft.Json.Linq;
 public class Broadcast : Game, IGame 
 {
     public override string Name => "broadcast";
+    private string _message = "";
     
     public Broadcast(Sender sender, LobbyManager lobbyManager) : base(sender, lobbyManager) {}
     
@@ -19,6 +20,16 @@ public class Broadcast : Game, IGame
     public async override Task OnReceivePresenterMessage(JToken admin, string connectionId)
     {
         string message = admin.ToObject<string>();
+        _message = message;
         await SendToPlayers(connectionId, message);
+    }
+
+    public async override Task OnReceiveSystemMessage(JToken payload, string connectionId)
+    {
+        string system = payload.ToString();
+        switch (system)
+        {
+            case "join": await SendToPlayer(connectionId, _message); break;
+        }
     }
 }
