@@ -1,19 +1,17 @@
 ﻿using DigitalIcebreakers.Games;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Shouldly;
 using System;
 using System.Linq;
+using Xunit;
 
 namespace DigitalIcebreakers.Test
 {
-    [TestClass]
     public class Given_an_Admin_message_When_sent_by_Admin
     {
         private MockGame _game;
 
-        [TestInitialize]
-        public void Setup()
+        public Given_an_Admin_message_When_sent_by_Admin()
         {
             var playerId = Guid.NewGuid();
             var adminId = Guid.NewGuid();
@@ -27,7 +25,7 @@ namespace DigitalIcebreakers.Test
             Should.NotThrow(async () => { await gameHub.HubMessage(payload); });
         }
 
-        [TestMethod]
+        [Fact]
         public void Then_is_forwarded_to_Game()
         {
             _game.AdminMessages.ShouldNotBeEmpty();

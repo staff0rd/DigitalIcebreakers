@@ -66,7 +66,7 @@ namespace DigitalIcebreakers.Games
             var lobby = _lobbys.GetLobbyByConnectionId(connectionId);
             
             await Task.WhenAll(
-                lobby.GetPlayers()
+                lobby.GetConnectedPlayers()
                 .Select(player => _sender.SendGameMessageToPlayer(player, payloadFunction(player))));
         }
 
@@ -97,7 +97,7 @@ namespace DigitalIcebreakers.Games
 
         public Player[] GetPlayers(string connectionId)
         {
-            return _lobbys.GetLobbyByConnectionId(connectionId).GetPlayers();
+            return _lobbys.GetLobbyByConnectionId(connectionId).GetConnectedPlayers();
         }
     }
 }

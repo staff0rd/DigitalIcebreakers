@@ -1,9 +1,9 @@
 using DigitalIcebreakers.Hubs;
 using System.Collections.Generic;
-using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Moq;
+using DigitalIcebreakers.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace DigitalIcebreakers.Test
 {
@@ -15,7 +15,7 @@ namespace DigitalIcebreakers.Test
         public Sender Sender => _send;
 
         public MockGameHub(List<Lobby> lobbys, string connectionId) 
-            : base(new Mock<ILogger<GameHub>>().Object, new LobbyManager(lobbys), new Mock<IOptions<AppSettings>>().Object, new ClientHelper(ObjectMother.GetMockContext().Object))
+            : base(new LobbyLogger(new Mock<ILogger<LobbyLogger>>().Object), new LobbyManager(lobbys), new Mock<IOptions<AppSettings>>().Object, new ClientHelper(ObjectMother.GetMockContext().Object))
         {
             _connectionId = connectionId;
         }
