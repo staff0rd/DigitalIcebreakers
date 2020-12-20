@@ -20,17 +20,16 @@ export interface TeamColors {
   down: number;
 }
 
-export interface PaddleDy {
-  left: number;
-  right: number;
-}
-
-export interface PongPresenterState extends PaddleDy {
+export interface PongPresenterState {
   paddleHeight: number;
   paddleWidth: number;
   paddleSpeed: number;
   ballSpeed: number;
   score: number[];
+  leftSpeed: number;
+  rightSpeed: number;
+  leftTeam: number;
+  rightTeam: number;
 }
 
 export const rightScores = createGameAction(Name, "presenter", "right-scores");
@@ -57,21 +56,58 @@ export const setBallSpeed = createGameActionWithPayload<number>(
   "set-ball-speed"
 );
 
-const adminReducer = createReceiveGameMessageReducer<PongPresenterState>(
+type PaddleDyMessage = {
+  command: "paddleDy";
+  left: number;
+  right: number;
+};
+
+type TeamsMessage = {
+  command: "teams";
+  left: number;
+  right: number;
+};
+
+const adminReducer = createReceiveGameMessageReducer<
+  PaddleDyMessage | TeamsMessage,
+  PongPresenterState
+>(
   Name,
   {
-    left: 0,
-    right: 0,
+    leftSpeed: 0,
+    rightSpeed: 0,
+    leftTeam: 0,
+    rightTeam: 0,
     paddleSpeed: 200,
     paddleHeight: 5,
     paddleWidth: 55,
     ballSpeed: 3,
     score: [0, 0],
   },
-  (state, { payload: { payload: dy } }) => ({
-    ...state,
-    ...dy,
-  }),
+  (
+    state,
+    {
+      payload: {
+        payload: { command, left, right },
+      },
+    }
+  ) => {
+    switch (command) {
+      case "paddleDy":
+        return {
+          ...state,
+          leftSpeed: left,
+          rightSpeed: right,
+        };
+      case "teams": {
+        return {
+          ...state,
+          leftTeam: left,
+          rightTeam: right,
+        };
+      }
+    }
+  },
   "presenter",
   (builder) => {
     builder.addCase(rightScores, (state) => ({
