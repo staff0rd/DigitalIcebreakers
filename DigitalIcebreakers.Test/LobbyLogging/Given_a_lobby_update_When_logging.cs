@@ -28,7 +28,7 @@ namespace DigitalIcebreakers.Test
         [Fact]
         public void Should_log_lobbyId()
         {
-            var lobbyId = Guid.NewGuid();
+            var lobbyId = "id";
             _lobbyLogger.Log("Created", new Lobby{Id = lobbyId });
             _logger.Last.Message.ShouldContain($"Id: {lobbyId}");
         }

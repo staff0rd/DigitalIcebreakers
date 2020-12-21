@@ -1,7 +1,7 @@
 
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
+using Xunit;
 
 namespace DigitalIcebreakers.Test
 {
@@ -24,7 +24,6 @@ namespace DigitalIcebreakers.Test
         }
     }
 
-    [TestClass]
     public class Given_a_lobby_id_already_exists_When_generating_an_id
     {
         string actual;
@@ -34,7 +33,7 @@ namespace DigitalIcebreakers.Test
             actual = new MockLobbyIdService("ONE", "TWO").GetCode(lobbys);
         }
         
-        [TestMethod]
+        [Fact]
         public void Then_generate_another()
         {
             actual.ShouldBe("TWO");
