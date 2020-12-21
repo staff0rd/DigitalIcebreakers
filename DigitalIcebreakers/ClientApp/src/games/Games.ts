@@ -25,7 +25,7 @@ import ReactionPresenter from "./Reaction/ReactionPresenter";
 import { Name as PollName } from "./Poll";
 import PollPresenter from "./Poll/PollPresenter";
 import PollClient from "./Poll/PollClient";
-import { RouteLink } from "../layout/routes";
+import { RouteLink } from "../layout/useRoutes";
 import LiveHelp from "@material-ui/icons/LiveHelp";
 import EditQuestions from "./Poll/components/EditQuestions";
 import EditQuestion from "./Poll/components/EditQuestion";
