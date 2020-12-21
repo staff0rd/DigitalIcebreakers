@@ -46,7 +46,7 @@ namespace DigitalIcebreakers
             if (player.IsAdmin)
                 await _clients.Admin(lobby).SendAsync("Players", 
                     lobby.Players
-                    .Where(p => p.IsConnected && !p.IsAdmin)
+                    .Where(p => p.IsConnected && p.IsRegistered && !p.IsAdmin)
                     .Select(p => new { id =  p.ExternalId, name = p.Name })
                     .ToArray());
         }

@@ -12,7 +12,7 @@ const initialState: UserState = {
   name: "",
   isRegistered: false,
   isJoining: false,
-  desiredLobbyId: undefined,
+  joinLobyId: undefined,
 };
 
 export function userReducer(
@@ -25,6 +25,7 @@ export function userReducer(
         ...state,
         name: action.name,
         isRegistered: true,
+        isJoining: false,
       };
     }
     case SET_USER: {
@@ -37,7 +38,7 @@ export function userReducer(
     case SET_DESIRED_LOBBY_ID: {
       return {
         ...state,
-        desiredLobbyId: action.id,
+        joinLobyId: action.id,
       };
     }
     case SET_IS_JOINING: {

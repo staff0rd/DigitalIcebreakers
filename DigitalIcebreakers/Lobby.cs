@@ -30,7 +30,7 @@ namespace DigitalIcebreakers
 
         internal Player[] GetConnectedPlayers()
         {
-            return Players.Where(p => p.IsConnected && !p.IsAdmin).ToArray();
+            return Players.Where(p => p.IsConnected && p.IsRegistered && !p.IsAdmin).ToArray();
         }
 
         internal Player[] GetTotalPlayers()

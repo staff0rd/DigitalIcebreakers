@@ -27,6 +27,7 @@ export interface RouteLink {
 
 const useRoutes = () => {
   const lobby = useSelector((state) => state.lobby);
+  const user = useSelector((state) => state.user);
   const game = useSelector((state) =>
     Games.find((g) => g.name === state.lobby.currentGame)
   );
@@ -89,6 +90,8 @@ const useRoutes = () => {
   const registerRoute = {
     path: "/register",
     component: Register,
+    name: "Register",
+    icon: GroupAdd,
   };
 
   const lobbyClosedRoute = {
@@ -101,13 +104,16 @@ const useRoutes = () => {
   const ifAdmin = (...routes: RouteLink[]) => (lobby.isAdmin ? routes : []);
   const ifGame = (yes: RouteLink[], no: RouteLink[]) => (game ? yes : no);
 
+  if (user.isJoining && !user.isRegistered && lobby.id) {
+    return [registerRoute];
+  }
+
   return [
     ...ifLobby(lobbyRoute),
     ...ifNoLobby(homeRoute, createLobbyRoute, joinRoute),
     ...ifAdmin(newGameRoute),
     ...ifGame([gameRoute, ...gameRoutes], [noGameRoute]),
     ...ifAdmin(closeLobbyRoute),
-    registerRoute,
     lobbyClosedRoute,
   ];
 };

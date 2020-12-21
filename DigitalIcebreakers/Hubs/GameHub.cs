@@ -31,11 +31,6 @@ namespace DigitalIcebreakers.Hubs
             _send = new Sender(_clients);
         }
 
-        public int GetConnectedPlayerCount()
-        {
-            return _lobbys.GetLobbyByConnectionId(ConnectionId).Players.Count(p => !p.IsAdmin && p.IsConnected);
-        }
-
         public async Task CreateLobby(string name, User user)
         {
             _lobbys.GetByAdminId(user.Id)
@@ -89,9 +84,11 @@ namespace DigitalIcebreakers.Hubs
             if (lobby != null)
             {
                 _logger.Log(player, "Reconnected", lobby);
+
+                _logger.Debug($"Registered: {player.IsRegistered}");
                 
                 await _send.Reconnect(lobby, player);
-                if (!player.IsAdmin)
+                if (!player.IsAdmin && player.IsRegistered)
                 {
                     await _send.Joined(lobby, player);
                 }
@@ -108,6 +105,11 @@ namespace DigitalIcebreakers.Hubs
             var player = _lobbys.GetOrCreatePlayer(user.Id, user.Name);
             
             player.ConnectionId = connectionId;
+            if (user.IsRegistered)
+            {
+                player.IsRegistered = true;
+                player.Name = user.Name;
+            }
 
             return player;
         }

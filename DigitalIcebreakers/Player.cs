@@ -24,11 +24,10 @@ namespace DigitalIcebreakers
     public class User
     {
         public string Name { get; set; }
-
         public Guid Id { get; set; }
+        public bool IsRegistered { get; set; }
 
         public User() { }
-
         public User(Guid id, string name)
         {
             Name = name;

@@ -4,7 +4,7 @@ export interface UserState {
   name: string;
   id: string;
   isRegistered: boolean;
-  desiredLobbyId: string | undefined;
+  joinLobyId: string | undefined;
   isJoining: boolean;
 }
 

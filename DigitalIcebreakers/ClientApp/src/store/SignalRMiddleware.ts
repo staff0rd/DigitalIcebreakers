@@ -35,7 +35,7 @@ import {
   LobbyActionTypes,
   SET_LOBBY,
 } from "./lobby/types";
-import { UserActionTypes } from "./user/types";
+import { SET_USER_NAME, UserActionTypes } from "./user/types";
 import { goToDefaultUrl, setMenuItems } from "./shell/actions";
 import { GO_TO_DEFAULT_URL, ShellActionTypes } from "./shell/types";
 
@@ -77,20 +77,22 @@ export const SignalRMiddleware = () => {
         };
       }
       dispatch(updateConnectionStatus(ConnectionStatus.Connected));
-      dispatch(
-        setLobby(
-          response.lobbyId,
-          response.lobbyName,
-          response.isAdmin,
-          response.players,
-          response.currentGame
-        )
-      );
-      dispatch(setUser(user));
-      if (response.currentGame) {
-        dispatch(setLobbyGame(response.currentGame));
-      } else {
-        dispatch(goToDefaultUrl());
+      if (!getState().user.isJoining) {
+        dispatch(
+          setLobby(
+            response.lobbyId,
+            response.lobbyName,
+            response.isAdmin,
+            response.players,
+            response.currentGame
+          )
+        );
+        dispatch(setUser(user));
+        if (response.currentGame) {
+          dispatch(setLobbyGame(response.currentGame));
+        } else {
+          dispatch(goToDefaultUrl());
+        }
       }
     });
     connection.on("joined", (user) => {
@@ -211,6 +213,13 @@ export const SignalRMiddleware = () => {
             }
           }
           break;
+        }
+        case SET_USER_NAME: {
+          const value = next(action);
+          const { user, lobby } = getState();
+          console.warn("connecting: ", JSON.stringify(user));
+          invoke("connectToLobby", user, lobby.id);
+          return value;
         }
         case JOIN_LOBBY: {
           if (getState().connection.status === ConnectionStatus.Connected) {
