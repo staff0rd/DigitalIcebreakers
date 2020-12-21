@@ -19,8 +19,9 @@ import {
   playerLeftLobby,
   setLobbyGame,
   setLobbyPlayers,
+  joinLobby,
 } from "./lobby/actions";
-import { setUser } from "./user/actions";
+import { setDesiredLobbyId, setUser } from "./user/actions";
 import history from "../history";
 import {
   CLEAR_LOBBY,
@@ -32,11 +33,16 @@ import {
   GAME_MESSAGE_CLIENT,
   GAME_MESSAGE_ADMIN,
   LobbyActionTypes,
+  SET_LOBBY,
 } from "./lobby/types";
-import { guid } from "../util/guid";
 import { UserActionTypes } from "./user/types";
 import { goToDefaultUrl, setMenuItems } from "./shell/actions";
 import { GO_TO_DEFAULT_URL, ShellActionTypes } from "./shell/types";
+
+const navigateTo = (path: string) => {
+  console.log(`Navigating to ${path}`);
+  history.push(path);
+};
 
 export const SignalRMiddleware = () => {
   const connectionRetrySeconds = [0, 1, 4, 9, 16, 25, 36, 49];
@@ -84,7 +90,7 @@ export const SignalRMiddleware = () => {
       if (response.currentGame) {
         dispatch(setLobbyGame(response.currentGame));
       } else {
-        history.push("/");
+        dispatch(goToDefaultUrl());
       }
     });
     connection.on("joined", (user) => {
@@ -137,7 +143,7 @@ export const SignalRMiddleware = () => {
           return;
         }
         case CLEAR_LOBBY: {
-          history.push("/lobby-closed");
+          navigateTo("/lobby-closed");
           break;
         }
         case START_NEW_GAME: {
@@ -145,7 +151,6 @@ export const SignalRMiddleware = () => {
           break;
         }
         case SET_LOBBY_GAME: {
-          history.push("/game");
           const isAdmin = getState().lobby.isAdmin;
           connection.on("gameMessage", (args: any) => {
             dispatch({
@@ -155,7 +160,9 @@ export const SignalRMiddleware = () => {
               payload: args,
             });
           });
-          break;
+          const value = next(action);
+          dispatch(goToDefaultUrl());
+          return value;
         }
         case CONNECTION_CONNECT: {
           setTimeout(() => {
@@ -196,14 +203,21 @@ export const SignalRMiddleware = () => {
               dispatch(connectionConnect());
               break;
             case ConnectionStatus.Connected: {
-              dispatch(goToDefaultUrl());
+              const { user } = getState();
+              if (user.desiredLobbyId) {
+                dispatch(joinLobby(user.desiredLobbyId));
+              } else dispatch(goToDefaultUrl());
               break;
             }
           }
           break;
         }
         case JOIN_LOBBY: {
-          invoke("connectToLobby", getState().user, action.id);
+          if (getState().connection.status === ConnectionStatus.Connected) {
+            invoke("connectToLobby", getState().user, action.id);
+          } else {
+            dispatch(setDesiredLobbyId(action.id));
+          }
           break;
         }
         case CLOSE_LOBBY: {
@@ -225,19 +239,23 @@ export const SignalRMiddleware = () => {
           break;
         }
         case GO_TO_DEFAULT_URL: {
-          if (history.location) {
-                        const isJoin = history.location.pathname.startsWith('/join/') ||
-                            history.location.pathname.startsWith('/join-lobby/');
-            if (!isJoin || action.ignoreJoin) {
-              const currentGame = getState().lobby.currentGame;
-              if (currentGame) {
-                dispatch(setLobbyGame(currentGame));
-              } else {
-                history.push("/");
-              }
+          const { user, lobby } = getState();
+          if (user.isJoining && !user.isRegistered) {
+            console.log("pushing register", lobby.isAdmin, user.isRegistered);
+            navigateTo("/register");
+          } else {
+            const currentGame = getState().lobby.currentGame;
+            if (currentGame) {
+              navigateTo("/game");
+            } else {
+              navigateTo("/");
             }
           }
-          return;
+          break;
+        }
+        case SET_LOBBY: {
+          dispatch(setDesiredLobbyId(undefined));
+          break;
         }
       }
       return next(action);

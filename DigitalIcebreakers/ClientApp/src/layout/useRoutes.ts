@@ -6,7 +6,7 @@ import SportsEsports from "@material-ui/icons/SportsEsports";
 import Cancel from "@material-ui/icons/Cancel";
 import CreateLobby from "../components/CreateLobby";
 import CloseLobby from "../components/CloseLobby";
-import JoinLobby from "../components/JoinLobby";
+import Register from "../components/Register";
 import Join from "../components/Join";
 import LobbyClosed from "../components/LobbyClosed";
 import { Lobby } from "../components/Lobby";
@@ -86,9 +86,9 @@ const useRoutes = () => {
     component: CloseLobby,
   };
 
-  const joinLobbyRoute = {
-    path: "/join/:id",
-    component: JoinLobby,
+  const registerRoute = {
+    path: "/register",
+    component: Register,
   };
 
   const lobbyClosedRoute = {
@@ -107,7 +107,7 @@ const useRoutes = () => {
     ...ifAdmin(newGameRoute),
     ...ifGame([gameRoute, ...gameRoutes], [noGameRoute]),
     ...ifAdmin(closeLobbyRoute),
-    joinLobbyRoute,
+    registerRoute,
     lobbyClosedRoute,
   ];
 };

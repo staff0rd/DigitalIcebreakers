@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { useSelector } from "../store/useSelector";
 import { setUserName } from "../store/user/actions";
 import { joinLobby } from "../store/lobby/actions";
@@ -12,18 +12,12 @@ import CardBody from "../layout/components/Card/CardBody.js";
 import CardFooter from "../layout/components/Card/CardFooter.js";
 import { useDispatch } from "react-redux";
 import CardTitle from "../layout/components/Card/CardTitle";
-import { useParams } from "react-router-dom";
 import { ContentContainer } from "../components/ContentContainer";
 
-interface RouteParams {
-  id: string;
-}
-
-export default function JoinLobby() {
+const Register = () => {
   const initialName = useSelector((state) => state.user.name || "");
   const [name, setName] = useState<string>(initialName);
   const dispatch = useDispatch();
-  const params = useParams<RouteParams>();
 
   const isValid = () => {
     return name.trim().length > 2;
@@ -32,8 +26,7 @@ export default function JoinLobby() {
   const onSubmit = (e: any) => {
     if (isValid()) {
       dispatch(setUserName(name));
-      dispatch(joinLobby(params.id));
-      dispatch(goToDefaultUrl(true));
+      dispatch(goToDefaultUrl());
     }
   };
 
@@ -76,4 +69,5 @@ export default function JoinLobby() {
       </GridContainer>
     </ContentContainer>
   );
-}
+};
+export default Register;

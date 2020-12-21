@@ -62,7 +62,7 @@ export default class App extends Component<{}, AppState> {
 
     window.onresize = () => Events.emit("onresize");
 
-    this.connect();
+    this.store.dispatch(connectionConnect());
   }
 
   private getUser() {
@@ -91,18 +91,6 @@ export default class App extends Component<{}, AppState> {
 
   getCurrentLocation() {
     return history.location || window.location;
-  }
-
-  connect() {
-    let lobbyId: string | undefined = undefined;
-    if (this.currentLocationIsJoin()) {
-      lobbyId = this.getCurrentLocation().pathname.substr(6);
-    }
-    this.store.dispatch(connectionConnect(lobbyId));
-  }
-
-  currentLocationIsJoin() {
-    return this.getCurrentLocation().pathname.startsWith("/join/");
   }
 
   setMenuItems = (items: JSX.Element[]) => {
