@@ -6,12 +6,12 @@ import CreateLobby from "../components/CreateLobby";
 import CloseLobby from "../components/CloseLobby";
 import JoinLobby from "../components/JoinLobby";
 import LobbyClosed from "../components/LobbyClosed";
-import Lobby from "../components/Lobby";
-import Home from "../components/Home";
+import { Lobby } from "../components/Lobby";
+import { Home } from "../components/Home";
 import NewGame from "../components/NewGame";
 import { useSelector } from "../store/useSelector";
 import Games from "../games/Games";
-import Game from "../components/Game";
+import { Game } from "../components/Game";
 import { ReactNode } from "react";
 
 export interface RouteLink {

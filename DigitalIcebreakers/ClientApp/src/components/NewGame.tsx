@@ -2,7 +2,7 @@ import React from "react";
 import Games from "../games/Games";
 import { startNewGame } from "../store/lobby/actions";
 import { useDispatch } from "react-redux";
-import ContentContainer from "./ContentContainer";
+import { ContentContainer } from "./ContentContainer";
 import Card from "../layout/components/Card/Card";
 import CardFooter from "../layout/components/Card/CardFooter";
 import CardBody from "../layout/components/Card/CardBody";

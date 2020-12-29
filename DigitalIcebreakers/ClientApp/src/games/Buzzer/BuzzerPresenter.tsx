@@ -1,7 +1,7 @@
 import React from "react";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import ContentContainer from "../../components/ContentContainer";
+import { ContentContainer } from "../../components/ContentContainer";
 import { useSelector } from "../../store/useSelector";
 
 const BuzzerPresenter = () => {

@@ -1,4 +1,4 @@
-import Random from "./Random";
+import { pick } from "./Random";
 
 export const Colors = {
   Red: {
@@ -340,13 +340,13 @@ export const ColorUtils = {
     return `#${color.toString(16).padStart(6, "0")}`;
   },
   randomShade(exclude?: string): Shade {
-    return Random.pick(this.randomColor(exclude).shades);
+    return pick(this.randomColor(exclude).shades);
   },
   randomColor(exclude?: string): Color {
     let colors = ColorsArray;
     if (exclude) colors = colors.filter((p) => p.name !== exclude);
 
-    return Random.pick(colors);
+    return pick(colors);
   },
 };
 

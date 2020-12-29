@@ -1,8 +1,8 @@
 import React from "react";
 import { Changelog } from "./Changelog";
-import GithubFork from "./GithubFork";
+import { GithubFork } from "./GithubFork";
 import { makeStyles } from "@material-ui/core/styles";
-import ContentContainer from "./ContentContainer";
+import { ContentContainer } from "./ContentContainer";
 import Button from "../layout/components/CustomButtons/Button";
 import { useHistory } from "react-router-dom";
 

@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { setGameMessageCallback } from "../../store/connection/actions";
 import { adminMessage } from "../../store/lobby/actions";
 import { GameMessage } from "../GameMessage";
-import ContentContainer from "../../components/ContentContainer";
+import { ContentContainer } from "../../components/ContentContainer";
 import { makeStyles, TextField } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({

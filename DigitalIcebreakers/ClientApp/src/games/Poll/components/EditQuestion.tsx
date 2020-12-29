@@ -6,7 +6,7 @@ import CardBody from "../../../layout/components/Card/CardBody";
 import Button from "../../../layout/components/CustomButtons/Button";
 import Grid from "@material-ui/core/Grid";
 import { useSelector } from "../../../store/useSelector";
-import ContentContainer from "../../../components/ContentContainer";
+import { ContentContainer } from "../../../components/ContentContainer";
 import { makeStyles } from "@material-ui/core/styles";
 import { useParams, useHistory } from "react-router";
 import CustomInput from "../../../layout/components/CustomInput/CustomInput";

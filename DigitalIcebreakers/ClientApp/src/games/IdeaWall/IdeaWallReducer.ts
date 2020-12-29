@@ -3,10 +3,10 @@ import {
   createReceiveGameMessageReducer,
   createGameActionWithPayload,
 } from "../../store/actionHelpers";
+import { pick } from "Random";
 import { Idea } from "./Idea";
 import { ServerIdea } from "./ServerIdea";
 import { guid } from "../../util/guid";
-import Random from "../../Random";
 import { Colors } from "../../Colors";
 import StorageManager from "../../store/StorageManager";
 
@@ -63,7 +63,7 @@ const getNewIdea = (playerName: string, idea: string | ServerIdea): Idea => {
     playerName: playerName,
     idea: content,
     lane: lane,
-    color: Random.pick(IDEA_COLORS),
+    color: pick(IDEA_COLORS),
     x: undefined,
     y: undefined,
   };

@@ -15,7 +15,7 @@ import Button from "../../layout/components/CustomButtons/Button";
 import Table from "../../layout/components/Table/Table";
 import { Pixi } from "../pixi/Pixi";
 import { RootState } from "../../store/RootState";
-import ContentContainer from "../../components/ContentContainer";
+import { ContentContainer } from "../../components/ContentContainer";
 
 interface Choice {
   id: string;

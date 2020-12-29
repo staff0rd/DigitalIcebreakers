@@ -9,7 +9,7 @@ import CardFooter from "../layout/components/Card/CardFooter.js";
 import { useDispatch } from "react-redux";
 import { createLobby } from "../store/lobby/actions";
 import CardTitle from "../layout/components/Card/CardTitle";
-import ContentContainer from "./ContentContainer";
+import { ContentContainer } from "./ContentContainer";
 
 export default function CreateLobby() {
   const dispatch = useDispatch();

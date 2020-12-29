@@ -4,7 +4,7 @@ import GridContainer from "../layout/components/Grid/GridContainer.js";
 import Card from "../layout/components/Card/Card.js";
 import CardBody from "../layout/components/Card/CardBody";
 import CardTitle from "../layout/components/Card/CardTitle";
-import ContentContainer from "./ContentContainer";
+import { ContentContainer } from "./ContentContainer";
 
 const LobbyClosed = () => {
   return (

@@ -13,7 +13,7 @@ import CardFooter from "../layout/components/Card/CardFooter.js";
 import { useDispatch } from "react-redux";
 import CardTitle from "../layout/components/Card/CardTitle";
 import { useParams } from "react-router-dom";
-import ContentContainer from "../components/ContentContainer";
+import { ContentContainer } from "../components/ContentContainer";
 
 interface RouteParams {
   id: string;

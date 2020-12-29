@@ -7,7 +7,7 @@ import GridContainer from "../layout/components/Grid/GridContainer.js";
 import Card from "../layout/components/Card/Card.js";
 import CardFooter from "../layout/components/Card/CardFooter.js";
 import CardTitle from "../layout/components/Card/CardTitle";
-import ContentContainer from "./ContentContainer";
+import { ContentContainer } from "./ContentContainer";
 
 export default function CloseLobby() {
   const dispatch = useDispatch();
