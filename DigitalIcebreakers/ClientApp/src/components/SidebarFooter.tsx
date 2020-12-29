@@ -2,10 +2,7 @@ import React from "react";
 import ConnectionIcon from "./ConnectionIcon";
 import { Config } from "../config";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-  whiteColor,
-  defaultFont,
-} from "../layout/assets/jss/material-dashboard-react";
+import { defaultFont } from "../layout/assets/jss/material-dashboard-react";
 import { CSSProperties } from "@material-ui/core/styles/withStyles";
 
 const useStyles = makeStyles((theme) => ({

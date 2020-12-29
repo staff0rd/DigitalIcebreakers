@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { useSelector } from "../store/useSelector";
 import { setUserName } from "../store/user/actions";
 import { joinLobby } from "../store/lobby/actions";

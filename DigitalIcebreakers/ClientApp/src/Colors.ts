@@ -344,7 +344,7 @@ export const ColorUtils = {
   },
   randomColor(exclude?: string): Color {
     let colors = ColorsArray;
-    if (exclude) colors = colors.filter((p) => p.name != exclude);
+    if (exclude) colors = colors.filter((p) => p.name !== exclude);
 
     return Random.pick(colors);
   },

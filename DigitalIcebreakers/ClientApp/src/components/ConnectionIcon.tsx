@@ -4,10 +4,6 @@ import ConnectedIcon from "@material-ui/icons/Power";
 import NotConnectedIcon from "@material-ui/icons/PowerOff";
 import { useSelector } from "../store/useSelector";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-  whiteColor,
-  hexToRgb,
-} from "../layout/assets/jss/material-dashboard-react";
 
 const useStyles = makeStyles((theme) => ({
   icon: {
