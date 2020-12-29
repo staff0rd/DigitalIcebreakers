@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { clientMessage } from "../../store/lobby/actions";
 import { useResizeListener } from "../pixi/useResizeListener";
 
-export default () => {
+const BuzzerClient = () => {
   const [pixi, setPixi] = useState<PIXI.Application>();
   const dispatch = useDispatch();
   const [button] = useState(
@@ -42,3 +42,5 @@ export default () => {
     />
   );
 };
+
+export default BuzzerClient;

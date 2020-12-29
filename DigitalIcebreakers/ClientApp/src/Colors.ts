@@ -367,7 +367,7 @@ function convertToColor(name: string): Color {
   const shades = Object.keys(colorsObject)
     .filter((name) => name.startsWith("C"))
     .map((s) => {
-      return <Shade>{ name: s, shade: colorsObject[s] };
+      return { name: s, shade: colorsObject[s] } as Shade;
     });
 
   const highlights = Object.keys(colorsObject)
@@ -376,7 +376,7 @@ function convertToColor(name: string): Color {
       return { name: s, shade: colorsObject[s] };
     });
 
-  return <Color>{
+  return {
     name,
     shades,
     highlights,

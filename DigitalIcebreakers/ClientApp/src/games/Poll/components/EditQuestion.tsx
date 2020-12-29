@@ -149,7 +149,7 @@ const QuestionEditor = ({ question }: Props) => {
   );
 };
 
-export default () => {
+const EditQuestion = () => {
   const questionId = useParams<{ id: string }>().id;
   const question = useSelector((state) =>
     state.games.poll.presenter.questions.find((q) => q.id === questionId)
@@ -163,3 +163,5 @@ export default () => {
     </ContentContainer>
   );
 };
+
+export default EditQuestion;

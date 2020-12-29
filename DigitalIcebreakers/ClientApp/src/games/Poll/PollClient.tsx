@@ -32,7 +32,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default () => {
+const PollClient = () => {
   const dispatch = useDispatch();
   const {
     questionId,
@@ -89,3 +89,5 @@ export default () => {
     </ContentContainer>
   );
 };
+
+export default PollClient;

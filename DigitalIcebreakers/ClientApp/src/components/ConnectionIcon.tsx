@@ -5,7 +5,7 @@ import NotConnectedIcon from "@material-ui/icons/PowerOff";
 import { useSelector } from "../store/useSelector";
 import { makeStyles } from "@material-ui/core/styles";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   icon: {
     width: "24px",
     height: "30px",
@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default () => {
+export const ConnectionIcon = () => {
   const status = useSelector((state) => state.connection.status);
   const classes = useStyles();
 

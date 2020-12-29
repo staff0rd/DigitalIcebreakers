@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Button from "../../layout/components/CustomButtons/Button";
 import { clientMessage } from "../../store/lobby/actions";
 import { makeStyles } from "@material-ui/core";
@@ -19,13 +19,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default () => {
-  const [choice, setChoice] = useState("");
+const YesNoMaybeClient = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
 
   const choose = (newChoice: string) => {
-    setChoice(newChoice);
     dispatch(clientMessage(newChoice));
   };
 
@@ -40,3 +38,4 @@ export default () => {
     </div>
   );
 };
+export default YesNoMaybeClient;

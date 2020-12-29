@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default () => {
+const SidebarFooter = () => {
   const classes = useStyles();
   return (
     <div className={classes.sidebarFooter}>
@@ -31,3 +31,5 @@ export default () => {
     </div>
   );
 };
+
+export default SidebarFooter;

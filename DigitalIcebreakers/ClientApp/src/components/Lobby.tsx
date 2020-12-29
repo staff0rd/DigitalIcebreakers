@@ -1,6 +1,6 @@
 import React from "react";
 import LobbyQrCode from "./LobbyQrCode";
 
-export default () => {
+export const Lobby = () => {
   return <LobbyQrCode lg />;
 };

@@ -39,7 +39,7 @@ interface StepProps {
   setValue: (value: number) => void;
 }
 
-export default ({ label, step, value, setValue }: StepProps) => {
+const Stepper = ({ label, step, value, setValue }: StepProps) => {
   const classes = useStyles();
 
   const increaseValue = () => setValue(value + step);
@@ -67,3 +67,5 @@ export default ({ label, step, value, setValue }: StepProps) => {
     </Grid>
   );
 };
+
+export default Stepper;

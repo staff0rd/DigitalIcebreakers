@@ -16,6 +16,7 @@ interface SlideshowClientState {
 
 declare var window: any;
 
+// eslint-disable-next-line
 class SlideshowClient extends BaseGame<PropsFromRedux, SlideshowClientState> {
   displayName = SlideshowClient.name;
 

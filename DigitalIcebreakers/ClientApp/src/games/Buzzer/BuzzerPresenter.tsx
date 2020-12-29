@@ -4,7 +4,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ContentContainer from "../../components/ContentContainer";
 import { useSelector } from "../../store/useSelector";
 
-export default () => {
+const BuzzerPresenter = () => {
   const players = useSelector((state) => state.games.buzzer);
 
   return (
@@ -19,3 +19,5 @@ export default () => {
     </ContentContainer>
   );
 };
+
+export default BuzzerPresenter;

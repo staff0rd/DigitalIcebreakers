@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default () => {
+const NewGame = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
 
@@ -87,3 +87,5 @@ export default () => {
     </ContentContainer>
   );
 };
+
+export default NewGame;

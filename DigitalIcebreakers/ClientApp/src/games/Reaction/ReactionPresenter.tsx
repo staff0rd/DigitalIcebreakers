@@ -144,7 +144,7 @@ class ReactionPresenter extends BaseGame<PropsFromRedux, ReactState> {
   }
 
   getUserName(id: string) {
-    const player = this.props.players.filter((p) => p.id == id)[0];
+    const player = this.props.players.filter((p) => p.id === id)[0];
     return player ? player.name : "";
   }
 

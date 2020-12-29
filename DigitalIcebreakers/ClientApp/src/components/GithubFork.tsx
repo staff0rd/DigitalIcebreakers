@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default () => {
+export const GithubFork = () => {
   const classes = useStyles();
   return (
     <a

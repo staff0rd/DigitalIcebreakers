@@ -114,7 +114,7 @@ export const ideaWallReducer = createReceiveGameMessageReducer<
     });
     builder.addCase(ideaUpdatedAction, (state, { payload: idea }) => {
       const ideas = [
-        ...state.ideas.filter((i) => i.id != idea.id),
+        ...state.ideas.filter((i) => i.id !== idea.id),
         { ...idea },
       ];
       storage.saveToStorage(state.storageKey, ideas);

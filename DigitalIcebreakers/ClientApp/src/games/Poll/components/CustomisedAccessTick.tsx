@@ -1,4 +1,4 @@
-import React, { useState, useCallback, SVGAttributes } from "react";
+import React, { useState, useCallback } from "react";
 import { Text } from "recharts";
 
 // https://github.com/recharts/recharts/issues/961#issuecomment-618265830
@@ -9,7 +9,7 @@ interface Props {
   props?: any;
 }
 
-export default ({ maxLines = 3, payload, ...rest }: Props) => {
+const CustomisedAccessTick = ({ maxLines = 3, payload, ...rest }: Props) => {
   const [text, setText] = useState(payload!.value);
   const [suffix, setSuffix] = useState("");
 
@@ -51,3 +51,5 @@ export default ({ maxLines = 3, payload, ...rest }: Props) => {
     </g>
   );
 };
+
+export default CustomisedAccessTick;

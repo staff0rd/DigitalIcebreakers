@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default () => {
+export const Home = () => {
   const classes = useStyles();
   const history = useHistory();
   return (

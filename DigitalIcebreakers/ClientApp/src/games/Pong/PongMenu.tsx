@@ -12,7 +12,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "../../store/useSelector";
 import { ListItem } from "@material-ui/core";
 
-export default () => {
+const PongMenu = () => {
   const dispatch = useDispatch();
   const state = useSelector((state) => state.games.pong.presenter);
   return (
@@ -55,3 +55,5 @@ export default () => {
     </>
   );
 };
+
+export default PongMenu;

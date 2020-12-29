@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { Colors, ColorUtils } from "../../Colors";
-import Random, { between } from "../../Random";
+import Random from "../../Random";
 import { Pixi } from "../pixi/Pixi";
 import { useSelector } from "../../store/useSelector";
 import { useDispatch } from "react-redux";
@@ -16,7 +16,7 @@ const fadeOut = 5;
 const fadeUpdateMs = 250;
 const fadeOutMs = fadeOut * 1000;
 
-export default () => {
+const NamePickerPresenter = () => {
   const [app, setApp] = useState<PIXI.Application>();
   const [pickStarted, setPickStarted] = useState<Date>();
   const [id, setId] = useState<string>();
@@ -103,7 +103,6 @@ export default () => {
 
   const draw = (delta: number) => {
     if (app) {
-      const alpha = calculateAlpha();
       users.forEach((u) => {
         const text = app.stage.children.find(
           (t) => t.name === u.id
@@ -173,3 +172,5 @@ export default () => {
     <Pixi backgroundColor={Colors.White} onAppChange={(app) => setApp(app)} />
   );
 };
+
+export default NamePickerPresenter;

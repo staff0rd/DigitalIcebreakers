@@ -51,8 +51,10 @@ type Props = {
   lg?: boolean;
 };
 
-export default ({ lg }: Props) => {
-  const classes = lg ? useStylesLg() : useStylesSm();
+const LobbyQrCode = ({ lg }: Props) => {
+  const lgStyles = useStylesLg();
+  const smStyles = useStylesSm();
+  const classes = lg ? lgStyles : smStyles;
   const lobby = useSelector((state) => state.lobby);
   const joinUrl = `${Config.baseUrl}/join/${lobby.id}`;
   return (
@@ -71,3 +73,4 @@ export default ({ lg }: Props) => {
     </div>
   );
 };
+export default LobbyQrCode;

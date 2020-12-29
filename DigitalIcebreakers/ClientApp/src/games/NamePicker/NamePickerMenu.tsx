@@ -2,12 +2,10 @@ import React from "react";
 import Button from "../../layout/components/CustomButtons/Button";
 import { reset, pick } from "./NamePickerReducer";
 import { useDispatch } from "react-redux";
-import { useSelector } from "../../store/useSelector";
 import { ListItem } from "@material-ui/core";
 
-export default () => {
+const NamePickerMenu = () => {
   const dispatch = useDispatch();
-  const state = useSelector((state) => state.games.pong.presenter);
   return (
     <>
       <ListItem>
@@ -19,3 +17,5 @@ export default () => {
     </>
   );
 };
+
+export default NamePickerMenu;

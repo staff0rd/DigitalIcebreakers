@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default () => {
+const EditQuestions = () => {
   const [showBulkEdit, setShowBulkEdit] = useState<boolean>(false);
   const classes = useStyles();
   const history = useHistory();
@@ -216,3 +216,5 @@ export default () => {
     </>
   );
 };
+
+export default EditQuestions;

@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import { useResizeListener } from "../pixi/useResizeListener";
 import { useSelector } from "../../store/useSelector";
 
-export default () => {
+const DoggosVsKittehsPresenter = () => {
   const [app, setApp] = useState<PIXI.Application>();
 
   let graph: Graph;
@@ -21,6 +21,7 @@ export default () => {
       ];
       app.stage.removeChildren();
       console.log("set new graph");
+      // eslint-disable-next-line
       graph = new Graph(app, data);
     } else {
       console.log("no app");
@@ -33,3 +34,5 @@ export default () => {
 
   return <Pixi onAppChange={(app) => setApp(app)} />;
 };
+
+export default DoggosVsKittehsPresenter;

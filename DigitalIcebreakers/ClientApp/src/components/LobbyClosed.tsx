@@ -6,7 +6,7 @@ import CardBody from "../layout/components/Card/CardBody";
 import CardTitle from "../layout/components/Card/CardTitle";
 import ContentContainer from "./ContentContainer";
 
-export default () => {
+const LobbyClosed = () => {
   return (
     <ContentContainer>
       <GridContainer>
@@ -20,3 +20,4 @@ export default () => {
     </ContentContainer>
   );
 };
+export default LobbyClosed;
