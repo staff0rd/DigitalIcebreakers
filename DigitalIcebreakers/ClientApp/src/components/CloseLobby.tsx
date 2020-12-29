@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React from "react";
 import Button from "../layout/components/CustomButtons/Button";
 import { useDispatch } from "react-redux";
 import { closeLobby } from "../store/lobby/actions";

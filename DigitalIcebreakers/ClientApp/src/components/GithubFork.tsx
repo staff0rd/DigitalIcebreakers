@@ -21,6 +21,7 @@ export default () => {
       className={classes.link}
       href="https://github.com/staff0rd/digitalicebreakers"
       target="_blank"
+      rel="noopener noreferrer"
     >
       <img
         width={149}
