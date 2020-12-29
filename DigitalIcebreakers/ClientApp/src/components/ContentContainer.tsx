@@ -16,7 +16,7 @@ type Props = {
   header?: string;
 };
 
-export default ({ children, header }: Props) => {
+export const ContentContainer = ({ children, header }: Props) => {
   const classes = useStyles();
   return (
     <div className={classes.root}>

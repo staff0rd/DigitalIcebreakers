@@ -97,7 +97,7 @@ export const scoreBoardSelector = createSelector(
     const correctResponsesAsIds = state.questions.map((q) => {
       const correctAnswer = q.answers.find((a) => a.correct);
       const correctResponses = q.responses.filter(
-        (r) => r.answerId == correctAnswer?.id
+        (r) => r.answerId === correctAnswer?.id
       );
       return correctResponses;
     });
@@ -149,7 +149,7 @@ export const currentQuestionSelector = createSelector(
     const previousQuestionId =
       currentQuestionIndex > 0 ? questionIds[currentQuestionIndex - 1] : null;
     const nextQuestionId =
-      currentQuestionIndex != -1 &&
+      currentQuestionIndex !== -1 &&
       currentQuestionIndex < questionIds.length + 1
         ? questionIds[currentQuestionIndex + 1]
         : null;

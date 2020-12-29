@@ -15,7 +15,7 @@ import Button from "../../layout/components/CustomButtons/Button";
 import Table from "../../layout/components/Table/Table";
 import { Pixi } from "../pixi/Pixi";
 import { RootState } from "../../store/RootState";
-import ContentContainer from "../../components/ContentContainer";
+import { ContentContainer } from "../../components/ContentContainer";
 
 interface Choice {
   id: string;
@@ -144,7 +144,7 @@ class ReactionPresenter extends BaseGame<PropsFromRedux, ReactState> {
   }
 
   getUserName(id: string) {
-    const player = this.props.players.filter((p) => p.id == id)[0];
+    const player = this.props.players.filter((p) => p.id === id)[0];
     return player ? player.name : "";
   }
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { clientMessage } from "../../store/lobby/actions";
-import ContentContainer from "../../components/ContentContainer";
+import { ContentContainer } from "../../components/ContentContainer";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import { useSelector } from "../../store/useSelector";
@@ -32,7 +32,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default () => {
+const PollClient = () => {
   const dispatch = useDispatch();
   const {
     questionId,
@@ -89,3 +89,5 @@ export default () => {
     </ContentContainer>
   );
 };
+
+export default PollClient;

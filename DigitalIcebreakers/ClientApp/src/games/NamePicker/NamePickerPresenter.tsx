@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { Colors, ColorUtils } from "../../Colors";
-import Random, { between } from "../../Random";
 import { Pixi } from "../pixi/Pixi";
 import { useSelector } from "../../store/useSelector";
 import { useDispatch } from "react-redux";
 import { adminMessage } from "../../store/lobby/actions";
+import { pick, between } from "Random";
 
 interface AnimatedText extends PIXI.Text {
   dx: number;
@@ -16,7 +16,7 @@ const fadeOut = 5;
 const fadeUpdateMs = 250;
 const fadeOutMs = fadeOut * 1000;
 
-export default () => {
+const NamePickerPresenter = () => {
   const [app, setApp] = useState<PIXI.Application>();
   const [pickStarted, setPickStarted] = useState<Date>();
   const [id, setId] = useState<string>();
@@ -55,7 +55,7 @@ export default () => {
     if (shouldPick) {
       if (users.length) {
         setPickStarted(new Date());
-        const selected = Random.pick(users).id;
+        const selected = pick(users).id;
         console.log("selecting " + selected);
         setId(selected);
       }
@@ -80,16 +80,13 @@ export default () => {
     }) as AnimatedText;
     text.name = id;
     text.pivot.set(text.width / 2, text.height / 2);
-    text.dx = Random.pick([-speed, speed]);
-    text.dy = Random.pick([-speed, speed]);
+    text.dx = pick([-speed, speed]);
+    text.dy = pick([-speed, speed]);
     return text;
   };
 
   const randomizeOrder = (text: AnimatedText) =>
-    app?.stage.addChildAt(
-      text,
-      Random.between(0, app?.stage.children.length - 1)
-    );
+    app?.stage.addChildAt(text, between(0, app?.stage.children.length - 1));
 
   const calculateAlpha = () => {
     if (pickStarted) {
@@ -103,7 +100,6 @@ export default () => {
 
   const draw = (delta: number) => {
     if (app) {
-      const alpha = calculateAlpha();
       users.forEach((u) => {
         const text = app.stage.children.find(
           (t) => t.name === u.id
@@ -152,8 +148,8 @@ export default () => {
           text.alpha = u.id === id ? 1 : calculateAlpha();
           randomizeOrder(text);
           text.position.set(
-            Random.between(text.width / 2, app.screen.width - text.width / 2),
-            Random.between(text.height / 2, app.screen.height - text.height / 2)
+            between(text.width / 2, app.screen.width - text.width / 2),
+            between(text.height / 2, app.screen.height - text.height / 2)
           );
           console.log(
             `placing ${u.name} at ${text.position.x},${text.position.y}`
@@ -173,3 +169,5 @@ export default () => {
     <Pixi backgroundColor={Colors.White} onAppChange={(app) => setApp(app)} />
   );
 };
+
+export default NamePickerPresenter;

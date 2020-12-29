@@ -2,20 +2,17 @@ import React from "react";
 import Games from "../games/Games";
 import { startNewGame } from "../store/lobby/actions";
 import { useDispatch } from "react-redux";
-import ContentContainer from "./ContentContainer";
+import { ContentContainer } from "./ContentContainer";
 import Card from "../layout/components/Card/Card";
 import CardFooter from "../layout/components/Card/CardFooter";
 import CardBody from "../layout/components/Card/CardBody";
-import CardHeader from "../layout/components/Card/CardHeader";
 import CardIcon from "../layout/components/Card/CardIcon";
 import GridContainer from "../layout/components/Grid/GridContainer";
 import GridItem from "../layout/components/Grid/GridItem";
 import FiberNew from "@material-ui/icons/FiberNew";
-
 import { makeStyles } from "@material-ui/core/styles";
 import { grayColor } from "../layout/assets/jss/material-dashboard-react";
 import Button from "../layout/components/CustomButtons/Button";
-import CardTitle from "../layout/components/Card/CardTitle";
 
 const useStyles = makeStyles((theme) => ({
   cardCategory: {
@@ -48,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default () => {
+const NewGame = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
 
@@ -90,3 +87,5 @@ export default () => {
     </ContentContainer>
   );
 };
+
+export default NewGame;

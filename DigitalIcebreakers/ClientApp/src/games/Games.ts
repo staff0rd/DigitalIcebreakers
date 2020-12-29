@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 import DoggosVsKittehsClient from "./DoggosVsKittehs/DoggosVsKittehsClient";
 import DoggosVsKittehsPresenter from "./DoggosVsKittehs/DoggosVsKittehsPresenter";
 import { BroadcastClient } from "./Broadcast/BroadcastClient";
@@ -9,14 +9,9 @@ import NamePickerMenu from "./NamePicker/NamePickerMenu";
 import YesNoMaybePresenter from "./YesNoMaybe/YesNoMaybePresenter";
 import { YesNoMaybeMenu } from "./YesNoMaybe/YesNoMaybeMenu";
 import YesNoMaybeClient from "./YesNoMaybe/YesNoMaybeClient";
-import {
-  Name as YesNoMaybeName,
-  yesNoMaybeReducer,
-} from "./YesNoMaybe/YesNoMaybeReducer";
+import { Name as YesNoMaybeName } from "./YesNoMaybe/YesNoMaybeReducer";
 import { IdeaWallClient } from "./IdeaWall/IdeaWallClient";
-import IdeaWallPresenter, {
-  StartStopContinueLanes,
-} from "./IdeaWall/IdeaWallPresenter";
+import IdeaWallPresenter from "./IdeaWall/IdeaWallPresenter";
 import IdeaWallMenu from "./IdeaWall/IdeaWallMenu";
 import BuzzerClient from "./Buzzer/BuzzerClient";
 import BuzzerPresenter from "./Buzzer/BuzzerPresenter";
@@ -25,9 +20,6 @@ import SplatPresenter from "./Splat/SplatPresenter";
 import PongPresenter from "./Pong/PongPresenter";
 import { PongClient } from "./Pong/PongClient";
 import PongMenu from "./Pong/PongMenu";
-import { StartStopContinueClient } from "./StartStopContinue/StartStopContinueClient";
-// import { SlideshowClient } from './Slideshow/SlideshowClient';
-// import { SlideshowPresenter } from './Slideshow/SlideshowPresenter';
 import ReactionClient from "./Reaction/ReactionClient";
 import ReactionPresenter from "./Reaction/ReactionPresenter";
 import { Name as PollName } from "./Poll";

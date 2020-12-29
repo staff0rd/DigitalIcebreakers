@@ -13,6 +13,7 @@ const twoQuestions = [
       {
         id: "4d63ce96-2268-7f28-c960-70db176fc010",
         text: "Question 1 Answer",
+        correct: true,
       },
     ],
     responses: [],
@@ -24,6 +25,7 @@ const twoQuestions = [
       {
         id: "a4170547-9634-fc63-b333-c2c585f5ce01",
         text: "Question 2 Answer",
+        correct: true,
       },
     ],
     responses: [],

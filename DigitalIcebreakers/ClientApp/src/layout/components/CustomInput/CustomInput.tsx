@@ -2,10 +2,7 @@ import React, { ReactNode } from "react";
 import classNames from "classnames";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
-import FormControl, {
-  FormControlTypeMap,
-  FormControlProps,
-} from "@material-ui/core/FormControl";
+import FormControl, { FormControlProps } from "@material-ui/core/FormControl";
 import InputLabel, { InputLabelProps } from "@material-ui/core/InputLabel";
 import Input, { InputProps } from "@material-ui/core/Input";
 // @material-ui/icons

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { useSelector } from "../../store/useSelector";
 import ListItem from "@material-ui/core/ListItem";
 import Button from "../../layout/components/CustomButtons/Button";
 import {
@@ -24,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default () => {
+const IdeaWallMenu = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
@@ -85,3 +84,5 @@ export default () => {
     </>
   );
 };
+
+export default IdeaWallMenu;

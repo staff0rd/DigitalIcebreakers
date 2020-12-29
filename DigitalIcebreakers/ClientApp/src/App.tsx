@@ -1,17 +1,13 @@
 import React, { Component } from "react";
-import { Redirect } from "react-router";
 import Layout from "./layout/layouts/Admin";
 import { guid } from "./util/guid";
 import history from "./history";
 import { Events } from "./Events";
-import { ConnectionStatus } from "./ConnectionStatus";
 import { Provider } from "react-redux";
 import { configureAppStore } from "./store/configureAppStore";
 import { EnhancedStore, AnyAction } from "@reduxjs/toolkit";
 import { RootState } from "./store/RootState";
 import { connectionConnect } from "./store/connection/actions";
-import { Config } from "./config";
-import Admin from "./layout/layouts/Admin";
 import ReactAI from "./app-insights-deprecated";
 import { setUser } from "./store/user/actions";
 import { useSelector } from "./store/useSelector";
@@ -123,17 +119,7 @@ export default class App extends Component<{}, AppState> {
 }
 
 const Main = () => {
-  const connectionStatus = useSelector((state) => state.connection.status);
   const lobby = useSelector((state) => state.lobby);
-  const redirect = (condition: boolean, component: any) => {
-    if (condition) return component;
-    else return () => <Redirect to="/" />;
-  };
-
-  const connected = connectionStatus === ConnectionStatus.Connected;
-  // const game = redirect(connected, () => <Game />);
-  // const newGame = redirect(connected, () => <NewGame />);
-  // const closeLobby = redirect(connected, () => <CloseLobby />);
 
   return (
     <Layout

@@ -12,7 +12,7 @@ export const buzzerReducer = createReceiveGameMessageReducer<string, Player[]>(
   Name,
   [],
   (state, { payload }) => [
-    ...state.filter((p) => p.id != payload.id),
+    ...state.filter((p) => p.id !== payload.id),
     { id: payload.id, name: payload.name, state: payload.payload },
   ]
 );

@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";

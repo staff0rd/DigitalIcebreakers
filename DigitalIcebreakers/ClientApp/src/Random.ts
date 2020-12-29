@@ -13,9 +13,3 @@ export function shuffle<T>(a: T[]) {
   }
   return a;
 }
-
-export default {
-  between,
-  pick,
-  shuffle,
-};

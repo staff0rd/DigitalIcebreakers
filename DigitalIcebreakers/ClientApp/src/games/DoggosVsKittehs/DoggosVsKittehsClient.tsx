@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default () => {
+const DoggosVsKittehsClient = () => {
   const [choice, setChoice] = useState("");
   const dispatch = useDispatch();
   const classes = useStyles();
@@ -63,3 +63,5 @@ export default () => {
     </div>
   );
 };
+
+export default DoggosVsKittehsClient;

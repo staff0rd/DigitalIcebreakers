@@ -1,4 +1,4 @@
-import Random from "./Random";
+import { pick } from "./Random";
 
 export const Colors = {
   Red: {
@@ -340,13 +340,13 @@ export const ColorUtils = {
     return `#${color.toString(16).padStart(6, "0")}`;
   },
   randomShade(exclude?: string): Shade {
-    return Random.pick(this.randomColor(exclude).shades);
+    return pick(this.randomColor(exclude).shades);
   },
   randomColor(exclude?: string): Color {
     let colors = ColorsArray;
-    if (exclude) colors = colors.filter((p) => p.name != exclude);
+    if (exclude) colors = colors.filter((p) => p.name !== exclude);
 
-    return Random.pick(colors);
+    return pick(colors);
   },
 };
 
@@ -367,7 +367,7 @@ function convertToColor(name: string): Color {
   const shades = Object.keys(colorsObject)
     .filter((name) => name.startsWith("C"))
     .map((s) => {
-      return <Shade>{ name: s, shade: colorsObject[s] };
+      return { name: s, shade: colorsObject[s] } as Shade;
     });
 
   const highlights = Object.keys(colorsObject)
@@ -376,7 +376,7 @@ function convertToColor(name: string): Color {
       return { name: s, shade: colorsObject[s] };
     });
 
-  return <Color>{
+  return {
     name,
     shades,
     highlights,

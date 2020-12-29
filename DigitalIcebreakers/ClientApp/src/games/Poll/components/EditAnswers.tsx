@@ -47,7 +47,7 @@ type Props = {
   questionId: string;
 };
 
-export default ({ answers, setAnswers, questionId }: Props) => {
+const EditAnswers = ({ answers, setAnswers, questionId }: Props) => {
   const classes = useStyles();
   const layoutClasses = useLayoutStyles();
   return (
@@ -118,3 +118,5 @@ export default ({ answers, setAnswers, questionId }: Props) => {
     </Table>
   );
 };
+
+export default EditAnswers;

@@ -71,6 +71,14 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
+      - name: Install node dependencies
+        run: npm i
+        working-directory: ./DigitalIcebreakers/ClientApp
+
+      - name: Lint
+        run: npm run lint
+        working-directory: ./DigitalIcebreakers/ClientApp
+
       - name: Install dotnet tools
         run: dotnet tool restore
 

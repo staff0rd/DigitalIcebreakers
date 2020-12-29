@@ -6,13 +6,12 @@ import CardBody from "../../../layout/components/Card/CardBody";
 import Button from "../../../layout/components/CustomButtons/Button";
 import Grid from "@material-ui/core/Grid";
 import { useSelector } from "../../../store/useSelector";
-import ContentContainer from "../../../components/ContentContainer";
+import { ContentContainer } from "../../../components/ContentContainer";
 import { makeStyles } from "@material-ui/core/styles";
 import { useParams, useHistory } from "react-router";
 import CustomInput from "../../../layout/components/CustomInput/CustomInput";
 import SnackbarContent from "../../../layout/components/Snackbar/SnackbarContent";
 import { Question } from "../types/Question";
-import styles from "../../../layout/assets/jss/material-dashboard-react/components/tasksStyle";
 import Typography from "@material-ui/core/Typography";
 import EditAnswers from "./EditAnswers";
 import { guid } from "../../../util/guid";
@@ -22,8 +21,6 @@ import {
   updateQuestionAction,
   deleteQuestionAction,
 } from "../reducers/presenterReducer";
-
-const useTaskStyles = makeStyles(styles);
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -51,7 +48,7 @@ const QuestionEditor = ({ question }: Props) => {
   );
   const [text, setText] = useState(question.text);
   const [answers, setAnswers] = useState(question.answers);
-  const taskClasses = useTaskStyles();
+
   const classes = useStyles();
   const history = useHistory();
 
@@ -152,7 +149,7 @@ const QuestionEditor = ({ question }: Props) => {
   );
 };
 
-export default () => {
+const EditQuestion = () => {
   const questionId = useParams<{ id: string }>().id;
   const question = useSelector((state) =>
     state.games.poll.presenter.questions.find((q) => q.id === questionId)
@@ -166,3 +163,5 @@ export default () => {
     </ContentContainer>
   );
 };
+
+export default EditQuestion;

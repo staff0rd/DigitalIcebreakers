@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React from "react";
 import Button from "../layout/components/CustomButtons/Button";
 import { useDispatch } from "react-redux";
 import { closeLobby } from "../store/lobby/actions";
@@ -7,7 +7,7 @@ import GridContainer from "../layout/components/Grid/GridContainer.js";
 import Card from "../layout/components/Card/Card.js";
 import CardFooter from "../layout/components/Card/CardFooter.js";
 import CardTitle from "../layout/components/Card/CardTitle";
-import ContentContainer from "./ContentContainer";
+import { ContentContainer } from "./ContentContainer";
 
 export default function CloseLobby() {
   const dispatch = useDispatch();

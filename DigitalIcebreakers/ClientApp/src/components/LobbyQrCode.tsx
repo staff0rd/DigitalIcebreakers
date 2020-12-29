@@ -51,16 +51,26 @@ type Props = {
   lg?: boolean;
 };
 
-export default ({ lg }: Props) => {
-  const classes = lg ? useStylesLg() : useStylesSm();
+const LobbyQrCode = ({ lg }: Props) => {
+  const lgStyles = useStylesLg();
+  const smStyles = useStylesSm();
+  const classes = lg ? lgStyles : smStyles;
   const lobby = useSelector((state) => state.lobby);
   const joinUrl = `${Config.baseUrl}/join/${lobby.id}`;
   return (
     <div className={classes.container}>
-      {lg && <h1 className={classes.header}>Phone camera 👇</h1>}
+      {lg && (
+        <h1 className={classes.header}>
+          Phone camera{" "}
+          <span role="img" aria-label="qrcode below">
+            👇
+          </span>
+        </h1>
+      )}
       <a href={joinUrl} className={classes.link} data-testid="qrcode-link">
         <QRCode className={classes.qrCode} value={joinUrl} renderAs="svg" />
       </a>
     </div>
   );
 };
+export default LobbyQrCode;

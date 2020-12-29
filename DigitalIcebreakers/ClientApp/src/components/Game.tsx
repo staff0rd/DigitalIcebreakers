@@ -2,7 +2,7 @@ import React from "react";
 import Games from "../games/Games";
 import { useSelector } from "../store/useSelector";
 
-export default () => {
+export const Game = () => {
   const name = useSelector((state) => state.lobby.currentGame);
   const game = Games.find((g) => g.name === name);
   const isAdmin = useSelector((state) => state.lobby.isAdmin);

@@ -204,7 +204,7 @@ class PongPresenter extends BaseGame<PropsFromRedux, {}> {
     if (this.app) {
       this.score.text = this.getScore();
       this.setPaddleSizes();
-      if (prevProps.ballSpeed != this.props.ballSpeed) {
+      if (prevProps.ballSpeed !== this.props.ballSpeed) {
         this.ballDx =
           (this.ballDx / prevProps.ballSpeed) * this.props.ballSpeed;
         this.ballDy =

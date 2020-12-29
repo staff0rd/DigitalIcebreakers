@@ -7,7 +7,6 @@ import {
   TOGGLE_MENU,
   TOGGLE_DRAWER,
 } from "./types";
-import { Events } from "../../Events";
 
 const initialState: ShellState = {
   version: Config.version,

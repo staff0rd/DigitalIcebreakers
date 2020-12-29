@@ -85,6 +85,7 @@ export class SlideshowPresenter extends BaseGame<
 
   initReveal() {
     const state: any = false;
+    /* eslint-disable */
     throw "method below not implemented";
     // state = this.getFromStorage(this.props.storageKey);
     Reveal.uninitialize();

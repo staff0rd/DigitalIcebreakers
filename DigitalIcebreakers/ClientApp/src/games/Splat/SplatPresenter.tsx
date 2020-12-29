@@ -4,7 +4,7 @@ import { between } from "../../Random";
 import { Pixi } from "../pixi/Pixi";
 import { useSelector } from "../../store/useSelector";
 
-export default () => {
+const SplatPresenter = () => {
   const [app, setApp] = useState<PIXI.Application>();
 
   const splats = useSelector((state) => state.games.splat.count);
@@ -29,3 +29,5 @@ export default () => {
     <Pixi backgroundColor={Colors.White} onAppChange={(app) => setApp(app)} />
   );
 };
+
+export default SplatPresenter;

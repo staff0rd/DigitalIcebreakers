@@ -15,7 +15,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default () => {
+const NamePickerClient = () => {
   const user = useSelector((s) => s.user);
   const [selectedId, setSelectedId] = useState<string>();
   const won = selectedId === user.id;
@@ -52,3 +52,5 @@ export default () => {
     </div>
   );
 };
+
+export default NamePickerClient;

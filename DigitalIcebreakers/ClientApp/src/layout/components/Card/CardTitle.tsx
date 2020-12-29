@@ -28,7 +28,7 @@ type Props = {
   subTitle?: string;
 };
 
-export default ({ title, subTitle }: Props) => {
+const CardTitle = ({ title, subTitle }: Props) => {
   const classes = useStyles();
   return (
     <CardHeader color="primary">
@@ -37,3 +37,4 @@ export default ({ title, subTitle }: Props) => {
     </CardHeader>
   );
 };
+export default CardTitle;

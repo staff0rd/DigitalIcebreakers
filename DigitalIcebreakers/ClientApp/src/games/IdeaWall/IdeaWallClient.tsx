@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { clientMessage } from "../../store/lobby/actions";
-import ContentContainer from "../../components/ContentContainer";
+import { ContentContainer } from "../../components/ContentContainer";
 import Grid from "@material-ui/core/Grid";
 import Card from "../../layout/components/Card/Card";
 import CardBody from "../../layout/components/Card/CardBody";

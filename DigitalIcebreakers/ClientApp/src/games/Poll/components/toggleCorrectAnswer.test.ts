@@ -1,5 +1,4 @@
 import { toggleCorrectAnswer } from "./toggleCorrectAnswer";
-import { Answer } from "../types/Answer";
 
 describe("setCorrectAnswer", () => {
   describe("single toggle from true", () => {

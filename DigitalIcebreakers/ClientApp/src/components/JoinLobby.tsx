@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { useSelector } from "../store/useSelector";
 import { setUserName } from "../store/user/actions";
 import { joinLobby } from "../store/lobby/actions";
@@ -13,7 +13,7 @@ import CardFooter from "../layout/components/Card/CardFooter.js";
 import { useDispatch } from "react-redux";
 import CardTitle from "../layout/components/Card/CardTitle";
 import { useParams } from "react-router-dom";
-import ContentContainer from "../components/ContentContainer";
+import { ContentContainer } from "../components/ContentContainer";
 
 interface RouteParams {
   id: string;
