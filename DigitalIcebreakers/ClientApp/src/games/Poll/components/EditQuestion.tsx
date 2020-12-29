@@ -12,7 +12,6 @@ import { useParams, useHistory } from "react-router";
 import CustomInput from "../../../layout/components/CustomInput/CustomInput";
 import SnackbarContent from "../../../layout/components/Snackbar/SnackbarContent";
 import { Question } from "../types/Question";
-import styles from "../../../layout/assets/jss/material-dashboard-react/components/tasksStyle";
 import Typography from "@material-ui/core/Typography";
 import EditAnswers from "./EditAnswers";
 import { guid } from "../../../util/guid";
@@ -22,8 +21,6 @@ import {
   updateQuestionAction,
   deleteQuestionAction,
 } from "../reducers/presenterReducer";
-
-const useTaskStyles = makeStyles(styles);
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -51,7 +48,7 @@ const QuestionEditor = ({ question }: Props) => {
   );
   const [text, setText] = useState(question.text);
   const [answers, setAnswers] = useState(question.answers);
-  const taskClasses = useTaskStyles();
+
   const classes = useStyles();
   const history = useHistory();
 

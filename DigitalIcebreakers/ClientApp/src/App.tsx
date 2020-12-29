@@ -10,8 +10,6 @@ import { configureAppStore } from "./store/configureAppStore";
 import { EnhancedStore, AnyAction } from "@reduxjs/toolkit";
 import { RootState } from "./store/RootState";
 import { connectionConnect } from "./store/connection/actions";
-import { Config } from "./config";
-import Admin from "./layout/layouts/Admin";
 import ReactAI from "./app-insights-deprecated";
 import { setUser } from "./store/user/actions";
 import { useSelector } from "./store/useSelector";

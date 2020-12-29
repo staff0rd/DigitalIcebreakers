@@ -1,11 +1,11 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Colors } from "../../Colors";
 import { Graph } from "../pixi/Graph";
 import { Pixi } from "../pixi/Pixi";
 import { useResizeListener } from "../pixi/useResizeListener";
 import { useSelector } from "../../store/useSelector";
 
-export default () => {
+const YesNoMaybePresenter = () => {
   const [pixi, setPixi] = useState<PIXI.Application>();
   const state = useSelector((state) => state.games.yesnomaybe);
 
@@ -34,3 +34,5 @@ export default () => {
 
   return <Pixi backgroundColor={0xffffff} onAppChange={(app) => init(app)} />;
 };
+
+export default YesNoMaybePresenter;

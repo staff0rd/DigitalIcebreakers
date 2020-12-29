@@ -21,7 +21,7 @@ export interface RouteLink {
   component: ReactNode;
 }
 
-export default () => {
+const useRoutes = () => {
   const lobby = useSelector((state) => state.lobby);
   const game = useSelector((state) =>
     Games.find((g) => g.name === state.lobby.currentGame)
@@ -78,3 +78,5 @@ export default () => {
     },
   ].filter((paths) => paths);
 };
+
+export default useRoutes;

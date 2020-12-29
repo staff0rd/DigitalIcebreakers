@@ -1,6 +1,5 @@
 import React from "react";
 import Button from "../../layout/components/CustomButtons/Button";
-import Stepper from "../../components/Stepper";
 import { reset, pick } from "./NamePickerReducer";
 import { useDispatch } from "react-redux";
 import { useSelector } from "../../store/useSelector";
