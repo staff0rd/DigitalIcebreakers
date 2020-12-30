@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using DigitalIcebreakers.Games;
@@ -37,7 +37,7 @@ namespace DigitalIcebreakers.Hubs
                 .ToList()
                 .ForEach(async l => await CloseLobby(l));
                 
-            var lobby = _lobbys.CreateLobby(name, new Player { ConnectionId = Context.ConnectionId, Id = user.Id, IsAdmin = true, IsConnected = true, Name = user.Name });
+            var lobby = _lobbys.CreateLobby(name, new Player { ConnectionId = Context.ConnectionId, Id = user.Id, IsAdmin = true, IsConnected = true, IsRegistered = true,  Name = user.Name });
 
             _logger.Log("Created", lobby);
 
