@@ -39,12 +39,13 @@ namespace DigitalIcebreakers.EndToEndTests
             await _players[2].Page.CloseAsync();
             await _players[3].Page.CloseAsync();
             await _players[5].Page.CloseAsync();
-
+            await Task.Delay(1000);
+            
             var blueCount = await GetPlayerCount("blue-team");
             var redCount = await GetPlayerCount("red-team");
 
-            blueCount.ShouldBe(1);
-            redCount.ShouldBe(1);
+            var teams = new { blue = blueCount, red = redCount};
+            teams.ShouldBe(new { blue = 1, red = 1});
         }
 
         private async Task<int> GetPlayerCount(string team)
