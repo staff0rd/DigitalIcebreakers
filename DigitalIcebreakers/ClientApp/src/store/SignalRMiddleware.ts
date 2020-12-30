@@ -207,8 +207,7 @@ export const SignalRMiddleware = (connectionFactory: () => HubConnection) => {
         case SET_USER_NAME: {
           const value = next(action);
           const { user, lobby } = getState();
-          console.warn("connecting: ", JSON.stringify(user));
-          invoke("connectToLobby", user, lobby.id);
+          invoke("connectToLobby", user, lobby.id || lobby.joiningLobbyId);
           return value;
         }
         case JOIN_LOBBY: {
@@ -238,7 +237,6 @@ export const SignalRMiddleware = (connectionFactory: () => HubConnection) => {
         case GO_TO_DEFAULT_URL: {
           const { user, lobby } = getState();
           if (lobby.joiningLobbyId && !user.isRegistered) {
-            console.warn("pushing register", lobby.isAdmin, user.isRegistered);
             navigateTo("/register");
           } else {
             const currentGame = getState().lobby.currentGame;
