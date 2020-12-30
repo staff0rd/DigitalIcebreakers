@@ -11,19 +11,15 @@ import { connectionConnect } from "./store/connection/actions";
 import ReactAI from "./app-insights-deprecated";
 import { setUser } from "./store/user/actions";
 import { useSelector } from "./store/useSelector";
+import { Player } from "Player";
 
 type AppState = {
-  user: User;
+  user: Player;
   lobby?: AppLobby;
-  players: User[];
+  players: Player[];
   menuItems: JSX.Element[];
   currentGame?: string;
   isAdmin: boolean;
-};
-
-type User = {
-  id: string;
-  name: string;
 };
 
 type AppLobby = {
@@ -36,7 +32,7 @@ export default class App extends Component<{}, AppState> {
   private isDebug = false;
   private myStorage: Storage;
 
-  private user: User;
+  private user: Player;
   private store: EnhancedStore<RootState, AnyAction>;
 
   constructor(props: any, context: any) {
