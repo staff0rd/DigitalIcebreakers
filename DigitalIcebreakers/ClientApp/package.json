@@ -62,6 +62,7 @@
     "test-ci": "cross-env CI=true react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "lint": "eslint --ext ts,tsx,js,jsx --max-warnings 0 src",
+    "check-types": "tsc --noEmit",
     "set-version": "node ./getVersion.js > src/version.json"
   },
   "eslintConfig": {
