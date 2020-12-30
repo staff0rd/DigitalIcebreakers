@@ -1,7 +1,6 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { useSelector } from "../store/useSelector";
 import { setUserName } from "../store/user/actions";
-import { joinLobby } from "../store/lobby/actions";
 import { goToDefaultUrl } from "../store/shell/actions";
 import GridItem from "../layout/components/Grid/GridItem";
 import GridContainer from "../layout/components/Grid/GridContainer.js";

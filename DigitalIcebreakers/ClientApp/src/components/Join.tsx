@@ -22,10 +22,6 @@ export default function Join() {
 
   const [lobbyCode, setLobbyCode] = useState<string>("");
 
-  // useEffect(() => {
-  //   dispatch(setIsJoining(true));
-  // }, []);
-
   useEffect(() => {
     setLobbyCode(id || "");
     if (id) {
@@ -34,7 +30,7 @@ export default function Join() {
   }, [id]);
 
   const isValid = (code: string | undefined) => {
-    return code && code.trim().length == 4;
+    return code && code.trim().length === 4;
   };
 
   const handleChange: React.ChangeEventHandler<

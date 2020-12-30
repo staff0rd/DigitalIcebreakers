@@ -33,7 +33,6 @@ import {
   GAME_MESSAGE_CLIENT,
   GAME_MESSAGE_ADMIN,
   LobbyActionTypes,
-  SET_LOBBY,
 } from "./lobby/types";
 import { SET_USER_NAME, UserActionTypes } from "./user/types";
 import { goToDefaultUrl, setMenuItems } from "./shell/actions";
@@ -77,7 +76,6 @@ export const onReconnect = (
   }
 };
 
-let connectionStarted: Date = new Date();
 export const SignalRMiddleware = (connectionFactory: () => HubConnection) => {
   const connectionRetrySeconds = [0, 1, 4, 9, 16, 25, 36, 49];
   let connectionTimeout = 0;
@@ -164,7 +162,6 @@ export const SignalRMiddleware = (connectionFactory: () => HubConnection) => {
               getState().connection.status === ConnectionStatus.NotConnected
             ) {
               bumpConnectionTimeout();
-              connectionStarted = new Date();
               dispatch(updateConnectionStatus(ConnectionStatus.Pending));
               connection
                 .start()
