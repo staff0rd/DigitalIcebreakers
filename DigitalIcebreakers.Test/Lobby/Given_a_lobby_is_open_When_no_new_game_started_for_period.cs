@@ -12,7 +12,7 @@ namespace DigitalIcebreakers.Test
         public Given_a_lobby_is_open_When_no_new_game_started_for_period()
         {
             lobbys = ObjectMother.GetLobbyManager(new List<Lobby> { new Lobby { Id = "lobby" } });
-            Task.Delay(1000).Wait();
+            Task.Delay(1500).Wait();
             lobbys.CloseInactive(1);
         }
 
