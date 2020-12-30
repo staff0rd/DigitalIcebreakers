@@ -1,5 +1,5 @@
 import { lobbyReducer } from "./reducers";
-import { joinLobby, setLobby } from "./actions";
+import { createLobby, joinLobby, setLobby } from "./actions";
 import { LobbyState } from "./types";
 
 describe("lobbyReducer", () => {
@@ -16,6 +16,15 @@ describe("lobbyReducer", () => {
         setLobby("new-id", "my lobby", false, [], undefined)
       );
       expect(result.joiningLobbyId).toBeUndefined();
+    });
+  });
+  describe("when creating", () => {
+    it("should set admin", () => {
+      const result = lobbyReducer(
+        {} as LobbyState,
+        createLobby("my lobby name")
+      );
+      expect(result.isAdmin).toBe(true);
     });
   });
 });

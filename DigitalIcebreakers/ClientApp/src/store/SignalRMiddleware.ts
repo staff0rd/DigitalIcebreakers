@@ -48,30 +48,35 @@ export const onReconnect = (
   getState: () => RootState,
   dispatch: Dispatch<AnyAction>
 ) => (response: ReconnectPayload) => {
-  let user = getState().user as { id: string; name: string };
-  if (response.playerId) {
-    user = {
-      id: response.playerId,
-      name: response.playerName,
-    };
-  }
+  const user = getState().user;
+
   dispatch(updateConnectionStatus(ConnectionStatus.Connected));
-  const joiningLobbyId = getState().lobby.joiningLobbyId;
+  const { joiningLobbyId, isAdmin } = getState().lobby;
   if (!joiningLobbyId || joiningLobbyId === response.lobbyId) {
-    dispatch(
-      setLobby(
-        response.lobbyId,
-        response.lobbyName,
-        response.isAdmin,
-        response.players,
-        response.currentGame
-      )
-    );
-    dispatch(setUser(user));
-    if (response.currentGame) {
-      dispatch(setLobbyGame(response.currentGame));
-    } else {
+    if (!user.isRegistered && !isAdmin) {
       dispatch(goToDefaultUrl());
+    } else {
+      dispatch(
+        setLobby(
+          response.lobbyId,
+          response.lobbyName,
+          response.isAdmin,
+          response.players,
+          response.currentGame
+        )
+      );
+      dispatch(
+        setUser({
+          id: response.playerId,
+          name: response.playerName,
+        })
+      );
+
+      if (response.currentGame) {
+        dispatch(setLobbyGame(response.currentGame));
+      } else {
+        dispatch(goToDefaultUrl());
+      }
     }
   }
 };
@@ -233,7 +238,7 @@ export const SignalRMiddleware = (connectionFactory: () => HubConnection) => {
         case GO_TO_DEFAULT_URL: {
           const { user, lobby } = getState();
           if (lobby.joiningLobbyId && !user.isRegistered) {
-            console.log("pushing register", lobby.isAdmin, user.isRegistered);
+            console.warn("pushing register", lobby.isAdmin, user.isRegistered);
             navigateTo("/register");
           } else {
             const currentGame = getState().lobby.currentGame;

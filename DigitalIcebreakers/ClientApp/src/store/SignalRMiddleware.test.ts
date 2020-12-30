@@ -37,26 +37,62 @@ describe("SignalRMiddleware", () => {
   beforeEach(() => {
     connectionFactory.mockReturnValue(mockConnection);
   });
-  describe("when connected to an existing lobby", () => {
-    describe("when joining a different lobby", () => {
-      it("should not update to existing lobby", () => {
-        const { invoke } = createMiddleware({
-          user: {} as UserState,
-          lobby: { joiningLobbyId: "different-lobby" } as LobbyState,
+  describe("when joining a lobby", () => {
+    describe("when not yet registered", () => {
+      describe("when player", () => {
+        it("should not set lobby", () => {
+          const { invoke } = createMiddleware({
+            user: { isRegistered: false } as UserState,
+            lobby: { joiningLobbyId: "new-lobby" } as LobbyState,
+          });
+          invoke({} as AnyAction);
+          mockConnection.emit("reconnect", {
+            lobbyId: "new-lobby",
+          });
+          expect(dispatch).not.toBeCalledWith(
+            expect.objectContaining({
+              type: SET_LOBBY,
+            })
+          );
         });
-        invoke({} as AnyAction);
-        mockConnection.emit("reconnect", {
-          id: "existing-lobby",
+      });
+      describe("when presenter", () => {
+        it("should set lobby", () => {
+          const { invoke } = createMiddleware({
+            user: { isRegistered: false } as UserState,
+            lobby: { joiningLobbyId: "new-lobby", isAdmin: true } as LobbyState,
+          });
+          invoke({} as AnyAction);
+          mockConnection.emit("reconnect", {
+            lobbyId: "new-lobby",
+          });
+          expect(dispatch).toBeCalledWith(
+            expect.objectContaining({
+              type: SET_LOBBY,
+            })
+          );
         });
-        expect(dispatch).not.toBeCalledWith(
-          expect.objectContaining({
-            type: SET_LOBBY,
-          })
-        );
       });
     });
   });
 
+  describe("when connected to an old lobby", () => {
+    it("should not update to old lobby", () => {
+      const { invoke } = createMiddleware({
+        user: {} as UserState,
+        lobby: { joiningLobbyId: "new-lobby" } as LobbyState,
+      });
+      invoke({} as AnyAction);
+      mockConnection.emit("reconnect", {
+        lobbyId: "old-lobby",
+      });
+      expect(dispatch).not.toBeCalledWith(
+        expect.objectContaining({
+          type: SET_LOBBY,
+        })
+      );
+    });
+  });
   describe("when connection achieved", () => {
     describe("when is joining lobby", () => {
       it("should join lobby", () => {
