@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Button from "../../layout/components/CustomButtons/Button";
 import { useDispatch } from "react-redux";
 import Notifications from "@material-ui/icons/Notifications";
-import { setGameMessageCallback } from "../../store/connection/actions";
 import { clientMessage } from "../../store/lobby/actions";
 import { makeStyles } from "@material-ui/core";
+import { useSelector } from "store/useSelector";
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -23,12 +23,8 @@ const useStyles = makeStyles((theme) => ({
 
 export const BroadcastClient = () => {
   const classes = useStyles();
-  const [clientText, setClientText] = useState<string>("");
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(setGameMessageCallback(setClientText));
-  }, [dispatch]);
+  const clientText = useSelector((state) => state.games.broadcast.client.text);
 
   const ding = () => {
     dispatch(clientMessage(1));

@@ -1,10 +1,10 @@
-import React, { useState, useEffect, ChangeEvent } from "react";
+import React, { ChangeEvent } from "react";
 import { useDispatch } from "react-redux";
-import { setGameMessageCallback } from "../../store/connection/actions";
 import { adminMessage } from "../../store/lobby/actions";
-import { GameMessage } from "../GameMessage";
 import { ContentContainer } from "../../components/ContentContainer";
 import { makeStyles, TextField } from "@material-ui/core";
+import { useSelector } from "store/useSelector";
+import { setTextAction } from "./BroadcastReducer";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -15,34 +15,25 @@ const useStyles = makeStyles((theme) => ({
 
 export const BroadcastPresenter = () => {
   const classes = useStyles();
-  const [dingCount, setDingCount] = useState<number>(0);
-  const [clientText, setClientText] = useState<string>("");
+  const { dings, text } = useSelector(
+    (state) => state.games.broadcast.presenter
+  );
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(
-      setGameMessageCallback(({ payload }: GameMessage<string>) => {
-        if (payload === "d") {
-          setDingCount((prevDingCount) => prevDingCount + 1);
-        }
-      })
-    );
-  }, []);
 
   const updateClientText = (e: ChangeEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
-    setClientText(target.value);
+    dispatch(setTextAction(target.value));
     dispatch(adminMessage(target.value));
   };
 
   return (
     <ContentContainer>
       <div className={classes.container}>
-        <h1 style={{ fontSize: "100px" }}>Dings: {dingCount}</h1>
+        <h1 style={{ fontSize: "100px" }}>Dings: {dings}</h1>
         <TextField
           label="Broadcast this"
           defaultValue="Default Value"
-          value={clientText}
+          value={text}
           onChange={updateClientText}
         />
       </div>

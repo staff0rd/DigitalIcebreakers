@@ -9,6 +9,7 @@ import { TeamColors, PongPresenterState } from "../games/Pong/PongReducer";
 import { IdeaWallState } from "../games/IdeaWall/IdeaWallReducer";
 import { PollState } from "../games/Poll/types/PollState";
 import { NamePickerState } from "../games/NamePicker/NamePickerReducer";
+import { BroadcastState } from "games/Broadcast/BroadcastReducer";
 
 export interface GamesState {
   yesnomaybe: YesNoMaybeState;
@@ -22,6 +23,7 @@ export interface GamesState {
   ideawall: IdeaWallState;
   poll: PollState;
   namePicker: NamePickerState;
+  broadcast: BroadcastState;
 }
 
 export interface RootState {
