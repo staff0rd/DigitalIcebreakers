@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import {
   createGameActionWithPayload,
-  createReceiveGameMessageReducer,
+  createReceiveReducer,
 } from "store/actionHelpers";
 
 export const Name = "broadcast";
@@ -26,27 +26,27 @@ export type BroadcastState = {
   presenter: BroadcastPresenterState;
 };
 
-const broadcastClientReducer = createReceiveGameMessageReducer<
-  string,
-  BroadcastClientState
+const broadcastClientReducer = createReceiveReducer<
+  BroadcastClientState,
+  string
 >(
   Name,
   { text: "" },
-  (_, { payload: { payload: result } }) => {
+  (_, action) => {
     return {
-      text: result,
+      text: action.payload,
     };
   },
   "client"
 );
 
-const broadcastPresenterReducer = createReceiveGameMessageReducer<
-  string,
-  BroadcastPresenterState
+const broadcastPresenterReducer = createReceiveReducer<
+  BroadcastPresenterState,
+  string
 >(
   Name,
   { dings: 0, text: "" },
-  (state, _) => ({
+  (state) => ({
     ...state,
     dings: state.dings + 1,
   }),
