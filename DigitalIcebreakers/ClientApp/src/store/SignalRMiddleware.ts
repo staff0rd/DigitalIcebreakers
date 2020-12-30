@@ -49,8 +49,6 @@ export const onReconnect = (
   dispatch: Dispatch<AnyAction>
 ) => (response: ReconnectPayload) => {
   const user = getState().user;
-
-  dispatch(updateConnectionStatus(ConnectionStatus.Connected));
   const { joiningLobbyId, isAdmin } = getState().lobby;
   if (!joiningLobbyId || joiningLobbyId === response.lobbyId) {
     if (!user.isRegistered && !isAdmin && !response.isRegistered) {
