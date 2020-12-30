@@ -47,7 +47,8 @@ namespace DigitalIcebreakers.Games
 
         public async Task SendToPlayer(Player player, object payload)
         {
-            await _sender.SendGameMessageToPlayer(player, payload);
+            if (!player.IsAdmin)
+                await _sender.SendGameMessageToPlayer(player, payload);
         }
         public async Task SendToPresenter(string connectionId, object payload, Player player = null)
         {
