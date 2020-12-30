@@ -1,5 +1,5 @@
 import {
-  SET_CONNECTION_STATUS as UPDATE_CONNECTION_STATUS,
+  SET_CONNECTION_STATUS,
   ConnectionActionTypes,
   CONNECTION_CONNECT,
   CONNECTION_RECONNECT,
@@ -10,7 +10,7 @@ import { ConnectionStatus } from "../../ConnectionStatus";
 export function updateConnectionStatus(
   status: ConnectionStatus
 ): ConnectionActionTypes {
-  return { type: UPDATE_CONNECTION_STATUS, status };
+  return { type: SET_CONNECTION_STATUS, status };
 }
 
 export function connectionConnect(lobbyId?: string): ConnectionActionTypes {

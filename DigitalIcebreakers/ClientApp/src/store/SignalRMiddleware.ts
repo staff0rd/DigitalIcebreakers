@@ -53,7 +53,7 @@ export const onReconnect = (
   dispatch(updateConnectionStatus(ConnectionStatus.Connected));
   const { joiningLobbyId, isAdmin } = getState().lobby;
   if (!joiningLobbyId || joiningLobbyId === response.lobbyId) {
-    if (!user.isRegistered && !isAdmin) {
+    if (!user.isRegistered && !isAdmin && !response.isRegistered) {
       dispatch(goToDefaultUrl());
     } else {
       dispatch(
@@ -190,6 +190,7 @@ export const SignalRMiddleware = (connectionFactory: () => HubConnection) => {
           break;
         }
         case SET_CONNECTION_STATUS: {
+          const value = next(action);
           switch (action.status) {
             case ConnectionStatus.NotConnected:
               dispatch(connectionConnect());
@@ -202,7 +203,7 @@ export const SignalRMiddleware = (connectionFactory: () => HubConnection) => {
               break;
             }
           }
-          break;
+          return value;
         }
         case SET_USER_NAME: {
           const value = next(action);

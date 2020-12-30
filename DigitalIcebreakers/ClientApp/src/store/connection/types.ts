@@ -5,7 +5,7 @@ export interface ConnectionState {
   status: ConnectionStatus;
 }
 
-export const SET_CONNECTION_STATUS = "UPDATE_CONNECTION_STATUS";
+export const SET_CONNECTION_STATUS = "SET_CONNECTION_STATUS";
 export const CONNECTION_CONNECT = "CONNECTION_CONNECT";
 export const CONNECTION_RECONNECT = "CONNECTION_RECONNECT";
 export const SET_GAME_MESSAGE_CALLBACK = "SET_GAME_MESSAGE_CALLBACK";
@@ -43,4 +43,5 @@ export type ReconnectPayload = {
   isAdmin: boolean;
   players: Player[];
   currentGame: string;
+  isRegistered: boolean;
 };
