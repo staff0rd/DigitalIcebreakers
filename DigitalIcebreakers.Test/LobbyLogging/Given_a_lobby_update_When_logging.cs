@@ -43,7 +43,7 @@ namespace DigitalIcebreakers.Test
         [Fact]
         public void Should_log_lobby_playerCount()
         {
-            _lobbyLogger.Log("Created", new Lobby{ Players = new List<Player> { new Player { IsAdmin = true }, new Player(), new Player { IsConnected = true}}});
+            _lobbyLogger.Log("Created", new Lobby{ Players = new List<Player> { new Player { IsAdmin = true }, new Player(), new Player { IsConnected = true, IsRegistered = true}}});
             _logger.Last.Message.ShouldContain($"Players: (1/2)");
         }
 
