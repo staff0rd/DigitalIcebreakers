@@ -7,7 +7,7 @@ import Cancel from "@material-ui/icons/Cancel";
 import CreateLobby from "../components/CreateLobby";
 import CloseLobby from "../components/CloseLobby";
 import Register from "../components/Register";
-import Join from "../components/Join";
+import JoinLobby from "../components/JoinLobby";
 import LobbyClosed from "../components/LobbyClosed";
 import { Lobby } from "../components/Lobby";
 import { Home } from "../components/Home";
@@ -27,7 +27,6 @@ export interface RouteLink {
 
 const useRoutes = () => {
   const lobby = useSelector((state) => state.lobby);
-  const user = useSelector((state) => state.user);
   const game = useSelector((state) =>
     Games.find((g) => g.name === state.lobby.currentGame)
   );
@@ -58,7 +57,7 @@ const useRoutes = () => {
     path: "/join-lobby/:id?",
     name: "Join",
     icon: GroupAdd,
-    component: Join,
+    component: JoinLobby,
   };
 
   const newGameRoute = {
@@ -90,8 +89,6 @@ const useRoutes = () => {
   const registerRoute = {
     path: "/register",
     component: Register,
-    name: "Register",
-    icon: GroupAdd,
   };
 
   const lobbyClosedRoute = {
@@ -104,13 +101,9 @@ const useRoutes = () => {
   const ifAdmin = (...routes: RouteLink[]) => (lobby.isAdmin ? routes : []);
   const ifGame = (yes: RouteLink[], no: RouteLink[]) => (game ? yes : no);
 
-  if (lobby.joiningLobbyId && !user.isRegistered) {
-    return [registerRoute];
-  }
-
   return [
     ...ifLobby(lobbyRoute),
-    ...ifNoLobby(homeRoute, createLobbyRoute, joinRoute),
+    ...ifNoLobby(homeRoute, createLobbyRoute, joinRoute, registerRoute),
     ...ifAdmin(newGameRoute),
     ...ifGame([gameRoute, ...gameRoutes], [noGameRoute]),
     ...ifAdmin(closeLobbyRoute),
