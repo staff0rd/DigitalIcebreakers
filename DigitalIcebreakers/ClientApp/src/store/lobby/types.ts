@@ -6,6 +6,7 @@ export interface LobbyState {
   isAdmin: boolean;
   players: Player[];
   currentGame: string | undefined;
+  joiningLobbyId?: string;
 }
 
 export const SET_LOBBY = "SET_LOBBY";

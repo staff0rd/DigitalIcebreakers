@@ -1,3 +1,4 @@
+import { Player } from "Player";
 import { ConnectionStatus } from "../../ConnectionStatus";
 
 export interface ConnectionState {
@@ -33,3 +34,13 @@ export type ConnectionActionTypes =
   | ConnectionConnectAction
   | ConnectionReconnectAction
   | SetGameMessageCallbackAction;
+
+export type ReconnectPayload = {
+  playerId: string;
+  playerName: string;
+  lobbyId: string;
+  lobbyName: string;
+  isAdmin: boolean;
+  players: Player[];
+  currentGame: string;
+};

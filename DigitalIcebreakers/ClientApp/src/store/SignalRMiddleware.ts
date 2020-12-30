@@ -1,16 +1,16 @@
-import { MiddlewareAPI, Dispatch } from "@reduxjs/toolkit";
-import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
+import { MiddlewareAPI, Dispatch, AnyAction } from "@reduxjs/toolkit";
+import { HubConnection } from "@microsoft/signalr";
 import {
   CONNECTION_CONNECT,
   SET_CONNECTION_STATUS,
   SET_GAME_MESSAGE_CALLBACK,
   ConnectionActionTypes,
+  ReconnectPayload,
 } from "./connection/types";
 import {
   updateConnectionStatus,
   connectionConnect,
 } from "./connection/actions";
-import ReactAI from "../app-insights-deprecated";
 import { ConnectionStatus } from "../ConnectionStatus";
 import {
   setLobby,
@@ -38,19 +38,50 @@ import {
 import { SET_USER_NAME, UserActionTypes } from "./user/types";
 import { goToDefaultUrl, setMenuItems } from "./shell/actions";
 import { GO_TO_DEFAULT_URL, ShellActionTypes } from "./shell/types";
+import { RootState } from "./RootState";
 
 const navigateTo = (path: string) => {
   console.log(`Navigating to ${path}`);
   history.push(path);
 };
 
-export const SignalRMiddleware = () => {
+export const onReconnect = (
+  getState: () => RootState,
+  dispatch: Dispatch<AnyAction>
+) => (response: ReconnectPayload) => {
+  let user = getState().user as { id: string; name: string };
+  if (response.playerId) {
+    user = {
+      id: response.playerId,
+      name: response.playerName,
+    };
+  }
+  dispatch(updateConnectionStatus(ConnectionStatus.Connected));
+  const joiningLobbyId = getState().lobby.joiningLobbyId;
+  if (!joiningLobbyId || joiningLobbyId === response.lobbyId) {
+    dispatch(
+      setLobby(
+        response.lobbyId,
+        response.lobbyName,
+        response.isAdmin,
+        response.players,
+        response.currentGame
+      )
+    );
+    dispatch(setUser(user));
+    if (response.currentGame) {
+      dispatch(setLobbyGame(response.currentGame));
+    } else {
+      dispatch(goToDefaultUrl());
+    }
+  }
+};
+
+let connectionStarted: Date = new Date();
+export const SignalRMiddleware = (connectionFactory: () => HubConnection) => {
   const connectionRetrySeconds = [0, 1, 4, 9, 16, 25, 36, 49];
-  let connectionStarted: Date;
   let connectionTimeout = 0;
-  const connection: HubConnection = new HubConnectionBuilder()
-    .withUrl("/gameHub")
-    .build();
+  const connection = connectionFactory();
   connection.keepAliveIntervalInMilliseconds = 2000;
   const bumpConnectionTimeout = () => {
     connectionTimeout = connectionRetrySeconds.filter(
@@ -60,41 +91,9 @@ export const SignalRMiddleware = () => {
       connectionTimeout =
         connectionRetrySeconds[connectionRetrySeconds.length - 1];
   };
-  const getDuration = (from: Date, to: Date = new Date()) => {
-    return to.valueOf() - from.valueOf();
-  };
-  return ({ getState, dispatch }: MiddlewareAPI) => {
-    connection.on("reconnect", (response) => {
-      ReactAI.ai().trackMetric(
-        "userReconnected",
-        getDuration(connectionStarted)
-      );
-      let user = getState().user;
-      if (response.playerId) {
-        user = {
-          id: response.playerId,
-          name: response.playerName,
-        };
-      }
-      dispatch(updateConnectionStatus(ConnectionStatus.Connected));
-      if (!getState().user.isJoining) {
-        dispatch(
-          setLobby(
-            response.lobbyId,
-            response.lobbyName,
-            response.isAdmin,
-            response.players,
-            response.currentGame
-          )
-        );
-        dispatch(setUser(user));
-        if (response.currentGame) {
-          dispatch(setLobbyGame(response.currentGame));
-        } else {
-          dispatch(goToDefaultUrl());
-        }
-      }
-    });
+
+  return ({ getState, dispatch }: MiddlewareAPI<Dispatch, RootState>) => {
+    connection.on("reconnect", onReconnect(getState, dispatch));
     connection.on("joined", (user) => {
       dispatch(playerJoinedLobby(user));
     });
@@ -105,22 +104,15 @@ export const SignalRMiddleware = () => {
       dispatch(setLobbyPlayers(players));
     });
     connection.onclose(() => {
-      ReactAI.ai().trackEvent("Connection closed");
       dispatch(updateConnectionStatus(ConnectionStatus.NotConnected));
     });
     connection.on("closelobby", () => {
-      ReactAI.ai().trackEvent("Lobby closed");
       dispatch(clearLobby());
     });
     connection.on("connected", () => {
-      ReactAI.ai().trackMetric(
-        "userConnected",
-        getDuration(connectionStarted!)
-      );
       dispatch(updateConnectionStatus(ConnectionStatus.Connected));
     });
     connection.on("newgame", (name) => {
-      ReactAI.ai().trackEvent("Joining new game");
       connection.off("gameMessage");
       dispatch(setMenuItems([]));
       dispatch(setLobbyGame(name));
@@ -178,10 +170,6 @@ export const SignalRMiddleware = () => {
                 .start()
                 .then(() => {
                   connectionTimeout = 0;
-                  ReactAI.ai().trackMetric(
-                    "connected",
-                    getDuration(connectionStarted)
-                  );
                   connection
                     .invoke("connect", getState().user, action.lobbyId)
                     .catch(() => {
@@ -205,9 +193,9 @@ export const SignalRMiddleware = () => {
               dispatch(connectionConnect());
               break;
             case ConnectionStatus.Connected: {
-              const { user } = getState();
-              if (user.desiredLobbyId) {
-                dispatch(joinLobby(user.desiredLobbyId));
+              const { lobby } = getState();
+              if (lobby.joiningLobbyId) {
+                dispatch(joinLobby(lobby.joiningLobbyId));
               } else dispatch(goToDefaultUrl());
               break;
             }
@@ -224,8 +212,6 @@ export const SignalRMiddleware = () => {
         case JOIN_LOBBY: {
           if (getState().connection.status === ConnectionStatus.Connected) {
             invoke("connectToLobby", getState().user, action.id);
-          } else {
-            dispatch(setDesiredLobbyId(action.id));
           }
           break;
         }
