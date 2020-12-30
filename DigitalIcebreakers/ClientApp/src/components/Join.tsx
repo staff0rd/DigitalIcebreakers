@@ -9,9 +9,8 @@ import CardFooter from "../layout/components/Card/CardFooter.js";
 import { useDispatch } from "react-redux";
 import { joinLobby } from "../store/lobby/actions";
 import CardTitle from "../layout/components/Card/CardTitle";
-import ContentContainer from "./ContentContainer";
+import { ContentContainer } from "./ContentContainer";
 import { useParams } from "react-router";
-import { setIsJoining } from "store/user/actions";
 
 interface RouteParams {
   id: string;
@@ -23,9 +22,9 @@ export default function Join() {
 
   const [lobbyCode, setLobbyCode] = useState<string>("");
 
-  useEffect(() => {
-    dispatch(setIsJoining(true));
-  }, []);
+  // useEffect(() => {
+  //   dispatch(setIsJoining(true));
+  // }, []);
 
   useEffect(() => {
     setLobbyCode(id || "");
