@@ -104,7 +104,7 @@ const useRoutes = () => {
   const ifAdmin = (...routes: RouteLink[]) => (lobby.isAdmin ? routes : []);
   const ifGame = (yes: RouteLink[], no: RouteLink[]) => (game ? yes : no);
 
-  if (user.isJoining && !user.isRegistered && lobby.id) {
+  if (lobby.joiningLobbyId && !user.isRegistered) {
     return [registerRoute];
   }
 

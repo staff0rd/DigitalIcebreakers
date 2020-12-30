@@ -1,18 +1,9 @@
-import {
-  UserState,
-  UserActionTypes,
-  SET_USER,
-  SET_USER_NAME,
-  SET_DESIRED_LOBBY_ID,
-  SET_IS_JOINING,
-} from "./types";
+import { UserState, UserActionTypes, SET_USER, SET_USER_NAME } from "./types";
 
 const initialState: UserState = {
   id: "",
   name: "",
   isRegistered: false,
-  isJoining: false,
-  joinLobyId: undefined,
 };
 
 export function userReducer(
@@ -25,7 +16,6 @@ export function userReducer(
         ...state,
         name: action.name,
         isRegistered: true,
-        isJoining: false,
       };
     }
     case SET_USER: {
@@ -33,18 +23,6 @@ export function userReducer(
         ...state,
         id: action.user.id,
         name: action.user.name,
-      };
-    }
-    case SET_DESIRED_LOBBY_ID: {
-      return {
-        ...state,
-        joinLobyId: action.id,
-      };
-    }
-    case SET_IS_JOINING: {
-      return {
-        ...state,
-        isJoining: action.isJoining,
       };
     }
     default:

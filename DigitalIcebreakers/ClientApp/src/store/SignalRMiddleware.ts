@@ -21,7 +21,7 @@ import {
   setLobbyPlayers,
   joinLobby,
 } from "./lobby/actions";
-import { setDesiredLobbyId, setUser } from "./user/actions";
+import { setUser } from "./user/actions";
 import history from "../history";
 import {
   CLEAR_LOBBY,
@@ -235,7 +235,7 @@ export const SignalRMiddleware = (connectionFactory: () => HubConnection) => {
         }
         case GO_TO_DEFAULT_URL: {
           const { user, lobby } = getState();
-          if (user.isJoining && !user.isRegistered) {
+          if (lobby.joiningLobbyId && !user.isRegistered) {
             console.log("pushing register", lobby.isAdmin, user.isRegistered);
             navigateTo("/register");
           } else {
@@ -246,10 +246,6 @@ export const SignalRMiddleware = (connectionFactory: () => HubConnection) => {
               navigateTo("/");
             }
           }
-          break;
-        }
-        case SET_LOBBY: {
-          dispatch(setDesiredLobbyId(undefined));
           break;
         }
       }
