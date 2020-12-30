@@ -43,8 +43,7 @@ namespace DigitalIcebreakers.EndToEndTests
             var browser = await Create(headless);
             var page = await browser.NewPageAsync();
             await page.GoToAsync(lobbyUrl);
-            var userNameTextbox = await page.QuerySelectorAsync("[id=user-name]");
-            await userNameTextbox.TypeAsync(playerName);
+            await page.TypeAsync("[id=user-name]", playerName);
             var joinButton = await page.GetByTestId("join-lobby-button");
             await joinButton.ClickAsync();
             return new Player(browser, page);
