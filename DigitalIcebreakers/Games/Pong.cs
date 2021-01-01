@@ -31,11 +31,6 @@ namespace DigitalIcebreakers.Games
                 case "release": Move(0, externalId); break;
                 case "up": Move(1, externalId); break;
                 case "down": Move(-1, externalId); break;
-                case "join": {
-                    await Join(player);
-                    await UpdatePresenterTeamCount(connectionId); 
-                    break;
-                }
             }
             await UpdatePresenterSpeed(connectionId);
         }
@@ -49,7 +44,7 @@ namespace DigitalIcebreakers.Games
             string system = payload.ToString();
             switch (system)
             {
-                case "leave": Leave(externalId); Move(0, externalId); break;
+                case "leave": await Leave(externalId); break;
                 case "join": await Join(player); break;
             }
             await UpdatePresenterSpeed(connectionId);
@@ -91,18 +86,26 @@ namespace DigitalIcebreakers.Games
             PerformOnDictionary(id, (d) => d[id] = direction);
         }
 
-        internal void Leave(Guid id)
+        private async Task Leave(Guid id)
         {
             PerformOnDictionary(id, (d) => d.Remove(id));
+            if (_leftTeam.Count == 0 && _rightTeam.Count > 1) {
+                var player = GetPlayerByExternalId(_rightTeam.First().Key);
+                await Join(player);
+            }
+            else if (_rightTeam.Count == 0 && _leftTeam.Count > 1) {
+                var player = GetPlayerByExternalId(_leftTeam.First().Key);
+                await Join(player);
+            }
         }
 
-        internal async Task Join(Player player)
+        private async Task Join(Player player)
         {
             if (!player.IsAdmin)
             {
                 var id = player.ExternalId;
 
-                Leave(id);
+                await Leave(id);
 
                 if (_leftTeam.Count <= _rightTeam.Count)
                     _leftTeam[id] = 0;

@@ -1,5 +1,6 @@
 ﻿using DigitalIcebreakers.Games;
 using DigitalIcebreakers.Hubs;
+using DigitalIcebreakers.Logging;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -12,7 +13,7 @@ namespace DigitalIcebreakers.Test
     {
         public static LobbyManager GetLobbyManager(List<Lobby> lobbys)
         {
-            return new LobbyManager(lobbys, new Mock<ILogger<LobbyManager>>().Object, new LobbyIdService());
+            return new LobbyManager(lobbys, new LobbyLogger(new Mock<ILogger<LobbyLogger>>().Object), new LobbyIdService());
         }
 
         public static Mock<IHubContext<GameHub>> GetMockContext()

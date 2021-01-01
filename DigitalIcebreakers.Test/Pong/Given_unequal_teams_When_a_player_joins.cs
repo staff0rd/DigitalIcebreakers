@@ -1,10 +1,7 @@
-﻿using DigitalIcebreakers.Test;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Shouldly;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace DigitalIcebreakers.Test.Pong
@@ -23,7 +20,7 @@ namespace DigitalIcebreakers.Test.Pong
             var lobby = ObjectMother.CreateLobby(gameHub, Guid.NewGuid(), game);
             lobby.Players.Add(ObjectMother.GetPlayer(playerId));
             var payload = JsonConvert.SerializeObject(new {
-                client = "join"
+                system = "join"
             });
             gameHub.HubMessage(payload).Wait();
         }
