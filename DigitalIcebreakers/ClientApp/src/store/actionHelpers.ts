@@ -37,14 +37,14 @@ export const createGameMessageReceivedAction = <P>(
     actionType
   );
 
-export const createReceiveGameMessageReducer = <P, ReduxState = P>(
+export const createReceiveGameMessageReducer = <Payload, ReduxState = Payload>(
   gameName: string,
   initialState: ReduxState,
-  caseReducer: CaseReducer<ReduxState, ActionWithPayload<GameMessage<P>>>,
+  caseReducer: CaseReducer<ReduxState, ActionWithPayload<GameMessage<Payload>>>,
   interfaceType: InterfaceType = "presenter",
   builderCallback?: (builder: ActionReducerMapBuilder<ReduxState>) => void
 ) => {
-  const receiveGameMessage = createGameMessageReceivedAction<P>(
+  const receiveGameMessage = createGameMessageReceivedAction<Payload>(
     gameName,
     interfaceType,
     "receive-game-message"
@@ -55,14 +55,14 @@ export const createReceiveGameMessageReducer = <P, ReduxState = P>(
   });
 };
 
-export const createReceiveReducer = <ReduxState, P = string>(
+export const createReceiveReducer = <Payload = string, ReduxState = {}>(
   gameName: string,
   initialState: ReduxState,
-  caseReducer: CaseReducer<ReduxState, ActionWithPayload<P>>,
+  caseReducer: CaseReducer<ReduxState, ActionWithPayload<Payload>>,
   interfaceType: InterfaceType = "presenter",
   builderCallback?: (builder: ActionReducerMapBuilder<ReduxState>) => void
 ) => {
-  const receiveGameMessage = createGameActionWithPayload<P>(
+  const receiveGameMessage = createGameActionWithPayload<Payload>(
     gameName,
     interfaceType,
     "receive-game-message"

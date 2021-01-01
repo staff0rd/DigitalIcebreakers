@@ -141,7 +141,7 @@ const adminReducer = createReceiveGameMessageReducer<
   }
 );
 
-const clientReducer = createReceiveReducer<TeamColors>(
+const clientReducer = createReceiveReducer<string, TeamColors>(
   Name,
   { up: 0xffffff, down: 0xffffff },
   (_, { payload: response }) => {

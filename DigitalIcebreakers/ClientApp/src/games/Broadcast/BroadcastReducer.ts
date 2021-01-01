@@ -27,8 +27,8 @@ export type BroadcastState = {
 };
 
 const broadcastClientReducer = createReceiveReducer<
-  BroadcastClientState,
-  string
+  string,
+  BroadcastClientState
 >(
   Name,
   { text: "" },
@@ -41,8 +41,8 @@ const broadcastClientReducer = createReceiveReducer<
 );
 
 const broadcastPresenterReducer = createReceiveReducer<
-  BroadcastPresenterState,
-  string
+  string,
+  BroadcastPresenterState
 >(
   Name,
   { dings: 0, text: "" },
