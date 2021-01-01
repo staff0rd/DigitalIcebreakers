@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Extensions.Logging;
+using DigitalIcebreakers.Logging;
 
 namespace DigitalIcebreakers
 {
@@ -11,9 +11,9 @@ namespace DigitalIcebreakers
         private readonly LobbyIdService _lobbyIds;
         static int lobbyNumber = 0;
 
-        private readonly ILogger<LobbyManager> _logger;
+        private readonly LobbyLogger _logger;
         
-        public LobbyManager(List<Lobby> lobbys, ILogger<LobbyManager> logger, LobbyIdService lobbyIds)
+        public LobbyManager(List<Lobby> lobbys, LobbyLogger logger, LobbyIdService lobbyIds)
         {
             _lobbys = lobbys;
             _logger = logger;
@@ -46,8 +46,7 @@ namespace DigitalIcebreakers
                 var timeout = DateTime.Now.Subtract(lobby.LastModified).TotalSeconds;
                 if (timeout >= timeoutInSeconds)
                 {
-                    _logger.LogWarning("Closing {lobbyName} (#{lobbyNumber}, {lobbyPlayers} players) due to inactivity, last update {lastModified}", 
-                        lobby.Name, lobby.Number, lobby.PlayerCount, lobby.LastModified);
+                    _logger.Log(lobby, "{action} inactive lobby, last update {lastModified}", "Closing", lobby.LastModified);
                     _lobbys.Remove(_lobbys.SingleOrDefault(p => p.Id == lobby.Id));
                 }
             }

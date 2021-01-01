@@ -20,7 +20,7 @@ interface CanAnswer {
 
 type Payload = AvailableAnswers & CanAnswer;
 
-export const playerReducer = createReceiveReducer<PollPlayerState, Payload>(
+export const playerReducer = createReceiveReducer<Payload, PollPlayerState>(
   Name,
   {
     answers: [],

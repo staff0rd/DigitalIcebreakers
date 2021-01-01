@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Shouldly;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace DigitalIcebreakers.EndToEndTests
 {
@@ -21,10 +22,12 @@ namespace DigitalIcebreakers.EndToEndTests
         {
             _presenter = await _browsers.CreatePresenter();
             await _presenter.StartPong();
-            
-            _players = await Task.WhenAll(Enumerable.Range(1, 6)
-                .ToList()
-                .Select(ix => _browsers.CreatePlayer(_presenter.Url, $"Player {ix}", true)));
+            var players = new List<Player>();
+            foreach (var ix in Enumerable.Range(1,6))
+            {
+                players.Add(await _browsers.CreatePlayer(_presenter.Url, $"Player {ix}", true));
+            }
+            _players = players.ToArray();
         }
 
         public Task DisposeAsync()
@@ -35,17 +38,44 @@ namespace DigitalIcebreakers.EndToEndTests
         [Fact]
         public async Task Teams_are_even()
         {
-            await _players[1].Page.CloseAsync();
-            await _players[2].Page.CloseAsync();
-            await _players[3].Page.CloseAsync();
-            await _players[5].Page.CloseAsync();
-            await Task.Delay(1000);
-            
-            var blueCount = await GetPlayerCount("blue-team");
-            var redCount = await GetPlayerCount("red-team");
+            await AssertTeam("blue", "red", "blue", "red", "blue", "red");
+            await TeamsShouldBe(blue: 3, red: 3);
+            await _players[1].Page.CloseAsync(); // red leaves
+            await AssertTeam("blue", "", "blue", "red", "blue", "red");
+            await TeamsShouldBe(blue: 3, red: 2);
+            await _players[2].Page.CloseAsync(); // blue leaves
+            await AssertTeam("blue", "", "", "red", "blue", "red");
+            await TeamsShouldBe(blue: 2, red: 2);
+            await _players[3].Page.CloseAsync(); // red leaves
+            await AssertTeam("blue", "", "", "", "blue", "red");
+            await TeamsShouldBe(blue: 2, red: 1);
+            await _players[5].Page.CloseAsync(); // red leaves
+            await TeamsShouldBe(blue: 1, red: 1);
+            var teams = new [] { 
+                await _players[0].Page.GetTextContentByTestId("team"),
+                await _players[4].Page.GetTextContentByTestId("team"),
+            };
+            teams.ShouldContain("red");
+            teams.ShouldContain("blue");
+        }
 
-            var teams = new { blue = blueCount, red = redCount};
-            teams.ShouldBe(new { blue = 1, red = 1});
+        private async Task AssertTeam(params string[] expect)
+        {
+            for (int i = 0; i < expect.Length; i++)
+            {
+                var expected = expect[i];
+                if (!string.IsNullOrEmpty(expected)) {
+                    var actual = await _players[i].Page.GetTextContentByTestId("team");
+                    actual.ShouldBe(expect[i], $"for Player {i + 1}");
+                }
+            }
+        }
+
+        private async Task TeamsShouldBe(int blue, int red)
+        {
+            await Task.Delay(50);
+            var teams = (blue: await GetPlayerCount("blue-team"), red: await GetPlayerCount("red-team"));
+            teams.ShouldBe((blue: blue, red: red));
         }
 
         private async Task<int> GetPlayerCount(string team)

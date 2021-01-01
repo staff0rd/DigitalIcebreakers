@@ -11,13 +11,14 @@ import { clamp } from "../../util/clamp";
 export const Name = "pong";
 
 interface PongState {
-  client: TeamColors;
+  client: PongClientState;
   presenter: PongPresenterState;
 }
 
-export interface TeamColors {
-  up: number;
-  down: number;
+export interface PongClientState {
+  releasedColor: number;
+  pressedColor: number;
+  team: string;
 }
 
 export interface PongPresenterState {
@@ -141,17 +142,25 @@ const adminReducer = createReceiveGameMessageReducer<
   }
 );
 
-const clientReducer = createReceiveReducer<TeamColors>(
+const clientReducer = createReceiveReducer<string, PongClientState>(
   Name,
-  { up: 0xffffff, down: 0xffffff },
+  { releasedColor: 0xffffff, pressedColor: 0xffffff, team: "" },
   (_, { payload: response }) => {
     const result = response.split(":");
     if (result[0] === "team") {
       switch (result[1]) {
         case "0":
-          return { up: Colors.LeftPaddleUp, down: Colors.LeftPaddleDown };
+          return {
+            releasedColor: Colors.LeftPaddleUp,
+            pressedColor: Colors.LeftPaddleDown,
+            team: "blue",
+          };
         case "1":
-          return { up: Colors.RightPaddleUp, down: Colors.RightPaddleDown };
+          return {
+            releasedColor: Colors.RightPaddleUp,
+            pressedColor: Colors.RightPaddleDown,
+            team: "red",
+          };
         default:
           console.log(`Unexpected response: ${response}`);
       }

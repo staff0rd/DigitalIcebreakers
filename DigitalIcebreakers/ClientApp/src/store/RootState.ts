@@ -5,7 +5,7 @@ import { ShellState } from "./shell/types";
 import { YesNoMaybeState } from "../games/YesNoMaybe/YesNoMaybeReducer";
 import { Player } from "../games/Buzzer/BuzzerReducer";
 import { SplatState } from "../games/Splat/SplatReducer";
-import { TeamColors, PongPresenterState } from "../games/Pong/PongReducer";
+import { PongClientState, PongPresenterState } from "../games/Pong/PongReducer";
 import { IdeaWallState } from "../games/IdeaWall/IdeaWallReducer";
 import { PollState } from "../games/Poll/types/PollState";
 import { NamePickerState } from "../games/NamePicker/NamePickerReducer";
@@ -17,7 +17,7 @@ export interface GamesState {
   buzzer: Player[];
   splat: SplatState;
   pong: {
-    client: TeamColors;
+    client: PongClientState;
     presenter: PongPresenterState;
   };
   ideawall: IdeaWallState;

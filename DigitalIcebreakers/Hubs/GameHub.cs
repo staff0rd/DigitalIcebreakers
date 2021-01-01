@@ -83,9 +83,7 @@ namespace DigitalIcebreakers.Hubs
             player.IsConnected = true;
             if (lobby != null)
             {
-                _logger.Log(player, "Reconnected", lobby);
-
-                _logger.Debug($"Registered: {player.IsRegistered}");
+                _logger.Log(player, "Reconnected", lobby, "({registered})", player.IsRegistered ? "Registered" : "Unregistered");
                 
                 await _send.Reconnect(lobby, player);
                 if (!player.IsAdmin && player.IsRegistered)

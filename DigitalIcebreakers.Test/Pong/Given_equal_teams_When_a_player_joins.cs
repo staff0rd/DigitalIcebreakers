@@ -23,7 +23,7 @@ namespace DigitalIcebreakers.Test.Pong
             lobby.Players.Add(ObjectMother.GetPlayer(playerId));
             lobby.NewGame(game);
             var payload = JsonConvert.SerializeObject(new {
-                client = "join"
+                system = "join"
             });
             gameHub.HubMessage(payload).Wait();
         }
