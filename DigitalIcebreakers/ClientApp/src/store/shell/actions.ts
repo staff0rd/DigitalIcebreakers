@@ -18,6 +18,6 @@ export function setMenuItems(items: JSX.Element[]): ShellActionTypes {
   return { type: SET_MENU_ITEMS, items };
 }
 
-export function goToDefaultUrl(ignoreJoin?: boolean): ShellActionTypes {
-  return { type: GO_TO_DEFAULT_URL, ignoreJoin };
+export function goToDefaultUrl(): ShellActionTypes {
+  return { type: GO_TO_DEFAULT_URL };
 }

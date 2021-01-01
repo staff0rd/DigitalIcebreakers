@@ -1,5 +1,5 @@
 import React from "react";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 // creates a beautiful scrollbar
 import PerfectScrollbar from "perfect-scrollbar";
 import "perfect-scrollbar/css/perfect-scrollbar.css";
@@ -11,7 +11,7 @@ import { toggleDrawer } from "../../store/shell/actions";
 import { useSelector } from "../../store/useSelector";
 import Sidebar from "../components/Sidebar/Sidebar.js";
 
-import useRoutes from "../routes";
+import useRoutes from "../useRoutes";
 
 import styles from "../assets/jss/material-dashboard-react/layouts/adminStyle";
 
@@ -22,7 +22,18 @@ const switchRoutes = (routes) => (
     {routes.map((prop, key) => (
       <Route exact path={prop.path} component={prop.component} key={key} />
     ))}
-    {/* <Redirect from="/admin" to="/admin/dashboard" /> */}
+    <Route
+      render={({ location }) => {
+        if (location.pathname.length === 5) {
+          console.log(
+            `redirecting to /join-lobby${location.pathname} from ${location.pathname}`
+          );
+          return <Redirect to={`/join-lobby${location.pathname}`} />;
+        }
+        console.log("redirecting to / from " + location.pathname);
+        return <Redirect to="/" />;
+      }}
+    />
   </Switch>
 );
 

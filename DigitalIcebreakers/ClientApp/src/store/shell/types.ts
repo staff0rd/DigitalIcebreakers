@@ -27,7 +27,6 @@ interface SetMenuItemsAction {
 
 interface GoToDefaultUrlAction {
   type: typeof GO_TO_DEFAULT_URL;
-  ignoreJoin?: boolean;
 }
 
 export type ShellActionTypes =

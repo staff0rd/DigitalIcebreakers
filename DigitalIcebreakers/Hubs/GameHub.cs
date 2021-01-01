@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using DigitalIcebreakers.Games;
@@ -21,7 +21,8 @@ namespace DigitalIcebreakers.Hubs
         protected readonly Sender _send;
         protected virtual string ConnectionId => Context.ConnectionId;
 
-        public GameHub(LobbyLogger logger, LobbyManager lobbyManager, IOptions<AppSettings> settings, ClientHelper clients)
+        public GameHub(LobbyLogger logger, LobbyManager lobbyManager, IOptions<AppSettings> settings,
+            ClientHelper clients)
         {
             _lobbys = lobbyManager;
             _logger = logger;
@@ -30,22 +31,17 @@ namespace DigitalIcebreakers.Hubs
             _send = new Sender(_clients);
         }
 
-        public int GetConnectedPlayerCount()
-        {
-            return _lobbys.GetLobbyByConnectionId(ConnectionId).Players.Count(p => !p.IsAdmin && p.IsConnected);
-        }
-
-        public async Task CreateLobby(Guid id, string name, User user)
+        public async Task CreateLobby(string name, User user)
         {
             _lobbys.GetByAdminId(user.Id)
                 .ToList()
                 .ForEach(async l => await CloseLobby(l));
                 
-            var lobby = _lobbys.CreateLobby(id, name, new Player { ConnectionId = Context.ConnectionId, Id = user.Id, IsAdmin = true, IsConnected = true, Name = user.Name });
+            var lobby = _lobbys.CreateLobby(name, new Player { ConnectionId = Context.ConnectionId, Id = user.Id, IsAdmin = true, IsConnected = true, IsRegistered = true,  Name = user.Name });
 
             _logger.Log("Created", lobby);
 
-            await Connect(user, id);
+            await Connect(user, lobby.Id);
         }
 
         public async Task CloseLobby()
@@ -69,12 +65,12 @@ namespace DigitalIcebreakers.Hubs
             return Context.Features.Get<IHttpTransportFeature>()?.TransportType;
         }
 
-        public async Task Connect(User user, Guid? lobbyId = null)
+        public async Task Connect(User user, string lobbyId = null)
         {
             var player = GetOrCreatePlayer(user, ConnectionId);
             var lobby = _lobbys.GetLobbyByConnectionId(ConnectionId);
 
-            if (lobbyId.HasValue && lobby != null && lobbyId.Value != lobby.Id)
+            if (lobbyId != null && _lobbys.GetLobbyById(lobbyId) != lobby)
                 await LeaveLobby(player, lobby);
             else
             {
@@ -88,9 +84,11 @@ namespace DigitalIcebreakers.Hubs
             if (lobby != null)
             {
                 _logger.Log(player, "Reconnected", lobby);
+
+                _logger.Debug($"Registered: {player.IsRegistered}");
                 
                 await _send.Reconnect(lobby, player);
-                if (!player.IsAdmin)
+                if (!player.IsAdmin && player.IsRegistered)
                 {
                     await _send.Joined(lobby, player);
                 }
@@ -107,6 +105,11 @@ namespace DigitalIcebreakers.Hubs
             var player = _lobbys.GetOrCreatePlayer(user.Id, user.Name);
             
             player.ConnectionId = connectionId;
+            if (user.IsRegistered)
+            {
+                player.IsRegistered = true;
+                player.Name = user.Name;
+            }
 
             return player;
         }
@@ -118,7 +121,8 @@ namespace DigitalIcebreakers.Hubs
             if (lobby != null && player.IsAdmin)
             {
                 _logger.Log(lobby, "{action} {game}", new [] { "Started", name });
-                lobby.CurrentGame = GetGame(name);
+                var game = GetGame(name);
+                lobby.NewGame(game);
                 await _send.NewGame(lobby, name);
                 await lobby.CurrentGame.Start(ConnectionId);
             }
@@ -151,21 +155,22 @@ namespace DigitalIcebreakers.Hubs
 
             if (lobby != null && player.IsAdmin)
             {
-                lobby.CurrentGame = null;
+                lobby.EndGame();
                 await _send.EndGame(lobby);
             }
         }
 
-        public async Task ConnectToLobby(User user, Guid lobbyId)
+        public async Task ConnectToLobby(User user, string lobbyId)
         {
             var player = GetOrCreatePlayer(user, ConnectionId);
             var existingLobby = _lobbys.GetLobbyByConnectionId(ConnectionId);
-            if (existingLobby != null && existingLobby.Id != lobbyId)
+            var lobby = _lobbys.GetLobbyById(lobbyId);
+
+            if (existingLobby != null && existingLobby != lobby)
             {
                 await LeaveLobby(player, existingLobby);
             }
            
-            var lobby = _lobbys.GetLobbyById(lobbyId);
             if (lobby == null)            
             {
                 await _send.CloseLobby(ConnectionId);

@@ -12,6 +12,7 @@ import { pongReducer } from "../games/Pong/PongReducer";
 import { ideaWallReducer } from "../games/IdeaWall/IdeaWallReducer";
 import { pollReducer } from "../games/Poll/reducers/PollReducer";
 import { namePickerReducer } from "../games/NamePicker/NamePickerReducer";
+import { broadcastReducer } from "games/Broadcast/BroadcastReducer";
 
 const gamesReducer = combineReducers<GamesState>({
   yesnomaybe: yesNoMaybeReducer,
@@ -22,6 +23,7 @@ const gamesReducer = combineReducers<GamesState>({
   ideawall: ideaWallReducer,
   poll: pollReducer,
   namePicker: namePickerReducer,
+  broadcast: broadcastReducer,
 });
 
 export const rootReducer = combineReducers<RootState>({

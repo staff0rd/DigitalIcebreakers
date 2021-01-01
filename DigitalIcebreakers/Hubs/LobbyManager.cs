@@ -1,24 +1,30 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace DigitalIcebreakers
 {
     public class LobbyManager
     {
-        private List<Lobby> _lobbys;
+        private readonly List<Lobby> _lobbys;
+        private readonly LobbyIdService _lobbyIds;
         static int lobbyNumber = 0;
+
+        private readonly ILogger<LobbyManager> _logger;
         
-        public LobbyManager(List<Lobby> lobbys)
+        public LobbyManager(List<Lobby> lobbys, ILogger<LobbyManager> logger, LobbyIdService lobbyIds)
         {
             _lobbys = lobbys;
+            _logger = logger;
+            _lobbyIds = lobbyIds;
         }
 
-        public Lobby CreateLobby(Guid lobbyId, string lobbyName, Player player)
+        public Lobby CreateLobby(string lobbyName, Player player)
         {
             var lobby = new Lobby
             {
-                Id = lobbyId,
+                Id = _lobbyIds.GetCode(_lobbys),
                 Number = ++lobbyNumber,
                 Players = new List<Player>
                 {
@@ -30,6 +36,21 @@ namespace DigitalIcebreakers
             _lobbys.Add(lobby);
 
             return lobby;
+        }
+
+        public void CloseInactive(int timeoutInSeconds = 3600)
+        {
+            var now = DateTime.Now;
+            foreach (var lobby in _lobbys.ToArray())
+            {
+                var timeout = DateTime.Now.Subtract(lobby.LastModified).TotalSeconds;
+                if (timeout >= timeoutInSeconds)
+                {
+                    _logger.LogWarning("Closing {lobbyName} (#{lobbyNumber}, {lobbyPlayers} players) due to inactivity, last update {lastModified}", 
+                        lobby.Name, lobby.Number, lobby.PlayerCount, lobby.LastModified);
+                    _lobbys.Remove(_lobbys.SingleOrDefault(p => p.Id == lobby.Id));
+                }
+            }
         }
 
         internal IEnumerable<Lobby> GetByAdminId(Guid adminId)
@@ -60,9 +81,9 @@ namespace DigitalIcebreakers
             return GetLobbyByConnectionId(connectionId).Admin;
         }
 
-        public Lobby GetLobbyById(Guid lobbyId)
+        public Lobby GetLobbyById(string lobbyId)
         {
-            return _lobbys.SingleOrDefault(p => p.Id == lobbyId);
+            return _lobbys.SingleOrDefault(p => p.Id.ToLower() == lobbyId.ToLower());
         }
 
         public Lobby GetLobbyByConnectionId(string connectionId)

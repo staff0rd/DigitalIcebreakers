@@ -1,16 +1,16 @@
-import { MiddlewareAPI, Dispatch } from "@reduxjs/toolkit";
-import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
+import { MiddlewareAPI, Dispatch, AnyAction } from "@reduxjs/toolkit";
+import { HubConnection } from "@microsoft/signalr";
 import {
   CONNECTION_CONNECT,
   SET_CONNECTION_STATUS,
   SET_GAME_MESSAGE_CALLBACK,
   ConnectionActionTypes,
+  ReconnectPayload,
 } from "./connection/types";
 import {
   updateConnectionStatus,
   connectionConnect,
 } from "./connection/actions";
-import ReactAI from "../app-insights-deprecated";
 import { ConnectionStatus } from "../ConnectionStatus";
 import {
   setLobby,
@@ -19,6 +19,7 @@ import {
   playerLeftLobby,
   setLobbyGame,
   setLobbyPlayers,
+  joinLobby,
 } from "./lobby/actions";
 import { setUser } from "./user/actions";
 import history from "../history";
@@ -33,44 +34,26 @@ import {
   GAME_MESSAGE_ADMIN,
   LobbyActionTypes,
 } from "./lobby/types";
-import { guid } from "../util/guid";
-import { UserActionTypes } from "./user/types";
+import { SET_USER_NAME, UserActionTypes } from "./user/types";
 import { goToDefaultUrl, setMenuItems } from "./shell/actions";
 import { GO_TO_DEFAULT_URL, ShellActionTypes } from "./shell/types";
+import { RootState } from "./RootState";
 
-export const SignalRMiddleware = () => {
-  const connectionRetrySeconds = [0, 1, 4, 9, 16, 25, 36, 49];
-  let connectionStarted: Date;
-  let connectionTimeout = 0;
-  const connection: HubConnection = new HubConnectionBuilder()
-    .withUrl("/gameHub")
-    .build();
-  connection.keepAliveIntervalInMilliseconds = 2000;
-  const bumpConnectionTimeout = () => {
-    connectionTimeout = connectionRetrySeconds.filter(
-      (s) => s > connectionTimeout
-    )[0];
-    if (!connectionTimeout)
-      connectionTimeout =
-        connectionRetrySeconds[connectionRetrySeconds.length - 1];
-  };
-  const getDuration = (from: Date, to: Date = new Date()) => {
-    return to.valueOf() - from.valueOf();
-  };
-  return ({ getState, dispatch }: MiddlewareAPI) => {
-    connection.on("reconnect", (response) => {
-      ReactAI.ai().trackMetric(
-        "userReconnected",
-        getDuration(connectionStarted)
-      );
-      let user = getState().user;
-      if (response.playerId) {
-        user = {
-          id: response.playerId,
-          name: response.playerName,
-        };
-      }
-      dispatch(updateConnectionStatus(ConnectionStatus.Connected));
+const navigateTo = (path: string) => {
+  console.log(`Navigating to ${path}`);
+  history.push(path);
+};
+
+export const onReconnect = (
+  getState: () => RootState,
+  dispatch: Dispatch<AnyAction>
+) => (response: ReconnectPayload) => {
+  const user = getState().user;
+  const { joiningLobbyId, isAdmin } = getState().lobby;
+  if (!joiningLobbyId || joiningLobbyId === response.lobbyId) {
+    if (!user.isRegistered && !isAdmin && !response.isRegistered) {
+      dispatch(goToDefaultUrl());
+    } else {
       dispatch(
         setLobby(
           response.lobbyId,
@@ -80,13 +63,38 @@ export const SignalRMiddleware = () => {
           response.currentGame
         )
       );
-      dispatch(setUser(user));
+      dispatch(
+        setUser({
+          id: response.playerId,
+          name: response.playerName,
+        })
+      );
+
       if (response.currentGame) {
         dispatch(setLobbyGame(response.currentGame));
       } else {
-        history.push("/");
+        dispatch(goToDefaultUrl());
       }
-    });
+    }
+  }
+};
+
+export const SignalRMiddleware = (connectionFactory: () => HubConnection) => {
+  const connectionRetrySeconds = [0, 1, 4, 9, 16, 25, 36, 49];
+  let connectionTimeout = 0;
+  const connection = connectionFactory();
+  connection.keepAliveIntervalInMilliseconds = 2000;
+  const bumpConnectionTimeout = () => {
+    connectionTimeout = connectionRetrySeconds.filter(
+      (s) => s > connectionTimeout
+    )[0];
+    if (!connectionTimeout)
+      connectionTimeout =
+        connectionRetrySeconds[connectionRetrySeconds.length - 1];
+  };
+
+  return ({ getState, dispatch }: MiddlewareAPI<Dispatch, RootState>) => {
+    connection.on("reconnect", onReconnect(getState, dispatch));
     connection.on("joined", (user) => {
       dispatch(playerJoinedLobby(user));
     });
@@ -97,22 +105,15 @@ export const SignalRMiddleware = () => {
       dispatch(setLobbyPlayers(players));
     });
     connection.onclose(() => {
-      ReactAI.ai().trackEvent("Connection closed");
       dispatch(updateConnectionStatus(ConnectionStatus.NotConnected));
     });
     connection.on("closelobby", () => {
-      ReactAI.ai().trackEvent("Lobby closed");
       dispatch(clearLobby());
     });
     connection.on("connected", () => {
-      ReactAI.ai().trackMetric(
-        "userConnected",
-        getDuration(connectionStarted!)
-      );
       dispatch(updateConnectionStatus(ConnectionStatus.Connected));
     });
     connection.on("newgame", (name) => {
-      ReactAI.ai().trackEvent("Joining new game");
       connection.off("gameMessage");
       dispatch(setMenuItems([]));
       dispatch(setLobbyGame(name));
@@ -137,7 +138,7 @@ export const SignalRMiddleware = () => {
           return;
         }
         case CLEAR_LOBBY: {
-          history.push("/lobby-closed");
+          navigateTo("/lobby-closed");
           break;
         }
         case START_NEW_GAME: {
@@ -145,7 +146,6 @@ export const SignalRMiddleware = () => {
           break;
         }
         case SET_LOBBY_GAME: {
-          history.push("/game");
           const isAdmin = getState().lobby.isAdmin;
           connection.on("gameMessage", (args: any) => {
             dispatch({
@@ -155,7 +155,9 @@ export const SignalRMiddleware = () => {
               payload: args,
             });
           });
-          break;
+          const value = next(action);
+          dispatch(goToDefaultUrl());
+          return value;
         }
         case CONNECTION_CONNECT: {
           setTimeout(() => {
@@ -163,16 +165,11 @@ export const SignalRMiddleware = () => {
               getState().connection.status === ConnectionStatus.NotConnected
             ) {
               bumpConnectionTimeout();
-              connectionStarted = new Date();
               dispatch(updateConnectionStatus(ConnectionStatus.Pending));
               connection
                 .start()
                 .then(() => {
                   connectionTimeout = 0;
-                  ReactAI.ai().trackMetric(
-                    "connected",
-                    getDuration(connectionStarted)
-                  );
                   connection
                     .invoke("connect", getState().user, action.lobbyId)
                     .catch(() => {
@@ -191,19 +188,31 @@ export const SignalRMiddleware = () => {
           break;
         }
         case SET_CONNECTION_STATUS: {
+          const value = next(action);
           switch (action.status) {
             case ConnectionStatus.NotConnected:
               dispatch(connectionConnect());
               break;
             case ConnectionStatus.Connected: {
-              dispatch(goToDefaultUrl());
+              const { lobby } = getState();
+              if (lobby.joiningLobbyId) {
+                dispatch(joinLobby(lobby.joiningLobbyId));
+              } else dispatch(goToDefaultUrl());
               break;
             }
           }
-          break;
+          return value;
+        }
+        case SET_USER_NAME: {
+          const value = next(action);
+          const { user, lobby } = getState();
+          invoke("connectToLobby", user, lobby.id || lobby.joiningLobbyId);
+          return value;
         }
         case JOIN_LOBBY: {
-          invoke("connectToLobby", getState().user, action.id);
+          if (getState().connection.status === ConnectionStatus.Connected) {
+            invoke("connectToLobby", getState().user, action.id);
+          }
           break;
         }
         case CLOSE_LOBBY: {
@@ -211,7 +220,7 @@ export const SignalRMiddleware = () => {
           break;
         }
         case CREATE_LOBBY: {
-          invoke("createLobby", guid(), action.name, getState().user);
+          invoke("createLobby", action.name, getState().user);
           break;
         }
         case GAME_MESSAGE_ADMIN: {
@@ -225,18 +234,18 @@ export const SignalRMiddleware = () => {
           break;
         }
         case GO_TO_DEFAULT_URL: {
-          if (history.location) {
-            const isJoin = history.location.pathname.startsWith("/join/");
-            if (!isJoin || action.ignoreJoin) {
-              const currentGame = getState().lobby.currentGame;
-              if (currentGame) {
-                dispatch(setLobbyGame(currentGame));
-              } else {
-                history.push("/");
-              }
+          const { user, lobby } = getState();
+          if (lobby.joiningLobbyId && !user.isRegistered) {
+            navigateTo("/register");
+          } else {
+            const currentGame = getState().lobby.currentGame;
+            if (currentGame) {
+              navigateTo("/game");
+            } else {
+              navigateTo("/");
             }
           }
-          return;
+          break;
         }
       }
       return next(action);

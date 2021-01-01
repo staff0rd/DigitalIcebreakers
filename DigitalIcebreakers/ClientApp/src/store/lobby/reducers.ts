@@ -5,8 +5,10 @@ import {
   SET_LOBBY_GAME,
   SET_LOBBY_PLAYERS,
   CLEAR_LOBBY,
+  JOIN_LOBBY,
   PLAYER_JOINED_LOBBY,
   PLAYER_LEFT_LOBBY,
+  CREATE_LOBBY,
 } from "./types";
 
 const initialState: LobbyState = {
@@ -22,11 +24,24 @@ export function lobbyReducer(
   switch (action.type) {
     case SET_LOBBY: {
       return {
-        ...state,
         id: action.id,
         name: action.name,
         isAdmin: action.isAdmin,
         currentGame: action.game,
+        players: action.players,
+      };
+    }
+    case CREATE_LOBBY: {
+      return {
+        ...state,
+        isAdmin: true,
+        name: action.name,
+      };
+    }
+    case JOIN_LOBBY: {
+      return {
+        ...state,
+        joiningLobbyId: action.id,
       };
     }
     case PLAYER_JOINED_LOBBY: {

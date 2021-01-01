@@ -15,7 +15,7 @@ namespace DigitalIcebreakers.Test
         public Sender Sender => _send;
 
         public MockGameHub(List<Lobby> lobbys, string connectionId) 
-            : base(new LobbyLogger(new Mock<ILogger<LobbyLogger>>().Object), new LobbyManager(lobbys), new Mock<IOptions<AppSettings>>().Object, new ClientHelper(ObjectMother.GetMockContext().Object))
+            : base(new LobbyLogger(new Mock<ILogger<LobbyLogger>>().Object), ObjectMother.GetLobbyManager(lobbys), new Mock<IOptions<AppSettings>>().Object, new ClientHelper(ObjectMother.GetMockContext().Object))
         {
             _connectionId = connectionId;
         }

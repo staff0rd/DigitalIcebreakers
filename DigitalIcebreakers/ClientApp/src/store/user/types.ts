@@ -3,6 +3,7 @@ import { Player } from "../../Player";
 export interface UserState {
   name: string;
   id: string;
+  isRegistered: boolean;
 }
 
 export const SET_USER = "SET_USER";

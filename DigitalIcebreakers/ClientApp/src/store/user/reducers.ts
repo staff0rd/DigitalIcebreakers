@@ -3,6 +3,7 @@ import { UserState, UserActionTypes, SET_USER, SET_USER_NAME } from "./types";
 const initialState: UserState = {
   id: "",
   name: "",
+  isRegistered: false,
 };
 
 export function userReducer(
@@ -14,6 +15,7 @@ export function userReducer(
       return {
         ...state,
         name: action.name,
+        isRegistered: true,
       };
     }
     case SET_USER: {

@@ -10,6 +10,11 @@ namespace DigitalIcebreakers.Test
 {
     public static class ObjectMother
     {
+        public static LobbyManager GetLobbyManager(List<Lobby> lobbys)
+        {
+            return new LobbyManager(lobbys, new Mock<ILogger<LobbyManager>>().Object, new LobbyIdService());
+        }
+
         public static Mock<IHubContext<GameHub>> GetMockContext()
         {
             var clients = new Mock<IHubClients>();
@@ -42,8 +47,8 @@ namespace DigitalIcebreakers.Test
 
         public static Lobby CreateLobby(MockGameHub hub, Guid adminId, Game game)
         {
-            var lobby  = hub.Lobbys.CreateLobby(Guid.NewGuid(), "my lobby", GetPlayer(adminId, true));
-            lobby.CurrentGame = game;
+            var lobby  = hub.Lobbys.CreateLobby("my lobby", GetPlayer(adminId, true));
+            lobby.NewGame(game);
             return lobby;
         }
 
