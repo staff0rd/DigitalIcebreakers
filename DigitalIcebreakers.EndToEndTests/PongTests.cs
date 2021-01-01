@@ -50,8 +50,13 @@ namespace DigitalIcebreakers.EndToEndTests
             await AssertTeam("blue", "", "", "", "blue", "red");
             await TeamsShouldBe(blue: 2, red: 1);
             await _players[5].Page.CloseAsync(); // red leaves
-            await AssertTeam("blue", "", "", "", "red", "");
             await TeamsShouldBe(blue: 1, red: 1);
+            var teams = new [] { 
+                await _players[0].Page.GetTextContentByTestId("team"),
+                await _players[4].Page.GetTextContentByTestId("team"),
+            };
+            teams.ShouldContain("red");
+            teams.ShouldContain("blue");
         }
 
         private async Task AssertTeam(params string[] expect)
@@ -68,7 +73,7 @@ namespace DigitalIcebreakers.EndToEndTests
 
         private async Task TeamsShouldBe(int blue, int red)
         {
-            await Task.Delay(500);
+            await Task.Delay(50);
             var teams = (blue: await GetPlayerCount("blue-team"), red: await GetPlayerCount("red-team"));
             teams.ShouldBe((blue: blue, red: red));
         }

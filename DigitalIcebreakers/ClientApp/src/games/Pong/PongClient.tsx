@@ -9,7 +9,9 @@ import { useSelector } from "../../store/useSelector";
 
 export const PongClient = () => {
   const [app, setApp] = useState<PIXI.Application>();
-  const teamColors = useSelector((state) => state.games.pong.client);
+  const { pressedColor, releasedColor, team } = useSelector(
+    (state) => state.games.pong.client
+  );
   const dispatch = useDispatch();
 
   const message = (action: string) => () => dispatch(clientMessage(action));
@@ -20,10 +22,6 @@ export const PongClient = () => {
     }
     resize();
   };
-
-  useEffect(() => {
-    dispatch(clientMessage("join"));
-  }, [dispatch]);
 
   const resize = () => {
     if (app) {
@@ -38,8 +36,8 @@ export const PongClient = () => {
       topButton.x = app.screen.width / 4;
       topButton.y = app.screen.height / 8;
       topButton.render(
-        teamColors.up,
-        teamColors.down,
+        releasedColor,
+        pressedColor,
         0,
         0,
         width,
@@ -49,8 +47,8 @@ export const PongClient = () => {
       bottomButton.x = app.screen.width / 4;
       bottomButton.y = (app.screen.height / 16) * 9;
       bottomButton.render(
-        teamColors.up,
-        teamColors.down,
+        releasedColor,
+        pressedColor,
         0,
         0,
         width,
@@ -63,11 +61,19 @@ export const PongClient = () => {
     }
   };
 
-  useEffect(resize, [app, teamColors]);
+  useEffect(resize, [app, team]);
 
   useResizeListener(resize);
 
   return (
-    <Pixi backgroundColor={Colors.ClientBackground} onAppChange={appHandler} />
+    <>
+      <div style={{ display: "none" }} data-testid="team">
+        {team}
+      </div>
+      <Pixi
+        backgroundColor={Colors.ClientBackground}
+        onAppChange={appHandler}
+      />
+    </>
   );
 };
