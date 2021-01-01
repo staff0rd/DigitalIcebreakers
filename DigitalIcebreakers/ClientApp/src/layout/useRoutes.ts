@@ -54,7 +54,8 @@ const useRoutes = () => {
   };
 
   const joinRoute = {
-    path: "/join-lobby/:id?",
+    route: "/join-lobby/:id?",
+    path: "/join-lobby",
     name: "Join",
     icon: GroupAdd,
     component: JoinLobby,

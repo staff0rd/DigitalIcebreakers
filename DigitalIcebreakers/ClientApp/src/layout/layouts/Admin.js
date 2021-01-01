@@ -20,7 +20,12 @@ let ps;
 const switchRoutes = (routes) => (
   <Switch>
     {routes.map((prop, key) => (
-      <Route exact path={prop.path} component={prop.component} key={key} />
+      <Route
+        exact
+        path={prop.route || prop.path}
+        component={prop.component}
+        key={key}
+      />
     ))}
     <Route
       render={({ location }) => {
