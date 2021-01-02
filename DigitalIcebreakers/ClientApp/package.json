@@ -28,7 +28,8 @@
     "react-scripts": "4.0.1",
     "recharts": "^1.8.5",
     "redux": "^4.0.4",
-    "reveal.js": "staff0rd/reveal.js"
+    "reveal.js": "staff0rd/reveal.js",
+    "rss-parser": "^3.10.0"
   },
   "devDependencies": {
     "@microsoft/applicationinsights-react-js": "^2.5.4",
