@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { ChangelogItem } from "../ChangelogItem";
-import Moment from "react-moment";
 import Parser from "rss-parser";
 import { makeStyles, Typography } from "@material-ui/core";
+import { DateTime } from "luxon";
 
 const useStyles = makeStyles((theme) => ({
   updates: {
@@ -79,7 +79,7 @@ export function Changelog() {
               ) : (
                 <span>{item.change}</span>
               )}{" "}
-              • <Moment fromNow>{item.date.toString()}</Moment>
+              • {DateTime.fromJSDate(item.date).toRelative()}
             </Typography>
           </li>
         ))}
