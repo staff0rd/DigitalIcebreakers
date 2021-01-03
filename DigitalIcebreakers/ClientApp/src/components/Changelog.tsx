@@ -22,8 +22,6 @@ type CustomItem = {
 
 const parser: Parser<CustomFeed, CustomItem> = new Parser({});
 
-const CORS_PROXY = "https://proxy.staffordwilliams.com/";
-
 export function Changelog() {
   const [changelogs, setChangelogs] = useState<ChangelogItem[]>([
     ChangelogItem.fromParts(2020, 4, 24, "added #poll"),
@@ -44,10 +42,9 @@ export function Changelog() {
 
   useEffect(() => {
     async function readFeed() {
-      const url =
-        CORS_PROXY +
-        "https://devlog.staffordwilliams.com/categories/digitalicebreakers/feed.xml";
-      const feed = await parser.parseURL(url);
+      const feed = await parser.parseURL(
+        "https://devlog.staffordwilliams.com/categories/digitalicebreakers/feed.xml"
+      );
 
       const changes = feed.items.map((entry) => {
         const date = new Date(entry.pubDate);
@@ -76,12 +73,14 @@ export function Changelog() {
       <ul className={classes.list}>
         {changelogs.map((item, ix) => (
           <li key={ix}>
-            {item.link ? (
-              <a href={item.link}>{item.change}</a>
-            ) : (
-              <span>{item.change}</span>
-            )}{" "}
-            • <Moment fromNow>{item.date.toString()}</Moment>
+            <Typography variant="body1">
+              {item.link ? (
+                <a href={item.link}>{item.change}</a>
+              ) : (
+                <span>{item.change}</span>
+              )}{" "}
+              • <Moment fromNow>{item.date.toString()}</Moment>
+            </Typography>
           </li>
         ))}
       </ul>
