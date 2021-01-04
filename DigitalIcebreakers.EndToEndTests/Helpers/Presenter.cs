@@ -22,11 +22,11 @@ namespace DigitalIcebreakers.EndToEndTests
 
         public async Task LoadTriviaQuestions()
         {
-            await StartTrivia();
+            await StartPoll();
             await _page.ClickAsync("text='Questions'");
             var element = await _page.QuerySelectorAsync("[type=file]");
             await element.SetInputFilesAsync("./questions.json");
-            await _page.ClickAsync("text='Poll / Trivia'");
+            await _page.ClickAsync("text='Poll'");
         }
 
         public async Task StartBroadcast()
@@ -34,7 +34,7 @@ namespace DigitalIcebreakers.EndToEndTests
             await StartGame("broadcast");
         }
 
-        public async Task StartTrivia()
+        public async Task StartPoll()
         {
             await StartGame("poll");
         }

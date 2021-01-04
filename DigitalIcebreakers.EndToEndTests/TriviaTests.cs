@@ -33,7 +33,7 @@ namespace DigitalIcebreakers.EndToEndTests
         {
             await _presenter.LoadTriviaQuestions();
             await _presenter.StartBroadcast();
-            await _presenter.StartTrivia();
+            await _presenter.StartPoll();
 
             await Task.Delay(1000);
 
