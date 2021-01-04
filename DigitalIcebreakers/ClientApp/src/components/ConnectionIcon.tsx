@@ -25,12 +25,30 @@ export const ConnectionIcon = () => {
 
   switch (status) {
     case 0:
-      return <NotConnectedIcon className={classes.icon} />;
+      return (
+        <NotConnectedIcon
+          className={classes.icon}
+          data-testid="connection-status"
+          data-status="NotConnected"
+        />
+      );
     case 1:
-      return <UnknownIcon className={classes.icon} />;
+      return (
+        <UnknownIcon
+          className={classes.icon}
+          data-testid="connection-status"
+          data-status="Unknown"
+        />
+      );
     case 2:
-      return <ConnectedIcon className={classes.icon} />;
+      return (
+        <ConnectedIcon
+          className={classes.icon}
+          data-testid="connection-status"
+          data-status="Connected"
+        />
+      );
     default:
-      return <span></span>;
+      return <span data-testid="connection-status" data-status=""></span>;
   }
 };
