@@ -1,7 +1,6 @@
 import { createReceiveReducer } from "store/actionHelpers";
 import { AvailableAnswers } from "games/shared/Poll/types/AvailableAnswers";
 import { TriviaPlayerState } from "games/shared/Poll/types/PlayerState";
-import { TriviaAnswer } from "games/shared/Poll/types/Answer";
 import { playerActionReducer } from "games/shared/Poll/reducers/playerActionReducer";
 import { initialPlayerState } from "games/shared/Poll/reducers/initialPlayerState";
 
@@ -11,7 +10,7 @@ interface CanAnswer {
   canAnswer: boolean;
 }
 
-type TriviaPayload = AvailableAnswers<TriviaAnswer> & CanAnswer;
+type TriviaPayload = AvailableAnswers & CanAnswer;
 
 export const triviaPlayerReducer = createReceiveReducer<
   TriviaPayload,

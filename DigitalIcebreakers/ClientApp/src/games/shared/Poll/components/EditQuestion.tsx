@@ -17,9 +17,9 @@ import EditAnswers from "./EditAnswers";
 import { guid } from "../../../../util/guid";
 import { grayColor } from "../../../../layout/assets/jss/material-dashboard-react";
 import { useDispatch } from "react-redux";
-import { Answer } from "games/shared/Poll/types/Answer";
 import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
 import { NameAndMode } from "../types/NameAndMode";
+import { Answer } from "../types/Answer";
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -35,18 +35,14 @@ const useStyles = makeStyles((theme) => ({
     fontStyle: "italic",
   },
 }));
-type SetAnswers = <T extends Answer>(answers: T[]) => void;
+type SetAnswers = (answers: Answer[]) => void;
 
-type Props<T extends Answer> = {
-  question: Question<T>;
+type Props = {
+  question: Question;
   editAnswersChildren?: (setAnswers: SetAnswers) => ReactNode;
 } & NameAndMode;
 
-const QuestionEditor = <T extends Answer>({
-  question,
-  gameName,
-  editAnswersChildren,
-}: Props<T>) => {
+const QuestionEditor = ({ question, gameName, editAnswersChildren }: Props) => {
   const dispatch = useDispatch();
   const totalQuestions = useSelector(
     (state) => state.games.poll.presenter.questions.length
@@ -112,7 +108,7 @@ const QuestionEditor = <T extends Answer>({
               </Typography>
               <EditAnswers
                 answers={answers}
-                setAnswers={(answers) => setAnswers(answers as T[])}
+                setAnswers={(answers) => setAnswers(answers)}
                 questionId={question.id}
                 children={editAnswersChildren}
               />
@@ -121,7 +117,7 @@ const QuestionEditor = <T extends Answer>({
                   setAnswers([
                     ...answers,
                     { id: guid(), text: "A new answer", correct: false },
-                  ] as T[])
+                  ])
                 }
               >
                 Add answer

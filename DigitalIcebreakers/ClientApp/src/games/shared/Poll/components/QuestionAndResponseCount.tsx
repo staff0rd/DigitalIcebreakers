@@ -2,7 +2,6 @@ import React from "react";
 import { Question } from "../types/Question";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import { Answer } from "games/shared/Poll/types/Answer";
 
 const useStyles = makeStyles((theme) => ({
   question: {
@@ -26,15 +25,15 @@ export const getCountMessage = (responseCount: number, playerCount: number) => {
     : `All ${playerCount} players have answered`;
 };
 
-type Props<T extends Answer> = {
-  question: Question<T>;
+type Props = {
+  question: Question;
   responseCount: number;
   playerCount: number;
   totalQuestions: number;
   currentQuestionNumber: number;
 };
 
-const QuestionAndResponseCount = <T extends Answer>(props: Props<T>) => {
+const QuestionAndResponseCount = (props: Props) => {
   const {
     question,
     responseCount,

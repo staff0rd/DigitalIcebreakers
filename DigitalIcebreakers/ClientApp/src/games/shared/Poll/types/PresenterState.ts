@@ -1,14 +1,13 @@
-import { Answer, TriviaAnswer } from "games/shared/Poll/types/Answer";
 import { Question } from "games/shared/Poll/types/Question";
 
-export interface PresenterState<T extends Answer> {
+export interface PresenterState {
   currentQuestionId: string | undefined;
   showResponses: boolean;
-  questions: Question<T>[];
+  questions: Question[];
 }
 
-export type PollPresenterState = PresenterState<Answer>;
+export type PollPresenterState = PresenterState;
 
-export type TriviaPresenterState = PresenterState<TriviaAnswer> & {
+export type TriviaPresenterState = PresenterState & {
   showScoreBoard: boolean;
 };

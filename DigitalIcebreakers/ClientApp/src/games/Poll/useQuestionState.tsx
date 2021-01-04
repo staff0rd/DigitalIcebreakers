@@ -6,13 +6,12 @@ import {
   currentQuestionSelector,
   GameState,
 } from "../shared/Poll/reducers/currentQuestionSelector";
-import { Answer } from "games/shared/Poll/types/Answer";
 import { RootState } from "store/RootState";
 import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
 
-export const useQuestionState = <T extends Answer>(
+export const useQuestionState = (
   gameName: string,
-  gameStateSelector: (state: RootState) => GameState<T>
+  gameStateSelector: (state: RootState) => GameState
 ) => {
   const dispatch = useDispatch();
   const {

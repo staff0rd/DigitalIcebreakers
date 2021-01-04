@@ -3,10 +3,9 @@ import { AvailableAnswers } from "games/shared/Poll/types/AvailableAnswers";
 import { PollPlayerState } from "games/shared/Poll/types/PlayerState";
 import { playerActionReducer } from "../../shared/Poll/reducers/playerActionReducer";
 import { initialPlayerState } from "../../shared/Poll/reducers/initialPlayerState";
-import { Answer } from "games/shared/Poll/types/Answer";
 import { Name } from "..";
 
-type Payload = AvailableAnswers<Answer>;
+type Payload = AvailableAnswers;
 
 export const pollPlayerReducer = createReceiveReducer<Payload, PollPlayerState>(
   Name,

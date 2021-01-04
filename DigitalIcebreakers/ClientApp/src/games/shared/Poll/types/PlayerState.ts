@@ -1,4 +1,3 @@
-import { Answer, TriviaAnswer } from "games/shared/Poll/types/Answer";
 import { AvailableAnswers } from "games/shared/Poll/types/AvailableAnswers";
 
 export interface SelectableAnswer {
@@ -6,12 +5,10 @@ export interface SelectableAnswer {
   answerLocked: boolean;
 }
 
-interface PlayerState<T extends Answer>
-  extends AvailableAnswers<T>,
-    SelectableAnswer {}
+interface PlayerState extends AvailableAnswers, SelectableAnswer {}
 
-export interface PollPlayerState extends PlayerState<Answer> {}
+export interface PollPlayerState extends PlayerState {}
 
-export interface TriviaPlayerState extends PlayerState<TriviaAnswer> {
+export interface TriviaPlayerState extends PlayerState {
   canAnswer: boolean;
 }

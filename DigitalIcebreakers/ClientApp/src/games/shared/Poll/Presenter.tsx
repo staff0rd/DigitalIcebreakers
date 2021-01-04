@@ -6,7 +6,6 @@ import QuestionAndResponseCount from "./components/QuestionAndResponseCount";
 import { NoQuestions } from "./components/NoQuestions";
 import { useQuestionState } from "../../Poll/useQuestionState";
 import { makeStyles } from "@material-ui/core";
-import { Answer } from "./types/Answer";
 import { RootState } from "store/RootState";
 import { GameState } from "games/shared/Poll/reducers/currentQuestionSelector";
 
@@ -25,19 +24,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type Props<T extends Answer> = {
+type Props = {
   isTriviaMode: boolean;
   showScoreBoard: boolean;
   gameName: string;
-  gameStateSelector: (state: RootState) => GameState<T>;
+  gameStateSelector: (state: RootState) => GameState;
 };
 
-export const Presenter = <T extends Answer>({
+export const Presenter = ({
   isTriviaMode,
   showScoreBoard,
   gameName,
   gameStateSelector,
-}: Props<T>) => {
+}: Props) => {
   const classes = useStyles();
   const {
     question,

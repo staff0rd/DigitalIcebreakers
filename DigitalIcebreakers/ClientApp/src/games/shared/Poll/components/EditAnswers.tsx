@@ -34,18 +34,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type Props<T extends Answer> = {
-  answers: T[];
+type Props = {
+  answers: Answer[];
   setAnswers: (answers: Answer[]) => void;
   questionId: string;
   children: ReactNode;
 };
 
-const EditAnswers = <T extends Answer>({
-  answers,
-  setAnswers,
-  children,
-}: Props<T>) => {
+const EditAnswers = ({ answers, setAnswers, children }: Props) => {
   const classes = useStyles();
 
   return (

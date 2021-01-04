@@ -1,5 +1,5 @@
 import styles from "layout/assets/jss/material-dashboard-react/components/tasksStyle";
-import { TriviaAnswer } from "games/shared/Poll/types/Answer";
+import { Answer } from "games/shared/Poll/types/Answer";
 import Check from "@material-ui/icons/Check";
 import Checkbox from "@material-ui/core/Checkbox";
 import Typography from "@material-ui/core/Typography";
@@ -16,11 +16,11 @@ export const CorrectAnswerCell = ({
   correctLabelClass,
   setAnswers,
 }: {
-  answer: TriviaAnswer;
-  answers: TriviaAnswer[];
+  answer: Answer;
+  answers: Answer[];
   cellClass: string;
   correctLabelClass: string;
-  setAnswers: (answers: TriviaAnswer[]) => void;
+  setAnswers: (answers: Answer[]) => void;
 }) => {
   const layoutClasses = useLayoutStyles();
   return (

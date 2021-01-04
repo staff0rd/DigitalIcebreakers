@@ -9,7 +9,6 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import { primaryColor } from "../../../../layout/assets/jss/material-dashboard-react";
 import CustomisedAxisTick from "./CustomisedAccessTick";
 import { RootState } from "store/RootState";
-import { Answer, TriviaAnswer } from "games/shared/Poll/types/Answer";
 
 const useStyles = makeStyles((theme) => ({
   data: {
@@ -38,21 +37,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type Props<T extends Answer> = {
-  gameStateSelector: (state: RootState) => GameState<T>;
+type Props = {
+  gameStateSelector: (state: RootState) => GameState;
   isTriviaMode: boolean;
 };
-const ResponseChart = <T extends Answer>({
-  gameStateSelector,
-  isTriviaMode,
-}: Props<T>) => {
+const ResponseChart = ({ gameStateSelector, isTriviaMode }: Props) => {
   const classes = useStyles();
   const { question } = useSelector(currentQuestionSelector(gameStateSelector));
 
   const answers = question
     ? question.answers.map((a) => {
         let answer = a.text;
-        if (isTriviaMode && ((a as unknown) as TriviaAnswer).correct) {
+        if (isTriviaMode && a.correct) {
           answer = `✅ ${a.text}`;
         }
         const responses = (question ? question.responses : []).filter(

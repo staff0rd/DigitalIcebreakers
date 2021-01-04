@@ -1,4 +1,5 @@
 import React from "react";
+import { RootState } from "store/RootState";
 import { Presenter } from "../shared/Poll/Presenter";
 import { Name } from "./";
 
@@ -8,7 +9,7 @@ export const PollPresenter = () => {
       isTriviaMode={false}
       showScoreBoard={false}
       gameName={Name}
-      gameStateSelector={(state) => ({
+      gameStateSelector={(state: RootState) => ({
         currentQuestionId: state.games.poll.presenter.currentQuestionId,
         questions: state.games.poll.presenter.questions,
       })}

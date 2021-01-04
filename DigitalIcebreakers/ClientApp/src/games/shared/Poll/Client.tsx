@@ -9,7 +9,6 @@ import Button from "../../../layout/components/CustomButtons/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import { infoColor } from "../../../layout/assets/jss/material-dashboard-react";
 import { playerActions } from "./reducers/playerActions";
-import { Answer, TriviaAnswer } from "./types/Answer";
 import { useSelector } from "store/useSelector";
 import { Name as PollName } from "games/Poll";
 
@@ -69,7 +68,7 @@ const Client = () => {
         <>
           <Typography className={classes.text}>{question}</Typography>
           <List>
-            {(answers as any[]).map((answer: Answer | TriviaAnswer) => (
+            {answers.map((answer) => (
               <ListItem
                 button
                 disableTouchRipple={true}

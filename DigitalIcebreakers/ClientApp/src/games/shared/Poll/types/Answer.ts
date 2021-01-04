@@ -1,8 +1,5 @@
 export type Answer = {
   id: string;
   text: string;
+  correct?: boolean;
 };
-
-export type TriviaAnswer = Answer &  {
-  correct: boolean;
-}

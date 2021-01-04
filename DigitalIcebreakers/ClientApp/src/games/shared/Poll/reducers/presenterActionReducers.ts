@@ -1,24 +1,20 @@
 import { Question } from "../types/Question";
 import { guid } from "../../../../util/guid";
 import { PresenterState } from "../types/PresenterState";
-import { Answer } from "games/shared/Poll/types/Answer";
 import { ActionReducerMapBuilder } from "@reduxjs/toolkit";
 import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
 import StorageManager from "store/StorageManager";
 
 const storage = new StorageManager(window.localStorage);
-export type ShouldShowResponses = <
-  T extends Answer,
-  S extends PresenterState<T>
->(
+export type ShouldShowResponses = <S extends PresenterState>(
   state: S,
-  newQuestion: Question<T> | undefined
+  newQuestion: Question | undefined
 ) => boolean;
 
 export const presenterActionReducers = (
   gameName: string,
   storageKey: string
-) => <T extends PresenterState<Answer>>(
+) => <T extends PresenterState>(
   builder: ActionReducerMapBuilder<T>,
   shouldShowResponses: ShouldShowResponses
 ) => {
@@ -108,7 +104,7 @@ export const presenterActionReducers = (
 
   builder.addCase(
     toggleShowResponsesAction,
-    (state: PresenterState<Answer>) =>
+    (state: PresenterState) =>
       ({
         ...state,
         showResponses: !state.showResponses,

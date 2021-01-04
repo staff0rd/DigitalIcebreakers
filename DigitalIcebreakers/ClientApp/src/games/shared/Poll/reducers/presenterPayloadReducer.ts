@@ -1,18 +1,14 @@
 import { Question } from "games/shared/Poll/types/Question";
 import { SelectedAnswer } from "games/shared/Poll/types/SelectedAnswer";
 import { PresenterState } from "games/shared/Poll/types/PresenterState";
-import { Answer } from "games/shared/Poll/types/Answer";
 
-export const presenterPayloadReducer = <
-  T extends Answer,
-  S extends PresenterState<T>
->(
+export const presenterPayloadReducer = <S extends PresenterState>(
   state: S,
   answers: SelectedAnswer[],
   playerId: string,
   playerName: string
 ) => {
-  const questions: Question<T>[] = state.questions.map((q) => {
+  const questions: Question[] = state.questions.map((q) => {
     const answer = answers.find((a) => a.questionId === q.id);
     if (answer) {
       return {

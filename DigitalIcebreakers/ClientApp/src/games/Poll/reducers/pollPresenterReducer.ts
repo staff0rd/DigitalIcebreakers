@@ -2,7 +2,6 @@ import { createReceiveGameMessageReducer } from "store/actionHelpers";
 import { SelectedAnswer } from "games/shared/Poll/types/SelectedAnswer";
 import { PollPresenterState } from "games/shared/Poll/types/PresenterState";
 import { Name } from "..";
-import { Answer } from "games/shared/Poll/types/Answer";
 import { presenterActionReducers } from "games/shared/Poll/reducers/presenterActionReducers";
 import { initialPresenterState } from "games/shared/Poll/reducers/initialPresenterState";
 import { presenterPayloadReducer } from "games/shared/Poll/reducers/presenterPayloadReducer";
@@ -13,7 +12,7 @@ export const pollPresenterReducer = createReceiveGameMessageReducer<
   PollPresenterState
 >(
   Name,
-  initialPresenterState<Answer>(storageKey),
+  initialPresenterState(storageKey),
   (
     state: PollPresenterState,
     { payload: { id: playerId, name: playerName, payload: answers } }

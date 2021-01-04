@@ -4,16 +4,13 @@ import Button from "../../../../layout/components/CustomButtons/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import CustomInput from "layout/components/CustomInput/CustomInput";
-import { useSelector } from "store/useSelector";
 import Alert from "@material-ui/lab/Alert";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 import { useDispatch } from "react-redux";
 import { Question } from "../types/Question";
 import { guid } from "util/guid";
-import { RootState } from "store/RootState";
-import { createSelector } from "@reduxjs/toolkit";
-import { Answer, TriviaAnswer } from "games/shared/Poll/types/Answer";
+import { Answer } from "games/shared/Poll/types/Answer";
 import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
 import { NameAndMode } from "games/shared/Poll/types/NameAndMode";
 
@@ -39,18 +36,18 @@ export enum ErrorMessages {
   ONLY_TRIVIA_MODE_MAY_HAVE_CORRECT_ANSWERS = "Poll questions do not have correct answers, try Trivia instead",
 }
 
-type ValidateResponse<T extends Answer> = {
+type ValidateResponse = {
   isValid: boolean;
-  questions: Question<T>[];
+  questions: Question[];
   errorMessage: string | undefined;
   errorLine: number | undefined;
 };
 
-export const validate = <T extends Answer>(
+export const validate = (
   questionsAndAnswers: string,
   isTriviaMode: boolean
-): ValidateResponse<T> => {
-  let questions: Question<T>[] = [];
+): ValidateResponse => {
+  let questions: Question[] = [];
   let errorMessage: string | undefined;
   let errorLine: number | undefined;
 
@@ -76,12 +73,11 @@ export const validate = <T extends Answer>(
     } else if (line.startsWith("*")) {
       if (!isTriviaMode) {
         errorMessage = ErrorMessages.ONLY_TRIVIA_MODE_MAY_HAVE_CORRECT_ANSWERS;
-        errorLine = i;
+        errorLine = i + 1;
         break;
       } else {
         const trimmed = line.substr(1).trim();
-        const currentAnswers = (questions[questions.length - 1]
-          .answers as unknown) as TriviaAnswer[];
+        const currentAnswers = questions[questions.length - 1].answers;
         if (currentAnswers.find((a) => a.correct)) {
           errorMessage = ErrorMessages.ONLY_ONE_CORRECT_ANSWER_PER_QUESTION;
           errorLine = i + 1;
@@ -95,14 +91,14 @@ export const validate = <T extends Answer>(
       }
     } else {
       const trimmed = line.trim();
-      const answer = {
+      const answer: Answer = {
         id: guid(),
         text: trimmed,
       };
       if (isTriviaMode) {
-        (answer as TriviaAnswer).correct = false;
+        answer.correct = false;
       }
-      questions[questions.length - 1].answers.push(answer as T);
+      questions[questions.length - 1].answers.push(answer);
     }
   }
 
@@ -114,45 +110,43 @@ export const validate = <T extends Answer>(
   };
 };
 
-const questionsForBulkEditSelector = <T extends Answer>(
-  gameStateSelector: (state: RootState) => Question<T>[],
+const questionsForBulkEditSelector = (
+  questions: Question[],
   isTriviaMode: boolean
 ) =>
-  createSelector(
-    (state: RootState) => state.games.poll.presenter.questions,
-    (questions) =>
-      questions
-        .map((q) => {
-          const answers = q.answers.map((a) => {
-            if (isTriviaMode) {
-              if ((a as TriviaAnswer).correct) return `* ${a.text}`;
-            }
-            return a.text;
-          });
-          return `- ${q.text}\n${answers.join("\n")}`;
-        })
-        .join("\n")
-  );
+  questions
+    .map((q) => {
+      const answers = q.answers.map((a) => {
+        if (isTriviaMode) {
+          if (a.correct) return `* ${a.text}`;
+        }
+        return a.text;
+      });
+      return `- ${q.text}\n${answers.join("\n")}`;
+    })
+    .join("\n");
 
-type BulkEditProps<T extends Answer> = {
+type BulkEditProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
-  gameStateSelector: (state: RootState) => Question<T>[];
+  questions: Question[];
 } & NameAndMode;
 
-export const BulkEdit = <T extends Answer>({
+export const BulkEdit = ({
   open,
   setOpen,
   gameName,
-  gameStateSelector,
+  questions,
   isTriviaMode,
-}: BulkEditProps<T>) => {
+}: BulkEditProps) => {
   const { importQuestionsAction } = presenterActions(gameName);
   const classes = useStyles();
   const dispatch = useDispatch();
-  const questionsFromRedux = useSelector(
-    questionsForBulkEditSelector(gameStateSelector, isTriviaMode)
+  const questionsFromRedux = questionsForBulkEditSelector(
+    questions,
+    isTriviaMode
   );
+
   const [questionLines, setQuestionLines] = useState<string>(
     questionsFromRedux
   );

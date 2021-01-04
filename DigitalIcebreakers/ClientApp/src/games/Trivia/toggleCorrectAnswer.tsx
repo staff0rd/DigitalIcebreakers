@@ -1,9 +1,6 @@
-import { TriviaAnswer } from "games/shared/Poll/types/Answer";
+import { Answer } from "games/shared/Poll/types/Answer";
 
-export const toggleCorrectAnswer = (
-  answers: TriviaAnswer[],
-  answer: TriviaAnswer
-) => {
+export const toggleCorrectAnswer = (answers: Answer[], answer: Answer) => {
   const correct = !answers.find((a) => a.id === answer.id)!.correct;
   const result = answers.map((a) => {
     if (a.id === answer.id) {

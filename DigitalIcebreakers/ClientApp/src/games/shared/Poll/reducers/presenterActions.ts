@@ -5,7 +5,7 @@ import {
 import { Answer } from "../types/Answer";
 import { Question } from "../types/Question";
 
-export const presenterActions = <T extends Answer>(gameName: string) => {
+export const presenterActions = (gameName: string) => {
   const toggleShowResponsesAction = createGameAction(
     gameName,
     "presenter",
@@ -21,17 +21,17 @@ export const presenterActions = <T extends Answer>(gameName: string) => {
     "presenter",
     "add-question"
   );
-  const updateQuestionAction = createGameActionWithPayload<Question<T>>(
+  const updateQuestionAction = createGameActionWithPayload<Question>(
     gameName,
     "presenter",
     "update-question"
   );
-  const deleteQuestionAction = createGameActionWithPayload<Question<T>>(
+  const deleteQuestionAction = createGameActionWithPayload<Question>(
     gameName,
     "presenter",
     "delete-question"
   );
-  const importQuestionsAction = createGameActionWithPayload<Question<T>[]>(
+  const importQuestionsAction = createGameActionWithPayload<Question[]>(
     gameName,
     "presenter",
     "import-questions"

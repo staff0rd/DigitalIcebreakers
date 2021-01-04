@@ -1,15 +1,14 @@
 import { Question } from "games/shared/Poll/types/Question";
 import { RootState } from "store/RootState";
 import { createSelector } from "@reduxjs/toolkit";
-import { Answer } from "games/shared/Poll/types/Answer";
 
-export interface GameState<T extends Answer> {
+export interface GameState {
   currentQuestionId: string | undefined;
-  questions: Question<T>[];
+  questions: Question[];
 }
 
-export const currentQuestionSelector = <T extends Answer>(
-  gameStateSelector: (state: RootState) => GameState<T>
+export const currentQuestionSelector = (
+  gameStateSelector: (state: RootState) => GameState
 ) =>
   createSelector(
     (state: RootState) => gameStateSelector(state),

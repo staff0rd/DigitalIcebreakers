@@ -26,6 +26,7 @@ import { Name as PollName } from "./Poll";
 import { PollPresenter } from "./Poll/PollPresenter";
 import Client from "./shared/Poll/Client";
 import { TriviaPresenter } from "./Trivia/TriviaPresenter";
+import { Name as TriviaName } from "./Trivia";
 import { RouteLink } from "../layout/useRoutes";
 import LiveHelp from "@material-ui/icons/LiveHelp";
 import EditQuestions from "./shared/Poll/components/EditQuestions";
@@ -42,6 +43,19 @@ interface Game {
   isNew?: boolean;
 }
 
+const pollAndTriviaRoutes = [
+  {
+    component: EditQuestions,
+    path: "/questions",
+    icon: LiveHelp,
+    name: "Questions",
+  },
+  {
+    component: EditQuestion,
+    path: "/questions/:id",
+  },
+];
+
 const games: Game[] = [
   {
     title: "Poll",
@@ -49,38 +63,17 @@ const games: Game[] = [
     client: Client,
     presenter: PollPresenter,
     description: "Audience polling: Add questions and poll your audience.",
-    routes: [
-      {
-        component: EditQuestions,
-        path: "/questions",
-        icon: LiveHelp,
-        name: "Questions",
-      },
-      {
-        component: EditQuestion,
-        path: "/questions/:id",
-      },
-    ],
+    routes: pollAndTriviaRoutes,
   },
   {
     isNew: true,
     title: "Trivia",
-    name: PollName,
+    name: TriviaName,
     client: Client,
     presenter: TriviaPresenter,
-    description: "Audience polling: Add questions and poll your audience.",
-    routes: [
-      {
-        component: EditQuestions,
-        path: "/questions",
-        icon: LiveHelp,
-        name: "Questions",
-      },
-      {
-        component: EditQuestion,
-        path: "/questions/:id",
-      },
-    ],
+    description:
+      "Like polling but with a scoreboard: Add questions and run a trivia sesssion.",
+    routes: pollAndTriviaRoutes,
   },
   {
     name: "doggos-vs-kittehs",

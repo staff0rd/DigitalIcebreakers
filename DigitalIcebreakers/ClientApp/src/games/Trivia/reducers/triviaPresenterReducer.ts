@@ -9,7 +9,6 @@ import {
   TriviaPresenterState,
 } from "games/shared/Poll/types/PresenterState";
 import { Player } from "Player";
-import { TriviaAnswer } from "games/shared/Poll/types/Answer";
 import {
   presenterActionReducers,
   ShouldShowResponses,
@@ -51,12 +50,9 @@ export const toggleShowScoreBoardAction = createGameAction(
   "toggle-show-scoreboard"
 );
 
-const shouldShowTriviaResponses = <
-  T extends TriviaAnswer,
-  S extends PresenterState<T>
->(
+const shouldShowTriviaResponses = <S extends PresenterState>(
   state: S,
-  newQuestion: Question<T> | undefined
+  newQuestion: Question | undefined
 ) => {
   let showResponses = state.showResponses;
   if (newQuestion && newQuestion.answers.filter((a) => a.correct).length)
@@ -69,7 +65,7 @@ export const triviaPresenterReducer = createReceiveGameMessageReducer<
   TriviaPresenterState
 >(
   TriviaName,
-  { ...initialPresenterState<TriviaAnswer>(storageKey), showScoreBoard: false },
+  { ...initialPresenterState(storageKey), showScoreBoard: false },
   (state, { payload: { id: playerId, name: playerName, payload: answers } }) =>
     presenterPayloadReducer(state, answers, playerId, playerName),
   "presenter",

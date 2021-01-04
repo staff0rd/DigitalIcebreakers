@@ -1,4 +1,3 @@
-import { TriviaAnswer } from "../types/Answer";
 import { validate, ErrorMessages } from "./BulkEdit";
 
 describe("validate", () => {
@@ -55,9 +54,7 @@ describe("validate", () => {
     expect(result.errorLine).toBeUndefined();
     expect(result.errorMessage).toBeUndefined();
     expect(result.questions.length).toBe(2);
-    expect(
-      (result.questions[0].answers[0] as TriviaAnswer).correct
-    ).toBeTruthy();
+    expect(result.questions[0].answers[0].correct).toBeTruthy();
     expect(result.questions[0].answers[1].text).toBe("A new answer");
     expect(result.questions[0].answers.length).toBe(3);
     expect(result.questions[1].text).toBe("second");

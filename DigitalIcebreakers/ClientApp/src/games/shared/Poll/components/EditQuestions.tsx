@@ -26,10 +26,7 @@ import array from "../../../../util/array";
 import { saveAs } from "file-saver";
 import { BulkEdit } from "./BulkEdit";
 import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
-import { Answer } from "games/shared/Poll/types/Answer";
-import { NameAndMode } from "../types/NameAndMode";
-import { RootState } from "store/RootState";
-import { Question } from "../types/Question";
+import { Name as PollName } from "games/Poll";
 
 const useStyles = makeStyles((theme) => ({
   table: {},
@@ -55,24 +52,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type Props<T extends Answer> = {
-  shouldCheckAnswer: (answer: T) => boolean;
-  gameStateSelector: (state: RootState) => Question<T>[];
-} & NameAndMode;
-
-const EditQuestions = <T extends Answer>({
-  gameName,
-  isTriviaMode,
-  gameStateSelector,
-  shouldCheckAnswer,
-}: Props<T>) => {
+const EditQuestions = () => {
   const [showBulkEdit, setShowBulkEdit] = useState<boolean>(false);
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useDispatch();
-  const questions = useSelector(
-    (state) => state.games.poll.presenter.questions
-  );
+  const { questions, gameName, isTriviaMode } = useSelector((state) => {
+    const gameName = state.lobby.currentGame!;
+    const isTriviaMode = gameName !== PollName;
+    const questions =
+      gameName === PollName
+        ? state.games.poll.presenter.questions
+        : state.games.trivia.presenter.questions;
+
+    return {
+      questions,
+      gameName,
+      isTriviaMode,
+    };
+  });
   const {
     addQuestionAction,
     importQuestionsAction,
@@ -120,7 +118,7 @@ const EditQuestions = <T extends Answer>({
         setOpen={setShowBulkEdit}
         gameName={gameName}
         isTriviaMode={isTriviaMode}
-        gameStateSelector={gameStateSelector}
+        questions={questions}
       />
       <ContentContainer>
         <Card>
@@ -172,9 +170,11 @@ const EditQuestions = <T extends Answer>({
                           {question.answers.map((a, ix) => (
                             <li
                               className={
-                                shouldCheckAnswer(a as T)
-                                  ? classes.checked
-                                  : classes.unchecked
+                                isTriviaMode
+                                  ? a.correct
+                                    ? classes.checked
+                                    : classes.unchecked
+                                  : ""
                               }
                               key={ix.toString()}
                             >
