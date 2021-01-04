@@ -15,9 +15,9 @@ import {
 } from "games/shared/Poll/reducers/presenterActionReducers";
 import { initialPresenterState } from "games/shared/Poll/reducers/initialPresenterState";
 import { presenterPayloadReducer } from "games/shared/Poll/reducers/presenterPayloadReducer";
-const TriviaName = "trivia";
+import { Name } from "..";
 
-export const storageKey = "poll:questions";
+export const storageKey = "trivia:questions";
 
 type UserScore = {
   name: string;
@@ -45,7 +45,7 @@ export const getPlayersWithNoScore = (players: Player[], scores: UserScore[]) =>
     .map((user) => ({ name: user.name, score: 0, id: user.id }));
 
 export const toggleShowScoreBoardAction = createGameAction(
-  TriviaName,
+  Name,
   "presenter",
   "toggle-show-scoreboard"
 );
@@ -64,13 +64,13 @@ export const triviaPresenterReducer = createReceiveGameMessageReducer<
   SelectedAnswer[],
   TriviaPresenterState
 >(
-  TriviaName,
+  Name,
   { ...initialPresenterState(storageKey), showScoreBoard: false },
   (state, { payload: { id: playerId, name: playerName, payload: answers } }) =>
     presenterPayloadReducer(state, answers, playerId, playerName),
   "presenter",
   (builder) => {
-    presenterActionReducers(TriviaName, storageKey)(
+    presenterActionReducers(Name, storageKey)(
       builder,
       shouldShowTriviaResponses as ShouldShowResponses
     );

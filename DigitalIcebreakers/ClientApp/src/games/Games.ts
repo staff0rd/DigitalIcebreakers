@@ -84,7 +84,6 @@ const games: Game[] = [
   },
   {
     name: "namepicker",
-    isNew: true,
     menu: NamePickerMenu,
     client: NamePickerClient,
     presenter: NamePickerPresenter,
@@ -108,7 +107,6 @@ const games: Game[] = [
     description: "Let your audience get a feel for low latency",
   },
   {
-    isNew: true,
     name: "splat",
     client: SplatClient,
     presenter: SplatPresenter,
