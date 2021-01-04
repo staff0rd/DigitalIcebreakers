@@ -2,7 +2,6 @@ import {
   createGameAction,
   createGameActionWithPayload,
 } from "store/actionHelpers";
-import { Answer } from "../types/Answer";
 import { Question } from "../types/Question";
 
 export const presenterActions = (gameName: string) => {
