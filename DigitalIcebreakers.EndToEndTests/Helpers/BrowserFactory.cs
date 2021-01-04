@@ -48,5 +48,18 @@ namespace DigitalIcebreakers.EndToEndTests
             await joinButton.ClickAsync();
             return new Player(browser, page);
         }
+
+        public async Task<Player> CreatePlayerByJoinCode(string joinCode, string playerName = "test-user", bool? headless = null)
+        {
+            var browser = await Create(headless);
+            var page = await browser.NewPageAsync();
+            await page.GoToAsync(_settings.Url);
+            await page.ClickAsync("text='Join'", delay: 1000);
+            await page.TypeAsync("[id=lobby-code]", joinCode);
+            await page.ClickByTestId("join-lobby");
+            await page.TypeAsync("[id=user-name]", playerName);
+            await page.ClickByTestId("join-lobby-button");
+            return new Player(browser, page);
+        }
     }
 }

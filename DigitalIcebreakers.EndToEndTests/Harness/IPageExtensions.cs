@@ -18,5 +18,10 @@ namespace DigitalIcebreakers.EndToEndTests
         {
             return await page.GetTextContentAsync($"[data-testid={testId}");
         }
+
+        public static async Task<string> GetAttributeByTestId(this IPage page, string testId, string attributeName)
+        {
+            return await page.GetAttributeAsync(($"[data-testid={testId}"), attributeName);
+        }
     }
 }

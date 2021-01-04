@@ -146,7 +146,7 @@ export default function Sidebar(props) {
           <div className={classes.sidebarWrapper}>
             {qrCode}
             {links}
-            <SidebarFooter />
+            <SidebarFooter lobbyId={lobby.id} />
           </div>
           <div className={classes.background} />
         </Drawer>
@@ -166,7 +166,7 @@ export default function Sidebar(props) {
           <div className={classes.sidebarWrapper}>
             {qrCode}
             {links}
-            <SidebarFooter />
+            <SidebarFooter lobbyId={lobby.id} />
           </div>
           <div className={classes.background} />
         </Drawer>

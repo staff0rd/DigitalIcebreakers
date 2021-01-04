@@ -69,7 +69,11 @@ export default function Join() {
               </GridContainer>
             </CardBody>
             <CardFooter>
-              <Button color="primary" onClick={() => join(lobbyCode)}>
+              <Button
+                data-testid="join-lobby"
+                color="primary"
+                onClick={() => join(lobbyCode)}
+              >
                 Join
               </Button>
             </CardFooter>
