@@ -70,6 +70,10 @@ export const onReconnect = (
         })
       );
 
+      if (!joiningLobbyId) {
+        dispatch(updateConnectionStatus(ConnectionStatus.Connected));
+      }
+
       if (response.currentGame) {
         dispatch(setLobbyGame(response.currentGame));
       } else {
