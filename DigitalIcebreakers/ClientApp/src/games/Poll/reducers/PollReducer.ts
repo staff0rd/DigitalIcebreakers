@@ -1,9 +1,9 @@
 import { combineReducers } from "redux";
-import { playerReducer } from "./playerReducer";
-import { presenterReducer } from "./presenterReducer";
-import { PollState } from "../types/PollState";
+import { pollPlayerReducer } from "./pollPlayerReducer";
+import { PollState } from "games/shared/Poll/types/State";
+import { pollPresenterReducer } from "./pollPresenterReducer";
 
 export const pollReducer = combineReducers<PollState>({
-  player: playerReducer,
-  presenter: presenterReducer,
+  player: pollPlayerReducer,
+  presenter: pollPresenterReducer,
 });

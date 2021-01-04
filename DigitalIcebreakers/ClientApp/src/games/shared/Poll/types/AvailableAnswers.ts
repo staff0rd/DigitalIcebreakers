@@ -1,8 +1,8 @@
 import { Answer } from "./Answer";
 
-export interface AvailableAnswers {
+export interface AvailableAnswers<T extends Answer> {
   questionId: string;
-  answers: Answer[];
+  answers: T[];
   selectedAnswerId?: string;
   question: string;
 }

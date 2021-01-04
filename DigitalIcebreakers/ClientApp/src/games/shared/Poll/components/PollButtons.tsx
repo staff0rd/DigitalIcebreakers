@@ -7,12 +7,10 @@ import ScoreIcon from "@material-ui/icons/Score";
 import CloseIcon from "@material-ui/icons/Close";
 import BarChart from "@material-ui/icons/BarChart";
 import LiveHelp from "@material-ui/icons/LiveHelp";
-import {
-  toggleShowResponsesAction,
-  toggleShowScoreBoardAction,
-} from "../reducers/presenterReducer";
 import { makeStyles } from "@material-ui/core/styles";
-import { useSelector } from "../../../store/useSelector";
+import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
+import { NameAndMode } from "games/shared/Poll/types/NameAndMode";
+import { toggleShowScoreBoardAction } from "games/Trivia/reducers/triviaPresenterReducer";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,23 +26,23 @@ type Props = {
   gotoPreviousQuestion: Function;
   nextQuestionId: string | null;
   previousQuestionId: string | null;
-  isTriviaMode: boolean;
-};
+  showResponses: boolean;
+  showScoreBoard: boolean;
+} & NameAndMode;
 
-const PollButtons = (props: Props) => {
+const PollButtons = ({
+  gotoNextQuestion,
+  gotoPreviousQuestion,
+  nextQuestionId,
+  previousQuestionId,
+  showResponses,
+  showScoreBoard,
+  isTriviaMode,
+  gameName,
+}: Props) => {
   const dispatch = useDispatch();
-  const { showResponses, showScoreBoard } = useSelector((state) => ({
-    showResponses: state.games.poll.presenter.showResponses,
-    showScoreBoard: state.games.poll.presenter.showScoreBoard,
-  }));
   const classes = useStyles();
-  const {
-    gotoNextQuestion,
-    gotoPreviousQuestion,
-    nextQuestionId,
-    previousQuestionId,
-    isTriviaMode,
-  } = props;
+  const { toggleShowResponsesAction } = presenterActions(gameName);
   return (
     <div className={classes.root}>
       <IconButton

@@ -1,10 +1,15 @@
 import React from "react";
-import { useSelector } from "../../../store/useSelector";
-import { currentQuestionSelector } from "../reducers/presenterReducer";
+import { useSelector } from "../../../../store/useSelector";
+import {
+  currentQuestionSelector,
+  GameState,
+} from "../reducers/currentQuestionSelector";
 import { makeStyles } from "@material-ui/core/styles";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
-import { primaryColor } from "../../../layout/assets/jss/material-dashboard-react";
+import { primaryColor } from "../../../../layout/assets/jss/material-dashboard-react";
 import CustomisedAxisTick from "./CustomisedAccessTick";
+import { RootState } from "store/RootState";
+import { Answer, TriviaAnswer } from "games/shared/Poll/types/Answer";
 
 const useStyles = makeStyles((theme) => ({
   data: {
@@ -33,13 +38,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ResponseChart = () => {
+type Props<T extends Answer> = {
+  gameStateSelector: (state: RootState) => GameState<T>;
+  isTriviaMode: boolean;
+};
+const ResponseChart = <T extends Answer>({
+  gameStateSelector,
+  isTriviaMode,
+}: Props<T>) => {
   const classes = useStyles();
-  const { question } = useSelector(currentQuestionSelector);
+  const { question } = useSelector(currentQuestionSelector(gameStateSelector));
 
   const answers = question
     ? question.answers.map((a) => {
-        const answer = a.correct ? `✅ ${a.text}` : a.text;
+        let answer = a.text;
+        if (isTriviaMode && ((a as unknown) as TriviaAnswer).correct) {
+          answer = `✅ ${a.text}`;
+        }
         const responses = (question ? question.responses : []).filter(
           (r) => r.answerId === a.id
         ).length;

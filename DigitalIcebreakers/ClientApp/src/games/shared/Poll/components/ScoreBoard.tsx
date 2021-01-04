@@ -1,8 +1,8 @@
 import React from "react";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
-import { useSelector } from "../../../store/useSelector";
-import { scoreBoardSelector } from "../reducers/presenterReducer";
+import { useSelector } from "../../../../store/useSelector";
+import { scoreBoardSelector } from "../../../Trivia/reducers/scoreBoardSelector";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import { makeStyles } from "@material-ui/core/styles";

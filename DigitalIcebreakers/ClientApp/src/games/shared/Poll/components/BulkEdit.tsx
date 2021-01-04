@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Dialog from "@material-ui/core/Dialog";
-import Button from "../../../layout/components/CustomButtons/Button";
+import Button from "../../../../layout/components/CustomButtons/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import CustomInput from "layout/components/CustomInput/CustomInput";
@@ -9,11 +9,13 @@ import Alert from "@material-ui/lab/Alert";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 import { useDispatch } from "react-redux";
-import { importQuestionsAction } from "../reducers/presenterReducer";
 import { Question } from "../types/Question";
 import { guid } from "util/guid";
 import { RootState } from "store/RootState";
 import { createSelector } from "@reduxjs/toolkit";
+import { Answer, TriviaAnswer } from "games/shared/Poll/types/Answer";
+import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
+import { NameAndMode } from "games/shared/Poll/types/NameAndMode";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -31,25 +33,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type BulkEditProps = {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-};
-
 export enum ErrorMessages {
   FIRST_LINE_SHOULD_BE_QUESTION = "First line should be a question, starting with a dash",
-  ONLY_ONE_ANSWER_PER_QUESTION = "A question may have maximum one answer",
+  ONLY_ONE_CORRECT_ANSWER_PER_QUESTION = "A question may have maximum one correct answer",
+  ONLY_TRIVIA_MODE_MAY_HAVE_CORRECT_ANSWERS = "Poll questions do not have correct answers, try Trivia instead",
 }
 
-type ValidateResponse = {
+type ValidateResponse<T extends Answer> = {
   isValid: boolean;
-  questions: Question[];
+  questions: Question<T>[];
   errorMessage: string | undefined;
   errorLine: number | undefined;
 };
 
-export const validate = (questionsAndAnswers: string): ValidateResponse => {
-  let questions: Question[] = [];
+export const validate = <T extends Answer>(
+  questionsAndAnswers: string,
+  isTriviaMode: boolean
+): ValidateResponse<T> => {
+  let questions: Question<T>[] = [];
   let errorMessage: string | undefined;
   let errorLine: number | undefined;
 
@@ -73,25 +74,35 @@ export const validate = (questionsAndAnswers: string): ValidateResponse => {
       errorMessage = ErrorMessages.FIRST_LINE_SHOULD_BE_QUESTION;
       break;
     } else if (line.startsWith("*")) {
-      const trimmed = line.substr(1).trim();
-      const currentAnswers = questions[questions.length - 1].answers;
-      if (currentAnswers.find((a) => a.correct)) {
-        errorMessage = ErrorMessages.ONLY_ONE_ANSWER_PER_QUESTION;
-        errorLine = i + 1;
+      if (!isTriviaMode) {
+        errorMessage = ErrorMessages.ONLY_TRIVIA_MODE_MAY_HAVE_CORRECT_ANSWERS;
+        errorLine = i;
         break;
+      } else {
+        const trimmed = line.substr(1).trim();
+        const currentAnswers = (questions[questions.length - 1]
+          .answers as unknown) as TriviaAnswer[];
+        if (currentAnswers.find((a) => a.correct)) {
+          errorMessage = ErrorMessages.ONLY_ONE_CORRECT_ANSWER_PER_QUESTION;
+          errorLine = i + 1;
+          break;
+        }
+        currentAnswers.push({
+          correct: true,
+          id: guid(),
+          text: trimmed,
+        });
       }
-      currentAnswers.push({
-        correct: true,
-        id: guid(),
-        text: trimmed,
-      });
     } else {
       const trimmed = line.trim();
-      questions[questions.length - 1].answers.push({
-        correct: false,
+      const answer = {
         id: guid(),
         text: trimmed,
-      });
+      };
+      if (isTriviaMode) {
+        (answer as TriviaAnswer).correct = false;
+      }
+      questions[questions.length - 1].answers.push(answer as T);
     }
   }
 
@@ -103,24 +114,45 @@ export const validate = (questionsAndAnswers: string): ValidateResponse => {
   };
 };
 
-const questionsForBulkEdit = createSelector(
-  (state: RootState) => state.games.poll.presenter.questions,
-  (questions) =>
-    questions
-      .map((q) => {
-        const answers = q.answers.map((a) => {
-          if (a.correct) return `* ${a.text}`;
-          return a.text;
-        });
-        return `- ${q.text}\n${answers.join("\n")}`;
-      })
-      .join("\n")
-);
+const questionsForBulkEditSelector = <T extends Answer>(
+  gameStateSelector: (state: RootState) => Question<T>[],
+  isTriviaMode: boolean
+) =>
+  createSelector(
+    (state: RootState) => state.games.poll.presenter.questions,
+    (questions) =>
+      questions
+        .map((q) => {
+          const answers = q.answers.map((a) => {
+            if (isTriviaMode) {
+              if ((a as TriviaAnswer).correct) return `* ${a.text}`;
+            }
+            return a.text;
+          });
+          return `- ${q.text}\n${answers.join("\n")}`;
+        })
+        .join("\n")
+  );
 
-export const BulkEdit = (props: BulkEditProps) => {
+type BulkEditProps<T extends Answer> = {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  gameStateSelector: (state: RootState) => Question<T>[];
+} & NameAndMode;
+
+export const BulkEdit = <T extends Answer>({
+  open,
+  setOpen,
+  gameName,
+  gameStateSelector,
+  isTriviaMode,
+}: BulkEditProps<T>) => {
+  const { importQuestionsAction } = presenterActions(gameName);
   const classes = useStyles();
   const dispatch = useDispatch();
-  const questionsFromRedux = useSelector(questionsForBulkEdit);
+  const questionsFromRedux = useSelector(
+    questionsForBulkEditSelector(gameStateSelector, isTriviaMode)
+  );
   const [questionLines, setQuestionLines] = useState<string>(
     questionsFromRedux
   );
@@ -128,10 +160,10 @@ export const BulkEdit = (props: BulkEditProps) => {
     setQuestionLines(questionsFromRedux);
   }, [questionsFromRedux]);
   const [error, setError] = useState<string>("");
-  const { open, setOpen } = props;
   const handleOk = () => {
     const { errorLine, errorMessage, isValid, questions } = validate(
-      questionLines
+      questionLines,
+      isTriviaMode
     );
     if (isValid) {
       setError("");

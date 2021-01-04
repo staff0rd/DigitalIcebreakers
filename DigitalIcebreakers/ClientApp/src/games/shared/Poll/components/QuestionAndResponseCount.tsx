@@ -2,6 +2,7 @@ import React from "react";
 import { Question } from "../types/Question";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
+import { Answer } from "games/shared/Poll/types/Answer";
 
 const useStyles = makeStyles((theme) => ({
   question: {
@@ -18,14 +19,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type Props = {
-  question: Question;
-  responseCount: number;
-  playerCount: number;
-  totalQuestions: number;
-  currentQuestionNumber: number;
-};
-
 export const getCountMessage = (responseCount: number, playerCount: number) => {
   if (playerCount === 0) return "Waiting for players to join...";
   return responseCount !== playerCount
@@ -33,7 +26,15 @@ export const getCountMessage = (responseCount: number, playerCount: number) => {
     : `All ${playerCount} players have answered`;
 };
 
-const QuestionAndResponseCount = (props: Props) => {
+type Props<T extends Answer> = {
+  question: Question<T>;
+  responseCount: number;
+  playerCount: number;
+  totalQuestions: number;
+  currentQuestionNumber: number;
+};
+
+const QuestionAndResponseCount = <T extends Answer>(props: Props<T>) => {
   const {
     question,
     responseCount,

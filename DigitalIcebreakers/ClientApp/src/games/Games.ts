@@ -23,12 +23,13 @@ import PongMenu from "./Pong/PongMenu";
 import ReactionClient from "./Reaction/ReactionClient";
 import ReactionPresenter from "./Reaction/ReactionPresenter";
 import { Name as PollName } from "./Poll";
-import PollPresenter from "./Poll/PollPresenter";
-import PollClient from "./Poll/PollClient";
+import { PollPresenter } from "./Poll/PollPresenter";
+import Client from "./shared/Poll/Client";
+import { TriviaPresenter } from "./Trivia/TriviaPresenter";
 import { RouteLink } from "../layout/useRoutes";
 import LiveHelp from "@material-ui/icons/LiveHelp";
-import EditQuestions from "./Poll/components/EditQuestions";
-import EditQuestion from "./Poll/components/EditQuestion";
+import EditQuestions from "./shared/Poll/components/EditQuestions";
+import EditQuestion from "./shared/Poll/components/EditQuestion";
 
 interface Game {
   name: string;
@@ -43,13 +44,31 @@ interface Game {
 
 const games: Game[] = [
   {
-    isNew: true,
-    title: "Poll / Trivia",
+    title: "Poll",
     name: PollName,
-    client: PollClient,
+    client: Client,
     presenter: PollPresenter,
-    description:
-      "Audience polling: Add questions and poll your audience. Now with Trivia!",
+    description: "Audience polling: Add questions and poll your audience.",
+    routes: [
+      {
+        component: EditQuestions,
+        path: "/questions",
+        icon: LiveHelp,
+        name: "Questions",
+      },
+      {
+        component: EditQuestion,
+        path: "/questions/:id",
+      },
+    ],
+  },
+  {
+    isNew: true,
+    title: "Trivia",
+    name: PollName,
+    client: Client,
+    presenter: TriviaPresenter,
+    description: "Audience polling: Add questions and poll your audience.",
     routes: [
       {
         component: EditQuestions,

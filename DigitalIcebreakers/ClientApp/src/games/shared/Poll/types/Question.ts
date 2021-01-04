@@ -1,9 +1,9 @@
 import { Answer } from "./Answer";
 import { Response } from "./Response";
 
-export type Question = {
+export type Question<T extends Answer> = {
   id: string;
   text: string;
-  answers: Answer[];
   responses: Response[];
-};
+  answers: T[];
+}

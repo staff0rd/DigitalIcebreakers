@@ -1,16 +1,16 @@
 import React, { useRef, useState } from "react";
-import Card from "../../../layout/components/Card/Card";
-import CardTitle from "../../../layout/components/Card/CardTitle";
-import CardFooter from "../../../layout/components/Card/CardFooter";
-import CardBody from "../../../layout/components/Card/CardBody";
-import Button from "../../../layout/components/CustomButtons/Button";
+import Card from "../../../../layout/components/Card/Card";
+import CardTitle from "../../../../layout/components/Card/CardTitle";
+import CardFooter from "../../../../layout/components/Card/CardFooter";
+import CardBody from "../../../../layout/components/Card/CardBody";
+import Button from "../../../../layout/components/CustomButtons/Button";
 import ArrowUpward from "@material-ui/icons/ArrowUpward";
 import ArrowDownward from "@material-ui/icons/ArrowDownward";
 import IconButton from "@material-ui/core/IconButton";
 import Delete from "@material-ui/icons/Delete";
 import Edit from "@material-ui/icons/Edit";
-import { useSelector } from "../../../store/useSelector";
-import { ContentContainer } from "../../../components/ContentContainer";
+import { useSelector } from "../../../../store/useSelector";
+import { ContentContainer } from "../../../../components/ContentContainer";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -20,17 +20,16 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import { useHistory, NavLink } from "react-router-dom";
-import { guid } from "../../../util/guid";
+import { guid } from "../../../../util/guid";
 import { useDispatch } from "react-redux";
-import {
-  addQuestionAction,
-  importQuestionsAction,
-  deleteQuestionAction,
-  clearResponsesAction,
-} from "../reducers/presenterReducer";
-import array from "../../../util/array";
+import array from "../../../../util/array";
 import { saveAs } from "file-saver";
 import { BulkEdit } from "./BulkEdit";
+import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
+import { Answer } from "games/shared/Poll/types/Answer";
+import { NameAndMode } from "../types/NameAndMode";
+import { RootState } from "store/RootState";
+import { Question } from "../types/Question";
 
 const useStyles = makeStyles((theme) => ({
   table: {},
@@ -56,7 +55,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EditQuestions = () => {
+type Props<T extends Answer> = {
+  shouldCheckAnswer: (answer: T) => boolean;
+  gameStateSelector: (state: RootState) => Question<T>[];
+} & NameAndMode;
+
+const EditQuestions = <T extends Answer>({
+  gameName,
+  isTriviaMode,
+  gameStateSelector,
+  shouldCheckAnswer,
+}: Props<T>) => {
   const [showBulkEdit, setShowBulkEdit] = useState<boolean>(false);
   const classes = useStyles();
   const history = useHistory();
@@ -64,6 +73,13 @@ const EditQuestions = () => {
   const questions = useSelector(
     (state) => state.games.poll.presenter.questions
   );
+  const {
+    addQuestionAction,
+    importQuestionsAction,
+    clearResponsesAction,
+    deleteQuestionAction,
+  } = presenterActions(gameName);
+
   const addQuestion = () => {
     const id = guid();
     dispatch(addQuestionAction(id));
@@ -99,7 +115,13 @@ const EditQuestions = () => {
   };
   return (
     <>
-      <BulkEdit open={showBulkEdit} setOpen={setShowBulkEdit} />
+      <BulkEdit
+        open={showBulkEdit}
+        setOpen={setShowBulkEdit}
+        gameName={gameName}
+        isTriviaMode={isTriviaMode}
+        gameStateSelector={gameStateSelector}
+      />
       <ContentContainer>
         <Card>
           <CardTitle
@@ -150,7 +172,9 @@ const EditQuestions = () => {
                           {question.answers.map((a, ix) => (
                             <li
                               className={
-                                a.correct ? classes.checked : classes.unchecked
+                                shouldCheckAnswer(a as T)
+                                  ? classes.checked
+                                  : classes.unchecked
                               }
                               key={ix.toString()}
                             >

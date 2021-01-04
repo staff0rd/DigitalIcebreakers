@@ -1,0 +1,53 @@
+import {
+  createGameAction,
+  createGameActionWithPayload,
+} from "store/actionHelpers";
+import { Answer } from "../types/Answer";
+import { Question } from "../types/Question";
+
+export const presenterActions = <T extends Answer>(gameName: string) => {
+  const toggleShowResponsesAction = createGameAction(
+    gameName,
+    "presenter",
+    "toggle-show-responses"
+  );
+  const clearResponsesAction = createGameAction(
+    gameName,
+    "presenter",
+    "clear-responses"
+  );
+  const addQuestionAction = createGameActionWithPayload<string>(
+    gameName,
+    "presenter",
+    "add-question"
+  );
+  const updateQuestionAction = createGameActionWithPayload<Question<T>>(
+    gameName,
+    "presenter",
+    "update-question"
+  );
+  const deleteQuestionAction = createGameActionWithPayload<Question<T>>(
+    gameName,
+    "presenter",
+    "delete-question"
+  );
+  const importQuestionsAction = createGameActionWithPayload<Question<T>[]>(
+    gameName,
+    "presenter",
+    "import-questions"
+  );
+  const setCurrentQuestionAction = createGameActionWithPayload<string>(
+    gameName,
+    "presenter",
+    "set-current-question"
+  );
+  return {
+    toggleShowResponsesAction,
+    clearResponsesAction,
+    addQuestionAction,
+    updateQuestionAction,
+    deleteQuestionAction,
+    importQuestionsAction,
+    setCurrentQuestionAction,
+  };
+};

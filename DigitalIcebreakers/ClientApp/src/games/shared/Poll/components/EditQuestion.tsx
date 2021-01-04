@@ -1,26 +1,25 @@
-import React, { useState } from "react";
-import Card from "../../../layout/components/Card/Card";
-import CardTitle from "../../../layout/components/Card/CardTitle";
-import CardFooter from "../../../layout/components/Card/CardFooter";
-import CardBody from "../../../layout/components/Card/CardBody";
-import Button from "../../../layout/components/CustomButtons/Button";
+import React, { ReactNode, useState } from "react";
+import Card from "../../../../layout/components/Card/Card";
+import CardTitle from "../../../../layout/components/Card/CardTitle";
+import CardFooter from "../../../../layout/components/Card/CardFooter";
+import CardBody from "../../../../layout/components/Card/CardBody";
+import Button from "../../../../layout/components/CustomButtons/Button";
 import Grid from "@material-ui/core/Grid";
-import { useSelector } from "../../../store/useSelector";
-import { ContentContainer } from "../../../components/ContentContainer";
+import { useSelector } from "../../../../store/useSelector";
+import { ContentContainer } from "../../../../components/ContentContainer";
 import { makeStyles } from "@material-ui/core/styles";
 import { useParams, useHistory } from "react-router";
-import CustomInput from "../../../layout/components/CustomInput/CustomInput";
-import SnackbarContent from "../../../layout/components/Snackbar/SnackbarContent";
+import CustomInput from "../../../../layout/components/CustomInput/CustomInput";
+import SnackbarContent from "../../../../layout/components/Snackbar/SnackbarContent";
 import { Question } from "../types/Question";
 import Typography from "@material-ui/core/Typography";
 import EditAnswers from "./EditAnswers";
-import { guid } from "../../../util/guid";
-import { grayColor } from "../../../layout/assets/jss/material-dashboard-react";
+import { guid } from "../../../../util/guid";
+import { grayColor } from "../../../../layout/assets/jss/material-dashboard-react";
 import { useDispatch } from "react-redux";
-import {
-  updateQuestionAction,
-  deleteQuestionAction,
-} from "../reducers/presenterReducer";
+import { Answer } from "games/shared/Poll/types/Answer";
+import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
+import { NameAndMode } from "../types/NameAndMode";
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -36,12 +35,18 @@ const useStyles = makeStyles((theme) => ({
     fontStyle: "italic",
   },
 }));
+type SetAnswers = <T extends Answer>(answers: T[]) => void;
 
-type Props = {
-  question: Question;
-};
+type Props<T extends Answer> = {
+  question: Question<T>;
+  editAnswersChildren?: (setAnswers: SetAnswers) => ReactNode;
+} & NameAndMode;
 
-const QuestionEditor = ({ question }: Props) => {
+const QuestionEditor = <T extends Answer>({
+  question,
+  gameName,
+  editAnswersChildren,
+}: Props<T>) => {
   const dispatch = useDispatch();
   const totalQuestions = useSelector(
     (state) => state.games.poll.presenter.questions.length
@@ -55,6 +60,10 @@ const QuestionEditor = ({ question }: Props) => {
   const isValid = () => {
     return text.length < 3;
   };
+
+  const { updateQuestionAction, deleteQuestionAction } = presenterActions(
+    gameName
+  );
 
   const saveQuestion = () => {
     dispatch(
@@ -103,15 +112,16 @@ const QuestionEditor = ({ question }: Props) => {
               </Typography>
               <EditAnswers
                 answers={answers}
-                setAnswers={setAnswers}
+                setAnswers={(answers) => setAnswers(answers as T[])}
                 questionId={question.id}
+                children={editAnswersChildren}
               />
               <Button
                 onClick={() =>
                   setAnswers([
                     ...answers,
                     { id: guid(), text: "A new answer", correct: false },
-                  ])
+                  ] as T[])
                 }
               >
                 Add answer
@@ -149,14 +159,18 @@ const QuestionEditor = ({ question }: Props) => {
   );
 };
 
-const EditQuestion = () => {
+const EditQuestion = ({ gameName, isTriviaMode }: NameAndMode) => {
   const questionId = useParams<{ id: string }>().id;
   const question = useSelector((state) =>
     state.games.poll.presenter.questions.find((q) => q.id === questionId)
   );
 
   return question ? (
-    <QuestionEditor question={question} />
+    <QuestionEditor
+      question={question}
+      gameName={gameName}
+      isTriviaMode={isTriviaMode}
+    />
   ) : (
     <ContentContainer>
       <SnackbarContent message="No such question" color="danger" />

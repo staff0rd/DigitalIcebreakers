@@ -1,15 +1,17 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { clientMessage } from "../../store/lobby/actions";
-import { ContentContainer } from "../../components/ContentContainer";
+import { clientMessage } from "../../../store/lobby/actions";
+import { ContentContainer } from "../../../components/ContentContainer";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import { useSelector } from "../../store/useSelector";
 import Typography from "@material-ui/core/Typography";
-import Button from "../../layout/components/CustomButtons/Button";
+import Button from "../../../layout/components/CustomButtons/Button";
 import { makeStyles } from "@material-ui/core/styles";
-import { selectAnswerAction, lockAnswerAction } from "./reducers/playerReducer";
-import { infoColor } from "../../layout/assets/jss/material-dashboard-react";
+import { infoColor } from "../../../layout/assets/jss/material-dashboard-react";
+import { playerActions } from "./reducers/playerActions";
+import { Answer, TriviaAnswer } from "./types/Answer";
+import { useSelector } from "store/useSelector";
+import { Name as PollName } from "games/Poll";
 
 const useStyles = makeStyles(() => ({
   item: {
@@ -32,7 +34,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const PollClient = () => {
+const Client = () => {
   const dispatch = useDispatch();
   const {
     questionId,
@@ -40,9 +42,16 @@ const PollClient = () => {
     answerLocked,
     canAnswer,
     question,
-  } = useSelector((state) => state.games.poll.player);
+    currentGame,
+    answers,
+  } = useSelector((state) => {
+    const currentGame = state.lobby.currentGame;
+    if (currentGame === PollName) {
+      return { ...state.games.poll.player, currentGame, canAnswer: true };
+    } else return { ...state.games.trivia.player, currentGame };
+  });
 
-  const answers = useSelector((state) => state.games.poll.player.answers);
+  const { lockAnswerAction, selectAnswerAction } = playerActions(currentGame!);
 
   const classes = useStyles();
   const lockAnswer = () => {
@@ -60,7 +69,7 @@ const PollClient = () => {
         <>
           <Typography className={classes.text}>{question}</Typography>
           <List>
-            {answers.map((answer) => (
+            {(answers as any[]).map((answer: Answer | TriviaAnswer) => (
               <ListItem
                 button
                 disableTouchRipple={true}
@@ -90,4 +99,4 @@ const PollClient = () => {
   );
 };
 
-export default PollClient;
+export default Client;

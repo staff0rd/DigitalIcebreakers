@@ -1,23 +1,16 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
-import { Answer } from "../types/Answer";
 import ArrowUpward from "@material-ui/icons/ArrowUpward";
 import ArrowDownward from "@material-ui/icons/ArrowDownward";
 import IconButton from "@material-ui/core/IconButton";
 import Delete from "@material-ui/icons/Delete";
-import array from "../../../util/array";
-import CustomInput from "../../../layout/components/CustomInput/CustomInput";
+import array from "util/array";
+import CustomInput from "layout/components/CustomInput/CustomInput";
 import { makeStyles } from "@material-ui/core/styles";
-import Check from "@material-ui/icons/Check";
-import styles from "../../../layout/assets/jss/material-dashboard-react/components/tasksStyle";
-import Checkbox from "@material-ui/core/Checkbox";
-import Typography from "@material-ui/core/Typography";
-import { toggleCorrectAnswer } from "./toggleCorrectAnswer";
-
-const useLayoutStyles = makeStyles(styles);
+import { Answer } from "../types/Answer";
 
 const useStyles = makeStyles((theme) => ({
   cell: {
@@ -41,15 +34,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type Props = {
-  answers: Answer[];
+type Props<T extends Answer> = {
+  answers: T[];
   setAnswers: (answers: Answer[]) => void;
   questionId: string;
+  children: ReactNode;
 };
 
-const EditAnswers = ({ answers, setAnswers, questionId }: Props) => {
+const EditAnswers = <T extends Answer>({
+  answers,
+  setAnswers,
+  children,
+}: Props<T>) => {
   const classes = useStyles();
-  const layoutClasses = useLayoutStyles();
+
   return (
     <Table aria-label="answers" size="small">
       <TableBody>
@@ -77,15 +75,7 @@ const EditAnswers = ({ answers, setAnswers, questionId }: Props) => {
                 error={answer.text.length < 1}
               />
             </TableCell>
-            <TableCell className={classes.cell}>
-              <Checkbox
-                checked={answer.correct}
-                onClick={() => setAnswers(toggleCorrectAnswer(answers, answer))}
-                checkedIcon={<Check className={layoutClasses.checkedIcon} />}
-                icon={<Check className={layoutClasses.uncheckedIcon} />}
-              />
-              <Typography className={classes.correctLabel}>Correct</Typography>
-            </TableCell>
+            {children}
             <TableCell className={classes.cell}>
               <IconButton
                 onClick={() =>
