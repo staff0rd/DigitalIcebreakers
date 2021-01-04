@@ -21,7 +21,7 @@ namespace DigitalIcebreakers.EndToEndTests
         {
             _presenter = await _browsers.CreatePresenter();
             _joinCode = await _presenter.Page.GetTextContentByTestId("lobby-id");
-            _player = await _browsers.CreatePlayerByJoinCode(_joinCode, headless: false);
+            _player = await _browsers.CreatePlayerByJoinCode(_joinCode);
         }
 
         public Task DisposeAsync()
