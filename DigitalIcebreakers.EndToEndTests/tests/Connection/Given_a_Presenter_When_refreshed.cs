@@ -5,13 +5,13 @@ using Shouldly;
 namespace DigitalIcebreakers.EndToEndTests
 {
     [Collection("Playwright")]
-    public class ConnectionTests_Refresh : IAsyncLifetime
+    public class Given_a_Presenter_When_refreshed : IAsyncLifetime
     {
         private readonly BrowserFactory _browsers;
         private Presenter _presenter;
         private Player _player;
 
-        public ConnectionTests_Refresh(BrowserFactory browsers)
+        public Given_a_Presenter_When_refreshed(BrowserFactory browsers)
         {
             _browsers = browsers;
         }
@@ -28,7 +28,7 @@ namespace DigitalIcebreakers.EndToEndTests
         }
 
         [Fact]
-        public async Task Presenter_should_connect_after_refresh()
+        public async Task Then_should_be_connected()
         {
             await _presenter.Page.ReloadAsync();
             await Task.Delay(100);

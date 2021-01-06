@@ -28,7 +28,7 @@ namespace DigitalIcebreakers.EndToEndTests
         }
 
         [Fact]
-        public async Task Lobby_count_should_update_on_presenter()
+        public async Task Then_lobby_count_should_update_on_presenter()
         {
             var presenterLobbyLink = await _presenter.Page.GetByTestId("menu-lobby");
             var presenterLobbyLinkText = await presenterLobbyLink.GetTextContentAsync();
@@ -36,7 +36,7 @@ namespace DigitalIcebreakers.EndToEndTests
         }
 
         [Fact(Skip = "TODO")]
-        public async Task Lobby_count_should_update_on_client()
+        public async Task Then_lobby_count_should_update_on_player()
         {
             var clientLobbyLink = await _player.Page.GetByTestId("menu-lobby");
             var clientLobbyLinkText = await clientLobbyLink.GetTextContentAsync();
