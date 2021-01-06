@@ -28,10 +28,10 @@ namespace DigitalIcebreakers.EndToEndTests
         }
 
         [Fact]
-        public async Task Player_should_connect_after_refresh()
+        public async Task Then_player_should_connect_after_refresh()
         {
             await _player.Page.ReloadAsync();
-            await Task.Delay(500);
+            await Task.Delay(1000);
             var connectionIcon = await _player.Page.GetByTestId("connection-status");
             var status = await connectionIcon.GetAttributeAsync("data-status");
             status.ShouldBe("Connected");
