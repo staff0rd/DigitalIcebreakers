@@ -9,6 +9,7 @@
     "@types/classnames": "^2.2.10",
     "@types/recharts": "^1.8.10",
     "bootstrap": "^3.3.7",
+    "clsx": "^1.1.1",
     "file-saver": "^2.0.2",
     "gsap": "^3.0.1",
     "luxon": "^1.25.0",
