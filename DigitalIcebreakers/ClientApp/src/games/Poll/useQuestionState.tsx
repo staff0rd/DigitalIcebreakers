@@ -23,12 +23,12 @@ export const useQuestionState = (
     previousQuestionId,
     currentQuestionNumber,
     totalQuestions,
+    showResponses,
   } = useSelector(currentQuestionSelector(gameStateSelector));
 
   const { setCurrentQuestionAction } = presenterActions(gameName);
 
-  const { showResponses, playerCount } = useSelector((state) => ({
-    showResponses: state.games.poll.presenter.showResponses,
+  const { playerCount } = useSelector((state) => ({
     playerCount: state.lobby.players.length,
   }));
 

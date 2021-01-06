@@ -27,6 +27,7 @@ import { saveAs } from "file-saver";
 import { BulkEdit } from "./BulkEdit";
 import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
 import { Name as PollName } from "games/Poll";
+import { getPollOrTriviaState } from "../getPollOrTriviaState";
 
 const useStyles = makeStyles((theme) => ({
   table: {},
@@ -60,10 +61,7 @@ const EditQuestions = () => {
   const { questions, gameName, isTriviaMode } = useSelector((state) => {
     const gameName = state.lobby.currentGame!;
     const isTriviaMode = gameName !== PollName;
-    const questions =
-      gameName === PollName
-        ? state.games.poll.presenter.questions
-        : state.games.trivia.presenter.questions;
+    const questions = getPollOrTriviaState(state, gameName).presenter.questions;
 
     return {
       questions,

@@ -44,7 +44,6 @@ namespace DigitalIcebreakers.EndToEndTests.Trivia
             await Task.WhenAll(tasks);
             await _presenter.Page.ClickByTestId("show-responses");
             var answer = await _presenter.Page.GetByTestId($"answer-{_correctAnswerId}");
-            await Task.Delay(1000000);
             var countElement = await answer.QuerySelectorAsync(".count");
             var count = int.Parse(await countElement.GetTextContentAsync());
             count.ShouldBe(_players.Count());

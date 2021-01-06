@@ -12,6 +12,8 @@ import { playerActions } from "./reducers/playerActions";
 import { useSelector } from "store/useSelector";
 import { Name as PollName } from "games/Poll";
 import clsx from "clsx";
+import { getPollOrTriviaState } from "./getPollOrTriviaState";
+import { PollPlayerState, TriviaPlayerState } from "./types/PlayerState";
 
 const useStyles = makeStyles(() => ({
   item: {
@@ -46,9 +48,14 @@ const Client = () => {
     answers,
   } = useSelector((state) => {
     const currentGame = state.lobby.currentGame;
+    const playerState = getPollOrTriviaState(state, currentGame!).player;
     if (currentGame === PollName) {
-      return { ...state.games.poll.player, currentGame, canAnswer: true };
-    } else return { ...state.games.trivia.player, currentGame };
+      return {
+        ...(playerState as PollPlayerState),
+        currentGame,
+        canAnswer: true,
+      };
+    } else return { ...(playerState as TriviaPlayerState), currentGame };
   });
 
   const { lockAnswerAction, selectAnswerAction } = playerActions(currentGame!);

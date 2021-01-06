@@ -20,6 +20,7 @@ import { useDispatch } from "react-redux";
 import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
 import { NameAndMode } from "../types/NameAndMode";
 import { Answer } from "../types/Answer";
+import { getPollOrTriviaState } from "../getPollOrTriviaState";
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -45,7 +46,7 @@ type Props = {
 const QuestionEditor = ({ question, gameName, editAnswersChildren }: Props) => {
   const dispatch = useDispatch();
   const totalQuestions = useSelector(
-    (state) => state.games.poll.presenter.questions.length
+    (state) => getPollOrTriviaState(state, gameName).presenter.questions.length
   );
   const [text, setText] = useState(question.text);
   const [answers, setAnswers] = useState(question.answers);
@@ -158,7 +159,9 @@ const QuestionEditor = ({ question, gameName, editAnswersChildren }: Props) => {
 const EditQuestion = ({ gameName, isTriviaMode }: NameAndMode) => {
   const questionId = useParams<{ id: string }>().id;
   const question = useSelector((state) =>
-    state.games.poll.presenter.questions.find((q) => q.id === questionId)
+    getPollOrTriviaState(state, gameName).presenter.questions.find(
+      (q) => q.id === questionId
+    )
   );
 
   return question ? (

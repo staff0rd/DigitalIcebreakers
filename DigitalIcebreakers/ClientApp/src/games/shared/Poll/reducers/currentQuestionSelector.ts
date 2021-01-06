@@ -5,6 +5,7 @@ import { createSelector } from "@reduxjs/toolkit";
 export interface GameState {
   currentQuestionId: string | undefined;
   questions: Question[];
+  showResponses: boolean;
 }
 
 export const currentQuestionSelector = (
@@ -40,6 +41,7 @@ export const currentQuestionSelector = (
         nextQuestionId,
         currentQuestionNumber,
         totalQuestions,
+        showResponses: state.showResponses,
       };
     }
   );

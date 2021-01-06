@@ -26,6 +26,7 @@ export const TriviaPresenter = () => {
       gameStateSelector={(state) => ({
         currentQuestionId: state.games.trivia.presenter.currentQuestionId,
         questions: state.games.trivia.presenter.questions,
+        showResponses: state.games.trivia.presenter.showResponses,
       })}
     />
   );

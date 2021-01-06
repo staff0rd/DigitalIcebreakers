@@ -12,6 +12,7 @@ export const PollPresenter = () => {
       gameStateSelector={(state: RootState) => ({
         currentQuestionId: state.games.poll.presenter.currentQuestionId,
         questions: state.games.poll.presenter.questions,
+        showResponses: state.games.poll.presenter.showResponses,
       })}
     />
   );
