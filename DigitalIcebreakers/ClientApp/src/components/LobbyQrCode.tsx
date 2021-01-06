@@ -86,8 +86,8 @@ const LobbyQrCode = ({ lg }: Props) => {
           data-testid="qrcode-link"
         >
           <QRCode
-            height=""
-            width=""
+            height="100%"
+            width="100%"
             className={classes.qrCode}
             value={joinUrl}
             renderAs="svg"
