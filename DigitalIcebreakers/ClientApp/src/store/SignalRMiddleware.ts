@@ -50,6 +50,9 @@ export const onReconnect = (
 ) => (response: ReconnectPayload) => {
   const user = getState().user;
   const { joiningLobbyId, isAdmin } = getState().lobby;
+  if (getState().connection.status !== ConnectionStatus.Connected) {
+    dispatch(updateConnectionStatus(ConnectionStatus.Connected));
+  }
   if (!joiningLobbyId || joiningLobbyId === response.lobbyId) {
     if (!user.isRegistered && !isAdmin && !response.isRegistered) {
       dispatch(goToDefaultUrl());
@@ -69,8 +72,6 @@ export const onReconnect = (
           name: response.playerName,
         })
       );
-
-      dispatch(updateConnectionStatus(ConnectionStatus.Connected));
 
       if (response.currentGame) {
         dispatch(setLobbyGame(response.currentGame));

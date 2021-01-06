@@ -44,6 +44,7 @@ describe("SignalRMiddleware", () => {
           const { invoke } = createMiddleware({
             user: { isRegistered: false } as UserState,
             lobby: { joiningLobbyId: "new-lobby" } as LobbyState,
+            connection: { status: ConnectionStatus.Connected },
           });
           invoke({} as AnyAction);
           mockConnection.emit("reconnect", {
@@ -61,6 +62,7 @@ describe("SignalRMiddleware", () => {
           const { invoke } = createMiddleware({
             user: { isRegistered: false } as UserState,
             lobby: { joiningLobbyId: "new-lobby", isAdmin: true } as LobbyState,
+            connection: { status: ConnectionStatus.Connected },
           });
           invoke({} as AnyAction);
           mockConnection.emit("reconnect", {
@@ -81,6 +83,7 @@ describe("SignalRMiddleware", () => {
       const { invoke } = createMiddleware({
         user: {} as UserState,
         lobby: { joiningLobbyId: "new-lobby" } as LobbyState,
+        connection: { status: ConnectionStatus.Connected },
       });
       invoke({} as AnyAction);
       mockConnection.emit("reconnect", {
@@ -98,6 +101,7 @@ describe("SignalRMiddleware", () => {
       it("should join lobby", () => {
         const { invoke } = createMiddleware({
           lobby: { joiningLobbyId: "some-lobby" } as LobbyState,
+          connection: { status: ConnectionStatus.Connected },
         });
         invoke(updateConnectionStatus(ConnectionStatus.Connected));
         expect(dispatch).toHaveBeenCalledWith(joinLobby("some-lobby"));
