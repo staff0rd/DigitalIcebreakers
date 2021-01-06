@@ -18,13 +18,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Trivia/questions.json">
+    <None Update="tests/Trivia/questions.json">
      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
    </None>
-    <None Update="Trivia/questions1.json">
+    <None Update="tests/Trivia/questions1.json">
      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
    </None>
-    <None Update="Trivia/questions2.json">
+    <None Update="tests/Trivia/questions2.json">
      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
    </None>
   </ItemGroup>

@@ -25,7 +25,7 @@ namespace DigitalIcebreakers.EndToEndTests
             await StartTrivia();
             await _page.ClickAsync("text='Questions'");
             var element = await _page.QuerySelectorAsync("[type=file]");
-            await element.SetInputFilesAsync($"./Trivia/{json}");
+            await element.SetInputFilesAsync($"./tests/Trivia/{json}");
             await _page.ClickAsync("text='Trivia'");
         }
 
@@ -34,7 +34,7 @@ namespace DigitalIcebreakers.EndToEndTests
             await StartPoll();
             await _page.ClickAsync("text='Questions'");
             var element = await _page.QuerySelectorAsync("[type=file]");
-            await element.SetInputFilesAsync($"./Trivia/{json}");
+            await element.SetInputFilesAsync($"./tests/Trivia/{json}");
             await _page.ClickAsync("text='Poll'");
         }
 
