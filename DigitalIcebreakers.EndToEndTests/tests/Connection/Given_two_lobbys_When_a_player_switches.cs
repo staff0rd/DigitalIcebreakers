@@ -33,7 +33,7 @@ namespace DigitalIcebreakers.EndToEndTests
             return Task.CompletedTask;
         }
 
-        [Fact]
+        [Fact(Skip = "Should allow name entry because new lobby")]
         public async Task Then_should_be_connected_to_second_lobby()
         {
             await BrowserFactory.JoinLobby(_presenter2.Url, _player.Page);
