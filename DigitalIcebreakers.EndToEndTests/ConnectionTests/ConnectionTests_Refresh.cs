@@ -29,7 +29,7 @@ namespace DigitalIcebreakers.EndToEndTests
 
         [Fact]
         public async Task Presenter_should_connect_after_refresh()
-        {            
+        {
             await _presenter.Page.ReloadAsync();
             await Task.Delay(100);
             var connectionIcon = await _presenter.Page.GetByTestId("connection-status");
@@ -39,7 +39,7 @@ namespace DigitalIcebreakers.EndToEndTests
 
         [Fact]
         public async Task Player_should_connect_after_refresh()
-        {            
+        {
             await _player.Page.ReloadAsync();
             await Task.Delay(500);
             var connectionIcon = await _player.Page.GetByTestId("connection-status");

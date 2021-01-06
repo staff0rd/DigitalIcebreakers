@@ -50,7 +50,9 @@ const QuestionAndResponseCount = (props: Props) => {
       <Typography variant="overline">
         Question {currentQuestionNumber} of {totalQuestions}
       </Typography>
-      <h1 className={classes.question}>{question.text}</h1>
+      <h1 id="question" className={classes.question}>
+        {question.text}
+      </h1>
       <div className={classes.responseCount}>
         <Typography variant="overline">Responses</Typography>
         <Typography>{countMessage}</Typography>

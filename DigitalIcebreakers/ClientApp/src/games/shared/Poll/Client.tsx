@@ -11,6 +11,7 @@ import { infoColor } from "../../../layout/assets/jss/material-dashboard-react";
 import { playerActions } from "./reducers/playerActions";
 import { useSelector } from "store/useSelector";
 import { Name as PollName } from "games/Poll";
+import clsx from "clsx";
 
 const useStyles = makeStyles(() => ({
   item: {
@@ -77,7 +78,9 @@ const Client = () => {
                 onClick={() => dispatch(selectAnswerAction(answer.id))}
                 selected={selectedAnswerId === answer.id}
               >
-                <Typography className={classes.text}>{answer.text}</Typography>
+                <Typography className={clsx(classes.text, "answer")}>
+                  {answer.text}
+                </Typography>
               </ListItem>
             ))}
             <Button

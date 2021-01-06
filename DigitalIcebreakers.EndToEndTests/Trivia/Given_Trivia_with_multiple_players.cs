@@ -3,17 +3,17 @@ using Xunit;
 using Shouldly;
 using System.Linq;
 
-namespace DigitalIcebreakers.EndToEndTests
+namespace DigitalIcebreakers.EndToEndTests.Trivia
 {
     [Collection("Playwright")]
-    public class TriviaTests_MultiplePlayers : IAsyncLifetime
+    public class Given_Trivia_with_multiple_players : IAsyncLifetime
     {
         private readonly BrowserFactory _browsers;
         private Presenter _presenter;
         private Player[] _players;
         private const string _correctAnswerId = "fa9cb6a8-a1e4-3337-f987-0cbca07bb88d";
 
-        public TriviaTests_MultiplePlayers(BrowserFactory browsers)
+        public Given_Trivia_with_multiple_players(BrowserFactory browsers)
         {
             _browsers = browsers;
         }
@@ -22,10 +22,10 @@ namespace DigitalIcebreakers.EndToEndTests
         {
             _presenter = await _browsers.CreatePresenter();
             await _presenter.LoadTriviaQuestions();
-            
+
             _players = await Task.WhenAll(Enumerable.Range(1, 2)
                 .ToList()
-                .Select(ix => _browsers.CreatePlayer(_presenter.Url, $"Player {ix}", true)));
+                .Select(ix => _browsers.CreatePlayer(_presenter.Url, $"Player {ix}")));
         }
 
         public Task DisposeAsync()
@@ -36,13 +36,15 @@ namespace DigitalIcebreakers.EndToEndTests
         [Fact]
         public async Task Selected_answers_display_correctly()
         {
-            var tasks = _players.Select(async p => {
+            var tasks = _players.Select(async p =>
+            {
                 await p.Page.ClickAsync("text='Correct'", timeout: 1000);
                 await p.Page.ClickAsync(@"text='Lock In & Send'");
             });
             await Task.WhenAll(tasks);
             await _presenter.Page.ClickByTestId("show-responses");
             var answer = await _presenter.Page.GetByTestId($"answer-{_correctAnswerId}");
+            await Task.Delay(1000000);
             var countElement = await answer.QuerySelectorAsync(".count");
             var count = int.Parse(await countElement.GetTextContentAsync());
             count.ShouldBe(_players.Count());
