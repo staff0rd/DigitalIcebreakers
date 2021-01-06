@@ -36,8 +36,8 @@ namespace DigitalIcebreakers.Hubs
             _lobbys.GetByAdminId(user.Id)
                 .ToList()
                 .ForEach(async l => await CloseLobby(l));
-                
-            var lobby = _lobbys.CreateLobby(name, new Player { ConnectionId = Context.ConnectionId, Id = user.Id, IsAdmin = true, IsConnected = true, IsRegistered = true,  Name = user.Name });
+
+            var lobby = _lobbys.CreateLobby(name, new Player { ConnectionId = Context.ConnectionId, Id = user.Id, IsAdmin = true, IsConnected = true, IsRegistered = true, Name = user.Name });
 
             _logger.Log("Created", lobby);
 
@@ -57,11 +57,12 @@ namespace DigitalIcebreakers.Hubs
             {
                 _logger.Log("Closed", lobby);
                 _lobbys.Close(lobby);
-                await _send.CloseLobby(ConnectionId,lobby);
+                await _send.CloseLobby(ConnectionId, lobby);
             }
         }
 
-        private HttpTransportType? GetTransportType() {
+        private HttpTransportType? GetTransportType()
+        {
             return Context.Features.Get<IHttpTransportFeature>()?.TransportType;
         }
 
@@ -84,7 +85,7 @@ namespace DigitalIcebreakers.Hubs
             if (lobby != null)
             {
                 _logger.Log(player, "Reconnected", lobby, "({registered})", player.IsRegistered ? "Registered" : "Unregistered");
-                
+
                 await _send.Reconnect(lobby, player);
                 if (!player.IsAdmin && player.IsRegistered)
                 {
@@ -92,7 +93,8 @@ namespace DigitalIcebreakers.Hubs
                 }
                 await SystemMessage("join");
             }
-            else {
+            else
+            {
                 _logger.Log(player, "Connected", lobby, "({transportType})", this.GetTransportType());
                 await _send.Connected(ConnectionId);
             }
@@ -101,7 +103,7 @@ namespace DigitalIcebreakers.Hubs
         private Player GetOrCreatePlayer(User user, string connectionId)
         {
             var player = _lobbys.GetOrCreatePlayer(user.Id, user.Name);
-            
+
             player.ConnectionId = connectionId;
             if (user.IsRegistered)
             {
@@ -118,7 +120,7 @@ namespace DigitalIcebreakers.Hubs
 
             if (lobby != null && player.IsAdmin)
             {
-                _logger.Log(lobby, "{action} {game}", new [] { "Started", name });
+                _logger.Log(lobby, "{action} {game}", new[] { "Started", name });
                 var game = GetGame(name);
                 lobby.NewGame(game);
                 await _send.NewGame(lobby, name);
@@ -169,8 +171,8 @@ namespace DigitalIcebreakers.Hubs
             {
                 await LeaveLobby(player, existingLobby);
             }
-           
-            if (lobby == null)            
+
+            if (lobby == null)
             {
                 await _send.CloseLobby(ConnectionId);
             }
@@ -188,6 +190,7 @@ namespace DigitalIcebreakers.Hubs
         {
             _logger.Log(player, "Left", lobby);
             await _send.PlayerLeft(lobby, player);
+            player.IsRegistered = false;
             lobby.Players.Remove(player);
         }
 
@@ -214,33 +217,38 @@ namespace DigitalIcebreakers.Hubs
             await HubMessage(payload);
         }
 
-        public async Task HubMessage(string json) 
+        public async Task HubMessage(string json)
         {
             var lobby = _lobbys.GetLobbyByConnectionId(ConnectionId);
-            if (lobby != null && lobby.CurrentGame != null) 
+            if (lobby != null && lobby.CurrentGame != null)
             {
                 var message = JObject.Parse(json);
-                
+
                 var system = message["system"];
                 var admin = message["admin"];
                 var client = message["client"];
 
-                try {
-                    if (system != null) {
+                try
+                {
+                    if (system != null)
+                    {
                         _logger.Debug($"system: {system}");
                         await lobby.CurrentGame.OnReceiveSystemMessage(system, ConnectionId);
                     }
 
-                    if (admin != null && _lobbys.PlayerIsAdmin(ConnectionId)) {
+                    if (admin != null && _lobbys.PlayerIsAdmin(ConnectionId))
+                    {
                         _logger.Debug($"admin: {admin.ToString(Formatting.None)}");
                         await lobby.CurrentGame.OnReceivePresenterMessage(admin, ConnectionId);
                     }
 
-                    if (client != null) {
+                    if (client != null)
+                    {
                         _logger.Debug($"client: {client.ToString(Formatting.None)}");
                         await lobby.CurrentGame.OnReceivePlayerMessage(client, ConnectionId);
                     }
-                } catch (Exception e)
+                }
+                catch (Exception e)
                 {
                     // TODO: this occurs because a presenter is sending a message to a game that 
                     // hasn't yet been selected. Race condition during EndToEndTests
