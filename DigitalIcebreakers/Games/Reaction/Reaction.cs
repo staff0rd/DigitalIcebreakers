@@ -5,24 +5,24 @@ using DigitalIcebreakers;
 using DigitalIcebreakers.Games;
 using Newtonsoft.Json.Linq;
 
-public class Reaction : Game, IGame 
+public class Reaction : Game, IGame
 {
     public override string Name => "reaction";
 
     readonly Dictionary<Guid, int> _selections = new Dictionary<Guid, int>();
 
-    private Shape[] _state = new Shape[0]; 
+    private Shape[] _state = new Shape[0];
 
-    public Reaction(Sender sender, LobbyManager lobbyManager) : base(sender, lobbyManager) {}
-    
+    public Reaction(Sender sender, LobbyManager lobbyManager) : base(sender, lobbyManager) { }
+
     public async override Task OnReceivePlayerMessage(JToken client, string connectionId)
     {
         var player = GetPlayerByConnectionId(connectionId);
         var selectedId = client.ToObject<int>();
-        if (!_selections.ContainsKey(player.Id)) 
+        if (!_selections.ContainsKey(player.Id))
         {
             _selections.Add(player.Id, selectedId);
-            await SendToPresenter(connectionId, new AdminPayload { SelectedId =  selectedId }, player);
+            await SendToPresenter(connectionId, new AdminPayload { SelectedId = selectedId }, player);
         }
     }
 
@@ -34,7 +34,7 @@ public class Reaction : Game, IGame
         await SendToPlayers(connectionId, new ClientPayload { Shapes = state });
     }
 
-    public async override Task OnReceiveSystemMessage(JToken payload, string connectionId) 
+    public async override Task OnReceiveSystemMessage(JToken payload, string connectionId)
     {
         var player = GetPlayerByConnectionId(connectionId);
         var externalId = player.ExternalId;
@@ -47,7 +47,7 @@ public class Reaction : Game, IGame
 
     private async Task Join(Player player)
     {
-        if (!player.IsAdmin)
+        if (!player.IsPresenter)
         {
             var id = player.ExternalId;
             int? selectedId = _selections.ContainsKey(player.Id) ? _selections[player.Id] : (int?)null;

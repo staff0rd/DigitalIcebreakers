@@ -9,7 +9,7 @@ using Xunit;
 
 namespace DigitalIcebreakers.Test
 {
-        public class Given_a_player_exists_in_a_lobby_When_joining_another_lobby
+    public class Given_a_player_exists_in_a_lobby_When_joining_another_lobby
     {
         string _lobbyIdNew;
         string _lobbyIdOld;
@@ -23,8 +23,8 @@ namespace DigitalIcebreakers.Test
             _lobbyIdOld = "OLD";
             var playerId = Guid.NewGuid();
             _lobbys = new List<Lobby> {
-                new Lobby { Id = _lobbyIdOld, Players = new List<Player> { new Player { Id = Guid.NewGuid(), IsAdmin = true }, new Player { Id = playerId } } },
-                new Lobby { Id = _lobbyIdNew, Players = new List<Player> { new Player { Id = Guid.NewGuid(), IsAdmin = true } } }
+                new Lobby { Id = _lobbyIdOld, Players = new List<Player> { new Player { Id = Guid.NewGuid(), IsPresenter = true }, new Player { Id = playerId } } },
+                new Lobby { Id = _lobbyIdNew, Players = new List<Player> { new Player { Id = Guid.NewGuid(), IsPresenter = true } } }
             };
 
             var gameHub = ObjectMother.GetMockGameHub(playerId, _lobbys);
@@ -35,13 +35,13 @@ namespace DigitalIcebreakers.Test
         [Fact]
         public void Then_join_them_to_the_new_lobby()
         {
-            _lobbys.SingleOrDefault(p => p.Id == _lobbyIdNew).Players.Count(p => !p.IsAdmin).ShouldBe(1);
+            _lobbys.SingleOrDefault(p => p.Id == _lobbyIdNew).Players.Count(p => !p.IsPresenter).ShouldBe(1);
         }
 
         [Fact]
         public void Then_remove_them_from_the_old_lobby()
         {
-            _lobbys.SingleOrDefault(p => p.Id == _lobbyIdOld).Players.Count(p => !p.IsAdmin).ShouldBe(0);
+            _lobbys.SingleOrDefault(p => p.Id == _lobbyIdOld).Players.Count(p => !p.IsPresenter).ShouldBe(0);
         }
     }
 }

@@ -5,8 +5,8 @@ import { useSelector } from "../store/useSelector";
 export const Game = () => {
   const name = useSelector((state) => state.lobby.currentGame);
   const game = Games.find((g) => g.name === name);
-  const isAdmin = useSelector((state) => state.lobby.isAdmin);
-  const Component = isAdmin ? game!.presenter : (game!.client as any);
+  const isPresenter = useSelector((state) => state.lobby.isPresenter);
+  const Component = isPresenter ? game!.presenter : (game!.client as any);
 
   if (!game) return <div>No game</div>;
   else return <Component />;

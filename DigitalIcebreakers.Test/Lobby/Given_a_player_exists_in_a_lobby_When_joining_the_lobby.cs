@@ -7,7 +7,7 @@ using Xunit;
 
 namespace DigitalIcebreakers.Test
 {
-        public class Given_a_player_exists_in_a_lobby_When_joining_the_lobby
+    public class Given_a_player_exists_in_a_lobby_When_joining_the_lobby
     {
         string _lobbyIdOld = "OLD";
 
@@ -17,7 +17,7 @@ namespace DigitalIcebreakers.Test
         {
             var playerId = Guid.NewGuid();
             _lobbys = new List<Lobby> {
-                new Lobby { Id = _lobbyIdOld, Players = new List<Player> { new Player { Id = Guid.NewGuid(), IsAdmin = true }, new Player { Id = playerId } } }
+                new Lobby { Id = _lobbyIdOld, Players = new List<Player> { new Player { Id = Guid.NewGuid(), IsPresenter = true }, new Player { Id = playerId } } }
             };
 
             var gameHub = ObjectMother.GetMockGameHub(playerId, _lobbys);
@@ -28,7 +28,7 @@ namespace DigitalIcebreakers.Test
         [Fact]
         public void Then_join_them_to_the_new_lobby()
         {
-            _lobbys.SingleOrDefault(p => p.Id == _lobbyIdOld).Players.Count(p => !p.IsAdmin).ShouldBe(1);
+            _lobbys.SingleOrDefault(p => p.Id == _lobbyIdOld).Players.Count(p => !p.IsPresenter).ShouldBe(1);
         }
     }
 }

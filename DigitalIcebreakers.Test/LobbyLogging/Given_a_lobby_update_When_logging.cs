@@ -29,29 +29,29 @@ namespace DigitalIcebreakers.Test
         public void Should_log_lobbyId()
         {
             var lobbyId = "id";
-            _lobbyLogger.Log("Created", new Lobby{Id = lobbyId });
+            _lobbyLogger.Log("Created", new Lobby { Id = lobbyId });
             _logger.Last.Message.ShouldContain($"Id: {lobbyId}");
         }
 
         [Fact]
         public void Should_log_lobbyName()
         {
-            _lobbyLogger.Log("Created", new Lobby{Name = "HI"});
+            _lobbyLogger.Log("Created", new Lobby { Name = "HI" });
             _logger.Last.Message.ShouldContain($"Name: HI");
         }
 
         [Fact]
         public void Should_log_lobby_playerCount()
         {
-            _lobbyLogger.Log("Created", new Lobby{ Players = new List<Player> { new Player { IsAdmin = true }, new Player(), new Player { IsConnected = true, IsRegistered = true}}});
+            _lobbyLogger.Log("Created", new Lobby { Players = new List<Player> { new Player { IsPresenter = true }, new Player(), new Player { IsConnected = true, IsRegistered = true } } });
             _logger.Last.Message.ShouldContain($"Players: (1/2)");
         }
 
         [Fact]
         public void Should_log_lobbyNumber()
         {
-            _lobbyLogger.Log("Created", new Lobby { Number = 3});
+            _lobbyLogger.Log("Created", new Lobby { Number = 3 });
             _logger.Last.Message.ShouldContain("#3");
         }
-    } 
+    }
 }

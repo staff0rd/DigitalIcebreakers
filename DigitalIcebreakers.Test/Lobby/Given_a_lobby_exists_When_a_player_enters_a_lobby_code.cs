@@ -13,8 +13,8 @@ namespace DigitalIcebreakers.Test
 
         public Given_a_lobby_exists_When_a_player_enters_a_lobby_code()
         {
-            _lobbys = new List<Lobby> { 
-                new Lobby { Id = "test", Players = new List<Player> { new Player { Id = Guid.NewGuid(), IsAdmin = true } } } };
+            _lobbys = new List<Lobby> {
+                new Lobby { Id = "test", Players = new List<Player> { new Player { Id = Guid.NewGuid(), IsPresenter = true } } } };
             var newPlayerId = Guid.NewGuid();
             var gameHub = ObjectMother.GetMockGameHub(newPlayerId, _lobbys);
             gameHub.ConnectToLobby(new User { Id = newPlayerId }, "TEST").Wait();

@@ -3,7 +3,7 @@ import { Player } from "../../Player";
 export interface LobbyState {
   id?: string;
   name?: string;
-  isAdmin: boolean;
+  isPresenter: boolean;
   players: Player[];
   currentGame: string | undefined;
   joiningLobbyId?: string;
@@ -26,7 +26,7 @@ interface SetLobbyAction {
   type: typeof SET_LOBBY;
   id: string;
   name: string;
-  isAdmin: boolean;
+  isPresenter: boolean;
   players: Player[];
   game: string | undefined;
 }

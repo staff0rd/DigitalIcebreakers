@@ -37,7 +37,7 @@ namespace DigitalIcebreakers.Hubs
                 .ToList()
                 .ForEach(async l => await CloseLobby(l));
 
-            var lobby = _lobbys.CreateLobby(name, new Player { ConnectionId = Context.ConnectionId, Id = user.Id, IsAdmin = true, IsConnected = true, IsRegistered = true, Name = user.Name });
+            var lobby = _lobbys.CreateLobby(name, new Player { ConnectionId = Context.ConnectionId, Id = user.Id, IsPresenter = true, IsConnected = true, IsRegistered = true, Name = user.Name });
 
             _logger.Log("Created", lobby);
 
@@ -87,7 +87,7 @@ namespace DigitalIcebreakers.Hubs
                 _logger.Log(player, "Reconnected", lobby, "({registered})", player.IsRegistered ? "Registered" : "Unregistered");
 
                 await _send.Reconnect(lobby, player);
-                if (!player.IsAdmin && player.IsRegistered)
+                if (!player.IsPresenter && player.IsRegistered)
                 {
                     await _send.Joined(lobby, player);
                 }
@@ -118,7 +118,7 @@ namespace DigitalIcebreakers.Hubs
         {
             _lobbys.GetPlayerAndLobby(ConnectionId, out var player, out var lobby);
 
-            if (lobby != null && player.IsAdmin)
+            if (lobby != null && player.IsPresenter)
             {
                 _logger.Log(lobby, "{action} {game}", new[] { "Started", name });
                 var game = GetGame(name);
@@ -154,7 +154,7 @@ namespace DigitalIcebreakers.Hubs
         {
             _lobbys.GetPlayerAndLobby(ConnectionId, out var player, out var lobby);
 
-            if (lobby != null && player.IsAdmin)
+            if (lobby != null && player.IsPresenter)
             {
                 lobby.EndGame();
                 await _send.EndGame(lobby);
@@ -236,7 +236,7 @@ namespace DigitalIcebreakers.Hubs
                         await lobby.CurrentGame.OnReceiveSystemMessage(system, ConnectionId);
                     }
 
-                    if (admin != null && _lobbys.PlayerIsAdmin(ConnectionId))
+                    if (admin != null && _lobbys.PlayerIsPresenter(ConnectionId))
                     {
                         _logger.Debug($"admin: {admin.ToString(Formatting.None)}");
                         await lobby.CurrentGame.OnReceivePresenterMessage(admin, ConnectionId);

@@ -10,9 +10,9 @@ namespace DigitalIcebreakers.Games
     {
         public override string Name => "pong";
 
-        public Pong(Sender sender, LobbyManager lobbyManager) : base(sender, lobbyManager) {}
+        public Pong(Sender sender, LobbyManager lobbyManager) : base(sender, lobbyManager) { }
 
-        public Pong (Sender sender, LobbyManager lobbyManager, Dictionary<Guid, int> leftTeam, Dictionary<Guid, int> rightTeam) : this(sender, lobbyManager)
+        public Pong(Sender sender, LobbyManager lobbyManager, Dictionary<Guid, int> leftTeam, Dictionary<Guid, int> rightTeam) : this(sender, lobbyManager)
         {
             _leftTeam = leftTeam;
             _rightTeam = rightTeam;
@@ -89,11 +89,13 @@ namespace DigitalIcebreakers.Games
         private async Task Leave(Guid id)
         {
             PerformOnDictionary(id, (d) => d.Remove(id));
-            if (_leftTeam.Count == 0 && _rightTeam.Count > 1) {
+            if (_leftTeam.Count == 0 && _rightTeam.Count > 1)
+            {
                 var player = GetPlayerByExternalId(_rightTeam.First().Key);
                 await Join(player);
             }
-            else if (_rightTeam.Count == 0 && _leftTeam.Count > 1) {
+            else if (_rightTeam.Count == 0 && _leftTeam.Count > 1)
+            {
                 var player = GetPlayerByExternalId(_leftTeam.First().Key);
                 await Join(player);
             }
@@ -101,7 +103,7 @@ namespace DigitalIcebreakers.Games
 
         private async Task Join(Player player)
         {
-            if (!player.IsAdmin)
+            if (!player.IsPresenter)
             {
                 var id = player.ExternalId;
 

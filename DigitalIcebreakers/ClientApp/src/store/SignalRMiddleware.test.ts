@@ -61,7 +61,10 @@ describe("SignalRMiddleware", () => {
         it("should set lobby", () => {
           const { invoke } = createMiddleware({
             user: { isRegistered: false } as UserState,
-            lobby: { joiningLobbyId: "new-lobby", isAdmin: true } as LobbyState,
+            lobby: {
+              joiningLobbyId: "new-lobby",
+              isPresenter: true,
+            } as LobbyState,
             connection: { status: ConnectionStatus.Connected },
           });
           invoke({} as AnyAction);

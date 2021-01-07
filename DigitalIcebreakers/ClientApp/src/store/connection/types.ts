@@ -40,7 +40,7 @@ export type ReconnectPayload = {
   playerName: string;
   lobbyId: string;
   lobbyName: string;
-  isAdmin: boolean;
+  isPresenter: boolean;
   players: Player[];
   currentGame: string;
   isRegistered: boolean;

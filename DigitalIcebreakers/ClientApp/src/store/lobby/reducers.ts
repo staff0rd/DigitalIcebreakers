@@ -12,7 +12,7 @@ import {
 } from "./types";
 
 const initialState: LobbyState = {
-  isAdmin: false,
+  isPresenter: false,
   players: [],
   currentGame: "",
 };
@@ -26,7 +26,7 @@ export function lobbyReducer(
       return {
         id: action.id,
         name: action.name,
-        isAdmin: action.isAdmin,
+        isPresenter: action.isPresenter,
         currentGame: action.game,
         players: action.players,
       };
@@ -34,7 +34,7 @@ export function lobbyReducer(
     case CREATE_LOBBY: {
       return {
         ...state,
-        isAdmin: true,
+        isPresenter: true,
         name: action.name,
       };
     }

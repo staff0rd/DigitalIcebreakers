@@ -12,7 +12,7 @@ namespace DigitalIcebreakers
         static int lobbyNumber = 0;
 
         private readonly LobbyLogger _logger;
-        
+
         public LobbyManager(List<Lobby> lobbys, LobbyLogger logger, LobbyIdService lobbyIds)
         {
             _lobbys = lobbys;
@@ -59,7 +59,7 @@ namespace DigitalIcebreakers
 
         internal Lobby GetByAdminConnectionId(string connectionId)
         {
-            return _lobbys.SingleOrDefault(l => l.Players.Any(p => p.IsAdmin && p.ConnectionId == connectionId));
+            return _lobbys.SingleOrDefault(l => l.Players.Any(p => p.IsPresenter && p.ConnectionId == connectionId));
         }
 
         internal void Close(Lobby lobby)
@@ -91,7 +91,7 @@ namespace DigitalIcebreakers
             return _lobbys.SingleOrDefault(p => p.Players.Contains(player));
         }
 
-        public bool PlayerIsAdmin(string connectionId)
+        public bool PlayerIsPresenter(string connectionId)
         {
             return GetLobbyAdmin(connectionId).ConnectionId == connectionId;
         }
@@ -104,7 +104,7 @@ namespace DigitalIcebreakers
 
         public Player GetPlayerByConnectionId(string connectionId, bool includeAdmin = false)
         {
-            var player = _lobbys.SelectMany(p => p.Players).SingleOrDefault(p => p.ConnectionId == connectionId && (includeAdmin || !p.IsAdmin));
+            var player = _lobbys.SelectMany(p => p.Players).SingleOrDefault(p => p.ConnectionId == connectionId && (includeAdmin || !p.IsPresenter));
             return player;
         }
 

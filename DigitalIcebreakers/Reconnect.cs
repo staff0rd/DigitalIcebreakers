@@ -13,7 +13,7 @@ namespace DigitalIcebreakers
 
         public string LobbyName { get; set; }
 
-        public bool IsAdmin { get; set; }
+        public bool IsPresenter { get; set; }
 
         public List<User> Players { get; set; }
         public string CurrentGame { get; set; }

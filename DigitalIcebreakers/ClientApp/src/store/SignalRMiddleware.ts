@@ -49,19 +49,19 @@ export const onReconnect = (
   dispatch: Dispatch<AnyAction>
 ) => (response: ReconnectPayload) => {
   const user = getState().user;
-  const { joiningLobbyId, isAdmin } = getState().lobby;
+  const { joiningLobbyId, isPresenter } = getState().lobby;
   if (getState().connection.status !== ConnectionStatus.Connected) {
     dispatch(updateConnectionStatus(ConnectionStatus.Connected));
   }
   if (!joiningLobbyId || joiningLobbyId === response.lobbyId) {
-    if (!user.isRegistered && !isAdmin && !response.isRegistered) {
+    if (!user.isRegistered && !isPresenter && !response.isRegistered) {
       dispatch(goToDefaultUrl());
     } else {
       dispatch(
         setLobby(
           response.lobbyId,
           response.lobbyName,
-          response.isAdmin,
+          response.isPresenter,
           response.players,
           response.currentGame
         )
@@ -149,11 +149,11 @@ export const SignalRMiddleware = (connectionFactory: () => HubConnection) => {
           break;
         }
         case SET_LOBBY_GAME: {
-          const isAdmin = getState().lobby.isAdmin;
+          const isPresenter = getState().lobby.isPresenter;
           connection.on("gameMessage", (args: any) => {
             dispatch({
               type: `${action.game}-${
-                isAdmin ? "presenter" : "client"
+                isPresenter ? "presenter" : "client"
               }-receive-game-message`,
               payload: args,
             });

@@ -9,7 +9,7 @@ namespace DigitalIcebreakers
     {
         public string ConnectionId { get; set; }
 
-        public bool IsAdmin { get; set; }
+        public bool IsPresenter { get; set; }
 
         public bool IsConnected { get; set; }
 
@@ -34,7 +34,8 @@ namespace DigitalIcebreakers
             Id = id;
         }
 
-        public override string ToString() {
+        public override string ToString()
+        {
             return $"{Name} ({Id.ToString().Split('-')[0]})";
         }
     }

@@ -15,7 +15,7 @@ namespace DigitalIcebreakers.Games
 
         public Game(Sender sender, LobbyManager lobbyManager)
         {
-            _sender = sender;    
+            _sender = sender;
             _lobbys = lobbyManager;
         }
 
@@ -47,7 +47,7 @@ namespace DigitalIcebreakers.Games
 
         public async Task SendToPlayer(Player player, object payload)
         {
-            if (player != null && !player.IsAdmin)
+            if (player != null && !player.IsPresenter)
                 await _sender.SendGameMessageToPlayer(player, payload);
         }
         public async Task SendToPresenter(string connectionId, object payload, Player player = null)
@@ -65,7 +65,7 @@ namespace DigitalIcebreakers.Games
         public async Task SendToEachPlayer(string connectionId, Func<Player, object> payloadFunction)
         {
             var lobby = _lobbys.GetLobbyByConnectionId(connectionId);
-            
+
             await Task.WhenAll(
                 lobby.GetConnectedPlayers()
                 .Select(player => _sender.SendGameMessageToPlayer(player, payloadFunction(player))));
@@ -79,7 +79,7 @@ namespace DigitalIcebreakers.Games
         public Player GetAdminByConnectionId(string connectionId)
         {
             var admin = _lobbys.GetLobbyAdmin(connectionId);
-            if (admin.ConnectionId == connectionId) 
+            if (admin.ConnectionId == connectionId)
             {
                 return admin;
             }
@@ -94,7 +94,7 @@ namespace DigitalIcebreakers.Games
         public int GetPlayerCount(string connectionId)
         {
             return _lobbys.GetLobbyByConnectionId(connectionId).PlayerCount;
-        } 
+        }
 
         public Player[] GetPlayers(string connectionId)
         {
