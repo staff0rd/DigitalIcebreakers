@@ -3,7 +3,6 @@ import {
   ConnectionActionTypes,
   CONNECTION_CONNECT,
   CONNECTION_RECONNECT,
-  SET_GAME_MESSAGE_CALLBACK,
 } from "./types";
 import { ConnectionStatus } from "../../ConnectionStatus";
 
@@ -19,13 +18,4 @@ export function connectionConnect(lobbyId?: string): ConnectionActionTypes {
 
 export function connectionReconnect(): ConnectionActionTypes {
   return { type: CONNECTION_RECONNECT };
-}
-
-/**
- * @deprecated Use actionHelpers instead + a reducer
- */
-export function setGameMessageCallback(
-  callback: Function
-): ConnectionActionTypes {
-  return { type: SET_GAME_MESSAGE_CALLBACK, callback };
 }

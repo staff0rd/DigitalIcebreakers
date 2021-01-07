@@ -8,7 +8,6 @@ export interface ConnectionState {
 export const SET_CONNECTION_STATUS = "SET_CONNECTION_STATUS";
 export const CONNECTION_CONNECT = "CONNECTION_CONNECT";
 export const CONNECTION_RECONNECT = "CONNECTION_RECONNECT";
-export const SET_GAME_MESSAGE_CALLBACK = "SET_GAME_MESSAGE_CALLBACK";
 
 interface SetConnectionStatusAction {
   type: typeof SET_CONNECTION_STATUS;
@@ -24,16 +23,10 @@ interface ConnectionReconnectAction {
   type: typeof CONNECTION_RECONNECT;
 }
 
-interface SetGameMessageCallbackAction {
-  type: typeof SET_GAME_MESSAGE_CALLBACK;
-  callback: Function;
-}
-
 export type ConnectionActionTypes =
   | SetConnectionStatusAction
   | ConnectionConnectAction
-  | ConnectionReconnectAction
-  | SetGameMessageCallbackAction;
+  | ConnectionReconnectAction;
 
 export type ReconnectPayload = {
   playerId: string;
