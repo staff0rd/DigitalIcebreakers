@@ -51,6 +51,7 @@ jobs:
         run: dotnet test
         working-directory: DigitalIcebreakers.EndToEndTests
   build:
+    name: Build ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-16.04, windows-2019]
