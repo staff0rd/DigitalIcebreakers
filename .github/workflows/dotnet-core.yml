@@ -12,7 +12,8 @@ jobs:
         os: [ubuntu-latest]
         dotnet: [3.1.301]
         node: [12]
-        browser: [Chrome, Webkit, Firefox]
+        #browser: [Chrome, Webkit, Firefox]
+        browser: [Chrome]
 
     runs-on: ${{ matrix.os }}
 
