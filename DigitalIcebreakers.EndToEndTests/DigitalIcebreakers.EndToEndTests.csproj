@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="5.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
-    <PackageReference Include="PlaywrightSharp" Version="0.170.2" />
+    <PackageReference Include="PlaywrightSharp" Version="0.152.0" />
     <PackageReference Include="Shouldly" Version="4.0.1" />
     <PackageReference Include="xunit" Version="2.4.0" />
     <PackageReference Include="Xunit.DependencyInjection" Version="7.1.0" />
