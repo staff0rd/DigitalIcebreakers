@@ -53,7 +53,10 @@ export const onReconnect = (
   if (getState().connection.status !== ConnectionStatus.Connected) {
     dispatch(updateConnectionStatus(ConnectionStatus.Connected));
   }
-  if (!joiningLobbyId || joiningLobbyId === response.lobbyId) {
+  if (
+    !joiningLobbyId ||
+    joiningLobbyId.toLowerCase() === response.lobbyId.toLowerCase()
+  ) {
     if (!user.isRegistered && !isPresenter && !response.isRegistered) {
       dispatch(goToDefaultUrl());
     } else {
