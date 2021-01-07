@@ -23,7 +23,9 @@ const NamePickerPresenter = () => {
   const dispatch = useDispatch();
 
   const users = useSelector((state) => state.lobby.players);
-  const { shouldPick } = useSelector((state) => state.games.namePicker);
+  const { shouldPick } = useSelector(
+    (state) => state.games.namePicker.presenter
+  );
 
   useEffect(() => {
     const timer = setInterval(() => {

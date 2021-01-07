@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useSelector } from "../../store/useSelector";
 import { makeStyles } from "@material-ui/core";
-import { useDispatch } from "react-redux";
-import { setGameMessageCallback } from "../../store/connection/actions";
 import { Colors, ColorUtils } from "../../Colors";
 
 const useStyles = makeStyles(() => ({
@@ -17,14 +15,11 @@ const useStyles = makeStyles(() => ({
 
 const NamePickerClient = () => {
   const user = useSelector((s) => s.user);
-  const [selectedId, setSelectedId] = useState<string>();
+  const selectedId = useSelector(
+    (state) => state.games.namePicker.player.selectedId
+  );
   const won = selectedId === user.id;
   const classes = useStyles();
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(setGameMessageCallback(setSelectedId));
-  }, [dispatch]);
 
   const getBackgroundColor = () => {
     if (selectedId) {
