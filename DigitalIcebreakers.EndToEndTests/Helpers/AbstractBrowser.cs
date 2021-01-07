@@ -1,12 +1,11 @@
 using PlaywrightSharp;
-using PlaywrightSharp.Chromium;
 
 namespace DigitalIcebreakers.EndToEndTests
 {
     public abstract class AbstractBrowser
     {
-        protected readonly IChromiumBrowser _browser;
-        public IChromiumBrowser Browser
+        protected readonly IBrowser _browser;
+        public IBrowser Browser
         {
             get { return _browser; }
         }
@@ -15,8 +14,8 @@ namespace DigitalIcebreakers.EndToEndTests
         {
             get { return _page; }
         }
-        
-        public AbstractBrowser(IChromiumBrowser browser, IPage page)
+
+        public AbstractBrowser(IBrowser browser, IPage page)
         {
             _browser = browser;
             _page = page;

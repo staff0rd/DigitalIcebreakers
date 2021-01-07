@@ -9,7 +9,7 @@ namespace DigitalIcebreakers.EndToEndTests
     {
         public readonly string _url;
         public string Url => _url;
-        public Presenter(IChromiumBrowser browser, IPage page, string url) : base(browser, page)
+        public Presenter(IBrowser browser, IPage page, string url) : base(browser, page)
         {
             _url = url;
         }

@@ -20,9 +20,29 @@ namespace DigitalIcebreakers.EndToEndTests
             _disposableServices = disposableServices;
         }
 
-        private async Task<IChromiumBrowser> Create(bool? headless = null)
+        private async Task<IBrowser> Create(bool? headless = null)
         {
-            var browser = await _playwright.Chromium.LaunchAsync(headless: headless ?? _settings.Headless);
+            IBrowser browser = null;
+            switch (_settings.Browser)
+            {
+                case "Chrome":
+                    {
+                        browser = await _playwright.Chromium.LaunchAsync(headless: headless ?? _settings.Headless);
+                        break;
+                    }
+                case "Firefox":
+                    {
+                        browser = await _playwright.Firefox.LaunchAsync(headless: headless ?? _settings.Headless);
+                        break;
+                    }
+                case "Webkit":
+                    {
+                        browser = await _playwright.Webkit.LaunchAsync(headless: headless ?? _settings.Headless);
+                        break;
+                    }
+                default: throw new Exception("Unknown browser");
+            }
+
             _disposableServices.ServicesAsync.Add(browser);
             return browser;
         }
