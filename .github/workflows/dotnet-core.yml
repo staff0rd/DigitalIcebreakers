@@ -6,11 +6,14 @@ on:
 
 jobs:
   e2etests:
+    name: ${{ matrix.browser}} end-to-end tests
     strategy:
       matrix:
-        os: [ubuntu-16.04]
+        os: [ubuntu-latest]
         dotnet: [3.1.301]
         node: [12]
+        #browser: [Chrome, Webkit, Firefox]
+        browser: [Chrome]
 
     runs-on: ${{ matrix.os }}
 
@@ -19,6 +22,9 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
+
+      - uses: microsoft/playwright-github-action@v1
+        name: Install Playwright Firefox & Webkit dependencies
 
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
@@ -44,12 +50,15 @@ jobs:
         run: docker run -d -p 5000:80 staff0rd/digitalicebreakers:$(dotnet nbgv get-version -v NuGetPackageVersion)
 
       - name: run end-to-end tests
+        env:
+          Browser: ${{ matrix.browser }}
         run: dotnet test
         working-directory: DigitalIcebreakers.EndToEndTests
   build:
+    name: Build ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-16.04, windows-2019]
+        os: [ubuntu-latest, windows-latest]
         dotnet: [3.1.301]
         node: [12]
 

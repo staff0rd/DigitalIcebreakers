@@ -4,5 +4,7 @@ namespace DigitalIcebreakers.EndToEndTests
     {
         public string Url { get; set; } = "http://0.0.0.0:5000";
         public bool Headless { get; set; } = true;
+
+        public string Browser { get; set; } = "Chrome";
     }
 }

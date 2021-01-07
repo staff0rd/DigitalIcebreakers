@@ -5,7 +5,7 @@ namespace DigitalIcebreakers.EndToEndTests
 {
     public class Player : AbstractBrowser
     {
-        public Player(IChromiumBrowser browser, IPage page) : base(browser, page)
+        public Player(IBrowser browser, IPage page) : base(browser, page)
         {
         }
     }
