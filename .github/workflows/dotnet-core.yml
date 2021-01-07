@@ -6,11 +6,13 @@ on:
 
 jobs:
   e2etests:
+    name: ${{ matrix.browser}} end-to-end tests
     strategy:
       matrix:
         os: [ubuntu-16.04]
         dotnet: [3.1.301]
         node: [12]
+        browser: [Chrome, Webkit, Firefox]
 
     runs-on: ${{ matrix.os }}
 
@@ -44,6 +46,8 @@ jobs:
         run: docker run -d -p 5000:80 staff0rd/digitalicebreakers:$(dotnet nbgv get-version -v NuGetPackageVersion)
 
       - name: run end-to-end tests
+        env:
+          Browser: ${{ matrix.browser }}
         run: dotnet test
         working-directory: DigitalIcebreakers.EndToEndTests
   build:
