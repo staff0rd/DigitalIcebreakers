@@ -19,7 +19,7 @@ type AppState = {
   players: Player[];
   menuItems: JSX.Element[];
   currentGame?: string;
-  isAdmin: boolean;
+  isPresenter: boolean;
 };
 
 type AppLobby = {
@@ -45,7 +45,7 @@ export default class App extends Component<{}, AppState> {
     this.user = this.getUser();
     this.state = {
       user: this.user,
-      isAdmin: false,
+      isPresenter: false,
       menuItems: [],
       players: [],
     };
@@ -107,7 +107,7 @@ const Main = () => {
 
   return (
     <Layout
-      isAdmin={lobby.isAdmin}
+      isPresenter={lobby.isPresenter}
       currentGame={lobby.currentGame}
       lobbyId={lobby.id}
     />

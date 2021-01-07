@@ -48,13 +48,14 @@ namespace DigitalIcebreakers.Test
 
         public static Lobby CreateLobby(MockGameHub hub, Guid adminId, Game game)
         {
-            var lobby  = hub.Lobbys.CreateLobby("my lobby", GetPlayer(adminId, true));
+            var lobby = hub.Lobbys.CreateLobby("my lobby", GetPlayer(adminId, true));
             lobby.NewGame(game);
             return lobby;
         }
 
-        public static Player GetPlayer(Guid id, bool isAdmin = false) {
-            return new Player { ConnectionId = id.ToString(), Id = id, ExternalId = id, IsAdmin = isAdmin, Name = id.ToString() };
+        public static Player GetPlayer(Guid id, bool isPresenter = false)
+        {
+            return new Player { ConnectionId = id.ToString(), Id = id, ExternalId = id, IsPresenter = isPresenter, Name = id.ToString() };
         }
     }
 }

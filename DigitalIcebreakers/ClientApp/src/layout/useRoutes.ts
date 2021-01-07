@@ -31,7 +31,7 @@ const useRoutes = () => {
     Games.find((g) => g.name === state.lobby.currentGame)
   );
   const gameRoutes: RouteLink[] =
-    lobby.isAdmin && game && game.routes ? game.routes : [];
+    lobby.isPresenter && game && game.routes ? game.routes : [];
 
   const lobbyRoute = {
     path: "/",
@@ -99,7 +99,7 @@ const useRoutes = () => {
 
   const ifNoLobby = (...routes: RouteLink[]) => (lobby.id ? [] : routes);
   const ifLobby = (...routes: RouteLink[]) => (lobby.id ? routes : []);
-  const ifAdmin = (...routes: RouteLink[]) => (lobby.isAdmin ? routes : []);
+  const ifAdmin = (...routes: RouteLink[]) => (lobby.isPresenter ? routes : []);
   const ifGame = (yes: RouteLink[], no: RouteLink[]) => (game ? yes : no);
 
   return [

@@ -14,12 +14,12 @@ namespace DigitalIcebreakers
 
         public string Name { get; set; }
 
-        internal Player Admin => Players.SingleOrDefault(p => p.IsAdmin);
+        internal Player Admin => Players.SingleOrDefault(p => p.IsPresenter);
 
         public int PlayerCount => GetConnectedPlayers().Count();
 
         public IGame CurrentGame { get; private set; }
-        
+
         public int Number { get; set; }
         public DateTime LastModified { get; private set; }
 
@@ -30,12 +30,12 @@ namespace DigitalIcebreakers
 
         internal Player[] GetConnectedPlayers()
         {
-            return Players.Where(p => p.IsConnected && p.IsRegistered && !p.IsAdmin).ToArray();
+            return Players.Where(p => p.IsConnected && p.IsRegistered && !p.IsPresenter).ToArray();
         }
 
         internal Player[] GetTotalPlayers()
         {
-            return Players.Where(p => !p.IsAdmin).ToArray();
+            return Players.Where(p => !p.IsPresenter).ToArray();
         }
 
         public void NewGame(IGame game)

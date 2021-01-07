@@ -24,7 +24,7 @@ describe("lobbyReducer", () => {
         {} as LobbyState,
         createLobby("my lobby name")
       );
-      expect(result.isAdmin).toBe(true);
+      expect(result.isPresenter).toBe(true);
     });
   });
 });

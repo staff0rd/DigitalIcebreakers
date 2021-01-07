@@ -9,7 +9,7 @@ namespace DigitalIcebreakers
     public class Sender
     {
         private readonly ClientHelper _clients;
-        
+
         public Sender(ClientHelper clients)
         {
             _clients = clients;
@@ -40,14 +40,14 @@ namespace DigitalIcebreakers
 
         public async Task Reconnect(Lobby lobby, Player player)
         {
-            var players = lobby.Players.Where(p => !p.IsAdmin).Select(p => new User { Id = p.ExternalId, Name = p.Name }).ToList();
-            await _clients.Self(player.ConnectionId).SendAsync("Reconnect", new Reconnect { PlayerId = player.Id, PlayerName = player.Name, LobbyName = lobby.Name, LobbyId = lobby.Id, IsAdmin = player.IsAdmin, Players = players, CurrentGame = lobby.CurrentGame?.Name, IsRegistered = player.IsRegistered });
-            
-            if (player.IsAdmin)
-                await _clients.Admin(lobby).SendAsync("Players", 
+            var players = lobby.Players.Where(p => !p.IsPresenter).Select(p => new User { Id = p.ExternalId, Name = p.Name }).ToList();
+            await _clients.Self(player.ConnectionId).SendAsync("Reconnect", new Reconnect { PlayerId = player.Id, PlayerName = player.Name, LobbyName = lobby.Name, LobbyId = lobby.Id, IsPresenter = player.IsPresenter, Players = players, CurrentGame = lobby.CurrentGame?.Name, IsRegistered = player.IsRegistered });
+
+            if (player.IsPresenter)
+                await _clients.Admin(lobby).SendAsync("Players",
                     lobby.Players
-                    .Where(p => p.IsConnected && p.IsRegistered && !p.IsAdmin)
-                    .Select(p => new { id =  p.ExternalId, name = p.Name })
+                    .Where(p => p.IsConnected && p.IsRegistered && !p.IsPresenter)
+                    .Select(p => new { id = p.ExternalId, name = p.Name })
                     .ToArray());
         }
 

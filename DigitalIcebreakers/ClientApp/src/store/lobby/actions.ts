@@ -18,11 +18,11 @@ import { Player } from "../../Player";
 export function setLobby(
   id: string,
   name: string,
-  isAdmin: boolean,
+  isPresenter: boolean,
   players: Player[],
   game: string | undefined
 ): LobbyActionTypes {
-  return { type: SET_LOBBY, id, name, isAdmin, players, game };
+  return { type: SET_LOBBY, id, name, isPresenter, players, game };
 }
 
 export function setLobbyPlayers(players: Player[]): LobbyActionTypes {

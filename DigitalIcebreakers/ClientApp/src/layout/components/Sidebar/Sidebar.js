@@ -25,7 +25,7 @@ export default function Sidebar(props) {
   const dispatch = useDispatch();
   const location = useLocation();
   const lobby = useSelector((state) => state.lobby);
-  const isAdmin = lobby.isAdmin;
+  const isPresenter = lobby.isPresenter;
   const isLobby = location.pathname === "/";
   const classes = useStyles(lobby.id && !isLobby)();
   const gameName = useSelector((state) => state.lobby.currentGame);
@@ -98,7 +98,7 @@ export default function Sidebar(props) {
                   />
                 </ListItem>
               </NavLink>
-              {isAdmin &&
+              {isPresenter &&
                 prop.path === "/game" &&
                 location.pathname === "/game" &&
                 GameMenu && <GameMenu />}

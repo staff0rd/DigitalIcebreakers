@@ -12,7 +12,7 @@ using Xunit;
 
 namespace DigitalIcebreakers.Test
 {
-        public class Given_no_lobby_exists_for_the_user_When_creating_a_new_lobby
+    public class Given_no_lobby_exists_for_the_user_When_creating_a_new_lobby
     {
         List<Lobby> _lobbys;
         LobbyIdService _lobbyIds = new LobbyIdService();
@@ -20,7 +20,7 @@ namespace DigitalIcebreakers.Test
         public Given_no_lobby_exists_for_the_user_When_creating_a_new_lobby()
         {
             var playerId = Guid.NewGuid();
-            _lobbys = new List<Lobby> { new Lobby { Id = "OLD", Players = new List<Player> { new Player { Id = Guid.NewGuid(), IsAdmin = true } } } };
+            _lobbys = new List<Lobby> { new Lobby { Id = "OLD", Players = new List<Player> { new Player { Id = Guid.NewGuid(), IsPresenter = true } } } };
 
             var gameHub = ObjectMother.GetMockGameHub(playerId, _lobbys);
             gameHub.CreateLobby(null, new User(playerId, "")).Wait();
