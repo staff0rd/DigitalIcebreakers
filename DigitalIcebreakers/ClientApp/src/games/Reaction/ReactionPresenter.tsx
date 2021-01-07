@@ -1,5 +1,4 @@
-import React from "react";
-import { BaseGameProps, BaseGame } from "../BaseGame";
+import React, { useEffect, useRef, useState } from "react";
 import { Shape } from "./Shape";
 import { Colors, ColorUtils } from "../../Colors";
 import { ShapeType } from "./ShapeType";
@@ -7,122 +6,49 @@ import { shuffle } from "../../Random";
 import * as PIXI from "pixi.js";
 import { ShapeView } from "./ShapeView";
 import * as gsap from "gsap";
-import { ConnectedProps, connect } from "react-redux";
-import { clientMessage, adminMessage } from "../../store/lobby/actions";
-import { setGameMessageCallback } from "../../store/connection/actions";
-import { GameMessage } from "../GameMessage";
+import { useDispatch } from "react-redux";
+import { adminMessage } from "../../store/lobby/actions";
 import Button from "../../layout/components/CustomButtons/Button";
 import Table from "../../layout/components/Table/Table";
 import { Pixi } from "../pixi/Pixi";
 import { RootState } from "../../store/RootState";
 import { ContentContainer } from "../../components/ContentContainer";
+import { useSelector } from "store/useSelector";
+import {
+  startRoundAction,
+  toggleAutoAgainAction,
+  getPlayerName,
+  endRoundAction,
+} from "./reactionReducer";
+import { useResizeListener } from "games/pixi/useResizeListener";
+import { useTimeout } from "util/useTimeout";
 
-interface Choice {
-  id: string;
-  choice: number;
-}
+export const ReactionPresenter = () => {
+  const [pixi, setPixi] = useState<PIXI.Application>();
+  const [againTween, setAgainTween] = useState<GSAPStatic.Tween>();
+  const players = useSelector((state: RootState) => state.lobby.players);
+  const againProgress = useRef<HTMLDivElement>(null);
+  const dispatch = useDispatch();
+  const { shape, shapes, scores, showScores, autoAgain, choices } = useSelector(
+    (state: RootState) => state.games.reaction.presenter
+  );
 
-interface Score {
-  id: string;
-  name: string;
-  score: number;
-}
+  const getOtherShapes = () => shapes.filter((s) => s.id !== shape!.id);
 
-interface ReactState {
-  shapes: Shape[];
-  shape: Shape | undefined;
-  views: ShapeView[];
-  showScores: boolean;
-  scores: Score[];
-  choices: Choice[];
-  autoAgain: boolean;
-}
-
-const connector = connect(
-  (state: RootState) => {
-    return {
-      players: state.lobby.players,
-    };
-  },
-  { clientMessage, adminMessage, setGameMessageCallback }
-);
-
-type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
-
-type Payload = {
-  selectedId: number;
-};
-
-class ReactionPresenter extends BaseGame<PropsFromRedux, ReactState> {
-  private timeout: NodeJS.Timeout | undefined;
-  private againProgressElement?: HTMLDivElement;
-  private againTween?: GSAPStatic.Tween;
-  private app?: PIXI.Application;
-  constructor(props: PropsFromRedux) {
-    super(props);
-
-    this.state = {
-      shapes: [],
-      shape: undefined,
-      views: [],
-      showScores: false,
-      scores: [],
-      choices: [],
-      autoAgain: false,
-    };
-  }
-
-  againProgress = (element: HTMLDivElement) => {
-    this.againProgressElement = element;
-    if (element) this.triggerAgainProgress();
-  };
-
-  again() {
-    this.setState(
-      (prevState) => {
-        return { autoAgain: !prevState.autoAgain };
-      },
-      () => this.triggerAgainProgress()
-    );
-  }
-
-  triggerAgainProgress() {
-    if (this.state.autoAgain) {
-      this.againTween = gsap.TweenLite.to(this.againProgressElement!.style, 5, {
-        width: "0px",
-        ease: "power1.in",
-        onComplete: () => this.setShape(),
-      });
-    } else this.againTween && this.againTween.kill();
-  }
-
-  private getOtherShapes() {
-    return this.state.shapes.filter(
-      (shape) => shape.id !== this.state.shape!.id
-    );
-  }
-
-  init(app?: PIXI.Application) {
-    if (app) {
-      this.app = app;
-    }
-    this.resize();
-  }
-
-  resize() {
-    if (this.app && this.state.shape) {
-      this.app.stage.removeChildren();
-      const bottomShapes = this.getOtherShapes();
-      const size = this.app.screen.height * 0.7;
-      const mainShape = new ShapeView(size, this.state.shape);
-      mainShape.view.position.set(this.app.screen.width / 2, size / 2);
+  const resize = () => {
+    if (pixi && shape) {
+      pixi.stage.removeChildren();
+      const bottomShapes = getOtherShapes();
+      const size = pixi.screen.height * 0.7;
+      const mainShape = new ShapeView(size, shape);
+      mainShape.view.position.set(pixi.screen.width / 2, size / 2);
       const bottomShapesContainer = new PIXI.Container();
       const views = [mainShape];
 
       let smallShapeWidth: number = 0;
       const shapeMargin = 20;
-      bottomShapes.forEach((shape) => {
-        const shapeView = new ShapeView(this.app!.screen.height * 0.2, shape);
+      bottomShapes.forEach((s) => {
+        const shapeView = new ShapeView(pixi!.screen.height * 0.2, s);
         shapeView.view.position.set(
           (shapeView.view.width + shapeMargin) *
             bottomShapesContainer.children.length,
@@ -133,101 +59,27 @@ class ReactionPresenter extends BaseGame<PropsFromRedux, ReactState> {
         views.push(shapeView);
       });
       bottomShapesContainer.position.set(
-        this.app.screen.width / 2 -
+        pixi.screen.width / 2 -
           ((bottomShapes.length - 1) * (smallShapeWidth + shapeMargin)) / 2,
-        this.app.screen.height - shapeMargin + smallShapeWidth / 2
+        pixi.screen.height - shapeMargin + smallShapeWidth / 2
       );
       bottomShapesContainer.pivot.set(0, bottomShapesContainer.height);
-      this.app.stage.addChild(mainShape.view, bottomShapesContainer);
-      this.setState({ views: views }, () => this.resetTimeout(true));
+      pixi.stage.addChild(mainShape.view, bottomShapesContainer);
+      views.forEach((view) => {
+        view.update(
+          choices.filter((choice) => choice.choice === view.id).length,
+          getPlayerName(
+            players,
+            choices.find(
+              (choice) => choice.isFirst && choice.choice === view.id
+            )?.id
+          )
+        );
+      });
     }
-  }
+  };
 
-  getUserName(id: string) {
-    const player = this.props.players.filter((p) => p.id === id)[0];
-    return player ? player.name : "";
-  }
-
-  updateScores() {
-    this.setState((prevState) => {
-      const totalChoices = prevState.choices.length;
-      const correct = [...prevState.choices]
-        .filter((p) => p.choice === this.state.shape!.id)
-        .map((choice, ix: number) => {
-          return {
-            id: choice.id,
-            name: this.getUserName(choice.id),
-            score: totalChoices - ix,
-          };
-        });
-      const wrong = [...prevState.choices]
-        .filter((p) => p.choice !== this.state.shape!.id)
-        .map((choice) => {
-          return {
-            id: choice.id,
-            name: this.getUserName(choice.id),
-            score: -1,
-          };
-        });
-
-      const newScores = [...prevState.scores];
-
-      [...correct, ...wrong].forEach((score) => {
-        const existing = newScores.filter((p) => p.id === score.id)[0];
-        if (existing) existing.score += score.score;
-        else if (score.name !== "") newScores.push(score);
-      });
-
-      this.props.players.forEach((p) => {
-        if (!newScores.filter((s) => s.id === p.id).length)
-          newScores.push({ id: p.id, name: p.name, score: 0 });
-      });
-
-      return {
-        showScores: true,
-        scores: newScores,
-        shape: undefined,
-        choices: [],
-      };
-    });
-  }
-
-  private resetTimeout(restart = false) {
-    this.timeout && clearTimeout(this.timeout);
-    if (restart) this.timeout = setTimeout(() => this.updateScores(), 2000);
-  }
-
-  componentDidMount() {
-    const callback = (response: GameMessage<Payload>) => {
-      const user = {
-        id: response.id,
-        choice: response.payload.selectedId,
-      };
-
-      this.resetTimeout(!!this.state.shape);
-
-      this.setState((prevState) => {
-        const choices = [...prevState.choices];
-        if (!choices.filter((p: Choice) => p.id === user.id).length) {
-          const view = this.state.views.filter((v) => v.id === user.choice)[0];
-          if (view) {
-            if (!choices.filter((p) => p.choice === user.choice).length) {
-              view.updateFirst(this.getUserName(user.id));
-            }
-            view.increment();
-          }
-
-          choices.push(user);
-        }
-
-        return { choices: choices };
-      });
-    };
-    this.props.setGameMessageCallback(callback);
-    this.setShape();
-  }
-
-  setShape() {
+  const setShape = () => {
     const colors = [
       Colors.Red.C500,
       Colors.Green.C500,
@@ -245,57 +97,79 @@ class ReactionPresenter extends BaseGame<PropsFromRedux, ReactState> {
       );
     });
 
-    const shapes = shuffle(allShapes).slice(0, 6);
+    const newRoundShapes = shuffle(allShapes).slice(0, 6);
+    dispatch(
+      startRoundAction({ shapes: newRoundShapes, shape: newRoundShapes[0] })
+    );
+    dispatch(adminMessage(shuffle([...newRoundShapes])));
+  };
 
-    this.setState(
-      {
-        shapes: shapes,
-        shape: shapes[0],
-        showScores: false,
-      },
-      () => {
-        this.props.adminMessage(shuffle(shapes));
-        this.resize();
+  useResizeListener(resize);
+  useEffect(resize, [pixi, shape, choices]);
+
+  const triggerAgainProgress = () => {
+    if (autoAgain) {
+      setAgainTween(
+        gsap.TweenLite.to(againProgress.current!.style, 5, {
+          width: "0px",
+          ease: "power1.in",
+          onComplete: () => setShape(),
+        })
+      );
+    } else againTween && againTween.kill();
+  };
+
+  useTimeout(
+    () => {
+      if (shape) {
+        console.warn("timeout");
+        dispatch(endRoundAction([...players]));
+        triggerAgainProgress();
       }
+    },
+    2000,
+    [shape, autoAgain]
+  );
+
+  useEffect(() => setShape(), []);
+
+  if (showScores) {
+    if (pixi)
+      pixi.view.parentElement && pixi.view.parentElement.removeChild(pixi.view);
+
+    const tableData: any[] = [...scores]
+      .sort((a, b) => b.score - a.score)
+      .map((p, ix) => [p.score, p.name]);
+
+    return (
+      <ContentContainer header="Scores">
+        <Table tableData={tableData} />
+        <Button
+          className="primary"
+          onClick={() => {
+            dispatch(toggleAutoAgainAction());
+            triggerAgainProgress();
+          }}
+        >
+          Again
+        </Button>
+        <div
+          ref={againProgress}
+          style={{
+            marginTop: 15,
+            width: 500,
+            height: 50,
+            backgroundColor: ColorUtils.toHtml(Colors.Red.C400),
+          }}
+        ></div>
+      </ContentContainer>
+    );
+  } else {
+    return (
+      <Pixi
+        backgroundColor={Colors.White}
+        onAppChange={(app) => setPixi(app)}
+      />
     );
   }
-
-  render() {
-    if (this.state.showScores) {
-      if (this.app)
-        this.app.view.parentElement &&
-          this.app.view.parentElement.removeChild(this.app.view);
-
-      const scores: any[] = this.state.scores
-        .sort((a, b) => b.score - a.score)
-        .map((p, ix) => [p.score, p.name]);
-
-      return (
-        <ContentContainer header="Scores">
-          <Table tableData={scores} />
-          <Button className="primary" onClick={() => this.again()}>
-            Again
-          </Button>
-          <div
-            ref={this.againProgress}
-            style={{
-              marginTop: 15,
-              width: 500,
-              height: 50,
-              backgroundColor: ColorUtils.toHtml(Colors.Red.C400),
-            }}
-          ></div>
-        </ContentContainer>
-      );
-    } else {
-      return (
-        <Pixi
-          backgroundColor={Colors.White}
-          onAppChange={(app) => this.init(app)}
-        />
-      );
-    }
-  }
-}
-
-export default connector(ReactionPresenter);
+};

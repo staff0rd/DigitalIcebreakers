@@ -11,6 +11,7 @@ import { PollState } from "../games/shared/Poll/types/State";
 import { TriviaState } from "games/shared/Poll/types/State";
 import { NamePickerState } from "../games/NamePicker/NamePickerReducer";
 import { BroadcastState } from "games/Broadcast/BroadcastReducer";
+import { ReactionState } from "games/Reaction/reactionReducer";
 
 export interface GamesState {
   yesnomaybe: YesNoMaybeState;
@@ -26,6 +27,7 @@ export interface GamesState {
   trivia: TriviaState;
   namePicker: NamePickerState;
   broadcast: BroadcastState;
+  reaction: ReactionState;
 }
 
 export interface RootState {

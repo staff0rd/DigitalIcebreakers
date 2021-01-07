@@ -22,7 +22,7 @@ export class ShapeView {
       fontSize: size / 5,
       fill: Colors.White,
     });
-    this.first = new PIXI.Text("?", {
+    this.first = new PIXI.Text("", {
       fontSize: size / 10,
       fill: Colors.BlueGrey.C500,
     });
@@ -34,7 +34,6 @@ export class ShapeView {
       this.countView,
       this.first
     );
-    this.updateFirst("");
   }
 
   private draw() {
@@ -43,21 +42,22 @@ export class ShapeView {
     return drawShape(graphics, this.shape.type, 0, 0, this.radius);
   }
 
-  increment() {
-    this.count++;
-    this.countView.text = this.count.toString();
-    this.countView.pivot.set(
-      this.countView.width / 2,
-      this.countView.height / 2
-    );
-  }
-
-  updateFirst(first: string) {
-    this.first.text = first;
-    this.first.pivot.set(
-      this.first.width / 2,
-      this.first.height / 2 - 20 - this.radius
-    );
+  update(count: number, first: string) {
+    if (count) {
+      this.count = count;
+      this.countView.text = this.count.toString();
+      this.countView.pivot.set(
+        this.countView.width / 2,
+        this.countView.height / 2
+      );
+    }
+    if (first) {
+      this.first.text = first;
+      this.first.pivot.set(
+        this.first.width / 2,
+        this.first.height / 2 - 20 - this.radius
+      );
+    }
   }
 }
 

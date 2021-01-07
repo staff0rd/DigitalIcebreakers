@@ -1,117 +1,73 @@
-import { BaseGameProps, BaseGame } from "../BaseGame";
 import { Colors } from "../../Colors";
 import { Shape } from "./Shape";
 import * as PIXI from "pixi.js";
 import { drawShape } from "./ShapeView";
 import { Pixi } from "../pixi/Pixi";
-import { ConnectedProps, connect } from "react-redux";
+import { useDispatch } from "react-redux";
 import { clientMessage } from "../../store/lobby/actions";
-import React from "react";
-import { setGameMessageCallback } from "../../store/connection/actions";
+import React, { useEffect, useState } from "react";
+import { RootState } from "store/RootState";
+import { useResizeListener } from "games/pixi/useResizeListener";
+import { useSelector } from "store/useSelector";
+import { selectShape } from "./reactionReducer";
 
-type ReactionClientState = {
-  shapes: Shape[];
-  selectedId?: number;
-};
+export const ReactionPlayer = () => {
+  const [pixi, setPixi] = useState<PIXI.Application>();
+  const dispatch = useDispatch();
+  const { shapes, selectedId } = useSelector(
+    (state: RootState) => state.games.reaction.player
+  );
 
-const connector = connect(null, { clientMessage, setGameMessageCallback });
+  const select = (id: number) => {
+    dispatch(clientMessage(id));
+    dispatch(selectShape(id));
+    resize();
+  };
 
-type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
-
-class ReactionClient extends BaseGame<PropsFromRedux, ReactionClientState> {
-  app?: PIXI.Application;
-
-  constructor(props: PropsFromRedux) {
-    super(props);
-    this.state = {
-      shapes: [],
-    };
-  }
-
-  componentDidMount() {
-    window.addEventListener("resize", () =>
-      setTimeout(() => this.resize(), 501)
-    );
-    this.props.setGameMessageCallback((newState: ReactionClientState) => {
-      console.log(newState);
-      this.setState(newState, () => this.init(this.app));
-    });
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("resize", () => this.resize());
-  }
-
-  init(app?: PIXI.Application) {
-    this.app = app || this.app;
-    this.resize();
-  }
-
-  resize() {
-    if (this.app) {
-      console.log("performing layout");
-      this.app.stage.removeChildren();
-      const margin = 25;
-      const radius = Math.min(
-        (this.app.screen.width - 3 * margin) / 4,
-        (this.app.screen.height - (this.state.shapes.length / 2 + 1) * margin) /
-          6
-      );
-      for (let i = 0; i < this.state.shapes.length; i += 2) {
-        const g1 = this.drawShape(this.state.shapes[i], radius);
-        const g2 = this.drawShape(
-          this.state.shapes[i + 1],
-          radius,
-          radius * 3 + margin
-        );
-        const container = new PIXI.Container();
-        container.addChild(g1, g2);
-        container.position.set(
-          this.app.screen.width / 2 - container.width / 2,
-          margin + (i / 2) * (radius * 2 + margin)
-        );
-        this.app.stage.addChild(container);
-      }
-    }
-  }
-
-  private drawShape(shape: Shape, radius: number, leftOffset = radius) {
+  const draw = (shape: Shape, radius: number, leftOffset = radius) => {
     const g = new PIXI.Graphics();
     let alpha = 1;
-    if (this.state.selectedId === null) {
-      g.on("pointerdown", () => this.select(shape.id));
+    if (selectedId === null) {
+      g.on("pointerdown", () => select(shape.id));
       g.buttonMode = true;
       g.interactive = true;
     } else alpha = 0.5;
-    if (this.state.selectedId === shape.id) {
+    if (selectedId === shape.id) {
       g.lineStyle(5, Colors.BlueGrey.C900);
       alpha = 1;
     }
     g.beginFill(shape.color, alpha);
 
     return drawShape(g, shape.type, leftOffset, radius, radius).endFill();
-  }
+  };
 
-  private select(id: number) {
-    this.setState(
-      {
-        selectedId: id,
-      },
-      () => {
-        this.props.clientMessage(id);
-        this.init();
+  const resize = () => {
+    if (pixi) {
+      console.log("performing layout");
+      pixi.stage.removeChildren();
+      const margin = 25;
+      const radius = Math.min(
+        (pixi.screen.width - 3 * margin) / 4,
+        (pixi.screen.height - (shapes.length / 2 + 1) * margin) / 6
+      );
+      for (let i = 0; i < shapes.length; i += 2) {
+        const g1 = draw(shapes[i], radius);
+        const g2 = draw(shapes[i + 1], radius, radius * 3 + margin);
+        const container = new PIXI.Container();
+        container.addChild(g1, g2);
+        container.position.set(
+          pixi.screen.width / 2 - container.width / 2,
+          margin + (i / 2) * (radius * 2 + margin)
+        );
+        pixi.stage.addChild(container);
       }
-    );
-  }
+    }
+  };
 
-  render() {
-    return (
-      <Pixi
-        backgroundColor={Colors.White}
-        onAppChange={(app) => this.init(app)}
-      />
-    );
-  }
-}
+  useResizeListener(resize);
+  useEffect(resize, [pixi, shapes, selectedId]);
 
-export default connector(ReactionClient);
+  return (
+    <Pixi backgroundColor={Colors.White} onAppChange={(app) => setPixi(app)} />
+  );
+};
