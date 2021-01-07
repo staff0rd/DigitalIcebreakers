@@ -59,7 +59,10 @@ const PollButtons = ({
         {showResponses ? <LiveHelp /> : <BarChart />}
       </IconButton>
       {isTriviaMode && (
-        <IconButton onClick={() => dispatch(toggleShowScoreBoardAction())}>
+        <IconButton
+          data-testid="show-scoreboard"
+          onClick={() => dispatch(toggleShowScoreBoardAction())}
+        >
           {showScoreBoard ? <CloseIcon /> : <ScoreIcon />}
         </IconButton>
       )}
