@@ -33,10 +33,14 @@ const ScoreBoard = () => {
         <TableBody>
           {scores.map((user, ix) => (
             <TableRow key={ix.toString()}>
-              <TableCell component="th" scope="row">
+              <TableCell className="scoreboard-name" component="th" scope="row">
                 {user.name}
               </TableCell>
-              <TableCell component="th" scope="row">
+              <TableCell
+                className="scoreboard-score"
+                component="th"
+                scope="row"
+              >
                 {user.score}
               </TableCell>
             </TableRow>

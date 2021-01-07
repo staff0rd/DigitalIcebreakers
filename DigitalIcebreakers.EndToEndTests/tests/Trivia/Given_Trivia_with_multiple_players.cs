@@ -38,7 +38,7 @@ namespace DigitalIcebreakers.EndToEndTests.Trivia
         {
             var tasks = _players.Select(async p =>
             {
-                await p.Page.ClickAsync("text='Correct'", timeout: 1000);
+                await p.Page.ClickAsync("text='correct'", timeout: 1000);
                 await p.Page.ClickAsync(@"text='Lock In & Send'");
             });
             await Task.WhenAll(tasks);
