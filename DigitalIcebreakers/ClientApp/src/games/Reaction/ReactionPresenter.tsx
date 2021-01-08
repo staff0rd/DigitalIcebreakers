@@ -14,6 +14,7 @@ import { Pixi } from "../pixi/Pixi";
 import { RootState } from "../../store/RootState";
 import { ContentContainer } from "../../components/ContentContainer";
 import { useSelector } from "store/useSelector";
+import AutoRenewIcon from "@material-ui/icons/Autorenew";
 import {
   startRoundAction,
   toggleAutoAgainAction,
@@ -145,6 +146,7 @@ export const ReactionPresenter = () => {
         <Table tableData={tableData} />
         <Button
           className="primary"
+          startIcon={autoAgain ? <AutoRenewIcon /> : undefined}
           onClick={() => {
             dispatch(toggleAutoAgainAction());
           }}
