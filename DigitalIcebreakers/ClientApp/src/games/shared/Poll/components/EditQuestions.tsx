@@ -28,6 +28,7 @@ import { BulkEdit } from "./BulkEdit";
 import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
 import { Name as PollName } from "games/Poll";
 import { getPollOrTriviaState } from "../getPollOrTriviaState";
+import { useConfirmDialog } from "util/useConfirmDialog";
 
 const useStyles = makeStyles((theme) => ({
   table: {},
@@ -109,6 +110,25 @@ const EditQuestions = () => {
       }
     }
   };
+
+  const {
+    component: ConfirmClearQuestions,
+    open: openConfirmClearQuestions,
+  } = useConfirmDialog(
+    "Clear all questions?",
+    "All questions and responses will be deleted",
+    importQuestionsAction([])
+  );
+
+  const {
+    component: ConfirmClearResponses,
+    open: openConfirmClearResponses,
+  } = useConfirmDialog(
+    "Clear all responses?",
+    "All responses will be deleted",
+    clearResponsesAction()
+  );
+
   return (
     <>
       <BulkEdit
@@ -127,12 +147,14 @@ const EditQuestions = () => {
           <CardFooter className={classes.footer}>
             <Button onClick={() => addQuestion()}>Add question</Button>
             <Button onClick={() => setShowBulkEdit(true)}>Bulk edit</Button>
-            <Button onClick={() => dispatch(importQuestionsAction([]))}>
+            <Button onClick={openConfirmClearQuestions}>
               Clear all questions
             </Button>
-            <Button onClick={() => dispatch(clearResponsesAction())}>
+            <ConfirmClearQuestions />
+            <Button onClick={openConfirmClearResponses}>
               Clear all responses
             </Button>
+            <ConfirmClearResponses />
             <Button onClick={() => (fileUpload.current as any).click()}>
               Import questions
             </Button>

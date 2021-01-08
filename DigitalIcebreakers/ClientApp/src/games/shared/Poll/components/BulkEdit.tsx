@@ -192,7 +192,9 @@ export const BulkEdit = ({
           <Typography variant="body2">
             * Correct answers start with an asterix (zero or one per question)
           </Typography>
-          <Typography variant="body2" color="primary">
+        </Alert>
+        <Alert severity="warning">
+          <Typography variant="body2">
             Using bulk edit will clear audience responses
           </Typography>
         </Alert>
