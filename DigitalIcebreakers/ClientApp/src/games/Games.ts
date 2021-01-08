@@ -32,6 +32,7 @@ import LiveHelp from "@material-ui/icons/LiveHelp";
 import EditQuestions from "./shared/Poll/components/EditQuestions";
 import EditQuestion from "./shared/Poll/components/EditQuestion";
 import { Name as IdeaWallName } from "./IdeaWall/IdeaWallReducer";
+import * as StartStopContinue from "./StartStopContinue";
 
 interface Game {
   name: string;
@@ -75,6 +76,14 @@ const games: Game[] = [
     description:
       "Like polling but with a scoreboard: Add or generate questions and run a trivia session.",
     routes: pollAndTriviaRoutes,
+  },
+  {
+    isNew: true,
+    title: "Start Stop Continue",
+    name: StartStopContinue.Name,
+    client: StartStopContinue.Player,
+    presenter: StartStopContinue.Presenter,
+    description: "Run a retrospective with your team",
   },
   {
     name: "doggos-vs-kittehs",

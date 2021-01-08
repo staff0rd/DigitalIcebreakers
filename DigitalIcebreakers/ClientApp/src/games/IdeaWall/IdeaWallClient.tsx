@@ -79,14 +79,3 @@ export const IdeaWallClient = () => {
     </ContentContainer>
   );
 };
-//         <Form>
-//             <FormGroup>
-
-//                 <FormControl maxLength={MAX_CHARACTERS} componentClass="textarea" rows={3} onChange={onChange} value={idea} />
-//             </FormGroup>
-//             <Button onClick={onClick} bsStyle="primary" bsSize="large" style={{margin: "6px"}}>
-//                 Submit
-//             </Button>
-//         </Form>
-//     );
-// }

@@ -50,7 +50,7 @@ namespace DigitalIcebreakers.Games
         public async Task SendToPlayer(Player player, object payload)
         {
             if (player != null && !player.IsPresenter)
-                await _sender.SendGameMessageToPlayer(player, payload);
+                await _sender.SendPayloadToPlayer(player, payload);
         }
         public async Task SendToPresenter(string connectionId, object payload, Player player = null)
         {
@@ -61,7 +61,7 @@ namespace DigitalIcebreakers.Games
         public async Task SendToPlayers(string connectionId, object payload)
         {
             var lobby = _lobbys.GetLobbyByConnectionId(connectionId);
-            await _sender.SendGameMessageToPlayers(lobby, payload);
+            await _sender.SendPayloadToPlayers(lobby, payload);
         }
 
         public async Task SendToEachPlayer(string connectionId, Func<Player, object> payloadFunction)
@@ -70,7 +70,7 @@ namespace DigitalIcebreakers.Games
 
             await Task.WhenAll(
                 lobby.GetConnectedPlayers()
-                .Select(player => _sender.SendGameMessageToPlayer(player, payloadFunction(player))));
+                .Select(player => _sender.SendPayloadToPlayer(player, payloadFunction(player))));
         }
 
         public Player GetPlayerByConnectionId(string connectionId)
