@@ -107,7 +107,7 @@ export const ReactionPresenter = () => {
   useResizeListener(resize);
   useEffect(resize, [pixi, shape, choices]);
 
-  const triggerAgainProgress = () => {
+  useEffect(() => {
     if (autoAgain) {
       setAgainTween(
         gsap.TweenLite.to(againProgress.current!.style, 5, {
@@ -117,14 +117,13 @@ export const ReactionPresenter = () => {
         })
       );
     } else againTween && againTween.kill();
-  };
+  }, [autoAgain, scores]);
 
   useTimeout(
     () => {
       if (shape) {
         console.warn("timeout");
         dispatch(endRoundAction([...players]));
-        triggerAgainProgress();
       }
     },
     2000,
@@ -148,7 +147,6 @@ export const ReactionPresenter = () => {
           className="primary"
           onClick={() => {
             dispatch(toggleAutoAgainAction());
-            triggerAgainProgress();
           }}
         >
           Again
