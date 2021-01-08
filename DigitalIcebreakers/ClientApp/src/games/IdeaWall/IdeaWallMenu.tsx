@@ -7,21 +7,7 @@ import {
   arrangeIdeasAction,
   toggleNamesAction,
 } from "./IdeaWallReducer";
-import { makeStyles } from "@material-ui/core/styles";
 import { useConfirmDialog } from "../../util/useConfirmDialog";
-
-export const useStyles = makeStyles((theme) => ({
-  modalContainer: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modal: {
-    backgroundColor: "white",
-    borderRadius: "5px",
-    padding: 20,
-  },
-}));
 
 const IdeaWallMenu = () => {
   const dispatch = useDispatch();

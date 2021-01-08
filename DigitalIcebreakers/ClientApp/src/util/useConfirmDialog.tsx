@@ -3,7 +3,25 @@ import { useDispatch } from "react-redux";
 import Button from "../layout/components/CustomButtons/Button";
 import Modal from "@material-ui/core/Modal";
 import { Action } from "redux";
-import { useStyles } from "../games/IdeaWall/IdeaWallMenu";
+import { makeStyles } from "@material-ui/core";
+
+const useStyles = makeStyles((theme) => ({
+  modalContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modal: {
+    minWidth: 400,
+    backgroundColor: "white",
+    borderRadius: "5px",
+    padding: 20,
+  },
+  buttons: {
+    display: "flex",
+    justifyContent: "flex-end",
+  },
+}));
 
 export const useConfirmDialog = (
   title: string,
@@ -29,10 +47,12 @@ export const useConfirmDialog = (
       <div className={classes.modal}>
         <h3>{title}</h3>
         <p>{body}</p>
-        <Button color="primary" onClick={() => ok()}>
-          Ok
-        </Button>
-        <Button onClick={() => setOpen(false)}>Cancel</Button>
+        <div className={classes.buttons}>
+          <Button color="primary" onClick={() => ok()}>
+            Ok
+          </Button>
+          <Button onClick={() => setOpen(false)}>Cancel</Button>
+        </div>
       </div>
     </Modal>
   );
