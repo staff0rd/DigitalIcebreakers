@@ -72,7 +72,7 @@ const games: Game[] = [
     client: Client,
     presenter: TriviaPresenter,
     description:
-      "Like polling but with a scoreboard: Add questions and run a trivia sesssion.",
+      "Like polling but with a scoreboard: Add or generate questions and run a trivia session.",
     routes: pollAndTriviaRoutes,
   },
   {
