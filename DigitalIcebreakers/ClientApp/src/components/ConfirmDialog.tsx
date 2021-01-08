@@ -35,7 +35,6 @@ export const ConfirmDialog = (props: Props) => {
   };
 
   const handleOk = () => {
-    console.warn("ok");
     action(() => setOpen(false));
   };
 

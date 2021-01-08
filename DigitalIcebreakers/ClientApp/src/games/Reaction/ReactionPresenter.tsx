@@ -123,7 +123,6 @@ export const ReactionPresenter = () => {
   useTimeout(
     () => {
       if (shape) {
-        console.warn("timeout");
         dispatch(endRoundAction([...players]));
       }
     },

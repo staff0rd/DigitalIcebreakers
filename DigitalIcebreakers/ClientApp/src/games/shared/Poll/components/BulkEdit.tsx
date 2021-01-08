@@ -142,7 +142,6 @@ export const BulkEdit = (props: Props) => {
   const [error, setError] = useState<string>("");
 
   const handleOk = () => {
-    console.warn("ok!!");
     const { errorLine, errorMessage, isValid, questions } = validate(
       questionLines,
       isTriviaMode

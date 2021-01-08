@@ -38,7 +38,6 @@ const useStyles = makeStyles((theme) => ({
 const htmlDecode = (input: string): string => {
   var doc = new DOMParser().parseFromString(input, "text/html");
   const result = doc.documentElement.textContent || "";
-  console.log(result);
   return result;
 };
 
@@ -74,29 +73,34 @@ export const AutoQuestions = (props: Props) => {
     if (!countIsValid()) {
       setError("Number of Questions is Invalid");
     } else {
+      setError("");
       let url = `https://opentdb.com/api.php?amount=${count}`;
       if (difficulty !== "any") url += `&difficulty=${difficulty}`;
-      const response = await fetch(url);
-      const json = (await response.json()) as Response;
-      const questions: Question[] = json.results.map((q) => ({
-        id: guid(),
-        responses: [],
-        text: htmlDecode(q.question),
-        answers: shuffle([
-          {
-            correct: true,
-            id: guid(),
-            text: htmlDecode(q.correct_answer),
-          },
-          ...q.incorrect_answers.map((a) => ({
-            correct: false,
-            id: guid(),
-            text: htmlDecode(a),
-          })),
-        ]),
-      }));
-      dispatch(importQuestionsAction(questions));
-      setOpen(false);
+      try {
+        const response = await fetch(url);
+        const json = (await response.json()) as Response;
+        const questions: Question[] = json.results.map((q) => ({
+          id: guid(),
+          responses: [],
+          text: htmlDecode(q.question),
+          answers: shuffle([
+            {
+              correct: true,
+              id: guid(),
+              text: htmlDecode(q.correct_answer),
+            },
+            ...q.incorrect_answers.map((a) => ({
+              correct: false,
+              id: guid(),
+              text: htmlDecode(a),
+            })),
+          ]),
+        }));
+        dispatch(importQuestionsAction(questions));
+        setOpen(false);
+      } catch (error) {
+        setError("Could not get questions");
+      }
     }
   };
 
