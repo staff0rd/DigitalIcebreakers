@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode } from "react";
 
 import Button from "../layout/components/CustomButtons/Button";
 
@@ -19,16 +19,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const useConfirmDialog = (
-  header: string,
-  content: string | ReactNode,
-  action: (close: Function) => void
-) => {
-  const [open, setOpen] = useState(false);
-  console.warn("open", open);
+type Props = {
+  header: string;
+  content: ReactNode;
+  action: (close: Function) => void;
+  setOpen: (open: boolean) => void;
+  open: boolean;
+};
+
+export const ConfirmDialog = (props: Props) => {
+  const { header, content, action, setOpen, open } = props;
 
   const handleClose = () => {
-    console.warn("closing");
     setOpen(false);
   };
 
@@ -45,7 +47,7 @@ export const useConfirmDialog = (
     else return content;
   };
 
-  const component = () => (
+  return (
     <Dialog
       PaperProps={{
         className: classes.paper,
@@ -65,9 +67,4 @@ export const useConfirmDialog = (
       </DialogActions>
     </Dialog>
   );
-
-  return {
-    component,
-    open: () => setOpen(true),
-  };
 };

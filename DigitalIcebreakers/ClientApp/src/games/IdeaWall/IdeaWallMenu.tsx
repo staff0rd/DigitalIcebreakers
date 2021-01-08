@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import ListItem from "@material-ui/core/ListItem";
 import Button from "../../layout/components/CustomButtons/Button";
@@ -7,23 +7,14 @@ import {
   arrangeIdeasAction,
   toggleNamesAction,
 } from "./IdeaWallReducer";
-import { useConfirmDialog } from "../../util/useConfirmDialog";
+import { ConfirmDialog } from "../../components/ConfirmDialog";
 
 const IdeaWallMenu = () => {
   const dispatch = useDispatch();
-  const { component: ConfirmClear, open: openConfirmClear } = useConfirmDialog(
-    "Clear all ideas?",
-    "All ideas will be removed!",
-    (close) => dispatch(clearIdeasAction()) && close()
+  const [confirmArrangeDialogOpen, setConfirmArrangeDialogOpen] = useState(
+    false
   );
-  const {
-    component: ConfirmArrange,
-    open: openConfirmArrange,
-  } = useConfirmDialog(
-    "Arrange ideas?",
-    "This will re-arrange all ideas",
-    (close) => dispatch(arrangeIdeasAction(true)) && close()
-  );
+  const [confirmClearDialogOpen, setConfirmClearDialogOpen] = useState(false);
 
   return (
     <>
@@ -33,13 +24,32 @@ const IdeaWallMenu = () => {
         </Button>
       </ListItem>
       <ListItem>
-        <Button onClick={() => openConfirmArrange()}>Arrange</Button>
+        <Button onClick={() => setConfirmArrangeDialogOpen(true)}>
+          Arrange
+        </Button>
       </ListItem>
+      <ConfirmDialog
+        header="Arrange ideas?"
+        content="This will re-arrange all ideas"
+        setOpen={setConfirmArrangeDialogOpen}
+        open={confirmArrangeDialogOpen}
+        action={() =>
+          dispatch(arrangeIdeasAction(true)) &&
+          setConfirmArrangeDialogOpen(false)
+        }
+      />
       <ListItem>
-        <Button onClick={() => openConfirmClear()}>Clear</Button>
+        <Button onClick={() => setConfirmClearDialogOpen(true)}>Clear</Button>
       </ListItem>
-      <ConfirmClear />
-      <ConfirmArrange />
+      <ConfirmDialog
+        header="Clear all ideas?"
+        content="All ideas will be removed!"
+        open={confirmClearDialogOpen}
+        setOpen={setConfirmClearDialogOpen}
+        action={() =>
+          dispatch(clearIdeasAction()) && setConfirmClearDialogOpen(false)
+        }
+      />
     </>
   );
 };

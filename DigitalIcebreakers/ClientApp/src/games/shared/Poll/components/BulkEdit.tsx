@@ -8,7 +8,7 @@ import { Question } from "../types/Question";
 import { guid } from "util/guid";
 import { Answer } from "games/shared/Poll/types/Answer";
 import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
-import { useConfirmDialog } from "util/useConfirmDialog";
+import { ConfirmDialog } from "components/ConfirmDialog";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -122,11 +122,15 @@ const questionsForBulkEditSelector = (
     })
     .join("\n");
 
-export const useBulkEdit = (
-  gameName: string,
-  isTriviaMode: boolean,
-  questions: Question[]
-) => {
+type Props = {
+  gameName: string;
+  isTriviaMode: boolean;
+  questions: Question[];
+  open: boolean;
+  setOpen: (open: boolean) => void;
+};
+export const BulkEdit = (props: Props) => {
+  const { gameName, isTriviaMode, questions, open, setOpen } = props;
   const { importQuestionsAction } = presenterActions(gameName);
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -143,7 +147,7 @@ export const useBulkEdit = (
   }, [questionsFromRedux]);
   const [error, setError] = useState<string>("");
 
-  const handleOk = (close: Function) => {
+  const handleOk = () => {
     console.warn("ok!!");
     const { errorLine, errorMessage, isValid, questions } = validate(
       questionLines,
@@ -152,7 +156,7 @@ export const useBulkEdit = (
     if (isValid) {
       setError("");
       dispatch(importQuestionsAction(questions));
-      close();
+      setOpen(false);
     } else {
       setError(`Line ${errorLine}: ${errorMessage}`);
     }
@@ -163,39 +167,47 @@ export const useBulkEdit = (
     setQuestionLines(target.value);
   };
 
-  const { component: Dialog, open: openDialog } = useConfirmDialog(
-    "Bulk edit",
-    <>
-      <Alert severity="info">
-        <Typography variant="body2">First line should be a question</Typography>
-        <Typography variant="body2">- Questions start with a dash</Typography>
-        <Typography variant="body2">
-          * Correct answers start with an asterix (zero or one per question)
-        </Typography>
-      </Alert>
-      <Alert severity="warning">
-        <Typography variant="body2">
-          Using bulk edit will clear audience responses
-        </Typography>
-      </Alert>
-      <CustomInput
-        multiline
-        id="bulk-edit"
-        rows={10}
-        labelText="Questions &amp; answers"
-        error={error.length > 0}
-        className={classes.input}
-        formControlProps={{
-          className: classes.form,
-          fullWidth: true,
-        }}
-        value={questionLines}
-        onChange={onChange}
-      />
-      {error.length > 0 && <Alert severity="error">{error}</Alert>}
-    </>,
-    (close) => handleOk(close)
+  return (
+    <ConfirmDialog
+      header="Bulk edit"
+      action={handleOk}
+      open={open}
+      setOpen={setOpen}
+      content={
+        <>
+          <Alert severity="info">
+            <Typography variant="body2">
+              First line should be a question
+            </Typography>
+            <Typography variant="body2">
+              - Questions start with a dash
+            </Typography>
+            <Typography variant="body2">
+              * Correct answers start with an asterix (zero or one per question)
+            </Typography>
+          </Alert>
+          <Alert severity="warning">
+            <Typography variant="body2">
+              Using bulk edit will clear audience responses
+            </Typography>
+          </Alert>
+          <CustomInput
+            multiline
+            id="bulk-edit"
+            rows={10}
+            labelText="Questions &amp; answers"
+            error={error.length > 0}
+            className={classes.input}
+            formControlProps={{
+              className: classes.form,
+              fullWidth: true,
+            }}
+            value={questionLines}
+            onChange={onChange}
+          />
+          {error.length > 0 && <Alert severity="error">{error}</Alert>}
+        </>
+      }
+    />
   );
-
-  return { dialog: () => <Dialog />, openDialog };
 };
