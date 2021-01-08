@@ -17,18 +17,6 @@ import { RootState } from "../../store/RootState";
 const WIDTH = 200;
 const MARGIN = 5;
 
-export const StartStopContinueLanes: Lane[] = [
-  { name: "Start", id: 0 },
-  { name: "Stop", id: 1 },
-  { name: "Continue", id: 2 },
-];
-
-interface ModalProperties {
-  title: string;
-  body: string;
-  action: ((e: React.SyntheticEvent<EventTarget>) => void) | undefined;
-}
-
 interface IdeaWallPresenterProps extends BaseGameProps {
   storageKey: string;
   lanes?: Lane[];
@@ -38,8 +26,6 @@ interface IdeaWallPresenterProps extends BaseGameProps {
 interface IdeaWallPresenterState {
   ideas: Idea[];
   showNames: boolean;
-  showModal: boolean;
-  modal: ModalProperties;
 }
 
 const connector = connect((state: RootState) => state.games.ideawall, {
@@ -65,12 +51,6 @@ class IdeaWallPresenter extends BaseGame<
     this.state = {
       ideas: [],
       showNames: false,
-      showModal: false,
-      modal: {
-        title: "",
-        body: "",
-        action: undefined,
-      },
     };
   }
 
