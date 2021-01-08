@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using DigitalIcebreakers.Games;
 using DigitalIcebreakers.Logging;
@@ -120,31 +122,18 @@ namespace DigitalIcebreakers.Hubs
 
             if (lobby != null && player.IsPresenter)
             {
-                _logger.Log(lobby, "{action} {game}", new[] { "Started", name });
-                var game = GetGame(name);
-                lobby.NewGame(game);
-                await _send.NewGame(lobby, name);
-                await lobby.CurrentGame.Start(ConnectionId);
-            }
-        }
-
-
-        private IGame GetGame(string name)
-        {
-            switch (name)
-            {
-                case "doggos-vs-kittehs": return new DoggosVsKittehs(_send, _lobbys);
-                case "yes-no-maybe": return new YesNoMaybe(_send, _lobbys);
-                case "buzzer": return new Buzzer(_send, _lobbys);
-                case "pong": return new Pong(_send, _lobbys);
-                case "ideawall": return new IdeaWall(_send, _lobbys);
-                case "broadcast": return new Broadcast(_send, _lobbys);
-                case "reaction": return new Reaction(_send, _lobbys);
-                case "splat": return new Splat(_send, _lobbys);
-                case "poll": return new Poll(_send, _lobbys);
-                case "namepicker": return new NamePicker(_send, _lobbys);
-                case "trivia": return new Trivia(_send, _lobbys);
-                default: throw new ArgumentOutOfRangeException("Unknown game");
+                var game = Game.GetGame(name, _send, _lobbys);
+                if (game == null)
+                {
+                    _logger.Error($"Unknown game: {name}");
+                }
+                else
+                {
+                    _logger.Log(lobby, "{action} {game}", new[] { "Started", name });
+                    lobby.NewGame(game);
+                    await _send.NewGame(lobby, name);
+                    await lobby.CurrentGame.Start(ConnectionId);
+                }
             }
         }
 

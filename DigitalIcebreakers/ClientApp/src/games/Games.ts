@@ -31,6 +31,7 @@ import { RouteLink } from "../layout/useRoutes";
 import LiveHelp from "@material-ui/icons/LiveHelp";
 import EditQuestions from "./shared/Poll/components/EditQuestions";
 import EditQuestion from "./shared/Poll/components/EditQuestion";
+import { Name as IdeaWallName } from "./IdeaWall/IdeaWallReducer";
 
 interface Game {
   name: string;
@@ -83,7 +84,7 @@ const games: Game[] = [
     description: "Audience polling - Furry friend edition",
   },
   {
-    name: "namepicker",
+    name: "name-picker",
     menu: NamePickerMenu,
     client: NamePickerClient,
     presenter: NamePickerPresenter,
@@ -122,7 +123,7 @@ const games: Game[] = [
     description: "Mob pong for large audiences - red vs blue!",
   },
   {
-    name: "ideawall",
+    name: IdeaWallName,
     client: IdeaWallClient,
     presenter: IdeaWallPresenter,
     menu: IdeaWallMenu,
