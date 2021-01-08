@@ -14,7 +14,7 @@ const IdeaWallMenu = () => {
   const { component: ConfirmClear, open: openConfirmClear } = useConfirmDialog(
     "Clear all ideas?",
     "All ideas will be removed!",
-    clearIdeasAction()
+    (close) => dispatch(clearIdeasAction()) && close()
   );
   const {
     component: ConfirmArrange,
@@ -22,7 +22,7 @@ const IdeaWallMenu = () => {
   } = useConfirmDialog(
     "Arrange ideas?",
     "This will re-arrange all ideas",
-    arrangeIdeasAction(true)
+    (close) => dispatch(arrangeIdeasAction(true)) && close()
   );
 
   return (

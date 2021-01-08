@@ -1,4 +1,4 @@
-import { validate, ErrorMessages } from "./BulkEdit";
+import { validate, ErrorMessages } from "./useBulkEdit";
 
 describe("validate", () => {
   it("should reject if first line not question", () => {

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import Card from "../../../../layout/components/Card/Card";
 import CardTitle from "../../../../layout/components/Card/CardTitle";
 import CardFooter from "../../../../layout/components/Card/CardFooter";
@@ -24,7 +24,7 @@ import { guid } from "../../../../util/guid";
 import { useDispatch } from "react-redux";
 import array from "../../../../util/array";
 import { saveAs } from "file-saver";
-import { BulkEdit } from "./BulkEdit";
+import { useBulkEdit } from "./useBulkEdit";
 import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
 import { Name as PollName } from "games/Poll";
 import { getPollOrTriviaState } from "../getPollOrTriviaState";
@@ -55,7 +55,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const EditQuestions = () => {
-  const [showBulkEdit, setShowBulkEdit] = useState<boolean>(false);
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -117,7 +116,7 @@ const EditQuestions = () => {
   } = useConfirmDialog(
     "Clear all questions?",
     "All questions and responses will be deleted",
-    importQuestionsAction([])
+    (close) => dispatch(importQuestionsAction([])) && close()
   );
 
   const {
@@ -126,18 +125,17 @@ const EditQuestions = () => {
   } = useConfirmDialog(
     "Clear all responses?",
     "All responses will be deleted",
-    clearResponsesAction()
+    (close) => dispatch(clearResponsesAction()) && close()
   );
+
+  const {
+    dialog: BulkEditDialog,
+    openDialog: openBulkEditDialog,
+  } = useBulkEdit(gameName, isTriviaMode, questions);
 
   return (
     <>
-      <BulkEdit
-        open={showBulkEdit}
-        setOpen={setShowBulkEdit}
-        gameName={gameName}
-        isTriviaMode={isTriviaMode}
-        questions={questions}
-      />
+      <BulkEditDialog />
       <ContentContainer>
         <Card>
           <CardTitle
@@ -146,7 +144,7 @@ const EditQuestions = () => {
           />
           <CardFooter className={classes.footer}>
             <Button onClick={() => addQuestion()}>Add question</Button>
-            <Button onClick={() => setShowBulkEdit(true)}>Bulk edit</Button>
+            <Button onClick={openBulkEditDialog}>Bulk edit</Button>
             <Button onClick={openConfirmClearQuestions}>
               Clear all questions
             </Button>
