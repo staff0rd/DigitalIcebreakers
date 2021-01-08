@@ -7,52 +7,14 @@ import {
   arrangeIdeasAction,
   toggleNamesAction,
 } from "./IdeaWallReducer";
-import Modal from "@material-ui/core/Modal";
-import { makeStyles } from "@material-ui/core/styles";
-
-const useStyles = makeStyles((theme) => ({
-  modalContainer: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modal: {
-    backgroundColor: "white",
-    borderRadius: "5px",
-    padding: 20,
-  },
-}));
+import { ConfirmDialog } from "../../components/ConfirmDialog";
 
 const IdeaWallMenu = () => {
-  const classes = useStyles();
   const dispatch = useDispatch();
-  const [open, setOpen] = useState(false);
-  const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
-  const [action, setAction] = useState<any>();
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const ok = () => {
-    dispatch(action);
-    setOpen(false);
-  };
-
-  const confirmClear = () => {
-    setTitle("Clear all ideas?");
-    setBody("All ideas will be removed!");
-    setAction(clearIdeasAction());
-    setOpen(true);
-  };
-
-  const confirmArrange = () => {
-    setTitle("Arrange ideas?");
-    setBody("This will re-arrange all ideas");
-    setAction(arrangeIdeasAction(true));
-    setOpen(true);
-  };
+  const [confirmArrangeDialogOpen, setConfirmArrangeDialogOpen] = useState(
+    false
+  );
+  const [confirmClearDialogOpen, setConfirmClearDialogOpen] = useState(false);
 
   return (
     <>
@@ -62,25 +24,32 @@ const IdeaWallMenu = () => {
         </Button>
       </ListItem>
       <ListItem>
-        <Button onClick={() => confirmArrange()}>Arrange</Button>
+        <Button onClick={() => setConfirmArrangeDialogOpen(true)}>
+          Arrange
+        </Button>
       </ListItem>
+      <ConfirmDialog
+        header="Arrange ideas?"
+        content="This will re-arrange all ideas"
+        setOpen={setConfirmArrangeDialogOpen}
+        open={confirmArrangeDialogOpen}
+        action={() =>
+          dispatch(arrangeIdeasAction(true)) &&
+          setConfirmArrangeDialogOpen(false)
+        }
+      />
       <ListItem>
-        <Button onClick={() => confirmClear()}>Clear</Button>
+        <Button onClick={() => setConfirmClearDialogOpen(true)}>Clear</Button>
       </ListItem>
-      <Modal
-        className={classes.modalContainer}
-        open={open}
-        onClose={handleClose}
-      >
-        <div className={classes.modal}>
-          <h3>{title}</h3>
-          <p>{body}</p>
-          <Button color="primary" onClick={() => ok()}>
-            Ok
-          </Button>
-          <Button onClick={() => setOpen(false)}>Cancel</Button>
-        </div>
-      </Modal>
+      <ConfirmDialog
+        header="Clear all ideas?"
+        content="All ideas will be removed!"
+        open={confirmClearDialogOpen}
+        setOpen={setConfirmClearDialogOpen}
+        action={() =>
+          dispatch(clearIdeasAction()) && setConfirmClearDialogOpen(false)
+        }
+      />
     </>
   );
 };

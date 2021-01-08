@@ -28,6 +28,8 @@ import { BulkEdit } from "./BulkEdit";
 import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
 import { Name as PollName } from "games/Poll";
 import { getPollOrTriviaState } from "../getPollOrTriviaState";
+import { ConfirmDialog } from "components/ConfirmDialog";
+import { AutoQuestions } from "./AutoQuestions";
 
 const useStyles = makeStyles((theme) => ({
   table: {},
@@ -54,7 +56,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const EditQuestions = () => {
-  const [showBulkEdit, setShowBulkEdit] = useState<boolean>(false);
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -109,15 +110,51 @@ const EditQuestions = () => {
       }
     }
   };
+
+  // const {
+  //   component: ConfirmClearQuestions,
+  //   open: openConfirmClearQuestions,
+  // } = useConfirmDialog(
+  //   ,
+  //   ,
+  //   (close) => dispatch(importQuestionsAction([])) && close()
+  // );
+
+  // const {
+  //   component: ConfirmClearResponses,
+  //   open: openConfirmClearResponses,
+  // } = useConfirmDialog(
+
+  // );
+
+  // const {
+  //   dialog: BulkEditDialog,
+  //   openDialog: openBulkEditDialog,
+  // } = useBulkEdit(gameName, isTriviaMode, questions);
+
+  const [confirmClearQuestionsOpen, setConfirmClearQuestionsOpen] = useState(
+    false
+  );
+  const [confirmClearResponsesOpen, setConfirmClearResponsesOpen] = useState(
+    false
+  );
+  const [bulkEditOpen, setBulkEditOpen] = useState(false);
+  const [autoQuestionsOpen, setAutoQuestionsOpen] = useState(false);
   return (
     <>
       <BulkEdit
-        open={showBulkEdit}
-        setOpen={setShowBulkEdit}
         gameName={gameName}
         isTriviaMode={isTriviaMode}
         questions={questions}
+        open={bulkEditOpen}
+        setOpen={setBulkEditOpen}
       />
+      {isTriviaMode && (
+        <AutoQuestions
+          open={autoQuestionsOpen}
+          setOpen={setAutoQuestionsOpen}
+        />
+      )}
       <ContentContainer>
         <Card>
           <CardTitle
@@ -126,13 +163,38 @@ const EditQuestions = () => {
           />
           <CardFooter className={classes.footer}>
             <Button onClick={() => addQuestion()}>Add question</Button>
-            <Button onClick={() => setShowBulkEdit(true)}>Bulk edit</Button>
-            <Button onClick={() => dispatch(importQuestionsAction([]))}>
+            <Button onClick={() => setBulkEditOpen(true)}>Bulk edit</Button>
+            {isTriviaMode && (
+              <Button onClick={() => setAutoQuestionsOpen(true)}>
+                Auto questions
+              </Button>
+            )}
+            <Button onClick={() => setConfirmClearQuestionsOpen(true)}>
               Clear all questions
             </Button>
-            <Button onClick={() => dispatch(clearResponsesAction())}>
+            <ConfirmDialog
+              header="Clear all questions?"
+              content="All questions and responses will be deleted"
+              action={() =>
+                dispatch(clearResponsesAction()) &&
+                setConfirmClearQuestionsOpen(false)
+              }
+              open={confirmClearQuestionsOpen}
+              setOpen={setConfirmClearQuestionsOpen}
+            />
+            <Button onClick={() => setConfirmClearResponsesOpen(true)}>
               Clear all responses
             </Button>
+            <ConfirmDialog
+              header="Clear all responses?"
+              content="All responses will be deleted"
+              action={() =>
+                dispatch(clearResponsesAction()) &&
+                setConfirmClearResponsesOpen(false)
+              }
+              open={confirmClearResponsesOpen}
+              setOpen={setConfirmClearResponsesOpen}
+            />
             <Button onClick={() => (fileUpload.current as any).click()}>
               Import questions
             </Button>

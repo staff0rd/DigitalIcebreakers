@@ -1,5 +1,4 @@
-import React, { Fragment } from "react";
-import { Button, Modal } from "react-bootstrap";
+import React from "react";
 import { Events } from "../../Events";
 import { IdeaContainer, Lane } from "./IdeaContainer";
 import { IdeaView } from "./IdeaView";
@@ -18,18 +17,6 @@ import { RootState } from "../../store/RootState";
 const WIDTH = 200;
 const MARGIN = 5;
 
-export const StartStopContinueLanes: Lane[] = [
-  { name: "Start", id: 0 },
-  { name: "Stop", id: 1 },
-  { name: "Continue", id: 2 },
-];
-
-interface ModalProperties {
-  title: string;
-  body: string;
-  action: ((e: React.SyntheticEvent<EventTarget>) => void) | undefined;
-}
-
 interface IdeaWallPresenterProps extends BaseGameProps {
   storageKey: string;
   lanes?: Lane[];
@@ -39,8 +26,6 @@ interface IdeaWallPresenterProps extends BaseGameProps {
 interface IdeaWallPresenterState {
   ideas: Idea[];
   showNames: boolean;
-  showModal: boolean;
-  modal: ModalProperties;
 }
 
 const connector = connect((state: RootState) => state.games.ideawall, {
@@ -66,12 +51,6 @@ class IdeaWallPresenter extends BaseGame<
     this.state = {
       ideas: [],
       showNames: false,
-      showModal: false,
-      modal: {
-        title: "",
-        body: "",
-        action: undefined,
-      },
     };
   }
 
@@ -97,24 +76,6 @@ class IdeaWallPresenter extends BaseGame<
       });
     }
   }
-
-  closeModal = () => {
-    this.setState({ showModal: false });
-  };
-
-  confirmArrange = () => {
-    this.setState({
-      showModal: true,
-      modal: {
-        title: "Arrange ideas?",
-        body: "This will re-arrange all ideas",
-        action: () => {
-          this.ideaContainer!.arrange();
-          this.closeModal();
-        },
-      },
-    });
-  };
 
   ideaUpdated = (idea: Idea) => {
     this.props.ideaUpdatedAction(idea);
@@ -167,28 +128,7 @@ class IdeaWallPresenter extends BaseGame<
   }
 
   render() {
-    const clearModal = (
-      <Modal show={this.state.showModal} onHide={this.closeModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>{this.state.modal.title}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>{this.state.modal.body}</p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button bsStyle="primary" onClick={this.state.modal.action}>
-            Ok
-          </Button>
-          <Button onClick={this.closeModal}>Cancel</Button>
-        </Modal.Footer>
-      </Modal>
-    );
-    return (
-      <Fragment>
-        <Pixi onAppChange={(app) => this.init(app)} />
-        {clearModal}
-      </Fragment>
-    );
+    return <Pixi onAppChange={(app) => this.init(app)} />;
   }
 }
 

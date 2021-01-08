@@ -72,7 +72,7 @@ const games: Game[] = [
     client: Client,
     presenter: TriviaPresenter,
     description:
-      "Like polling but with a scoreboard: Add questions and run a trivia sesssion.",
+      "Like polling but with a scoreboard: Add or generate questions and run a trivia session.",
     routes: pollAndTriviaRoutes,
   },
   {
@@ -129,11 +129,6 @@ const games: Game[] = [
     title: "Idea Wall",
     description:
       "A virtual wall of ideas. Stick 'em to the wall and move them around",
-    //}, {
-    //     name: "startstopcontinue",
-    //     client: <StartStopContinueClient,
-    //     presenter: <IdeaWallPresenter dynamicSize={true} {...props} storageKey="startstopcontinue:ideas" lanes={StartStopContinueLanes} />,
-    //     title: "Start Stop Continue",
   },
   {
     name: "broadcast",
@@ -142,11 +137,6 @@ const games: Game[] = [
     title: "Broadcast",
     description:
       "Demonstration of two-way, real-time presenter and audience participation",
-    // }, {
-    //     name: "slideshow",
-    //     client: <SlideshowClient,
-    //     presenter: <SlideshowPresenter {...props} storageKey="slideshow:state" />,
-    //     title: "Slideshow",
   },
   {
     title: "Reaction",

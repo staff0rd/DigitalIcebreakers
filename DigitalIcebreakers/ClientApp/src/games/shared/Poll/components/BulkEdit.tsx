@@ -1,26 +1,16 @@
 import React, { useEffect, useState } from "react";
-import Dialog from "@material-ui/core/Dialog";
-import Button from "../../../../layout/components/CustomButtons/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import CustomInput from "layout/components/CustomInput/CustomInput";
 import Alert from "@material-ui/lab/Alert";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogActions from "@material-ui/core/DialogActions";
 import { useDispatch } from "react-redux";
 import { Question } from "../types/Question";
 import { guid } from "util/guid";
 import { Answer } from "games/shared/Poll/types/Answer";
 import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
-import { NameAndMode } from "games/shared/Poll/types/NameAndMode";
+import { ConfirmDialog } from "components/ConfirmDialog";
 
 const useStyles = makeStyles((theme) => ({
-  paper: {
-    width: "50%",
-    [theme.breakpoints.down("sm")]: {
-      width: "90%",
-    },
-  },
   form: {
     marginTop: theme.spacing(2),
   },
@@ -126,19 +116,15 @@ const questionsForBulkEditSelector = (
     })
     .join("\n");
 
-type BulkEditProps = {
+type Props = {
+  gameName: string;
+  isTriviaMode: boolean;
+  questions: Question[];
   open: boolean;
   setOpen: (open: boolean) => void;
-  questions: Question[];
-} & NameAndMode;
-
-export const BulkEdit = ({
-  open,
-  setOpen,
-  gameName,
-  questions,
-  isTriviaMode,
-}: BulkEditProps) => {
+};
+export const BulkEdit = (props: Props) => {
+  const { gameName, isTriviaMode, questions, open, setOpen } = props;
   const { importQuestionsAction } = presenterActions(gameName);
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -154,6 +140,7 @@ export const BulkEdit = ({
     setQuestionLines(questionsFromRedux);
   }, [questionsFromRedux]);
   const [error, setError] = useState<string>("");
+
   const handleOk = () => {
     const { errorLine, errorMessage, isValid, questions } = validate(
       questionLines,
@@ -167,57 +154,53 @@ export const BulkEdit = ({
       setError(`Line ${errorLine}: ${errorMessage}`);
     }
   };
-  const handleClose = () => {
-    setOpen(false);
-  };
+
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const target = e.target as HTMLTextAreaElement;
     setQuestionLines(target.value);
   };
+
   return (
-    <Dialog
-      PaperProps={{
-        className: classes.paper,
-      }}
+    <ConfirmDialog
+      header="Bulk edit"
+      action={handleOk}
       open={open}
-      onClose={handleClose}
-    >
-      <DialogContent>
-        <Typography variant="h4">Bulk edit</Typography>
-        <Alert severity="info">
-          <Typography variant="body2">
-            First line should be a question
-          </Typography>
-          <Typography variant="body2">- Questions start with a dash</Typography>
-          <Typography variant="body2">
-            * Correct answers start with an asterix (zero or one per question)
-          </Typography>
-          <Typography variant="body2" color="primary">
-            Using bulk edit will clear audience responses
-          </Typography>
-        </Alert>
-        <CustomInput
-          multiline
-          id="bulk-edit"
-          rows={10}
-          labelText="Questions &amp; answers"
-          error={error.length > 0}
-          className={classes.input}
-          formControlProps={{
-            className: classes.form,
-            fullWidth: true,
-          }}
-          value={questionLines}
-          onChange={onChange}
-        />
-        {error.length > 0 && <Alert severity="error">{error}</Alert>}
-      </DialogContent>
-      <DialogActions>
-        <Button color="primary" onClick={handleOk}>
-          Ok
-        </Button>
-        <Button onClick={handleClose}>Cancel</Button>
-      </DialogActions>
-    </Dialog>
+      setOpen={setOpen}
+      content={
+        <>
+          <Alert severity="info">
+            <Typography variant="body2">
+              First line should be a question
+            </Typography>
+            <Typography variant="body2">
+              - Questions start with a dash
+            </Typography>
+            <Typography variant="body2">
+              * Correct answers start with an asterix (zero or one per question)
+            </Typography>
+          </Alert>
+          <Alert severity="warning">
+            <Typography variant="body2">
+              Using bulk edit will clear audience responses
+            </Typography>
+          </Alert>
+          <CustomInput
+            multiline
+            id="bulk-edit"
+            rows={10}
+            labelText="Questions &amp; answers"
+            error={error.length > 0}
+            className={classes.input}
+            formControlProps={{
+              className: classes.form,
+              fullWidth: true,
+            }}
+            value={questionLines}
+            onChange={onChange}
+          />
+          {error.length > 0 && <Alert severity="error">{error}</Alert>}
+        </>
+      }
+    />
   );
 };
