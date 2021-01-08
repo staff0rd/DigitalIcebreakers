@@ -4,33 +4,13 @@ import { clientMessage } from "../../store/lobby/actions";
 import { ContentContainer } from "../../components/ContentContainer";
 import Grid from "@material-ui/core/Grid";
 import Card from "../../layout/components/Card/Card";
-import CardBody from "../../layout/components/Card/CardBody";
 import CardFooter from "../../layout/components/Card/CardFooter";
-import CardTitle from "../../layout/components/Card/CardTitle";
-import CustomInput from "../../layout/components/CustomInput/CustomInput";
 import Button from "../../layout/components/CustomButtons/Button";
-import { makeStyles } from "@material-ui/core/styles";
-
-const MAX_CHARACTERS = 50;
-
-const useStyles = makeStyles((theme) => ({
-  input: {
-    margin: 0,
-  },
-}));
+import { IdeaEntry } from "./IdeaEntry";
 
 export const IdeaWallClient = () => {
-  const [idea, setIdea] = useState<string>("");
   const dispatch = useDispatch();
-
-  const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const target = e.target as HTMLTextAreaElement;
-    if (
-      target.value.split("\n").length <= 4 &&
-      target.value.length < MAX_CHARACTERS
-    )
-      setIdea(target.value);
-  };
+  const [idea, setIdea] = useState<string>("");
 
   const onClick = (e: React.SyntheticEvent<EventTarget>) => {
     if (idea.length) {
@@ -39,35 +19,17 @@ export const IdeaWallClient = () => {
     }
   };
 
-  const classes = useStyles();
-
   return (
     <ContentContainer>
       <Grid container>
         <Grid item xs={12} sm={12} md={8}>
           <Card>
-            <CardTitle
-              title="Your idea"
-              subTitle="Add your idea to the board"
+            <IdeaEntry
+              idea={idea}
+              setIdea={setIdea}
+              maxCharacters={50}
+              maxLines={4}
             />
-            <CardBody>
-              <Grid container>
-                <Grid item xs={12} sm={12} md={6}>
-                  <CustomInput
-                    multiline
-                    rows={4}
-                    id="idea-value"
-                    labelText={`Your idea (${idea.length}/${MAX_CHARACTERS})`}
-                    formControlProps={{
-                      className: classes.input,
-                      fullWidth: true,
-                    }}
-                    value={idea}
-                    onChange={onChange}
-                  />
-                </Grid>
-              </Grid>
-            </CardBody>
             <CardFooter>
               <Button color="primary" onClick={onClick}>
                 Send
