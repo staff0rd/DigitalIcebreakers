@@ -137,11 +137,6 @@ const games: Game[] = [
     title: "Broadcast",
     description:
       "Demonstration of two-way, real-time presenter and audience participation",
-    // }, {
-    //     name: "slideshow",
-    //     client: <SlideshowClient,
-    //     presenter: <SlideshowPresenter {...props} storageKey="slideshow:state" />,
-    //     title: "Slideshow",
   },
   {
     title: "Reaction",

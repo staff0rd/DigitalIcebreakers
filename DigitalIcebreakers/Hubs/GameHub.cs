@@ -139,7 +139,6 @@ namespace DigitalIcebreakers.Hubs
                 case "pong": return new Pong(_send, _lobbys);
                 case "ideawall": return new IdeaWall(_send, _lobbys);
                 case "broadcast": return new Broadcast(_send, _lobbys);
-                case "slideshow": return new Slideshow(_send, _lobbys);
                 case "reaction": return new Reaction(_send, _lobbys);
                 case "splat": return new Splat(_send, _lobbys);
                 case "poll": return new Poll(_send, _lobbys);

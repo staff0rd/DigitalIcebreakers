@@ -1,1 +1,0 @@
-convert $2 -crop $1%x+0+0 +repage $1-$2 
