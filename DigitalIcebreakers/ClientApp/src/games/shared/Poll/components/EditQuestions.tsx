@@ -164,9 +164,11 @@ const EditQuestions = () => {
           <CardFooter className={classes.footer}>
             <Button onClick={() => addQuestion()}>Add question</Button>
             <Button onClick={() => setBulkEditOpen(true)}>Bulk edit</Button>
-            <Button onClick={() => setAutoQuestionsOpen(true)}>
-              Auto questions
-            </Button>
+            {isTriviaMode && (
+              <Button onClick={() => setAutoQuestionsOpen(true)}>
+                Auto questions
+              </Button>
+            )}
             <Button onClick={() => setConfirmClearQuestionsOpen(true)}>
               Clear all questions
             </Button>
