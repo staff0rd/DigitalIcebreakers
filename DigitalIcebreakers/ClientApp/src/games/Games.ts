@@ -129,11 +129,6 @@ const games: Game[] = [
     title: "Idea Wall",
     description:
       "A virtual wall of ideas. Stick 'em to the wall and move them around",
-    //}, {
-    //     name: "startstopcontinue",
-    //     client: <StartStopContinueClient,
-    //     presenter: <IdeaWallPresenter dynamicSize={true} {...props} storageKey="startstopcontinue:ideas" lanes={StartStopContinueLanes} />,
-    //     title: "Start Stop Continue",
   },
   {
     name: "broadcast",
