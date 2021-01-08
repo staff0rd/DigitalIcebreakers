@@ -11,12 +11,6 @@ import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
 import { ConfirmDialog } from "components/ConfirmDialog";
 
 const useStyles = makeStyles((theme) => ({
-  paper: {
-    width: "50%",
-    [theme.breakpoints.down("sm")]: {
-      width: "90%",
-    },
-  },
   form: {
     marginTop: theme.spacing(2),
   },

@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 type Props = {
-  header: string;
+  header: ReactNode;
   content: ReactNode;
   action: (close: Function) => void;
   setOpen: (open: boolean) => void;
@@ -46,6 +46,11 @@ export const ConfirmDialog = (props: Props) => {
       return <Typography variant="body1">{content}</Typography>;
     else return content;
   };
+  const getHeader = () => {
+    if (typeof header === "string")
+      return <Typography variant="h4">{header}</Typography>;
+    else return header;
+  };
 
   return (
     <Dialog
@@ -56,7 +61,7 @@ export const ConfirmDialog = (props: Props) => {
       onClose={handleClose}
     >
       <DialogContent>
-        <Typography variant="h4">{header}</Typography>
+        {getHeader()}
         {getContent()}
       </DialogContent>
       <DialogActions>

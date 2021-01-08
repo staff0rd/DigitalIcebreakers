@@ -29,6 +29,7 @@ import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
 import { Name as PollName } from "games/Poll";
 import { getPollOrTriviaState } from "../getPollOrTriviaState";
 import { ConfirmDialog } from "components/ConfirmDialog";
+import { AutoQuestions } from "./AutoQuestions";
 
 const useStyles = makeStyles((theme) => ({
   table: {},
@@ -138,6 +139,7 @@ const EditQuestions = () => {
     false
   );
   const [bulkEditOpen, setBulkEditOpen] = useState(false);
+  const [autoQuestionsOpen, setAutoQuestionsOpen] = useState(false);
   return (
     <>
       <BulkEdit
@@ -147,6 +149,12 @@ const EditQuestions = () => {
         open={bulkEditOpen}
         setOpen={setBulkEditOpen}
       />
+      {isTriviaMode && (
+        <AutoQuestions
+          open={autoQuestionsOpen}
+          setOpen={setAutoQuestionsOpen}
+        />
+      )}
       <ContentContainer>
         <Card>
           <CardTitle
@@ -156,6 +164,9 @@ const EditQuestions = () => {
           <CardFooter className={classes.footer}>
             <Button onClick={() => addQuestion()}>Add question</Button>
             <Button onClick={() => setBulkEditOpen(true)}>Bulk edit</Button>
+            <Button onClick={() => setAutoQuestionsOpen(true)}>
+              Auto questions
+            </Button>
             <Button onClick={() => setConfirmClearQuestionsOpen(true)}>
               Clear all questions
             </Button>
