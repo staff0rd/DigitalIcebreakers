@@ -29,11 +29,21 @@ interface Props extends Partial<DOMAttributes<HTMLButtonElement>> {
   justIcon?: boolean;
   className?: string;
   muiClasses?: object;
+  startIcon?: ReactNode;
   children?: ReactNode;
 }
 
+const useOverrides = makeStyles((theme) => ({
+  button: {
+    "& .MuiButton-startIcon": {
+      marginRight: 0,
+    },
+  },
+}));
+
 export default function RegularButton(props: Props) {
   const classes = useStyles();
+  const overrides = useOverrides();
   const {
     color,
     round,
@@ -46,6 +56,7 @@ export default function RegularButton(props: Props) {
     justIcon,
     className,
     muiClasses,
+    startIcon,
     ...rest
   } = props;
   const btnClasses = classNames({
@@ -61,7 +72,12 @@ export default function RegularButton(props: Props) {
     [className || ""]: className,
   });
   return (
-    <Button {...rest} classes={muiClasses} className={btnClasses}>
+    <Button
+      {...rest}
+      classes={muiClasses}
+      className={classNames(btnClasses, overrides.button)}
+      startIcon={startIcon}
+    >
       {children}
     </Button>
   );

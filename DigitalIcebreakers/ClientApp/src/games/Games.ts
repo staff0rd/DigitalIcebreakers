@@ -20,8 +20,8 @@ import SplatPresenter from "./Splat/SplatPresenter";
 import PongPresenter from "./Pong/PongPresenter";
 import { PongClient } from "./Pong/PongClient";
 import PongMenu from "./Pong/PongMenu";
-import ReactionClient from "./Reaction/ReactionClient";
-import ReactionPresenter from "./Reaction/ReactionPresenter";
+import { ReactionPlayer } from "./Reaction/ReactionClient";
+import { ReactionPresenter } from "./Reaction/ReactionPresenter";
 import { Name as PollName } from "./Poll";
 import { PollPresenter } from "./Poll/PollPresenter";
 import Client from "./shared/Poll/Client";
@@ -151,7 +151,7 @@ const games: Game[] = [
   {
     title: "Reaction",
     name: "reaction",
-    client: ReactionClient,
+    client: ReactionPlayer,
     presenter: ReactionPresenter,
     description:
       "Test audience reflexes in this all-vs-all shape-matching game",

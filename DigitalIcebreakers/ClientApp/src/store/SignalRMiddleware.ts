@@ -3,7 +3,6 @@ import { HubConnection } from "@microsoft/signalr";
 import {
   CONNECTION_CONNECT,
   SET_CONNECTION_STATUS,
-  SET_GAME_MESSAGE_CALLBACK,
   ConnectionActionTypes,
   ReconnectPayload,
 } from "./connection/types";
@@ -135,14 +134,6 @@ export const SignalRMiddleware = (connectionFactory: () => HubConnection) => {
         | ShellActionTypes
     ) => {
       switch (action.type) {
-        case SET_GAME_MESSAGE_CALLBACK: {
-          connection.off("gameMessage");
-          connection.on("gameMessage", (args: any) => {
-            console.log("gameMessage: ", args);
-            action.callback(args);
-          });
-          return;
-        }
         case CLEAR_LOBBY: {
           navigateTo("/lobby-closed");
           break;
