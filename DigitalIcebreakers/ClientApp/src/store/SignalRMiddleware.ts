@@ -195,7 +195,8 @@ export const SignalRMiddleware = (connectionFactory: () => HubConnection) => {
               const { lobby } = getState();
               if (lobby.joiningLobbyId) {
                 dispatch(joinLobby(lobby.joiningLobbyId));
-              } else dispatch(goToDefaultUrl());
+              } else if (lobby.id) dispatch(joinLobby(lobby.id));
+              else dispatch(goToDefaultUrl());
               break;
             }
           }
