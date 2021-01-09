@@ -8,26 +8,25 @@ namespace DigitalIcebreakers.Games
 {
     public class Poll : Game, IGame
     {
-        public override string Name => "poll";
 
         SelectableAnswers _lastAnswers;
 
         Dictionary<Player, List<SelectedAnswer>> _playerAnswers = new Dictionary<Player, List<SelectedAnswer>>();
 
-        public Poll(Sender sender, LobbyManager lobbyManager) : base(sender, lobbyManager) {}
+        public Poll(Sender sender, LobbyManager lobbyManager) : base(sender, lobbyManager) { }
 
         public override async Task OnReceivePlayerMessage(JToken payload, string connectionId)
-        {   
+        {
             var player = GetPlayerByConnectionId(connectionId);
             var selectedAnswer = CacheAnswer(player, payload.ToObject<SelectedAnswer>());
 
-            await SendToPresenter(connectionId, new [] { selectedAnswer }, player);
+            await SendToPresenter(connectionId, new[] { selectedAnswer }, player);
         }
 
         private SelectedAnswer CacheAnswer(Player player, SelectedAnswer selectedAnswer)
         {
             if (!_playerAnswers.ContainsKey(player))
-            {    
+            {
                 _playerAnswers.Add(player, new List<SelectedAnswer>());
             }
 
@@ -35,10 +34,11 @@ namespace DigitalIcebreakers.Games
 
             var existing = answers.FirstOrDefault(p => p.QuestionId == selectedAnswer.QuestionId);
 
-            if (existing != null) {
+            if (existing != null)
+            {
                 return existing;
             }
-            
+
             answers.Add(selectedAnswer);
 
             return selectedAnswer;
@@ -54,8 +54,8 @@ namespace DigitalIcebreakers.Games
         }
 
         public async override Task OnReceivePresenterMessage(JToken payload, string connectionId)
-        {             
-            
+        {
+
             var answers = payload.ToObject<SelectableAnswers>();
             if (answers != null)
             {
@@ -69,7 +69,7 @@ namespace DigitalIcebreakers.Games
             string action = payload.ToString();
             if (action == "join")
             {
-                var player = GetPlayerByConnectionId(connectionId) ;
+                var player = GetPlayerByConnectionId(connectionId);
                 if (player != null)
                 {
                     if (_lastAnswers != null)

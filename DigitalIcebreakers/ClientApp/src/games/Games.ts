@@ -31,6 +31,8 @@ import { RouteLink } from "../layout/useRoutes";
 import LiveHelp from "@material-ui/icons/LiveHelp";
 import EditQuestions from "./shared/Poll/components/EditQuestions";
 import EditQuestion from "./shared/Poll/components/EditQuestion";
+import { Name as IdeaWallName } from "./IdeaWall/IdeaWallReducer";
+import * as StartStopContinue from "./StartStopContinue";
 
 interface Game {
   name: string;
@@ -76,6 +78,15 @@ const games: Game[] = [
     routes: pollAndTriviaRoutes,
   },
   {
+    isNew: true,
+    title: "Start Stop Continue",
+    name: StartStopContinue.Name,
+    client: StartStopContinue.Player,
+    presenter: StartStopContinue.Presenter,
+    description: "Run a retrospective with your team",
+    menu: StartStopContinue.Menu,
+  },
+  {
     name: "doggos-vs-kittehs",
     client: DoggosVsKittehsClient,
     presenter: DoggosVsKittehsPresenter,
@@ -83,7 +94,7 @@ const games: Game[] = [
     description: "Audience polling - Furry friend edition",
   },
   {
-    name: "namepicker",
+    name: "name-picker",
     menu: NamePickerMenu,
     client: NamePickerClient,
     presenter: NamePickerPresenter,
@@ -122,7 +133,7 @@ const games: Game[] = [
     description: "Mob pong for large audiences - red vs blue!",
   },
   {
-    name: "ideawall",
+    name: IdeaWallName,
     client: IdeaWallClient,
     presenter: IdeaWallPresenter,
     menu: IdeaWallMenu,

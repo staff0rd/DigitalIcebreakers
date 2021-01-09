@@ -8,13 +8,13 @@ namespace DigitalIcebreakers.Games
 {
     public class Trivia : Poll, IGame
     {
-        public override string Name => "trivia";
         bool CanAnswer = true;
-        public Trivia(Sender sender, LobbyManager lobbyManager) : base(sender, lobbyManager) {}
+        public Trivia(Sender sender, LobbyManager lobbyManager) : base(sender, lobbyManager) { }
 
         public async override Task OnReceivePresenterMessage(JToken payload, string connectionId)
-        {             
-            if (payload.HasValues) {
+        {
+            if (payload.HasValues)
+            {
                 var canAnswer = payload.Value<bool?>("canAnswer");
                 if (canAnswer.HasValue)
                 {
@@ -33,7 +33,7 @@ namespace DigitalIcebreakers.Games
             string action = payload.ToString();
             if (action == "join")
             {
-                var player = GetPlayerByConnectionId(connectionId) ;
+                var player = GetPlayerByConnectionId(connectionId);
                 if (player != null)
                 {
                     await SendToPlayer(connectionId, new CanAnswerPayload { CanAnswer = CanAnswer });

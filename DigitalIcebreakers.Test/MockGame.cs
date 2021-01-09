@@ -8,15 +8,13 @@ using Newtonsoft.Json.Linq;
 
 namespace DigitalIcebreakers.Test
 {
-    public class MockGame: Game, IGame
+    public class MockGame : Game, IGame
     {
-        public List<string> SystemMessages { get; private set;} = new List<string>();
-        public List<string> ClientMessages { get; private set;} = new List<string>();
-        public List<string> AdminMessages { get; private set;} = new List<string>();
+        public List<string> SystemMessages { get; private set; } = new List<string>();
+        public List<string> ClientMessages { get; private set; } = new List<string>();
+        public List<string> AdminMessages { get; private set; } = new List<string>();
 
-        public override string Name => "mockgame";
-
-        public MockGame(Sender sender, LobbyManager lobbyManager) : base(sender, lobbyManager) {}
+        public MockGame(Sender sender, LobbyManager lobbyManager) : base(sender, lobbyManager) { }
 
         public override Task OnReceivePresenterMessage(JToken admin, string connectionId)
         {

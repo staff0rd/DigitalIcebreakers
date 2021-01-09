@@ -6,15 +6,24 @@ import Grid from "@material-ui/core/Grid";
 import Card from "../../layout/components/Card/Card";
 import CardFooter from "../../layout/components/Card/CardFooter";
 import Button from "../../layout/components/CustomButtons/Button";
-import { IdeaEntry } from "../shared/IdeaEntry";
+import { IdeaEntry } from "games/shared/IdeaEntry";
+import { Category, getCategories, Categories } from "./Category";
 
-export const IdeaWallClient = () => {
+export type PlayerPayload = {
+  category: Category;
+  message: string;
+};
+
+export const Player = () => {
   const dispatch = useDispatch();
   const [idea, setIdea] = useState<string>("");
 
-  const onClick = (e: React.SyntheticEvent<EventTarget>) => {
+  const onClick = (
+    e: React.SyntheticEvent<EventTarget>,
+    category: Category
+  ) => {
     if (idea.length) {
-      dispatch(clientMessage(idea));
+      dispatch(clientMessage({ category, message: idea } as PlayerPayload));
       setIdea("");
     }
   };
@@ -27,13 +36,18 @@ export const IdeaWallClient = () => {
             <IdeaEntry
               idea={idea}
               setIdea={setIdea}
-              maxCharacters={50}
+              maxCharacters={200}
               maxLines={4}
             />
             <CardFooter>
-              <Button color="primary" onClick={onClick}>
-                Send
-              </Button>
+              {getCategories().map((category) => (
+                <Button
+                  color="primary"
+                  onClick={(e) => onClick(e, Category[category as Categories])}
+                >
+                  {category}
+                </Button>
+              ))}
             </CardFooter>
           </Card>
         </Grid>

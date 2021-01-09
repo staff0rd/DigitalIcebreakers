@@ -19,7 +19,7 @@ const IDEA_COLORS = [
   Colors.Red.A100,
 ];
 
-export const Name = "ideawall";
+export const Name = "idea-wall";
 
 export const loadIdeasAction = createGameAction(
   Name,

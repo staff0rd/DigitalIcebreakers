@@ -8,8 +8,6 @@ namespace DigitalIcebreakers.Games
 {
     public class Pong : Game, IGame
     {
-        public override string Name => "pong";
-
         public Pong(Sender sender, LobbyManager lobbyManager) : base(sender, lobbyManager) { }
 
         public Pong(Sender sender, LobbyManager lobbyManager, Dictionary<Guid, int> leftTeam, Dictionary<Guid, int> rightTeam) : this(sender, lobbyManager)

@@ -37,6 +37,7 @@ namespace DigitalIcebreakers.EndToEndTests
         public async Task Then_should_be_connected_to_second_lobby()
         {
             await BrowserFactory.JoinLobby(_presenter2.Url, _player.Page);
+            await Task.Delay(250);
             var text = await _player.Page.GetTextContentByTestId("client-text");
             text.ShouldBe("presenter2");
         }

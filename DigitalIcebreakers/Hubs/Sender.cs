@@ -15,19 +15,19 @@ namespace DigitalIcebreakers
             _clients = clients;
         }
 
-        public async Task SendGameMessageToPlayers(Lobby lobby, object payload)
+        public async Task SendPayloadToPlayers(Lobby lobby, object payload)
         {
             var clients = _clients.Players(lobby);
-            await SendGameMessage(clients, payload);
+            await SendPayload(clients, payload);
         }
 
-        public async Task SendGameMessageToPlayer(Player player, object payload)
+        public async Task SendPayloadToPlayer(Player player, object payload)
         {
             var clients = _clients.Player(player);
-            await SendGameMessage(clients, payload);
+            await SendPayload(clients, payload);
         }
 
-        private async Task SendGameMessage(IClientProxy clients, object payload)
+        private async Task SendPayload(IClientProxy clients, object payload)
         {
             await clients.SendAsync("gameMessage", payload);
         }
@@ -35,7 +35,7 @@ namespace DigitalIcebreakers
         public async virtual Task SendGameMessageToPresenter<T>(Lobby lobby, T payload, Player player = null)
         {
             var client = _clients.Admin(lobby);
-            await SendGameMessage(client, new GameMessage<T>(payload, player));
+            await SendPayload(client, new GameMessage<T>(payload, player));
         }
 
         public async Task Reconnect(Lobby lobby, Player player)
