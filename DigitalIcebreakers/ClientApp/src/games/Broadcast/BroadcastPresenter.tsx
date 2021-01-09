@@ -1,10 +1,10 @@
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { adminMessage } from "../../store/lobby/actions";
 import { ContentContainer } from "../../components/ContentContainer";
 import { makeStyles, TextField } from "@material-ui/core";
 import { useSelector } from "store/useSelector";
-import { setTextAction } from "./BroadcastReducer";
+import { resetAction, setTextAction } from "./BroadcastReducer";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -19,6 +19,11 @@ export const BroadcastPresenter = () => {
     (state) => state.games.broadcast.presenter
   );
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(resetAction());
+    dispatch(adminMessage(""));
+  }, []);
 
   const updateClientText = (e: ChangeEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;

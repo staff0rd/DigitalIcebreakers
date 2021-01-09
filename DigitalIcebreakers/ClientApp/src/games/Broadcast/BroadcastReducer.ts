@@ -1,5 +1,6 @@
 import { combineReducers } from "redux";
 import {
+  createGameAction,
   createGameActionWithPayload,
   createReceiveReducer,
 } from "store/actionHelpers";
@@ -11,6 +12,8 @@ export const setTextAction = createGameActionWithPayload<string>(
   "presenter",
   "set-text"
 );
+
+export const resetAction = createGameAction(Name, "presenter", "reset");
 
 type BroadcastClientState = {
   text: string;
@@ -40,12 +43,14 @@ const broadcastClientReducer = createReceiveReducer<
   "client"
 );
 
+const initialPresenterState = { dings: 0, text: "" };
+
 const broadcastPresenterReducer = createReceiveReducer<
   string,
   BroadcastPresenterState
 >(
   Name,
-  { dings: 0, text: "" },
+  initialPresenterState,
   (state) => ({
     ...state,
     dings: state.dings + 1,
@@ -56,6 +61,7 @@ const broadcastPresenterReducer = createReceiveReducer<
       ...state,
       text: action.payload,
     }));
+    builder.addCase(resetAction, (state) => initialPresenterState);
   }
 );
 
