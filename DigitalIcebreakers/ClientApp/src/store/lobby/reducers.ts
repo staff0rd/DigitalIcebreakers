@@ -47,7 +47,10 @@ export function lobbyReducer(
     case PLAYER_JOINED_LOBBY: {
       return {
         ...state,
-        players: [...state.players, action.player],
+        players: [
+          ...state.players.filter((p) => p.id !== action.player.id),
+          action.player,
+        ],
       };
     }
     case PLAYER_LEFT_LOBBY: {

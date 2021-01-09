@@ -1,5 +1,5 @@
 import { lobbyReducer } from "./reducers";
-import { createLobby, joinLobby, setLobby } from "./actions";
+import { createLobby, joinLobby, playerJoinedLobby, setLobby } from "./actions";
 import { LobbyState } from "./types";
 
 describe("lobbyReducer", () => {
@@ -25,6 +25,15 @@ describe("lobbyReducer", () => {
         createLobby("my lobby name")
       );
       expect(result.isPresenter).toBe(true);
+    });
+  });
+  describe("when joined more than once", () => {
+    it("should de-dupe players", () => {
+      const result = lobbyReducer(
+        { players: [{ id: "id", name: "name" }] } as LobbyState,
+        playerJoinedLobby({ id: "id", name: "name" })
+      );
+      expect(result.players.length).toBe(1);
     });
   });
 });

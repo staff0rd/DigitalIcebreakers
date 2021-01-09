@@ -17,7 +17,7 @@ namespace DigitalIcebreakers.Test
         {
             _output = output;
             _logger = _output.BuildLoggerFor<LobbyLogger>();
-            _lobbyLogger = new LobbyLogger(_logger);
+            _lobbyLogger = new LobbyLogger(_logger, new List<Lobby>());
         }
 
         public void Dispose()

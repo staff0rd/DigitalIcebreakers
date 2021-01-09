@@ -144,6 +144,7 @@ export const SignalRMiddleware = (connectionFactory: () => HubConnection) => {
         }
         case SET_LOBBY_GAME: {
           const isPresenter = getState().lobby.isPresenter;
+          connection.off("gameMessage");
           connection.on("gameMessage", (args: any) => {
             dispatch({
               type: `${action.game}-${
@@ -194,7 +195,8 @@ export const SignalRMiddleware = (connectionFactory: () => HubConnection) => {
               const { lobby } = getState();
               if (lobby.joiningLobbyId) {
                 dispatch(joinLobby(lobby.joiningLobbyId));
-              } else dispatch(goToDefaultUrl());
+              } else if (lobby.id) dispatch(joinLobby(lobby.id));
+              else dispatch(goToDefaultUrl());
               break;
             }
           }

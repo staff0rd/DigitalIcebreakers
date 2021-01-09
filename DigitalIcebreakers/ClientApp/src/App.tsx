@@ -8,7 +8,6 @@ import { configureAppStore } from "./store/configureAppStore";
 import { EnhancedStore, AnyAction } from "@reduxjs/toolkit";
 import { RootState } from "./store/RootState";
 import { connectionConnect } from "./store/connection/actions";
-import ReactAI from "./app-insights-deprecated";
 import { setUser } from "./store/user/actions";
 import { useSelector } from "./store/useSelector";
 import { Player } from "Player";
@@ -40,7 +39,7 @@ export default class App extends Component<{}, AppState> {
 
     this.isDebug = true;
 
-    this.myStorage = window.localStorage;
+    this.myStorage = window.sessionStorage;
 
     this.user = this.getUser();
     this.state = {
@@ -53,8 +52,6 @@ export default class App extends Component<{}, AppState> {
     this.store = configureAppStore();
 
     this.store.dispatch(setUser(this.user));
-
-    ReactAI.setAppContext({ userId: this.user.id });
 
     window.onresize = () => Events.emit("onresize");
 

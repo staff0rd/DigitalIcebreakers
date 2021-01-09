@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 
 namespace DigitalIcebreakers.Logging
@@ -5,22 +6,26 @@ namespace DigitalIcebreakers.Logging
     public class LobbyLogger
     {
         private readonly ILogger<LobbyLogger> _logger;
+        private readonly List<Lobby> _lobbys;
 
-        public LobbyLogger(ILogger<LobbyLogger> logger)
+        public LobbyLogger(ILogger<LobbyLogger> logger, List<Lobby> lobbys)
         {
             _logger = logger;
+            _lobbys = lobbys;
         }
 
         private Log GetLobbyTemplate(Lobby lobby)
         {
+            var template = new Log { Template = "Lobbys: {lobbys}", Args = new object[] { _lobbys.Count } };
             if (lobby == null)
             {
-                return new Log { Template = "", Args = new object[] {} };
+                return template;
             }
-            return new Log {
-                Template = "Lobby [#{lobbyNumber}, Name: {lobbyName}, Players: ({connectedPlayerCount}/{totalPlayerCount}) Id: {lobbyId}]",
-                Args = new object[] { lobby.Number, lobby.Name, lobby.GetConnectedPlayers().Length, lobby.GetTotalPlayers().Length, lobby.Id }
-            };
+
+            return template.Insert(
+                "Lobby [#{lobbyNumber}, Name: {lobbyName}, Players: ({connectedPlayerCount}/{totalPlayerCount}) Id: {lobbyId}]",
+                new object[] { lobby.Number, lobby.Name, lobby.GetConnectedPlayers().Length, lobby.GetTotalPlayers().Length, lobby.Id }
+            );
         }
 
         public void Log(string action, Lobby lobby)
@@ -36,7 +41,7 @@ namespace DigitalIcebreakers.Logging
                 .Insert(template, args)
                 .Info(_logger);
         }
-        
+
         public void Log(Player player, string action, Lobby lobby)
         {
             GetLobbyTemplate(lobby)
