@@ -7,21 +7,12 @@ import Card from "../../layout/components/Card/Card";
 import CardFooter from "../../layout/components/Card/CardFooter";
 import Button from "../../layout/components/CustomButtons/Button";
 import { IdeaEntry } from "games/shared/IdeaEntry";
+import { Category, getCategories, Categories } from "./Category";
 
-enum Category {
-  Start,
-  Stop,
-  Continue,
-}
-type Categories = keyof typeof Category;
-
-type Payload = {
+export type PlayerPayload = {
   category: Category;
   message: string;
 };
-
-const getCategories = () =>
-  Object.keys(Category).filter((key) => isNaN(Number(key)));
 
 export const Player = () => {
   const dispatch = useDispatch();
@@ -32,7 +23,7 @@ export const Player = () => {
     category: Category
   ) => {
     if (idea.length) {
-      dispatch(clientMessage({ category, message: idea } as Payload));
+      dispatch(clientMessage({ category, message: idea } as PlayerPayload));
       setIdea("");
     }
   };
