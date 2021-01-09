@@ -7,7 +7,6 @@ using Newtonsoft.Json.Linq;
 
 public class Reaction : Game, IGame
 {
-    public override string Name => "reaction";
 
     readonly Dictionary<Guid, int> _selections = new Dictionary<Guid, int>();
 

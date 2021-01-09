@@ -15,6 +15,7 @@ import { triviaReducer } from "games/Trivia/reducers/triviaReducer";
 import { namePickerReducer } from "games/NamePicker/NamePickerReducer";
 import { broadcastReducer } from "games/Broadcast/BroadcastReducer";
 import { reactionReducer } from "games/Reaction/reactionReducer";
+import { startStopContinueReducer } from "games/StartStopContinue/reducer";
 
 const gamesReducer = combineReducers<GamesState>({
   yesnomaybe: yesNoMaybeReducer,
@@ -28,6 +29,7 @@ const gamesReducer = combineReducers<GamesState>({
   namePicker: namePickerReducer,
   broadcast: broadcastReducer,
   reaction: reactionReducer,
+  startStopContinue: startStopContinueReducer,
 });
 
 export const rootReducer = combineReducers<RootState>({

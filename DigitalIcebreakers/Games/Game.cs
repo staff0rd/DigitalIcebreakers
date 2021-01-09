@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
@@ -11,7 +13,7 @@ namespace DigitalIcebreakers.Games
         private readonly Sender _sender;
         private readonly LobbyManager _lobbys;
 
-        public abstract string Name { get; }
+        public string Name => GetType().Name.PascalToKebabCase();
 
         public Game(Sender sender, LobbyManager lobbyManager)
         {
@@ -48,7 +50,7 @@ namespace DigitalIcebreakers.Games
         public async Task SendToPlayer(Player player, object payload)
         {
             if (player != null && !player.IsPresenter)
-                await _sender.SendGameMessageToPlayer(player, payload);
+                await _sender.SendPayloadToPlayer(player, payload);
         }
         public async Task SendToPresenter(string connectionId, object payload, Player player = null)
         {
@@ -59,7 +61,7 @@ namespace DigitalIcebreakers.Games
         public async Task SendToPlayers(string connectionId, object payload)
         {
             var lobby = _lobbys.GetLobbyByConnectionId(connectionId);
-            await _sender.SendGameMessageToPlayers(lobby, payload);
+            await _sender.SendPayloadToPlayers(lobby, payload);
         }
 
         public async Task SendToEachPlayer(string connectionId, Func<Player, object> payloadFunction)
@@ -68,7 +70,7 @@ namespace DigitalIcebreakers.Games
 
             await Task.WhenAll(
                 lobby.GetConnectedPlayers()
-                .Select(player => _sender.SendGameMessageToPlayer(player, payloadFunction(player))));
+                .Select(player => _sender.SendPayloadToPlayer(player, payloadFunction(player))));
         }
 
         public Player GetPlayerByConnectionId(string connectionId)
@@ -99,6 +101,23 @@ namespace DigitalIcebreakers.Games
         public Player[] GetPlayers(string connectionId)
         {
             return _lobbys.GetLobbyByConnectionId(connectionId).GetConnectedPlayers();
+        }
+
+        static List<Type> GetAllGames()
+        {
+            return AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())
+                 .Where(x => typeof(IGame).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract)
+                 .ToList();
+        }
+
+        public static IGame GetGame(string name, Sender sender, LobbyManager lobbys)
+        {
+            var game = GetAllGames().FirstOrDefault(p => p.Name == name.KebabCaseToPascalCase());
+            if (game == null)
+                return null;
+            ConstructorInfo ctor = game.GetConstructor(new[] { typeof(Sender), typeof(LobbyManager) });
+            object instance = ctor.Invoke(new object[] { sender, lobbys });
+            return (IGame)instance;
         }
     }
 }

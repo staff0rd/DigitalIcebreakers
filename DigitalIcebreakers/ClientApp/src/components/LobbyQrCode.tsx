@@ -22,7 +22,7 @@ const useStylesLg = makeStyles((theme) => ({
     textAlign: "center",
   },
   qrCode: {
-    width: "calc(100vh - 104px - 73px)",
+    maxWidth: "calc(100vh - 104px - 73px)",
   },
   browseLink: {
     padding: theme.spacing(1, 0),

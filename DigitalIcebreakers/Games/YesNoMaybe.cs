@@ -8,20 +8,19 @@ namespace DigitalIcebreakers.Games
 {
     public class YesNoMaybe : Game, IGame
     {
-        public override string Name => "yes-no-maybe";
         Dictionary<Guid, int> _results = new Dictionary<Guid, int>();
 
-        public YesNoMaybe(Sender sender, LobbyManager lobbyManager) : base(sender, lobbyManager) {}
+        public YesNoMaybe(Sender sender, LobbyManager lobbyManager) : base(sender, lobbyManager) { }
 
         public override async Task OnReceivePlayerMessage(JToken payload, string connectionId)
-        {   
+        {
             string client = payload.ToString();
             // 1 = no
             // 0 = yes
             int value;
             if (int.TryParse(client, out value))
                 _results[GetPlayerByConnectionId(connectionId).Id] = value;
-            
+
             await SendUpdate(connectionId);
         }
 
