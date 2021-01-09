@@ -70,16 +70,16 @@ namespace DigitalIcebreakers.Hubs
         {
             var player = GetOrCreatePlayer(user, ConnectionId);
             var lobby = _lobbys.GetLobbyByConnectionId(ConnectionId);
-
+            _logger.Log(player, "Connect", lobby);
             if (lobbyId != null && _lobbys.GetLobbyById(lobbyId) != lobby)
                 await LeaveLobby(player, lobby);
             else
             {
-                await Connect(player, lobby);
+                await Reconnect(player, lobby);
             }
         }
 
-        private async Task Connect(Player player, Lobby lobby)
+        private async Task Reconnect(Player player, Lobby lobby)
         {
             player.IsConnected = true;
             if (lobby != null)
@@ -167,20 +167,23 @@ namespace DigitalIcebreakers.Hubs
 
             if (existingLobby != null && existingLobby != lobby)
             {
+                _logger.Log(player, "SwitchLobbys", lobby);
                 await LeaveLobby(player, existingLobby);
             }
 
             if (lobby == null)
             {
+                _logger.Log(player, "ConnectToClosedLobby", lobby);
                 await _send.CloseLobby(ConnectionId);
             }
             else
             {
                 if (!lobby.Players.Any(p => p.Id == player.Id))
                 {
+                    _logger.Log(player, "AddToLobby", lobby);
                     lobby.Players.Add(player);
                 }
-                await Connect(player, lobby);
+                await Reconnect(player, lobby);
             }
         }
 
