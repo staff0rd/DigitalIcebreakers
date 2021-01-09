@@ -3,8 +3,9 @@ import {
   createGameAction,
   createReceiveGameMessageReducer,
 } from "store/actionHelpers";
-import { Name } from ".";
 import { PlayerPayload } from "./Player";
+
+export const Name = "start-stop-continue";
 
 export interface StartStopContinueState {
   ideas: GameMessage<PlayerPayload>[];

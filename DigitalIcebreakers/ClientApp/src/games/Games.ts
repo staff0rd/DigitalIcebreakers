@@ -84,6 +84,7 @@ const games: Game[] = [
     client: StartStopContinue.Player,
     presenter: StartStopContinue.Presenter,
     description: "Run a retrospective with your team",
+    menu: StartStopContinue.Menu,
   },
   {
     name: "doggos-vs-kittehs",
