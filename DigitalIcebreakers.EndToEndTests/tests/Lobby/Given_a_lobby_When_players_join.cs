@@ -35,7 +35,7 @@ namespace DigitalIcebreakers.EndToEndTests
             presenterLobbyLinkText.ShouldBe("Lobby (1)");
         }
 
-        [Fact(Skip = "TODO")]
+        [Fact]
         public async Task Then_lobby_count_should_update_on_player()
         {
             var clientLobbyLink = await _player.Page.GetByTestId("menu-lobby");
