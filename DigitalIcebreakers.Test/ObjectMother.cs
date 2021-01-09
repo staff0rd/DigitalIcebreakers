@@ -13,7 +13,7 @@ namespace DigitalIcebreakers.Test
     {
         public static LobbyManager GetLobbyManager(List<Lobby> lobbys)
         {
-            return new LobbyManager(lobbys, new LobbyLogger(new Mock<ILogger<LobbyLogger>>().Object), new LobbyIdService());
+            return new LobbyManager(lobbys, new LobbyLogger(new Mock<ILogger<LobbyLogger>>().Object, new List<Lobby>()), new LobbyIdService());
         }
 
         public static Mock<IHubContext<GameHub>> GetMockContext()
