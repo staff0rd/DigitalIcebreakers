@@ -6,7 +6,7 @@ import Grid from "@material-ui/core/Grid";
 import Card from "../../layout/components/Card/Card";
 import CardFooter from "../../layout/components/Card/CardFooter";
 import Button from "../../layout/components/CustomButtons/Button";
-import { IdeaEntry } from "./IdeaEntry";
+import { IdeaEntry } from "../shared/IdeaEntry";
 
 export const IdeaWallClient = () => {
   const dispatch = useDispatch();
