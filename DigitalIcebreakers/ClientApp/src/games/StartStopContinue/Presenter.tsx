@@ -1,6 +1,6 @@
 import React from "react";
 import { ContentContainer } from "components/ContentContainer";
-import { Category, getCategories, Categories } from "./Category";
+import { getCategories, ideasByCategory } from "./Category";
 import GridContainer from "layout/components/Grid/GridContainer";
 import GridItem from "layout/components/Grid/GridItem";
 import CardBody from "layout/components/Card/CardBody";
@@ -26,10 +26,6 @@ export const Presenter = () => {
   const ideas = useSelector(
     (state: RootState) => state.games.startStopContinue.ideas
   );
-  const ideasByCategory = (category: string) =>
-    ideas.filter(
-      (idea) => idea.payload.category === Category[category as Categories]
-    );
 
   return (
     <ContentContainer>
@@ -39,12 +35,12 @@ export const Presenter = () => {
             {category}
           </Typography>
           <GridContainer>
-            {!ideasByCategory(category).length && (
+            {!ideasByCategory(ideas, category).length && (
               <Typography className={classes.waiting} variant="body1">
                 Waiting for audience...
               </Typography>
             )}
-            {ideasByCategory(category).map((idea) => (
+            {ideasByCategory(ideas, category).map((idea) => (
               <GridItem xs={12} sm={12} md={4}>
                 <Card className={classes.card}>
                   <CardBody>
