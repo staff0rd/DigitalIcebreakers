@@ -1,5 +1,4 @@
 using System;
-using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Serilog;
@@ -22,18 +21,6 @@ namespace DigitalIcebreakers
 
             var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             var isDevelopment = environment == Environments.Development;
-            
-            if (!isDevelopment)
-            {
-                config = config
-                    .WriteTo.File(
-                        @"D:\home\LogFiles\Application\myapp.txt",
-                        fileSizeLimitBytes: 1_000_000,
-                        rollOnFileSizeLimit: true,
-                        shared: true,
-                        flushToDiskInterval: TimeSpan.FromSeconds(1))
-                    .WriteTo.ApplicationInsights(TelemetryConverter.Traces);
-            }
 
             Log.Logger = config.CreateLogger();
 
@@ -41,10 +28,12 @@ namespace DigitalIcebreakers
             {
                 Log.Information("Starting web host");
                 CreateWebHostBuilder(args).Build().Run();
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 Log.Fatal(e, "Host terminated unexpectedly");
-            } finally
+            }
+            finally
             {
                 Log.CloseAndFlush();
             }
