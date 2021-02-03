@@ -43,7 +43,7 @@ jobs:
         run: dotnet restore
 
       - run: npm run set-version
-        workingDirectory: ./DigitalIcebreakers/ClientApp
+        working-directory: ./DigitalIcebreakers/ClientApp
         name: update client app version
 
       - name: push container
