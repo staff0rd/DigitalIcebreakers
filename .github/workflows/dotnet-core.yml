@@ -58,7 +58,7 @@ jobs:
 
       - name: get version
         run: |
-          echo "semantic_version=$(dotnet nbgv get-version -v NuGetPackageVersion)" >> $GITHUB_ENV
+          echo "semantic_version=$(dotnet nbgv get-version -v AssemblyInformationalVersion | tr + -)" >> $GITHUB_ENV
       - run: echo "semantic version is ${{ env.semantic_version }}"
       - uses: octokit/request-action@v2.x
         with:
