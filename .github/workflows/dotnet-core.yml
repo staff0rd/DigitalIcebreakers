@@ -50,7 +50,7 @@ jobs:
           owner: staff0rd
           repo: deploy
           #accept: application/vnd.github.v3+json
-          event_type: foo
+          event_type: digital-icebreakers
           client_payload: | # The | is significant!
             semantic_version: ${{ env.semantic_version }}
         env:
