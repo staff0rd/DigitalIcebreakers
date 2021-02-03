@@ -31,8 +31,11 @@ jobs:
         with:
           dotnet-version: ${{ matrix.dotnet }}
 
-      - name: Install C# dependencies
-        run: dotnet restore
+      - name: Install dotnet tools
+        run: dotnet tool restore
+
+      # - name: Install C# dependencies
+      #   run: dotnet restore
 
       - name: get version
         run: |
@@ -57,9 +60,6 @@ jobs:
       #   uses: actions/setup-node@v1
       #   with:
       #     node-version: ${{ matrix.node }}
-
-      # - name: Install dotnet tools
-      #   run: dotnet tool restore
 
       # - name: Install node dependencies
       #   run: npm i
