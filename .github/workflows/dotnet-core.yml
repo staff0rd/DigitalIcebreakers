@@ -42,65 +42,68 @@ jobs:
       - name: Install C# dependencies
         run: dotnet restore
 
-      - name: build
-        # TODO: Remove CI=false
-        run: CI=false dotnet tye build -v Debug
+      - run: npm run set-version
+        workingDirectory: ./DigitalIcebreakers/ClientApp
+        name: update client app version
 
-      - name: start container
-        run: docker run -d -p 5000:80 staff0rd/digitalicebreakers:$(dotnet nbgv get-version -v NuGetPackageVersion)
+      - name: push container
+        run: dotnet tye push -v Debug
 
-      - name: run end-to-end tests
-        env:
-          Browser: ${{ matrix.browser }}
-        run: dotnet test
-        working-directory: DigitalIcebreakers.EndToEndTests
-  build:
-    name: Build ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-        dotnet: [3.1.301]
-        node: [12]
+      # - name: start container
+      #   run: docker run -d -p 5000:80 staff0rd/digitalicebreakers:$(dotnet nbgv get-version -v NuGetPackageVersion)
 
-    runs-on: ${{ matrix.os }}
+      # - name: run end-to-end tests
+      #   env:
+      #     Browser: ${{ matrix.browser }}
+      #   run: dotnet test
+      #   working-directory: DigitalIcebreakers.EndToEndTests
+  # build:
+  #   name: Build ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       os: [ubuntu-latest, windows-latest]
+  #       dotnet: [3.1.301]
+  #       node: [12]
 
-    steps:
-      - name: Checkout git repository
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
+  #   runs-on: ${{ matrix.os }}
 
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: ${{ matrix.dotnet }}
+  #   steps:
+  #     - name: Checkout git repository
+  #       uses: actions/checkout@v2
+  #       with:
+  #         fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
 
-      - name: Setup Node
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node }}
+  #     - name: Setup .NET Core
+  #       uses: actions/setup-dotnet@v1
+  #       with:
+  #         dotnet-version: ${{ matrix.dotnet }}
 
-      - name: Install node dependencies
-        run: npm i
-        working-directory: ./DigitalIcebreakers/ClientApp
+  #     - name: Setup Node
+  #       uses: actions/setup-node@v1
+  #       with:
+  #         node-version: ${{ matrix.node }}
 
-      - name: Lint
-        run: npm run lint
-        working-directory: ./DigitalIcebreakers/ClientApp
+  #     - name: Install node dependencies
+  #       run: npm i
+  #       working-directory: ./DigitalIcebreakers/ClientApp
 
-      - name: Install dotnet tools
-        run: dotnet tool restore
+  #     - name: Lint
+  #       run: npm run lint
+  #       working-directory: ./DigitalIcebreakers/ClientApp
 
-      - name: Install C# dependencies
-        run: dotnet restore
+  #     - name: Install dotnet tools
+  #       run: dotnet tool restore
 
-      - name: Run C# build
-        run: dotnet build --configuration Release --no-restore
+  #     - name: Install C# dependencies
+  #       run: dotnet restore
 
-      - name: Run C# tests
-        run: dotnet test --no-restore --verbosity normal
-        working-directory: ./DigitalIcebreakers.Test
+  #     - name: Run C# build
+  #       run: dotnet build --configuration Release --no-restore
 
-      - name: Front-end tests
-        run: npm run test-ci
-        working-directory: ./DigitalIcebreakers/ClientApp
+  #     - name: Run C# tests
+  #       run: dotnet test --no-restore --verbosity normal
+  #       working-directory: ./DigitalIcebreakers.Test
+
+  #     - name: Front-end tests
+  #       run: npm run test-ci
+  #       working-directory: ./DigitalIcebreakers/ClientApp
