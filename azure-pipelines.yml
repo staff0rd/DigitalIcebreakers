@@ -1,63 +1,67 @@
 trigger:
-  - master
+- master
 pr: none
 
 pool:
-  vmImage: "ubuntu-16.04"
+  vmImage: 'ubuntu-16.04'
 
 steps:
-  - task: UseDotNet@2
-    displayName: install dotnet core
-    inputs:
-      packageType: sdk
-      version: 3.1.201
+- task: UseDotNet@2
+  displayName: install dotnet core
+  inputs:
+    packageType: sdk
+    version: 3.1.201
 
-  - task: DotNetCoreCLI@2
-    displayName: run c# tests
-    inputs:
-      command: test
-      projects: "**/*.Test.csproj"
+- task: DotNetCoreCLI@2
+  displayName: run c# tests
+  inputs:
+    command: test
+    projects: '**/*.Test.csproj'
 
-  - script: dotnet tool restore
-    displayName: "restore tools"
+- script: dotnet tool restore
+  displayName: 'restore tools'
 
-  - task: NodeTool@0
-    displayName: install node
-    inputs:
-      versionSpec: "12.16.1"
+- task: NodeTool@0
+  displayName: install node
+  inputs:
+    versionSpec: '12.16.1'
 
-  - task: Docker@2
-    displayName: login to Docker Hub
-    inputs:
-      command: login
-      containerRegistry: $(docker-service-connection)
+- task: Docker@2
+  displayName: login to Docker Hub
+  inputs:
+    command: login
+    containerRegistry: $(docker-service-connection)
 
-  - task: Kubernetes@1
-    displayName: kubectl login
-    inputs:
-      connectionType: Kubernetes Service Connection
-      kubernetesServiceEndpoint: $(k8s-service-connection)
-      command: login
+- task: Kubernetes@1
+  displayName: kubectl login
+  inputs:
+    connectionType: Kubernetes Service Connection
+    kubernetesServiceEndpoint: $(k8s-service-connection)
+    command: login
+    
+- script: npm run set-version
+  workingDirectory: ./DigitalIcebreakers/ClientApp
+  displayName: update client app version
 
-  - script: npm run set-version
-    workingDirectory: ./DigitalIcebreakers/ClientApp
-    displayName: update client app version
+- script: npm run test-ci
+  workingDirectory: ./DigitalIcebreakers/ClientApp
+  displayName: front-end tests
 
-  - script: npm run test-ci
-    workingDirectory: ./DigitalIcebreakers/ClientApp
-    displayName: front-end tests
+- task: Docker@2
+  displayName: Pull yq
+  inputs:
+    command: pull
+    arguments: osimis/yq
 
-  - task: Docker@2
-    displayName: Pull yq
-    inputs:
-      command: pull
-      arguments: osimis/yq
+- script: dotnet nbgv get-version -v AssemblyInformationalVersion
+  displayName: version
 
-  - script: dotnet nbgv get-version -v AssemblyInformationalVersion
-    displayName: version
+- script: "cat ./DigitalIcebreakers/DigitalIcebreakers.csproj | docker run -i --entrypoint xq osimis/yq -x --arg version $(dotnet nbgv get-version -v AssemblyInformationalVersion) '. * {Project: { PropertyGroup: {Version: $version}}}' | tee ./out.csproj && mv ./out.csproj ./DigitalIcebreakers/DigitalIcebreakers.csproj"
+  displayName: update csproj version
 
-  - script: "cat ./DigitalIcebreakers/DigitalIcebreakers.csproj | docker run -i --entrypoint xq osimis/yq -x --arg version $(dotnet nbgv get-version -v AssemblyInformationalVersion) '. * {Project: { PropertyGroup: {Version: $version}}}' | tee ./out.csproj && mv ./out.csproj ./DigitalIcebreakers/DigitalIcebreakers.csproj"
-    displayName: update csproj version
+- script: "cat ./DigitalIcebreakers/appsettings.json | docker run -i --entrypoint jq osimis/yq --arg instrumentationKey $(appinsights-instrumentation-key) '. * { ApplicationInsights: { InstrumentationKey: $instrumentationKey } }' | tee ./out.json && mv ./out.json ./DigitalIcebreakers/appsettings.json"
+  displayName: update appsettings
 
-  - script: dotnet tye deploy -v Debug
-    displayName: deploy
+- script: dotnet tye deploy -v Debug
+  displayName: deploy
+  

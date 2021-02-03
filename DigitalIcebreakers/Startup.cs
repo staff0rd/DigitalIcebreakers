@@ -22,10 +22,11 @@ namespace DigitalIcebreakers
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApplicationInsightsTelemetry();
+            
             services.AddMvc();
 
-            services.AddSignalR(options =>
-            {
+            services.AddSignalR(options =>  {
                 options.ClientTimeoutInterval = new System.TimeSpan(0, 0, 4);
             });
 
@@ -63,8 +64,7 @@ namespace DigitalIcebreakers
             app.UseSpaStaticFiles();
             app.UseRouting();
 
-            app.UseEndpoints(endpoints =>
-            {
+            app.UseEndpoints(endpoints => {
                 endpoints.MapHub<GameHub>("/gameHub");
                 endpoints.MapControllerRoute(
                     name: "default",
