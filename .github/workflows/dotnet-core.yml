@@ -31,33 +31,52 @@ jobs:
         with:
           dotnet-version: ${{ matrix.dotnet }}
 
-      - name: Setup Node
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node }}
-
-      - name: Install dotnet tools
-        run: dotnet tool restore
-
       - name: Install C# dependencies
         run: dotnet restore
 
-      - name: Install node dependencies
-        run: npm i
-        working-directory: ./DigitalIcebreakers/ClientApp
+      - name: get version
+        run: |
+          echo "semantic_version=$(dotnet nbgv get-version -v NuGetPackageVersion)" >> $GITHUB_ENV
 
-      - run: npm run set-version
-        working-directory: ./DigitalIcebreakers/ClientApp
-        name: update client app version
+      - run: echo "semantic version is ${{ env.semantic_version }}"
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v1
+      - uses: octokit/request-action@v2.x
+        id: create_check_run
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          route: POST /repos/{owner}/{repo}/dispatches
+          owner: staff0rd
+          repo: deploy
+          accept: application/vnd.github.v3+json
+          event_type: foo
+          client_payload: | # The | is significant!
+            semantic_version: ${{ env.semantic_version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.DEPLOY_REPO_TOKEN }}
 
-      - name: push container
-        run: dotnet tye push -v Debug
+      # - name: Setup Node
+      #   uses: actions/setup-node@v1
+      #   with:
+      #     node-version: ${{ matrix.node }}
+
+      # - name: Install dotnet tools
+      #   run: dotnet tool restore
+
+      # - name: Install node dependencies
+      #   run: npm i
+      #   working-directory: ./DigitalIcebreakers/ClientApp
+
+      # - run: npm run set-version
+      #   working-directory: ./DigitalIcebreakers/ClientApp
+      #   name: update client app version
+
+      # - name: Login to Docker Hub
+      #   uses: docker/login-action@v1
+      #   with:
+      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
+      #     password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # - name: push container
+      #   run: dotnet tye push -v Debug
 
       # - name: start container
       #   run: docker run -d -p 5000:80 staff0rd/digitalicebreakers:$(dotnet nbgv get-version -v NuGetPackageVersion)
