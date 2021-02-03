@@ -39,6 +39,9 @@ jobs:
       - name: Install dotnet tools
         run: dotnet tool restore
 
+      - name: dotnet restore
+        run: dotnet restore
+
       - name: Install C# dependencies
         run: dotnet restore
 
