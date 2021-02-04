@@ -1,7 +1,8 @@
-name: .NET Core build
+name: Build & Deploy
 
 on:
   pull_request:
+    types: [opened, closed, synchronize]
     branches: [master]
 
 jobs:
@@ -47,7 +48,7 @@ jobs:
         run: CI=false dotnet tye build -v Debug
 
       - name: start container
-        run: docker run -d -p 5000:80 staff0rd/digitalicebreakers:$(dotnet nbgv get-version -v NuGetPackageVersion)
+        run: docker run -d -p 5000:80 staff0rd/digitalicebreakers:$(dotnet nbgv get-version -v AssemblyInformationalVersion | tr + -)
 
       - name: run end-to-end tests
         env:
@@ -55,7 +56,7 @@ jobs:
         run: dotnet test
         working-directory: DigitalIcebreakers.EndToEndTests
   build:
-    name: Build ${{ matrix.os }}
+    name: Build ${{ matrix.os }} and Test
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
@@ -104,3 +105,60 @@ jobs:
       - name: Front-end tests
         run: npm run test-ci
         working-directory: ./DigitalIcebreakers/ClientApp
+  deploy:
+    name: Deploy
+    if: github.event.pull_request.merged
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout git repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.301
+
+      - name: Install dotnet tools
+        run: dotnet tool restore
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: Install node dependencies
+        run: npm i
+        working-directory: ./DigitalIcebreakers/ClientApp
+
+      - run: npm run set-version
+        working-directory: ./DigitalIcebreakers/ClientApp
+        name: update client app version
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Install C# dependencies
+        run: dotnet restore
+
+      - name: push container
+        run: dotnet tye push -v Debug
+
+      - name: get version
+        run: |
+          echo "semantic_version=$(dotnet nbgv get-version -v AssemblyInformationalVersion | tr + -)" >> $GITHUB_ENV
+      - run: echo "semantic version is ${{ env.semantic_version }}"
+      - uses: octokit/request-action@v2.x
+        with:
+          route: POST /repos/{owner}/{repo}/dispatches
+          owner: staff0rd
+          repo: deploy
+          event_type: digital-icebreakers
+          client_payload: |
+            semantic_version: ${{ env.semantic_version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.DEPLOY_REPO_TOKEN }}
