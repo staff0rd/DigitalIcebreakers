@@ -19,7 +19,11 @@
       },
       "env": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "http://0.0.0.0:5000"
+        "ASPNETCORE_URLS": "http://0.0.0.0:5000",
+        "POSTGRES_USER": "postgres",
+        "POSTGRES_PASSWORD": "example",
+        "POSTGRES_HOST": "localhost",
+        "POSTGRES_DATABASE": "digital_icebreakers"
       },
       "sourceFileMap": {
         "/Views": "${workspaceFolder}/Views"

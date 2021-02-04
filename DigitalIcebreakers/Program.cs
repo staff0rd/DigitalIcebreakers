@@ -1,10 +1,15 @@
 using System;
-using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Serilog;
 using Serilog.Events;
 using Microsoft.Extensions.Hosting;
+using System.Collections.Generic;
+using Serilog.Sinks.PostgreSQL;
+using NpgsqlTypes;
+using Npgsql;
+using Dapper;
+using System.Linq;
 
 namespace DigitalIcebreakers
 {
@@ -17,23 +22,12 @@ namespace DigitalIcebreakers
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
                 .MinimumLevel.Override("Microsoft.AspNetCore.SpaServices", LogEventLevel.Information)
                 .Enrich.FromLogContext()
-                .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext} {Message:lj}{NewLine}{Exception}")
-                .WriteTo.Trace();
+                .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext} {Message:lj}{NewLine}{Exception}");
+
+            WriteToPostgres(config);
 
             var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             var isDevelopment = environment == Environments.Development;
-            
-            if (!isDevelopment)
-            {
-                config = config
-                    .WriteTo.File(
-                        @"D:\home\LogFiles\Application\myapp.txt",
-                        fileSizeLimitBytes: 1_000_000,
-                        rollOnFileSizeLimit: true,
-                        shared: true,
-                        flushToDiskInterval: TimeSpan.FromSeconds(1))
-                    .WriteTo.ApplicationInsights(TelemetryConverter.Traces);
-            }
 
             Log.Logger = config.CreateLogger();
 
@@ -41,12 +35,53 @@ namespace DigitalIcebreakers
             {
                 Log.Information("Starting web host");
                 CreateWebHostBuilder(args).Build().Run();
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 Log.Fatal(e, "Host terminated unexpectedly");
-            } finally
+            }
+            finally
             {
                 Log.CloseAndFlush();
+            }
+        }
+
+        private static void WriteToPostgres(LoggerConfiguration config)
+        {
+            var user = Environment.GetEnvironmentVariable("POSTGRES_USER");
+            var password = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD");
+            var host = Environment.GetEnvironmentVariable("POSTGRES_HOST");
+            var db = Environment.GetEnvironmentVariable("POSTGRES_DATABASE");
+
+            if (!string.IsNullOrEmpty(user) && !string.IsNullOrEmpty(password) && !string.IsNullOrEmpty(host) && !string.IsNullOrEmpty(db))
+            {
+                string getConnectionString(string db) => $"User ID={user};Password={password};Host={host};Port=5432;Database={db};";
+
+                using (var connection = new NpgsqlConnection(getConnectionString("postgres")))
+                {
+                    var rows = connection.Query($"SELECT FROM pg_database WHERE datname = '{db}'").Count();
+                    if (rows == 0)
+                    {
+                        connection.Execute($"CREATE DATABASE {db}");
+                    }
+                }
+
+                string tableName = "logs";
+                IDictionary<string, ColumnWriterBase> columnWriters = new Dictionary<string, ColumnWriterBase>
+                {
+                    { "message", new RenderedMessageColumnWriter(NpgsqlDbType.Text) },
+                    { "message_template", new MessageTemplateColumnWriter(NpgsqlDbType.Text) },
+                    { "level", new LevelColumnWriter(true, NpgsqlDbType.Varchar) },
+                    { "raise_date", new TimestampColumnWriter(NpgsqlDbType.TimestampTz) },
+                    { "exception", new ExceptionColumnWriter(NpgsqlDbType.Text) },
+                    { "properties", new PropertiesColumnWriter(NpgsqlDbType.Jsonb) },
+                };
+
+                config.WriteTo
+                    .PostgreSQL(getConnectionString(db), tableName, columnWriters, failureCallback: (e) =>
+                    {
+                        Console.WriteLine("Could not log to postgres" + e.Message);
+                    }, needAutoCreateTable: true, needAutoCreateSchema: true);
             }
         }
 
