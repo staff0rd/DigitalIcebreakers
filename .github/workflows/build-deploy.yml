@@ -1,4 +1,4 @@
-name: .NET Core build
+name: Build & Deploy
 
 on:
   pull_request:
