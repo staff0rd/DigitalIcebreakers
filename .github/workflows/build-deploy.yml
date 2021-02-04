@@ -107,6 +107,7 @@ jobs:
         working-directory: ./DigitalIcebreakers/ClientApp
   deploy:
     name: Deploy
+    needs: [build, e2etests]
     if: github.event.pull_request.merged
     runs-on: ubuntu-latest
     steps:
