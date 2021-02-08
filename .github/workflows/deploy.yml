@@ -23,6 +23,9 @@ jobs:
       - name: Install dotnet tools
         run: dotnet tool restore
 
+      - name: Install C# dependencies
+        run: dotnet restore
+
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
@@ -41,9 +44,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Install C# dependencies
-        run: dotnet restore
 
       - name: push container
         run: dotnet tye push -v Debug
