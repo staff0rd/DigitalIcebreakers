@@ -59,7 +59,7 @@ namespace DigitalIcebreakers
 
                 using (var connection = new NpgsqlConnection(getConnectionString("postgres")))
                 {
-                    var rows = connection.Query($"SELECT FROM pg_database WHERE datname = '{db}'").Count();
+                    var rows = connection.Query($"SELECT 1 FROM pg_database WHERE datname = '{db}'").Count();
                     if (rows == 0)
                     {
                         connection.Execute($"CREATE DATABASE {db}");
