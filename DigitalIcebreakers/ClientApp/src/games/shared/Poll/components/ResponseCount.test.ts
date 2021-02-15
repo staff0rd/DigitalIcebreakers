@@ -1,4 +1,4 @@
-import { getCountMessage } from "./QuestionAndResponseCount";
+import { getCountMessage } from "./ResponseCount";
 
 describe("getCountMessage", () => {
   it("should handle no players", () => {
