@@ -24,7 +24,7 @@ import { ReactionPlayer } from "./Reaction/ReactionClient";
 import { ReactionPresenter } from "./Reaction/ReactionPresenter";
 import { Name as PollName } from "./Poll";
 import { PollPresenter } from "./Poll/PollPresenter";
-import Client from "./shared/Poll/Client";
+import PollClient from "./shared/Poll/Client";
 import { TriviaPresenter } from "./Trivia/TriviaPresenter";
 import { Name as TriviaName } from "./Trivia";
 import { RouteLink } from "../layout/useRoutes";
@@ -33,6 +33,8 @@ import EditQuestions from "./shared/Poll/components/EditQuestions";
 import EditQuestion from "./shared/Poll/components/EditQuestion";
 import { Name as IdeaWallName } from "./IdeaWall/IdeaWallReducer";
 import * as StartStopContinue from "./StartStopContinue";
+import { Name as FistOfFiveName } from "./FistOfFive/reducer";
+import FistOfFivePresenter from "./FistOfFive/FistOfFivePresenter";
 
 interface Game {
   name: string;
@@ -62,16 +64,24 @@ const games: Game[] = [
   {
     title: "Poll",
     name: PollName,
-    client: Client,
+    client: PollClient,
     presenter: PollPresenter,
     description: "Audience polling: Add questions and poll your audience.",
     routes: pollAndTriviaRoutes,
   },
   {
     isNew: true,
+    title: "Fist of Five",
+    name: FistOfFiveName,
+    client: PollClient,
+    presenter: FistOfFivePresenter,
+    description:
+      "Quickly getting feedback or gauging consensus during a meeting",
+  },
+  {
     title: "Trivia",
     name: TriviaName,
-    client: Client,
+    client: PollClient,
     presenter: TriviaPresenter,
     description:
       "Like polling but with a scoreboard: Add or generate questions and run a trivia session.",

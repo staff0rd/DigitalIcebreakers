@@ -16,6 +16,7 @@ import { namePickerReducer } from "games/NamePicker/NamePickerReducer";
 import { broadcastReducer } from "games/Broadcast/BroadcastReducer";
 import { reactionReducer } from "games/Reaction/reactionReducer";
 import { startStopContinueReducer } from "games/StartStopContinue/reducer";
+import { fistOfFiveReducer } from "games/FistOfFive/reducer";
 
 const gamesReducer = combineReducers<GamesState>({
   yesnomaybe: yesNoMaybeReducer,
@@ -30,6 +31,7 @@ const gamesReducer = combineReducers<GamesState>({
   broadcast: broadcastReducer,
   reaction: reactionReducer,
   startStopContinue: startStopContinueReducer,
+  fistOfFive: fistOfFiveReducer,
 });
 
 export const rootReducer = combineReducers<RootState>({

@@ -8,7 +8,7 @@ namespace DigitalIcebreakers.Games
 {
     public class Poll : Game, IGame
     {
-
+        protected virtual bool ShuffleAnswers => true;
         SelectableAnswers _lastAnswers;
 
         Dictionary<Player, List<SelectedAnswer>> _playerAnswers = new Dictionary<Player, List<SelectedAnswer>>();
@@ -93,7 +93,7 @@ namespace DigitalIcebreakers.Games
         {
             return new SelectableAnswers
             {
-                Answers = _lastAnswers.Answers.Shuffle().ToArray(),
+                Answers = ShuffleAnswers ? _lastAnswers.Answers.Shuffle().ToArray() : _lastAnswers.Answers.ToArray(),
                 QuestionId = _lastAnswers.QuestionId,
                 SelectedAnswerId = GetCachedAnswer(player, _lastAnswers.QuestionId)?.AnswerId,
                 Question = _lastAnswers.Question,

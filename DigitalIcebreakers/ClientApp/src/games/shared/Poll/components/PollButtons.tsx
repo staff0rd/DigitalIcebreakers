@@ -5,21 +5,10 @@ import NavigateBefore from "@material-ui/icons/NavigateBefore";
 import NavigateNext from "@material-ui/icons/NavigateNext";
 import ScoreIcon from "@material-ui/icons/Score";
 import CloseIcon from "@material-ui/icons/Close";
-import BarChart from "@material-ui/icons/BarChart";
-import LiveHelp from "@material-ui/icons/LiveHelp";
-import { makeStyles } from "@material-ui/core/styles";
-import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
 import { NameAndMode } from "games/shared/Poll/types/NameAndMode";
 import { toggleShowScoreBoardAction } from "games/Trivia/reducers/triviaPresenterReducer";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    position: "fixed",
-    bottom: 0,
-    right: 0,
-    padding: "16px",
-  },
-}));
+import { ShowResponsesButton } from "./ShowResponsesButton";
+import { useButtonStyles } from "./useButtonStyles";
 
 type Props = {
   gotoNextQuestion: Function;
@@ -41,8 +30,7 @@ const PollButtons = ({
   gameName,
 }: Props) => {
   const dispatch = useDispatch();
-  const classes = useStyles();
-  const { toggleShowResponsesAction } = presenterActions(gameName);
+  const classes = useButtonStyles();
   return (
     <div className={classes.root}>
       <IconButton
@@ -51,13 +39,11 @@ const PollButtons = ({
       >
         <NavigateBefore />
       </IconButton>
-      <IconButton
-        data-testid="show-responses"
-        disabled={showScoreBoard}
-        onClick={() => dispatch(toggleShowResponsesAction())}
-      >
-        {showResponses ? <LiveHelp /> : <BarChart />}
-      </IconButton>
+      <ShowResponsesButton
+        showResponses={showResponses}
+        gameName={gameName}
+        showScoreBoard={showScoreBoard}
+      />
       {isTriviaMode && (
         <IconButton
           data-testid="show-scoreboard"

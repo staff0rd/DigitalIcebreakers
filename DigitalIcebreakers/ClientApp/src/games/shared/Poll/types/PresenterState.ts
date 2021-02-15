@@ -11,3 +11,5 @@ export type PollPresenterState = PresenterState;
 export type TriviaPresenterState = PresenterState & {
   showScoreBoard: boolean;
 };
+
+export type FistOfFivePresenterState = PresenterState;

@@ -23,10 +23,10 @@ type Props = {
 };
 
 export const getCountMessage = (responseCount: number, playerCount: number) => {
-  if (playerCount === 0) return "Waiting for players to join...";
+  if (playerCount === 0) return "Waiting for participants to join...";
   return responseCount !== playerCount
-    ? `${responseCount} of ${playerCount} players have answered`
-    : `All ${playerCount} players have answered`;
+    ? `${responseCount} of ${playerCount} participants have responded`
+    : `All ${playerCount} participants have responded`;
 };
 
 export const ResponseCount = ({ responseCount, playerCount }: Props) => {
