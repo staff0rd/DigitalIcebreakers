@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using PlaywrightSharp;
+using Shouldly;
 
 namespace DigitalIcebreakers.EndToEndTests
 {
@@ -12,6 +13,7 @@ namespace DigitalIcebreakers.EndToEndTests
         public static async Task ClickByTestId(this IPage page, string testId)
         {
             var element = await page.QuerySelectorAsync($"[data-testid={testId}");
+            element.ShouldNotBeNull($"Couldn't find test id: {testId}");
             await element.ClickAsync();
         }
         public static async Task<string> GetTextContentByTestId(this IPage page, string testId)

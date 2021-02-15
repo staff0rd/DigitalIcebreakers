@@ -22,10 +22,7 @@ namespace DigitalIcebreakers.EndToEndTests.Trivia
         {
             _presenter = await _browsers.CreatePresenter();
             await _presenter.LoadTriviaQuestions();
-
-            _players = await Task.WhenAll(Enumerable.Range(1, 2)
-                .ToList()
-                .Select(ix => _browsers.CreatePlayer(_presenter.Url, $"Player {ix}")));
+            _players = await _browsers.CreatePlayers(_presenter.Url, 2);
         }
 
         public Task DisposeAsync()

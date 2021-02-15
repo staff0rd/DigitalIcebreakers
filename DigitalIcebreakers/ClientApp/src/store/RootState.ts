@@ -7,7 +7,7 @@ import { Player } from "../games/Buzzer/BuzzerReducer";
 import { SplatState } from "../games/Splat/SplatReducer";
 import { PongClientState, PongPresenterState } from "../games/Pong/PongReducer";
 import { IdeaWallState } from "../games/IdeaWall/IdeaWallReducer";
-import { PollState } from "../games/shared/Poll/types/State";
+import { FistOfFiveState, PollState } from "../games/shared/Poll/types/State";
 import { TriviaState } from "games/shared/Poll/types/State";
 import { NamePickerState } from "../games/NamePicker/NamePickerReducer";
 import { BroadcastState } from "games/Broadcast/BroadcastReducer";
@@ -30,6 +30,7 @@ export interface GamesState {
   broadcast: BroadcastState;
   reaction: ReactionState;
   startStopContinue: StartStopContinueState;
+  fistOfFive: FistOfFiveState;
 }
 
 export interface RootState {

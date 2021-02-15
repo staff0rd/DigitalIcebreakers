@@ -43,6 +43,11 @@ namespace DigitalIcebreakers.EndToEndTests
             await StartGame("broadcast");
         }
 
+        public async Task StartFistOfFive()
+        {
+            await StartGame("fist-of-five");
+        }
+
         public async Task StartTrivia()
         {
             await StartGame("trivia");

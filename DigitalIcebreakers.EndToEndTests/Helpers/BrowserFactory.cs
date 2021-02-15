@@ -2,6 +2,7 @@ using System;
 using PlaywrightSharp;
 using PlaywrightSharp.Chromium;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace DigitalIcebreakers.EndToEndTests
 {
@@ -64,6 +65,13 @@ namespace DigitalIcebreakers.EndToEndTests
             var page = await browser.NewPageAsync();
             await JoinLobby(lobbyUrl, page, playerName);
             return new Player(browser, page);
+        }
+
+        public async Task<Player[]> CreatePlayers(string lobbyUrl, int playerCount)
+        {
+            return await Task.WhenAll(Enumerable.Range(1, playerCount)
+                .ToList()
+                .Select(ix => CreatePlayer(lobbyUrl, $"Player {ix}")));
         }
 
         public static async Task JoinLobby(string lobbyUrl, IPage page, string playerName = "test-user")

@@ -48,7 +48,8 @@ const Client = () => {
     answers,
   } = useSelector((state) => {
     const currentGame = state.lobby.currentGame;
-    const playerState = getPollOrTriviaState(state, currentGame!).player;
+    const both = getPollOrTriviaState(state, currentGame!);
+    const playerState = both.player;
     if (currentGame === PollName) {
       return {
         ...(playerState as PollPlayerState),
@@ -102,7 +103,7 @@ const Client = () => {
           </List>
         </>
       ) : (
-        <h2>Wait for next question...</h2>
+        <h2>Please wait...</h2>
       )}
     </ContentContainer>
   );
