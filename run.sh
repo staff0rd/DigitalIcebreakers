@@ -1,0 +1,1 @@
+ASPNETCORE_ENVIRONMENT=Development ASPNETCORE_URLS=http://0.0.0.0:5000 dotnet run -p DigitalIcebreakers
