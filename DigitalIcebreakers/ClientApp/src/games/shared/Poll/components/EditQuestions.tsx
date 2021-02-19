@@ -176,7 +176,7 @@ const EditQuestions = () => {
               header="Clear all questions?"
               content="All questions and responses will be deleted"
               action={() =>
-                dispatch(clearResponsesAction()) &&
+                dispatch(importQuestionsAction([])) &&
                 setConfirmClearQuestionsOpen(false)
               }
               open={confirmClearQuestionsOpen}
@@ -210,7 +210,11 @@ const EditQuestions = () => {
           </CardFooter>
           <CardBody>
             <TableContainer component={Paper}>
-              <Table className={classes.table} aria-label="simple table">
+              <Table
+                id="questions-table"
+                className={classes.table}
+                aria-label="simple table"
+              >
                 <TableHead>
                   <TableRow>
                     <TableCell>Question</TableCell>

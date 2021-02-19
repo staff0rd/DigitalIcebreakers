@@ -21,6 +21,8 @@ import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
 import { NameAndMode } from "../types/NameAndMode";
 import { Answer } from "../types/Answer";
 import { getPollOrTriviaState } from "../getPollOrTriviaState";
+import { RootState } from "store/RootState";
+import { Name as PollName } from "games/Poll";
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -45,9 +47,10 @@ type Props = {
 
 const QuestionEditor = ({ question, gameName, editAnswersChildren }: Props) => {
   const dispatch = useDispatch();
-  const totalQuestions = useSelector(
-    (state) => getPollOrTriviaState(state, gameName).presenter.questions.length
-  );
+  const totalQuestions = useSelector((store) => {
+    const state = getPollOrTriviaState(store, gameName);
+    return state.presenter.questions.length;
+  });
   const [text, setText] = useState(question.text);
   const [answers, setAnswers] = useState(question.answers);
 
@@ -156,13 +159,15 @@ const QuestionEditor = ({ question, gameName, editAnswersChildren }: Props) => {
   );
 };
 
-const EditQuestion = ({ gameName, isTriviaMode }: NameAndMode) => {
+const EditQuestion = () => {
+  const gameName = useSelector((state: RootState) => state.lobby.currentGame!);
+  const isTriviaMode = gameName !== PollName;
   const questionId = useParams<{ id: string }>().id;
-  const question = useSelector((state) =>
-    getPollOrTriviaState(state, gameName).presenter.questions.find(
-      (q) => q.id === questionId
-    )
-  );
+
+  const question = useSelector((store) => {
+    const state = getPollOrTriviaState(store, gameName);
+    return state.presenter.questions.find((q) => q.id === questionId);
+  });
 
   return question ? (
     <QuestionEditor

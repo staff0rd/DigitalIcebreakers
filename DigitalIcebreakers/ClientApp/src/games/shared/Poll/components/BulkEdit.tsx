@@ -170,14 +170,20 @@ export const BulkEdit = (props: Props) => {
         <>
           <Alert severity="info">
             <Typography variant="body2">
-              First line should be a question
+              - First line should be a question
             </Typography>
             <Typography variant="body2">
               - Questions start with a dash
             </Typography>
             <Typography variant="body2">
-              * Correct answers start with an asterix (zero or one per question)
+              Answers are just plain lines like this
             </Typography>
+            {gameName !== "poll" && (
+              <Typography variant="body2">
+                * Correct answers start with an asterix (zero or one per
+                question)
+              </Typography>
+            )}
           </Alert>
           <Alert severity="warning">
             <Typography variant="body2">
