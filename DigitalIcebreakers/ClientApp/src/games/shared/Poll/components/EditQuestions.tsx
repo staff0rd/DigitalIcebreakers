@@ -176,7 +176,7 @@ const EditQuestions = () => {
               header="Clear all questions?"
               content="All questions and responses will be deleted"
               action={() =>
-                dispatch(clearResponsesAction()) &&
+                dispatch(importQuestionsAction([])) &&
                 setConfirmClearQuestionsOpen(false)
               }
               open={confirmClearQuestionsOpen}
