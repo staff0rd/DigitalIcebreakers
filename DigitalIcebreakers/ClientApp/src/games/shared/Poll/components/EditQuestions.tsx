@@ -210,7 +210,11 @@ const EditQuestions = () => {
           </CardFooter>
           <CardBody>
             <TableContainer component={Paper}>
-              <Table className={classes.table} aria-label="simple table">
+              <Table
+                id="questions-table"
+                className={classes.table}
+                aria-label="simple table"
+              >
                 <TableHead>
                   <TableRow>
                     <TableCell>Question</TableCell>
