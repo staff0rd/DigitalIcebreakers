@@ -104,6 +104,7 @@ const SetCategories = () => {
                 onClick={() => setCustomCategories()}
                 size="sm"
                 color="primary"
+                data-testid="select-custom"
               >
                 Select
               </Button>
