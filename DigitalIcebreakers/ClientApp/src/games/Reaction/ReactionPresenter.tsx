@@ -7,7 +7,7 @@ import * as PIXI from "pixi.js";
 import { ShapeView } from "./ShapeView";
 import * as gsap from "gsap";
 import { useDispatch } from "react-redux";
-import { adminMessage } from "../../store/lobby/actions";
+import { presenterMessage } from "store/lobby/actions";
 import Button from "../../layout/components/CustomButtons/Button";
 import Table from "../../layout/components/Table/Table";
 import { Pixi } from "../pixi/Pixi";
@@ -102,7 +102,7 @@ export const ReactionPresenter = () => {
     dispatch(
       startRoundAction({ shapes: newRoundShapes, shape: newRoundShapes[0] })
     );
-    dispatch(adminMessage(shuffle([...newRoundShapes])));
+    dispatch(presenterMessage(shuffle([...newRoundShapes])));
   };
 
   useResizeListener(resize);

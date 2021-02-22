@@ -19,7 +19,7 @@ export const PLAYER_LEFT_LOBBY = "PLAYER_LEFT_LOBBY";
 export const START_NEW_GAME = "START_NEW_GAME";
 export const JOIN_LOBBY = "JOIN_LOBBY";
 export const CREATE_LOBBY = "CREATE_LOBBY";
-export const GAME_MESSAGE_ADMIN = "GAME_MESSAGE_ADMIN";
+export const GAME_MESSAGE_PRESENTER = "GAME_MESSAGE_PRESENTER";
 export const GAME_MESSAGE_CLIENT = "GAME_MESSAGE_CLIENT";
 
 interface SetLobbyAction {
@@ -74,8 +74,8 @@ interface CreateLobbyAction {
   name: string;
 }
 
-interface GameMessageAdminAction {
-  type: typeof GAME_MESSAGE_ADMIN;
+interface GameMessagePresenterAction {
+  type: typeof GAME_MESSAGE_PRESENTER;
   message: any;
 }
 
@@ -95,5 +95,5 @@ export type LobbyActionTypes =
   | StartNewGameAction
   | JoinLobbyAction
   | CreateLobbyAction
-  | GameMessageAdminAction
+  | GameMessagePresenterAction
   | GameMessageClientAction;

@@ -32,7 +32,7 @@ import LiveHelp from "@material-ui/icons/LiveHelp";
 import EditQuestions from "./shared/Poll/components/EditQuestions";
 import EditQuestion from "./shared/Poll/components/EditQuestion";
 import { Name as IdeaWallName } from "./IdeaWall/IdeaWallReducer";
-import * as StartStopContinue from "./StartStopContinue";
+import * as Retrospective from "./Retrospective";
 import { Name as FistOfFiveName } from "./FistOfFive/reducer";
 import FistOfFivePresenter from "./FistOfFive/FistOfFivePresenter";
 
@@ -89,12 +89,12 @@ const games: Game[] = [
   },
   {
     isNew: true,
-    title: "Start Stop Continue",
-    name: StartStopContinue.Name,
-    client: StartStopContinue.Player,
-    presenter: StartStopContinue.Presenter,
+    title: "Retrospective",
+    name: Retrospective.Name,
+    client: Retrospective.Participant,
+    presenter: Retrospective.Presenter,
     description: "Run a retrospective with your team",
-    menu: StartStopContinue.Menu,
+    menu: Retrospective.Menu,
   },
   {
     name: "doggos-vs-kittehs",

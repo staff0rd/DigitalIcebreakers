@@ -30,7 +30,7 @@ import {
   CLOSE_LOBBY,
   CREATE_LOBBY,
   GAME_MESSAGE_CLIENT,
-  GAME_MESSAGE_ADMIN,
+  GAME_MESSAGE_PRESENTER,
   LobbyActionTypes,
 } from "./lobby/types";
 import { SET_USER_NAME, UserActionTypes } from "./user/types";
@@ -222,7 +222,7 @@ export const SignalRMiddleware = (connectionFactory: () => HubConnection) => {
           invoke("createLobby", action.name, getState().user);
           break;
         }
-        case GAME_MESSAGE_ADMIN: {
+        case GAME_MESSAGE_PRESENTER: {
           const payload = JSON.stringify({ admin: action.message });
           invoke("hubMessage", payload);
           break;

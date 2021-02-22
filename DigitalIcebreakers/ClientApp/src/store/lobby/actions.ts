@@ -10,7 +10,7 @@ import {
   JOIN_LOBBY,
   CLOSE_LOBBY,
   CREATE_LOBBY,
-  GAME_MESSAGE_ADMIN,
+  GAME_MESSAGE_PRESENTER,
   GAME_MESSAGE_CLIENT,
 } from "./types";
 import { Player } from "../../Player";
@@ -61,8 +61,8 @@ export function createLobby(name: string): LobbyActionTypes {
   return { type: CREATE_LOBBY, name };
 }
 
-export function adminMessage(message: any): LobbyActionTypes {
-  return { type: GAME_MESSAGE_ADMIN, message };
+export function presenterMessage(message: any): LobbyActionTypes {
+  return { type: GAME_MESSAGE_PRESENTER, message };
 }
 
 export function clientMessage(message: any): LobbyActionTypes {

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { useSelector } from "../../store/useSelector";
-import { adminMessage } from "../../store/lobby/actions";
+import { useSelector } from "store/useSelector";
+import { presenterMessage } from "store/lobby/actions";
 import { useDispatch } from "react-redux";
 import {
   currentQuestionSelector,
@@ -48,14 +48,14 @@ export const useQuestionState = (
   useEffect(() => {
     if (question) {
       dispatch(
-        adminMessage({
+        presenterMessage({
           questionId: question.id,
           answers: question.answers,
           question: question.text,
         })
       );
     } else {
-      dispatch(adminMessage(null));
+      dispatch(presenterMessage(null));
     }
   }, [currentQuestionId]);
 

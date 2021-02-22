@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import Typography from "@material-ui/core/Typography";
 import { guid } from "util/guid";
-import { adminMessage } from "store/lobby/actions";
+import { presenterMessage } from "store/lobby/actions";
 import { useDispatch } from "react-redux";
 import { ResponseCount } from "games/shared/Poll/components/ResponseCount";
 import { useQuestionState } from "games/Poll/useQuestionState";
@@ -43,10 +43,10 @@ const FistOfFivePresenter = () => {
 
   const canAnswer = true;
   useEffect(() => {
-    dispatch(adminMessage({ canAnswer }));
+    dispatch(presenterMessage({ canAnswer }));
     dispatch(importQuestionsAction(getQuestion()));
     return () => {
-      dispatch(adminMessage({ canAnswer: false }));
+      dispatch(presenterMessage({ canAnswer: false }));
     };
   }, [canAnswer]);
 

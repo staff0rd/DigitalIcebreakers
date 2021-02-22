@@ -7,23 +7,34 @@ import Card from "../../layout/components/Card/Card";
 import CardFooter from "../../layout/components/Card/CardFooter";
 import Button from "../../layout/components/CustomButtons/Button";
 import { IdeaEntry } from "games/shared/IdeaEntry";
-import { Category, getCategories, Categories } from "./Category";
+import { useSelector } from "store/useSelector";
+import { makeStyles } from "@material-ui/core/styles";
 
-export type PlayerPayload = {
-  category: Category;
+const useStyles = makeStyles((theme) => ({
+  footer: {
+    display: "flex",
+    flexWrap: "wrap",
+  },
+}));
+
+export type PayloadFromParticipant = {
+  category: number;
   message: string;
 };
 
-export const Player = () => {
+export const Participant = () => {
   const dispatch = useDispatch();
+  const classes = useStyles();
   const [idea, setIdea] = useState<string>("");
+  const categories = useSelector(
+    (state) => state.games.retrospective.participant.categories
+  );
 
-  const onClick = (
-    e: React.SyntheticEvent<EventTarget>,
-    category: Category
-  ) => {
+  const onClick = (category: number) => {
     if (idea.length) {
-      dispatch(clientMessage({ category, message: idea } as PlayerPayload));
+      dispatch(
+        clientMessage({ category, message: idea } as PayloadFromParticipant)
+      );
       setIdea("");
     }
   };
@@ -39,13 +50,10 @@ export const Player = () => {
               maxCharacters={200}
               maxLines={4}
             />
-            <CardFooter>
-              {getCategories().map((category) => (
-                <Button
-                  color="primary"
-                  onClick={(e) => onClick(e, Category[category as Categories])}
-                >
-                  {category}
+            <CardFooter className={classes.footer}>
+              {categories.map((category, ix) => (
+                <Button color="primary" onClick={(e) => onClick(ix)}>
+                  {category.name}
                 </Button>
               ))}
             </CardFooter>

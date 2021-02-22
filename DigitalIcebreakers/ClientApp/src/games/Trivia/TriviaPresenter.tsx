@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector } from "store/useSelector";
-import { adminMessage } from "store/lobby/actions";
+import { presenterMessage } from "store/lobby/actions";
 import { useDispatch } from "react-redux";
 import { Presenter } from "../shared/Poll/Presenter";
 import { Name } from ".";
@@ -13,9 +13,9 @@ export const TriviaPresenter = () => {
   }));
   const canAnswer = !showResponses && !showScoreBoard;
   useEffect(() => {
-    dispatch(adminMessage({ canAnswer }));
+    dispatch(presenterMessage({ canAnswer }));
     return () => {
-      dispatch(adminMessage({ canAnswer: false }));
+      dispatch(presenterMessage({ canAnswer: false }));
     };
   }, [canAnswer]);
   return (

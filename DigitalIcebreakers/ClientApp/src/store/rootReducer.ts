@@ -15,7 +15,7 @@ import { triviaReducer } from "games/Trivia/reducers/triviaReducer";
 import { namePickerReducer } from "games/NamePicker/NamePickerReducer";
 import { broadcastReducer } from "games/Broadcast/BroadcastReducer";
 import { reactionReducer } from "games/Reaction/reactionReducer";
-import { startStopContinueReducer } from "games/StartStopContinue/reducer";
+import { retrospectiveReducer } from "games/Retrospective/reducer";
 import { fistOfFiveReducer } from "games/FistOfFive/reducer";
 
 const gamesReducer = combineReducers<GamesState>({
@@ -30,7 +30,7 @@ const gamesReducer = combineReducers<GamesState>({
   namePicker: namePickerReducer,
   broadcast: broadcastReducer,
   reaction: reactionReducer,
-  startStopContinue: startStopContinueReducer,
+  retrospective: retrospectiveReducer,
   fistOfFive: fistOfFiveReducer,
 });
 
