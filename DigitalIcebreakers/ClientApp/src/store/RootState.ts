@@ -12,7 +12,7 @@ import { TriviaState } from "games/shared/Poll/types/State";
 import { NamePickerState } from "../games/NamePicker/NamePickerReducer";
 import { BroadcastState } from "games/Broadcast/BroadcastReducer";
 import { ReactionState } from "games/Reaction/reactionReducer";
-import { StartStopContinueState } from "games/StartStopContinue/reducer";
+import { RetrospectiveState } from "games/Retrospective/reducer";
 
 export interface GamesState {
   yesnomaybe: YesNoMaybeState;
@@ -29,7 +29,7 @@ export interface GamesState {
   namePicker: NamePickerState;
   broadcast: BroadcastState;
   reaction: ReactionState;
-  startStopContinue: StartStopContinueState;
+  retrospective: RetrospectiveState;
   fistOfFive: FistOfFiveState;
 }
 

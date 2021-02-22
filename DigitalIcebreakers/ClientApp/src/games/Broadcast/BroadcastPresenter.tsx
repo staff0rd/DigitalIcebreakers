@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { adminMessage } from "../../store/lobby/actions";
-import { ContentContainer } from "../../components/ContentContainer";
+import { presenterMessage } from "store/lobby/actions";
+import { ContentContainer } from "components/ContentContainer";
 import { makeStyles, TextField } from "@material-ui/core";
 import { useSelector } from "store/useSelector";
 import { resetAction, setTextAction } from "./BroadcastReducer";
@@ -22,13 +22,13 @@ export const BroadcastPresenter = () => {
 
   useEffect(() => {
     dispatch(resetAction());
-    dispatch(adminMessage(""));
+    dispatch(presenterMessage(""));
   }, []);
 
   const updateClientText = (e: ChangeEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
     dispatch(setTextAction(target.value));
-    dispatch(adminMessage(target.value));
+    dispatch(presenterMessage(target.value));
   };
 
   return (

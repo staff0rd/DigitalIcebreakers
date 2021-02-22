@@ -55,7 +55,6 @@ namespace DigitalIcebreakers.Games
 
         public async override Task OnReceivePresenterMessage(JToken payload, string connectionId)
         {
-
             var answers = payload.ToObject<SelectableAnswers>();
             if (answers != null)
             {

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Colors, ColorUtils } from "../../Colors";
 import { Pixi } from "../pixi/Pixi";
-import { useSelector } from "../../store/useSelector";
+import { useSelector } from "store/useSelector";
 import { useDispatch } from "react-redux";
-import { adminMessage } from "../../store/lobby/actions";
+import { presenterMessage } from "store/lobby/actions";
 import { pick, between } from "Random";
 
 interface AnimatedText extends PIXI.Text {
@@ -47,7 +47,7 @@ const NamePickerPresenter = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       if (id) {
-        dispatch(adminMessage({ id }));
+        dispatch(presenterMessage({ id }));
       }
     }, fadeOutMs);
     return () => clearTimeout(timer);
@@ -66,7 +66,7 @@ const NamePickerPresenter = () => {
       setId(undefined);
       setPickStarted(undefined);
       app?.stage.children.forEach((t) => (t.alpha = 1));
-      dispatch(adminMessage({}));
+      dispatch(presenterMessage({}));
     }
   }, [shouldPick]);
 

@@ -2,26 +2,30 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import ListItem from "@material-ui/core/ListItem";
 import Button from "../../layout/components/CustomButtons/Button";
-import { clearIdeasAction } from "./reducer";
+import { clearIdeasAction, setCategories } from "./presenterReducer";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { useSelector } from "store/useSelector";
 import { RootState } from "store/RootState";
-import { getCategories, ideasByCategory } from "./Category";
+import { ideasByCategory } from "./ideasByCategory";
 
 export const Menu = () => {
   const dispatch = useDispatch();
   const [confirmClearDialogOpen, setConfirmClearDialogOpen] = useState(false);
-  const ideas = useSelector(
-    (state: RootState) => state.games.startStopContinue.ideas
+  const [
+    confirmSetCategoriesDialogOpen,
+    setConfirmSetCategoriesDialogOpen,
+  ] = useState(false);
+  const { ideas, categories } = useSelector(
+    (state: RootState) => state.games.retrospective.presenter
   );
 
   const exportIdeas = () => {
-    const fileName = "startstopcontinue.txt";
-    const text = getCategories()
+    const fileName = "retrospective.txt";
+    const text = categories
       .map(
         (category) =>
-          `* ${category}\n` +
-          ideasByCategory(ideas, category)
+          `* ${category.name}\n` +
+          ideasByCategory(ideas, category.id)
             .map((idea) => `    * ${idea.payload.message}\n`)
             .join("")
       )
@@ -35,6 +39,11 @@ export const Menu = () => {
   return (
     <>
       <ListItem>
+        <Button onClick={() => setConfirmSetCategoriesDialogOpen(true)}>
+          Set categories
+        </Button>
+      </ListItem>
+      <ListItem>
         <Button onClick={() => exportIdeas()}>Export</Button>
       </ListItem>
       <ListItem>
@@ -47,6 +56,16 @@ export const Menu = () => {
         setOpen={setConfirmClearDialogOpen}
         action={() =>
           dispatch(clearIdeasAction()) && setConfirmClearDialogOpen(false)
+        }
+      />
+      <ConfirmDialog
+        header="Set categories?"
+        content="All ideas will be removed!"
+        open={confirmSetCategoriesDialogOpen}
+        setOpen={setConfirmSetCategoriesDialogOpen}
+        action={() =>
+          dispatch(setCategories([])) &&
+          setConfirmSetCategoriesDialogOpen(false)
         }
       />
     </>

@@ -8,7 +8,8 @@ import { Idea } from "./Idea";
 import { ServerIdea } from "./ServerIdea";
 import { guid } from "../../util/guid";
 import { Colors } from "../../Colors";
-import StorageManager from "../../store/StorageManager";
+import StorageManager from "store/StorageManager";
+const storage = new StorageManager(window.localStorage);
 
 const IDEA_COLORS = [
   Colors.Amber.A200,
@@ -68,13 +69,6 @@ const getNewIdea = (playerName: string, idea: string | ServerIdea): Idea => {
     y: undefined,
   };
 };
-
-// getIdeas() {
-
-//     return this.getFromStorage(this.props.storageKey);
-// }
-
-const storage = new StorageManager(window.localStorage);
 
 export const ideaWallReducer = createReceiveGameMessageReducer<
   string,
