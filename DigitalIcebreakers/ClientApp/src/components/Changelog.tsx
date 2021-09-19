@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ChangelogItem } from "../ChangelogItem";
 import Parser from "rss-parser";
-import { makeStyles, Typography } from "@material-ui/core";
+import { CircularProgress, makeStyles, Typography } from "@material-ui/core";
 import { DateTime } from "luxon";
 
 const useStyles = makeStyles((theme) => ({
@@ -40,19 +40,24 @@ export function Changelog() {
     ChangelogItem.fromParts(2019, 4, 2, "added #ideawall"),
   ]);
 
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     async function readFeed() {
       const feed = await parser.parseURL(
-        "https://devlog.staffordwilliams.com/categories/digitalicebreakers/feed.xml"
+        "https://staffordwilliams.com/devlog/digital-icebreakers.xml"
       );
 
-      const changes = feed.items.map((entry) => {
-        const date = new Date(entry.pubDate);
-        const change = new ChangelogItem(date, entry.title!, entry.link!);
-        return change;
-      });
+      const changes = feed.items
+        .map((entry) => {
+          const date = new Date(entry.pubDate);
+          const change = new ChangelogItem(date, entry.title!, entry.link!);
+          return change;
+        })
+        .sort((a, b) => b.date.getTime() - a.date.getTime());
 
       setChangelogs([...changes, ...changelogs]);
+      setIsLoading(false);
     }
 
     readFeed();
@@ -70,6 +75,7 @@ export function Changelog() {
           </a>
         </Typography>
       </div>
+      {isLoading && <CircularProgress color="secondary" />}
       <ul className={classes.list}>
         {changelogs.map((item, ix) => (
           <li key={ix}>
