@@ -31,9 +31,8 @@ const twoQuestions = [
   },
 ];
 
-const { importQuestionsAction, setCurrentQuestionAction } = presenterActions(
-  Name
-);
+const { importQuestionsAction, setCurrentQuestionAction } =
+  presenterActions(Name);
 
 describe("pollReducer", () => {
   let store = configureStore({ reducer: rootReducer });
@@ -52,6 +51,7 @@ describe("pollReducer", () => {
       const currentQuestion = currentQuestionSelector((state) => ({
         currentQuestionId: state.games.poll.presenter.currentQuestionId,
         questions: state.games.poll.presenter.questions,
+        showResponses: true,
       }))(store.getState());
       expect(currentQuestion.currentQuestionId).toBe("1");
       expect(currentQuestion.question?.text).toBe("a question");
@@ -62,6 +62,7 @@ describe("pollReducer", () => {
       const currentQuestion = currentQuestionSelector((state) => ({
         currentQuestionId: state.games.poll.presenter.currentQuestionId,
         questions: state.games.poll.presenter.questions,
+        showResponses: true,
       }))(store.getState());
       expect(currentQuestion.currentQuestionId).toBeUndefined();
     });
@@ -71,6 +72,7 @@ describe("pollReducer", () => {
       let currentQuestion = currentQuestionSelector((state) => ({
         currentQuestionId: state.games.poll.presenter.currentQuestionId,
         questions: state.games.poll.presenter.questions,
+        showResponses: true,
       }))(store.getState());
       expect(currentQuestion.nextQuestionId).toBe(
         "1a07c811-4e82-5be4-03e1-8fe8abd2198e"
@@ -80,6 +82,7 @@ describe("pollReducer", () => {
       currentQuestion = currentQuestionSelector((state) => ({
         currentQuestionId: state.games.poll.presenter.currentQuestionId,
         questions: state.games.poll.presenter.questions,
+        showResponses: true,
       }))(store.getState());
       expect(currentQuestion.question?.text).toBe("Question 2");
       expect(currentQuestion.question?.answers[0].text).toBe(
