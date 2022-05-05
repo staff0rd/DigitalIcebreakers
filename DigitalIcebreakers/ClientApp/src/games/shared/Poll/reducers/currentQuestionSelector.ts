@@ -1,6 +1,7 @@
 import { Question } from "games/shared/Poll/types/Question";
 import { RootState } from "store/RootState";
 import { createSelector } from "@reduxjs/toolkit";
+import { PollPresenterState } from "../types/PresenterState";
 
 export interface GameState {
   currentQuestionId: string | undefined;
@@ -13,7 +14,7 @@ export const currentQuestionSelector = (
 ) =>
   createSelector(
     (state: RootState) => gameStateSelector(state),
-    (state) => {
+    (state: PollPresenterState) => {
       const question = state.questions.find(
         (q) => q.id === (state.currentQuestionId || "")
       );
