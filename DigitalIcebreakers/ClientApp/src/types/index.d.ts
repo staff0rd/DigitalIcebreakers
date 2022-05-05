@@ -5,8 +5,6 @@
 
 declare var Reveal: RevealStatic;
 
-declare module "reveal.js";
-
 interface RevealStatic {
   initialize: (config: RevealOptions) => void;
   configure: (diff: RevealOptions) => void;

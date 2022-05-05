@@ -1,4 +1,4 @@
-import { AvailableAnswers } from "games/shared/Poll/types/AvailableAnswers";
+import { AvailableAnswers } from "@games/shared/Poll/types/AvailableAnswers";
 
 export interface SelectableAnswer {
   selectedAnswerId?: string;

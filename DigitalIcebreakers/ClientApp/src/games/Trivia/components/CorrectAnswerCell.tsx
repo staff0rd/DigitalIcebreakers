@@ -1,5 +1,5 @@
-import styles from "layout/assets/jss/material-dashboard-react/components/tasksStyle";
-import { Answer } from "games/shared/Poll/types/Answer";
+import styles from "@layout/assets/jss/material-dashboard-react/components/tasksStyle";
+import { Answer } from "@games/shared/Poll/types/Answer";
 import Check from "@material-ui/icons/Check";
 import Checkbox from "@material-ui/core/Checkbox";
 import Typography from "@material-ui/core/Typography";

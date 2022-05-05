@@ -1,7 +1,7 @@
 import {
   createGameActionWithPayload,
   createGameAction,
-} from "store/actionHelpers";
+} from "@store/actionHelpers";
 
 export const playerActions = (gameName: string) => {
   const selectAnswerAction = createGameActionWithPayload<string>(

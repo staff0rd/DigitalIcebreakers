@@ -1,20 +1,20 @@
 import {
   createGameAction,
   createReceiveGameMessageReducer,
-} from "store/actionHelpers";
-import { Question } from "games/shared/Poll/types/Question";
-import { SelectedAnswer } from "games/shared/Poll/types/SelectedAnswer";
+} from "@store/actionHelpers";
+import { Question } from "@games/shared/Poll/types/Question";
+import { SelectedAnswer } from "@games/shared/Poll/types/SelectedAnswer";
 import {
   PresenterState,
   TriviaPresenterState,
-} from "games/shared/Poll/types/PresenterState";
+} from "@games/shared/Poll/types/PresenterState";
 import { Player } from "Player";
 import {
   presenterActionReducers,
   ShouldShowResponses,
-} from "games/shared/Poll/reducers/presenterActionReducers";
-import { initialPresenterState } from "games/shared/Poll/reducers/initialPresenterState";
-import { presenterPayloadReducer } from "games/shared/Poll/reducers/presenterPayloadReducer";
+} from "@games/shared/Poll/reducers/presenterActionReducers";
+import { initialPresenterState } from "@games/shared/Poll/reducers/initialPresenterState";
+import { presenterPayloadReducer } from "@games/shared/Poll/reducers/presenterPayloadReducer";
 import { Name } from "..";
 
 export const storageKey = "trivia:questions";

@@ -1,6 +1,6 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography";
-import { Question } from "games/shared/Poll/types/Question";
+import { Question } from "@games/shared/Poll/types/Question";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({

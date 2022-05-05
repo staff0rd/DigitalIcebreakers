@@ -1,4 +1,4 @@
-import { Question } from "games/shared/Poll/types/Question";
+import { Question } from "@games/shared/Poll/types/Question";
 
 export interface PresenterState {
   currentQuestionId: string | undefined;

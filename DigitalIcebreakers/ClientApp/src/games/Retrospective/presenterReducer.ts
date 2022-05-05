@@ -1,11 +1,11 @@
-import { GameMessage } from "games/GameMessage";
+import { GameMessage } from "@games/GameMessage";
 import {
   createGameAction,
   createGameActionWithPayload,
   createReceiveGameMessageReducer,
-} from "store/actionHelpers";
+} from "@store/actionHelpers";
 import { PayloadFromParticipant } from "./Participant";
-import StorageManager from "store/StorageManager";
+import StorageManager from "@store/StorageManager";
 const storage = new StorageManager(window.localStorage);
 const storageKey = "retrospective";
 

@@ -1,4 +1,5 @@
 import React from "react";
+import { QRCodeSVG } from "qrcode.react";
 import { Config } from "../config";
 import { useSelector } from "../store/useSelector";
 import { makeStyles } from "@material-ui/core/styles";
@@ -6,7 +7,7 @@ import { Typography } from "@material-ui/core";
 import {
   hexToRgb,
   grayColor,
-} from "layout/assets/jss/material-dashboard-react";
+} from "@layout/assets/jss/material-dashboard-react";
 
 const useStylesLg = makeStyles((theme) => ({
   container: {
@@ -56,8 +57,6 @@ const useStylesSm = makeStyles((theme) => ({
   },
 }));
 
-var QRCode = require("qrcode.react");
-
 type Props = {
   lg?: boolean;
 };
@@ -85,13 +84,7 @@ const LobbyQrCode = ({ lg }: Props) => {
           className={classes.qrCodeLink}
           data-testid="qrcode-link"
         >
-          <QRCode
-            height="100%"
-            width="100%"
-            className={classes.qrCode}
-            value={joinUrl}
-            renderAs="svg"
-          />
+          <QRCodeSVG value={joinUrl} />
         </a>
         {lg && (
           <Typography variant="h4" className={classes.browseLink}>

@@ -1,5 +1,5 @@
-import { Question } from "games/shared/Poll/types/Question";
-import { RootState } from "store/RootState";
+import { Question } from "@games/shared/Poll/types/Question";
+import { RootState } from "@store/RootState";
 import { createSelector } from "@reduxjs/toolkit";
 import { PollPresenterState } from "../types/PresenterState";
 

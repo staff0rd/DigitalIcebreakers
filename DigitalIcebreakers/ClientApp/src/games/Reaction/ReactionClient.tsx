@@ -6,9 +6,9 @@ import { Pixi } from "../pixi/Pixi";
 import { useDispatch } from "react-redux";
 import { clientMessage } from "../../store/lobby/actions";
 import React, { useEffect, useState } from "react";
-import { RootState } from "store/RootState";
-import { useResizeListener } from "games/pixi/useResizeListener";
-import { useSelector } from "store/useSelector";
+import { RootState } from "@store/RootState";
+import { useResizeListener } from "@games/pixi/useResizeListener";
+import { useSelector } from "@store/useSelector";
 import { selectShape } from "./reactionReducer";
 
 export const ReactionPlayer = () => {

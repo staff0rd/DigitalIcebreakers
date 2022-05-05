@@ -3,9 +3,9 @@ import Button from "../layout/components/CustomButtons/Button";
 import { useDispatch } from "react-redux";
 import { closeLobby } from "../store/lobby/actions";
 import GridItem from "../layout/components/Grid/GridItem";
-import GridContainer from "../layout/components/Grid/GridContainer.js";
-import Card from "../layout/components/Card/Card.js";
-import CardFooter from "../layout/components/Card/CardFooter.js";
+import GridContainer from "../layout/components/Grid/GridContainer";
+import Card from "../layout/components/Card/Card";
+import CardFooter from "../layout/components/Card/CardFooter";
 import CardTitle from "../layout/components/Card/CardTitle";
 import { ContentContainer } from "./ContentContainer";
 

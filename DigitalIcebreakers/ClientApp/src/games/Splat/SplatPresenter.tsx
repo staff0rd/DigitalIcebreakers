@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Colors, ColorUtils } from "../../Colors";
-import { between } from "../../Random";
+import { between } from "../../util/Random";
 import { Pixi } from "../pixi/Pixi";
 import { useSelector } from "../../store/useSelector";
 

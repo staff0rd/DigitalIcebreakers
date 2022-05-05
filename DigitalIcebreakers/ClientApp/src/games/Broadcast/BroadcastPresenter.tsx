@@ -1,9 +1,9 @@
 import React, { ChangeEvent, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { presenterMessage } from "store/lobby/actions";
-import { ContentContainer } from "components/ContentContainer";
+import { presenterMessage } from "@store/lobby/actions";
+import { ContentContainer } from "@components/ContentContainer";
 import { makeStyles, TextField } from "@material-ui/core";
-import { useSelector } from "store/useSelector";
+import { useSelector } from "@store/useSelector";
 import { resetAction, setTextAction } from "./BroadcastReducer";
 
 const useStyles = makeStyles((theme) => ({

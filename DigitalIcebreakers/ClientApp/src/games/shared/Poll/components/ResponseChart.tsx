@@ -8,7 +8,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import { primaryColor } from "../../../../layout/assets/jss/material-dashboard-react";
 import CustomisedAxisTick from "./CustomisedAccessTick";
-import { RootState } from "store/RootState";
+import { RootState } from "@store/RootState";
 
 const useStyles = makeStyles((theme) => ({
   data: {

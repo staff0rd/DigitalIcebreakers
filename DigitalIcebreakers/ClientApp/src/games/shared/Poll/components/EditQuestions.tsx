@@ -25,10 +25,10 @@ import { useDispatch } from "react-redux";
 import array from "../../../../util/array";
 import { saveAs } from "file-saver";
 import { BulkEdit } from "./BulkEdit";
-import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
-import { Name as PollName } from "games/Poll";
+import { presenterActions } from "@games/shared/Poll/reducers/presenterActions";
+import { Name as PollName } from "@games/Poll";
 import { getPollOrTriviaState } from "../getPollOrTriviaState";
-import { ConfirmDialog } from "components/ConfirmDialog";
+import { ConfirmDialog } from "@components/ConfirmDialog";
 import { AutoQuestions } from "./AutoQuestions";
 
 const useStyles = makeStyles((theme) => ({
@@ -132,12 +132,10 @@ const EditQuestions = () => {
   //   openDialog: openBulkEditDialog,
   // } = useBulkEdit(gameName, isTriviaMode, questions);
 
-  const [confirmClearQuestionsOpen, setConfirmClearQuestionsOpen] = useState(
-    false
-  );
-  const [confirmClearResponsesOpen, setConfirmClearResponsesOpen] = useState(
-    false
-  );
+  const [confirmClearQuestionsOpen, setConfirmClearQuestionsOpen] =
+    useState(false);
+  const [confirmClearResponsesOpen, setConfirmClearResponsesOpen] =
+    useState(false);
   const [bulkEditOpen, setBulkEditOpen] = useState(false);
   const [autoQuestionsOpen, setAutoQuestionsOpen] = useState(false);
   return (

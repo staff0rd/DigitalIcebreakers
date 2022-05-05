@@ -17,12 +17,12 @@ import EditAnswers from "./EditAnswers";
 import { guid } from "../../../../util/guid";
 import { grayColor } from "../../../../layout/assets/jss/material-dashboard-react";
 import { useDispatch } from "react-redux";
-import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
+import { presenterActions } from "@games/shared/Poll/reducers/presenterActions";
 import { NameAndMode } from "../types/NameAndMode";
 import { Answer } from "../types/Answer";
 import { getPollOrTriviaState } from "../getPollOrTriviaState";
-import { RootState } from "store/RootState";
-import { Name as PollName } from "games/Poll";
+import { RootState } from "@store/RootState";
+import { Name as PollName } from "@games/Poll";
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -61,9 +61,8 @@ const QuestionEditor = ({ question, gameName, editAnswersChildren }: Props) => {
     return text.length < 3;
   };
 
-  const { updateQuestionAction, deleteQuestionAction } = presenterActions(
-    gameName
-  );
+  const { updateQuestionAction, deleteQuestionAction } =
+    presenterActions(gameName);
 
   const saveQuestion = () => {
     dispatch(

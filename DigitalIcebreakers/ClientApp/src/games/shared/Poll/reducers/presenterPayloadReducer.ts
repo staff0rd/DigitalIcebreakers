@@ -1,6 +1,6 @@
-import { Question } from "games/shared/Poll/types/Question";
-import { SelectedAnswer } from "games/shared/Poll/types/SelectedAnswer";
-import { PresenterState } from "games/shared/Poll/types/PresenterState";
+import { Question } from "@games/shared/Poll/types/Question";
+import { SelectedAnswer } from "@games/shared/Poll/types/SelectedAnswer";
+import { PresenterState } from "@games/shared/Poll/types/PresenterState";
 
 export const presenterPayloadReducer = <S extends PresenterState>(
   state: S,

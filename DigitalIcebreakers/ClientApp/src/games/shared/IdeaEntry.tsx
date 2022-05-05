@@ -1,8 +1,8 @@
 import React from "react";
 import Grid from "@material-ui/core/Grid";
-import CardBody from "layout/components/Card/CardBody";
-import CardTitle from "layout/components/Card/CardTitle";
-import CustomInput from "layout/components/CustomInput/CustomInput";
+import CardBody from "@layout/components/Card/CardBody";
+import CardTitle from "@layout/components/Card/CardTitle";
+import CustomInput from "@layout/components/CustomInput/CustomInput";
 import { makeStyles } from "@material-ui/core";
 
 export const useStyles = makeStyles((theme) => ({

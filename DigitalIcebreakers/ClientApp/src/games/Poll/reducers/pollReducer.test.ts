@@ -1,7 +1,7 @@
 import { currentQuestionSelector } from "../../shared/Poll/reducers/currentQuestionSelector";
 import { rootReducer } from "../../../store/rootReducer";
 import { configureStore } from "@reduxjs/toolkit";
-import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
+import { presenterActions } from "@games/shared/Poll/reducers/presenterActions";
 import { Name } from "..";
 
 const twoQuestions = [

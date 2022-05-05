@@ -1,13 +1,13 @@
 import { useEffect } from "react";
-import { useSelector } from "store/useSelector";
-import { presenterMessage } from "store/lobby/actions";
+import { useSelector } from "@store/useSelector";
+import { presenterMessage } from "@store/lobby/actions";
 import { useDispatch } from "react-redux";
 import {
   currentQuestionSelector,
   GameState,
 } from "../shared/Poll/reducers/currentQuestionSelector";
-import { RootState } from "store/RootState";
-import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
+import { RootState } from "@store/RootState";
+import { presenterActions } from "@games/shared/Poll/reducers/presenterActions";
 
 export const useQuestionState = (
   gameName: string,

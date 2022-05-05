@@ -2,18 +2,18 @@ import React, { useEffect, useRef, useState } from "react";
 import { Shape } from "./Shape";
 import { Colors, ColorUtils } from "../../Colors";
 import { ShapeType } from "./ShapeType";
-import { shuffle } from "../../Random";
+import { shuffle } from "../../util/Random";
 import * as PIXI from "pixi.js";
 import { ShapeView } from "./ShapeView";
 import * as gsap from "gsap";
 import { useDispatch } from "react-redux";
-import { presenterMessage } from "store/lobby/actions";
+import { presenterMessage } from "@store/lobby/actions";
 import Button from "../../layout/components/CustomButtons/Button";
 import Table from "../../layout/components/Table/Table";
 import { Pixi } from "../pixi/Pixi";
 import { RootState } from "../../store/RootState";
 import { ContentContainer } from "../../components/ContentContainer";
-import { useSelector } from "store/useSelector";
+import { useSelector } from "@store/useSelector";
 import AutoRenewIcon from "@material-ui/icons/Autorenew";
 import {
   startRoundAction,
@@ -21,8 +21,8 @@ import {
   getPlayerName,
   endRoundAction,
 } from "./reactionReducer";
-import { useResizeListener } from "games/pixi/useResizeListener";
-import { useTimeout } from "util/useTimeout";
+import { useResizeListener } from "@games/pixi/useResizeListener";
+import { useTimeout } from "@util/useTimeout";
 
 export const ReactionPresenter = () => {
   const [pixi, setPixi] = useState<PIXI.Application>();

@@ -1,5 +1,5 @@
-import { AvailableAnswers } from "games/shared/Poll/types/AvailableAnswers";
-import { sharedTriviaPlayerReducer } from "games/shared/Poll/reducers/sharedTriviaPlayerReducer";
+import { AvailableAnswers } from "@games/shared/Poll/types/AvailableAnswers";
+import { sharedTriviaPlayerReducer } from "@games/shared/Poll/reducers/sharedTriviaPlayerReducer";
 
 const TriviaName = "trivia";
 

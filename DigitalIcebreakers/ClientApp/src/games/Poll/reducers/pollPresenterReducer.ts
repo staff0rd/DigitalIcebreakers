@@ -1,10 +1,10 @@
-import { createReceiveGameMessageReducer } from "store/actionHelpers";
-import { SelectedAnswer } from "games/shared/Poll/types/SelectedAnswer";
-import { PollPresenterState } from "games/shared/Poll/types/PresenterState";
+import { createReceiveGameMessageReducer } from "@store/actionHelpers";
+import { SelectedAnswer } from "@games/shared/Poll/types/SelectedAnswer";
+import { PollPresenterState } from "@games/shared/Poll/types/PresenterState";
 import { Name } from "..";
-import { presenterActionReducers } from "games/shared/Poll/reducers/presenterActionReducers";
-import { initialPresenterState } from "games/shared/Poll/reducers/initialPresenterState";
-import { presenterPayloadReducer } from "games/shared/Poll/reducers/presenterPayloadReducer";
+import { presenterActionReducers } from "@games/shared/Poll/reducers/presenterActionReducers";
+import { initialPresenterState } from "@games/shared/Poll/reducers/initialPresenterState";
+import { presenterPayloadReducer } from "@games/shared/Poll/reducers/presenterPayloadReducer";
 export const storageKey = "poll:questions";
 
 export const pollPresenterReducer = createReceiveGameMessageReducer<

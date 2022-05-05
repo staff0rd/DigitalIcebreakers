@@ -1,7 +1,7 @@
 import {
   createGameAction,
   createGameActionWithPayload,
-} from "store/actionHelpers";
+} from "@store/actionHelpers";
 import { Question } from "../types/Question";
 
 export const presenterActions = (gameName: string) => {

@@ -3,15 +3,15 @@ import { useSelector } from "../store/useSelector";
 import { setUserName } from "../store/user/actions";
 import { goToDefaultUrl } from "../store/shell/actions";
 import GridItem from "../layout/components/Grid/GridItem";
-import GridContainer from "../layout/components/Grid/GridContainer.js";
+import GridContainer from "../layout/components/Grid/GridContainer";
 import CustomInput from "../layout/components/CustomInput/CustomInput";
 import Button from "../layout/components/CustomButtons/Button";
-import Card from "../layout/components/Card/Card.js";
-import CardBody from "../layout/components/Card/CardBody.js";
-import CardFooter from "../layout/components/Card/CardFooter.js";
+import Card from "../layout/components/Card/Card";
+import CardBody from "../layout/components/Card/CardBody";
+import CardFooter from "../layout/components/Card/CardFooter";
 import { useDispatch } from "react-redux";
 import CardTitle from "../layout/components/Card/CardTitle";
-import { ContentContainer } from "../components/ContentContainer";
+import { ContentContainer } from "./ContentContainer";
 
 const Register = () => {
   const initialName = useSelector((state) => state.user.name || "");

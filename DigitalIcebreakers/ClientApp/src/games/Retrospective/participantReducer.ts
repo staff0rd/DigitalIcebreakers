@@ -1,4 +1,4 @@
-import { createReceiveReducer } from "store/actionHelpers";
+import { createReceiveReducer } from "@store/actionHelpers";
 import { Name } from "./presenterReducer";
 import { Category } from "./presenterReducer";
 

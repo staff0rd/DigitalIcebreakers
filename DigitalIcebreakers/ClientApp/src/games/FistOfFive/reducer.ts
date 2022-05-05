@@ -1,17 +1,16 @@
 import { combineReducers } from "redux";
-import { sharedTriviaPlayerReducer } from "games/shared/Poll/reducers/sharedTriviaPlayerReducer";
-import { FistOfFiveState } from "games/shared/Poll/types/State";
-import { SelectedAnswer } from "games/shared/Poll/types/SelectedAnswer";
-import { createReceiveGameMessageReducer } from "store/actionHelpers";
-import { FistOfFivePresenterState } from "games/shared/Poll/types/PresenterState";
-import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
-import { presenterPayloadReducer } from "games/shared/Poll/reducers/presenterPayloadReducer";
+import { sharedTriviaPlayerReducer } from "@games/shared/Poll/reducers/sharedTriviaPlayerReducer";
+import { FistOfFiveState } from "@games/shared/Poll/types/State";
+import { SelectedAnswer } from "@games/shared/Poll/types/SelectedAnswer";
+import { createReceiveGameMessageReducer } from "@store/actionHelpers";
+import { FistOfFivePresenterState } from "@games/shared/Poll/types/PresenterState";
+import { presenterActions } from "@games/shared/Poll/reducers/presenterActions";
+import { presenterPayloadReducer } from "@games/shared/Poll/reducers/presenterPayloadReducer";
 
 export const Name = "fist-of-five";
 
-const { importQuestionsAction, toggleShowResponsesAction } = presenterActions(
-  Name
-);
+const { importQuestionsAction, toggleShowResponsesAction } =
+  presenterActions(Name);
 
 export const pollPresenterReducer = createReceiveGameMessageReducer<
   SelectedAnswer[],

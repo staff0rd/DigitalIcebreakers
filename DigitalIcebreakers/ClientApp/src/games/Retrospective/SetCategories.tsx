@@ -2,11 +2,11 @@ import { Card, CardActions, makeStyles } from "@material-ui/core";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-import Button from "layout/components/CustomButtons/Button";
+import Button from "@layout/components/CustomButtons/Button";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Category, setCategories } from "./presenterReducer";
-import CustomInput from "layout/components/CustomInput/CustomInput";
+import CustomInput from "@layout/components/CustomInput/CustomInput";
 import Alert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles((theme) => ({

@@ -53,12 +53,11 @@ export default function Sidebar(props) {
             [" " + classes.whiteFont]: activeRoute(prop.path),
           });
           return (
-            <>
+            <React.Fragment key={key}>
               <NavLink
                 to={prop.path}
                 className={activePro + classes.item}
                 activeClassName="active"
-                key={key}
                 onClick={() => dispatch(toggleDrawer(false))}
               >
                 <ListItem
@@ -102,7 +101,7 @@ export default function Sidebar(props) {
                 prop.path === "/game" &&
                 location.pathname === "/game" &&
                 GameMenu && <GameMenu />}
-            </>
+            </React.Fragment>
           );
         })}
     </List>

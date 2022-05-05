@@ -7,8 +7,8 @@ import ArrowUpward from "@material-ui/icons/ArrowUpward";
 import ArrowDownward from "@material-ui/icons/ArrowDownward";
 import IconButton from "@material-ui/core/IconButton";
 import Delete from "@material-ui/icons/Delete";
-import array from "util/array";
-import CustomInput from "layout/components/CustomInput/CustomInput";
+import array from "@util/array";
+import CustomInput from "@layout/components/CustomInput/CustomInput";
 import { makeStyles } from "@material-ui/core/styles";
 import { Answer } from "../types/Answer";
 

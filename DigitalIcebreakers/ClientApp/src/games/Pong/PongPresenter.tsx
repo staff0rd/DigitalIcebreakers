@@ -3,7 +3,7 @@ import { PongColors as Colors } from "./PongColors";
 import * as PIXI from "pixi.js";
 import ReactAnimationFrame from "react-animation-frame";
 import { BaseGame, BaseGameProps } from "../BaseGame";
-import { between } from "../../Random";
+import { between } from "../../util/Random";
 import { connect, ConnectedProps } from "react-redux";
 import { Pixi } from "../pixi/Pixi";
 import { RootState } from "../../store/RootState";

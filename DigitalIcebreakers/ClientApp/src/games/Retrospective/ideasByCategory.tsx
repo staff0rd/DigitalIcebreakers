@@ -1,4 +1,4 @@
-import { GameMessage } from "games/GameMessage";
+import { GameMessage } from "@games/GameMessage";
 import { PayloadFromParticipant } from "./Participant";
 
 export const ideasByCategory = (

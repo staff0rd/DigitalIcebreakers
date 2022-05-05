@@ -3,12 +3,12 @@ import {
   createReceiveGameMessageReducer,
   createGameActionWithPayload,
 } from "../../store/actionHelpers";
-import { pick } from "Random";
+import { pick } from "@util/Random";
 import { Idea } from "./Idea";
 import { ServerIdea } from "./ServerIdea";
-import { guid } from "../../util/guid";
+import { guid } from "@util/guid";
 import { Colors } from "../../Colors";
-import StorageManager from "store/StorageManager";
+import StorageManager from "@store/StorageManager";
 const storage = new StorageManager(window.localStorage);
 
 const IDEA_COLORS = [

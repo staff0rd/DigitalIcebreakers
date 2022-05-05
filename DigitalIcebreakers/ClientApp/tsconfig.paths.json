@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@games/*": ["src/games/*"],
+      "@layout/*": ["src/layout/*"],
+      "@store/*": ["src/store/*"],
+      "@util/*": ["src/util/*"],
+      "@components/*": ["src/components/*"],
+      "@src/*": ["src/*"]
+    }
+  }
+}

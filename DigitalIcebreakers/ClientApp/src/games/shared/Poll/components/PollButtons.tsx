@@ -5,8 +5,8 @@ import NavigateBefore from "@material-ui/icons/NavigateBefore";
 import NavigateNext from "@material-ui/icons/NavigateNext";
 import ScoreIcon from "@material-ui/icons/Score";
 import CloseIcon from "@material-ui/icons/Close";
-import { NameAndMode } from "games/shared/Poll/types/NameAndMode";
-import { toggleShowScoreBoardAction } from "games/Trivia/reducers/triviaPresenterReducer";
+import { NameAndMode } from "@games/shared/Poll/types/NameAndMode";
+import { toggleShowScoreBoardAction } from "@games/Trivia/reducers/triviaPresenterReducer";
 import { ShowResponsesButton } from "./ShowResponsesButton";
 import { useButtonStyles } from "./useButtonStyles";
 

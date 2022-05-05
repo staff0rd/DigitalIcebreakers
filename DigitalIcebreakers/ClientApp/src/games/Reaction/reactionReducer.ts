@@ -5,8 +5,8 @@ import {
   createGameActionWithPayload,
   createReceiveGameMessageReducer,
   createReceiveReducer,
-} from "store/actionHelpers";
-import { Name } from "./";
+} from "@store/actionHelpers";
+import { Name } from ".";
 import { Shape } from "./Shape";
 
 interface Choice {

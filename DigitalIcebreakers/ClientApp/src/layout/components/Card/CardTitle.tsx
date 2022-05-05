@@ -1,6 +1,6 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import CardHeader from "./CardHeader.js";
+import CardHeader from "./CardHeader";
 
 const styles: any = {
   cardCategoryWhite: {

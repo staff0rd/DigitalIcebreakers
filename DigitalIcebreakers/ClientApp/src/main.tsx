@@ -6,16 +6,13 @@ import App from "./App";
 import history from "./history";
 import ReactAI from "./app-insights-deprecated";
 
-const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href");
 const rootElement = document.getElementById("root");
 
 ReactAI.init({ instrumentationKey: "appInsightsKey" }, history);
 
 ReactDOM.render(
-  <Router basename={baseUrl} history={history}>
+  <Router history={history}>
     <App />
   </Router>,
   rootElement
 );
-
-//registerServiceWorker();

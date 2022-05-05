@@ -1,12 +1,12 @@
 import {
   PollPlayerState,
   TriviaPlayerState,
-} from "games/shared/Poll/types/PlayerState";
+} from "@games/shared/Poll/types/PlayerState";
 import {
   PollPresenterState,
   TriviaPresenterState,
   FistOfFivePresenterState,
-} from "games/shared/Poll/types/PresenterState";
+} from "@games/shared/Poll/types/PresenterState";
 
 export interface PollState {
   player: PollPlayerState;

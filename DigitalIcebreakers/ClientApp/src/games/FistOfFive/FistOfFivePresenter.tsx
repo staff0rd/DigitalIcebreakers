@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import Typography from "@material-ui/core/Typography";
-import { guid } from "util/guid";
-import { presenterMessage } from "store/lobby/actions";
+import { guid } from "@util/guid";
+import { presenterMessage } from "@store/lobby/actions";
 import { useDispatch } from "react-redux";
-import { ResponseCount } from "games/shared/Poll/components/ResponseCount";
-import { useQuestionState } from "games/Poll/useQuestionState";
+import { ResponseCount } from "@games/shared/Poll/components/ResponseCount";
+import { useQuestionState } from "@games/Poll/useQuestionState";
 import { Name } from "./reducer";
-import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
+import { presenterActions } from "@games/shared/Poll/reducers/presenterActions";
 import { Buttons } from "./Buttons";
 import { makeStyles } from "@material-ui/core/styles";
 import { Responses } from "./Responses";
@@ -50,16 +50,12 @@ const FistOfFivePresenter = () => {
     };
   }, [canAnswer]);
 
-  const {
-    responseCount,
-    showResponses,
-    playerCount,
-    question,
-  } = useQuestionState(Name, (state) => ({
-    currentQuestionId: state.games.fistOfFive.presenter.currentQuestionId,
-    questions: state.games.fistOfFive.presenter.questions,
-    showResponses: state.games.fistOfFive.presenter.showResponses,
-  }));
+  const { responseCount, showResponses, playerCount, question } =
+    useQuestionState(Name, (state) => ({
+      currentQuestionId: state.games.fistOfFive.presenter.currentQuestionId,
+      questions: state.games.fistOfFive.presenter.questions,
+      showResponses: state.games.fistOfFive.presenter.showResponses,
+    }));
 
   return (
     <div className={classes.root}>

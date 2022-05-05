@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import Notifications from "@material-ui/icons/Notifications";
 import { clientMessage } from "../../store/lobby/actions";
 import { makeStyles } from "@material-ui/core";
-import { useSelector } from "store/useSelector";
+import { useSelector } from "@store/useSelector";
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {

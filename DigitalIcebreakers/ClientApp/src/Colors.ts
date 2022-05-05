@@ -1,4 +1,4 @@
-import { pick } from "./Random";
+import { pick } from "./util/Random";
 
 export const Colors = {
   Red: {

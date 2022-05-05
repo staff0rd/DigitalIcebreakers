@@ -13,7 +13,7 @@ import {
   grayColor,
   blackColor,
   hexToRgb,
-} from "../../material-dashboard-react.js";
+} from "../../material-dashboard-react";
 
 const sidebarStyle = (showQrCode: boolean) => (theme: any) => ({
   drawerPaper: {

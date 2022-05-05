@@ -6,8 +6,8 @@ import QuestionAndResponseCount from "./components/QuestionAndResponseCount";
 import { NoQuestions } from "./components/NoQuestions";
 import { useQuestionState } from "../../Poll/useQuestionState";
 import { makeStyles } from "@material-ui/core";
-import { RootState } from "store/RootState";
-import { GameState } from "games/shared/Poll/reducers/currentQuestionSelector";
+import { RootState } from "@store/RootState";
+import { GameState } from "@games/shared/Poll/reducers/currentQuestionSelector";
 
 const useStyles = makeStyles((theme) => ({
   root: {

@@ -6,8 +6,8 @@ import Grid from "@material-ui/core/Grid";
 import Card from "../../layout/components/Card/Card";
 import CardFooter from "../../layout/components/Card/CardFooter";
 import Button from "../../layout/components/CustomButtons/Button";
-import { IdeaEntry } from "games/shared/IdeaEntry";
-import { useSelector } from "store/useSelector";
+import { IdeaEntry } from "@games/shared/IdeaEntry";
+import { useSelector } from "@store/useSelector";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({

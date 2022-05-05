@@ -3,7 +3,7 @@ import {
   createGameAction,
   createGameActionWithPayload,
   createReceiveReducer,
-} from "store/actionHelpers";
+} from "@store/actionHelpers";
 
 export const Name = "broadcast";
 

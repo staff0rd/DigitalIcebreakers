@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Colors, ColorUtils } from "../../Colors";
 import { Pixi } from "../pixi/Pixi";
-import { useSelector } from "store/useSelector";
+import { useSelector } from "@store/useSelector";
 import { useDispatch } from "react-redux";
-import { presenterMessage } from "store/lobby/actions";
-import { pick, between } from "Random";
+import { presenterMessage } from "@store/lobby/actions";
+import { pick, between } from "@util/Random";
 
 interface AnimatedText extends PIXI.Text {
   dx: number;

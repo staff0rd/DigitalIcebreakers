@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import CustomInput from "layout/components/CustomInput/CustomInput";
+import CustomInput from "@layout/components/CustomInput/CustomInput";
 import Alert from "@material-ui/lab/Alert";
 import { useDispatch } from "react-redux";
 import { Question } from "../types/Question";
-import { guid } from "util/guid";
-import { Answer } from "games/shared/Poll/types/Answer";
-import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
-import { ConfirmDialog } from "components/ConfirmDialog";
+import { guid } from "@util/guid";
+import { Answer } from "@games/shared/Poll/types/Answer";
+import { presenterActions } from "@games/shared/Poll/reducers/presenterActions";
+import { ConfirmDialog } from "@components/ConfirmDialog";
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -133,9 +133,8 @@ export const BulkEdit = (props: Props) => {
     isTriviaMode
   );
 
-  const [questionLines, setQuestionLines] = useState<string>(
-    questionsFromRedux
-  );
+  const [questionLines, setQuestionLines] =
+    useState<string>(questionsFromRedux);
   useEffect(() => {
     setQuestionLines(questionsFromRedux);
   }, [questionsFromRedux]);

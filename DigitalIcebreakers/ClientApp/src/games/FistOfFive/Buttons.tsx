@@ -1,11 +1,11 @@
 import React from "react";
 import { Name } from "./reducer";
-import { useButtonStyles } from "games/shared/Poll/components/useButtonStyles";
-import { ShowResponsesButton } from "games/shared/Poll/components/ShowResponsesButton";
+import { useButtonStyles } from "@games/shared/Poll/components/useButtonStyles";
+import { ShowResponsesButton } from "@games/shared/Poll/components/ShowResponsesButton";
 import ReplayIcon from "@material-ui/icons/Replay";
 import PrintIcon from "@material-ui/icons/Print";
 import IconButton from "@material-ui/core/IconButton";
-import { Response } from "games/shared/Poll/types/Response";
+import { Response } from "@games/shared/Poll/types/Response";
 
 type Props = {
   showResponses: boolean;

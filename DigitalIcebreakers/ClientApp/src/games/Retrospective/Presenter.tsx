@@ -1,16 +1,16 @@
 import React, { useEffect } from "react";
-import { ContentContainer } from "components/ContentContainer";
-import GridContainer from "layout/components/Grid/GridContainer";
-import GridItem from "layout/components/Grid/GridItem";
-import CardBody from "layout/components/Card/CardBody";
-import Card from "layout/components/Card/Card";
+import { ContentContainer } from "@components/ContentContainer";
+import GridContainer from "@layout/components/Grid/GridContainer";
+import GridItem from "@layout/components/Grid/GridItem";
+import CardBody from "@layout/components/Card/CardBody";
+import Card from "@layout/components/Card/Card";
 import { makeStyles, Typography } from "@material-ui/core";
-import { useSelector } from "store/useSelector";
-import { RootState } from "store/RootState";
+import { useSelector } from "@store/useSelector";
+import { RootState } from "@store/RootState";
 import { ideasByCategory } from "./ideasByCategory";
 import SetCategories from "./SetCategories";
 import { useDispatch } from "react-redux";
-import { presenterMessage } from "store/lobby/actions";
+import { presenterMessage } from "@store/lobby/actions";
 import { loadFromStore } from "./presenterReducer";
 
 const useStyles = makeStyles((theme) => ({

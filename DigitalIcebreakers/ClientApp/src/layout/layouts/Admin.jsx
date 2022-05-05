@@ -6,10 +6,10 @@ import "perfect-scrollbar/css/perfect-scrollbar.css";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // core components
-import Navbar from "../components/Navbars/Navbar.js";
+import Navbar from "../components/Navbars/Navbar";
 import { toggleDrawer } from "../../store/shell/actions";
 import { useSelector } from "../../store/useSelector";
-import Sidebar from "../components/Sidebar/Sidebar.js";
+import Sidebar from "../components/Sidebar/Sidebar";
 
 import useRoutes from "../useRoutes";
 

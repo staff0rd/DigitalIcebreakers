@@ -3,13 +3,13 @@ import Typography from "@material-ui/core/Typography";
 import Alert from "@material-ui/lab/Alert";
 import { useDispatch } from "react-redux";
 import { Question } from "../types/Question";
-import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
-import { ConfirmDialog } from "components/ConfirmDialog";
-import { useSelector } from "store/useSelector";
-import { RootState } from "store/RootState";
-import { guid } from "util/guid";
-import { shuffle } from "Random";
-import CustomInput from "layout/components/CustomInput/CustomInput";
+import { presenterActions } from "@games/shared/Poll/reducers/presenterActions";
+import { ConfirmDialog } from "@components/ConfirmDialog";
+import { useSelector } from "@store/useSelector";
+import { RootState } from "@store/RootState";
+import { guid } from "@util/guid";
+import { shuffle } from "@util/Random";
+import CustomInput from "@layout/components/CustomInput/CustomInput";
 import {
   FormControl,
   InputLabel,

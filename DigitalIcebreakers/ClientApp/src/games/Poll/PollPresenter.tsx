@@ -1,7 +1,7 @@
 import React from "react";
-import { RootState } from "store/RootState";
+import { RootState } from "@store/RootState";
 import { Presenter } from "../shared/Poll/Presenter";
-import { Name } from "./";
+import { Name } from ".";
 
 export const PollPresenter = () => {
   return (
