@@ -1,10 +1,10 @@
-import { ConnectionStatus } from "ConnectionStatus";
+import { ConnectionStatus } from "@src/ConnectionStatus";
 import { AnyAction } from "redux";
 import { updateConnectionStatus } from "./connection/actions";
 import { joinLobby } from "./lobby/actions";
 import { LobbyState, SET_LOBBY } from "./lobby/types";
 import { RootState } from "./RootState";
-import { SignalRMiddleware } from "./SignalRMiddleware";
+import { RealTimeMiddleware } from "./RealTimeMiddleware";
 import { UserState } from "./user/types";
 
 const connectionFactory = jest.fn();
@@ -28,7 +28,7 @@ const createMiddleware = (state: Partial<RootState> = {}) => {
   const next = jest.fn();
 
   const invoke = (action: AnyAction) =>
-    SignalRMiddleware(connectionFactory)(store)(next)(action);
+    RealTimeMiddleware()(store)(next)(action);
 
   return { store, next, invoke };
 };

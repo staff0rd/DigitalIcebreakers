@@ -1,7 +1,7 @@
-import { ConnectionStatus } from "ConnectionStatus";
+import { ConnectionStatus } from "@src/ConnectionStatus";
 import { ReconnectPayload } from "./connection/types";
 import { RootState } from "./RootState";
-import { onReconnect } from "./SignalRMiddleware";
+import { onReconnect } from "./RealTimeMiddleware";
 
 describe("onReconnect", () => {
   describe("when joining lobby", () => {
