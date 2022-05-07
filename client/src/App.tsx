@@ -10,7 +10,7 @@ import { RootState } from "./store/RootState";
 import { connectionConnect } from "./store/connection/actions";
 import { setUser } from "./store/user/actions";
 import { useSelector } from "./store/useSelector";
-import { Player } from "Player";
+import { Player } from "./Player";
 
 type AppState = {
   user: Player;
@@ -32,7 +32,7 @@ export default class App extends Component<{}, AppState> {
   private myStorage: Storage;
 
   private user: Player;
-  private store: EnhancedStore<RootState, AnyAction>;
+  private store: ReturnType<typeof configureAppStore>;
 
   constructor(props: any, context: any) {
     super(props, context);
