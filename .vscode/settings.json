@@ -1,13 +1,7 @@
 {
-  "csharp.unitTestDebuggingOptions": {
-    "env": {
-      "Headless": false
-    }
-  },
-  "[csharp]": {
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "ms-dotnettools.csharp"
-  },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }

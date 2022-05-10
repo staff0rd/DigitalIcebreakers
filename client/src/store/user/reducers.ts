@@ -21,8 +21,7 @@ export function userReducer(
     case SET_USER: {
       return {
         ...state,
-        id: action.user.id,
-        name: action.user.name,
+        ...action.user,
       };
     }
     default:

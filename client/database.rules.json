@@ -1,6 +1,15 @@
 {
   "rules": {
-    ".read": false,
-    ".write": false
+    "lobbys": {
+      "$id": {
+        ".write": "newData.child('ownerId').val() === auth.uid"
+      }
+    },
+    "players": {
+      "$id": {
+        ".write": "$id === auth.uid",
+        ".read": "$id === auth.uid"
+      }
+    }
   }
 }

@@ -3,9 +3,8 @@ import { AnyAction } from "redux";
 import { updateConnectionStatus } from "./connection/actions";
 import { joinLobby } from "./lobby/actions";
 import { LobbyState, SET_LOBBY } from "./lobby/types";
-import { RootState } from "./RootState";
-import { RealTimeMiddleware } from "./RealTimeMiddleware";
 import { UserState } from "./user/types";
+import { createMiddleware } from "./testHelpers";
 
 const connectionFactory = jest.fn();
 const mockConnection = {
@@ -19,19 +18,6 @@ const mockConnection = {
   },
 };
 const dispatch = jest.fn();
-
-const createMiddleware = (state: Partial<RootState> = {}) => {
-  const store = {
-    getState: jest.fn(() => state as RootState),
-    dispatch,
-  };
-  const next = jest.fn();
-
-  const invoke = (action: AnyAction) =>
-    RealTimeMiddleware()(store)(next)(action);
-
-  return { store, next, invoke };
-};
 
 describe("SignalRMiddleware", () => {
   beforeEach(() => {

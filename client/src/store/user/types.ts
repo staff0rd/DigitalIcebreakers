@@ -1,13 +1,14 @@
-import { Player } from "../../Player";
+import { Player } from "@src/Player";
 
 export interface UserState {
-  name: string;
+  name?: string;
   id: string;
   isRegistered: boolean;
 }
 
 export const SET_USER = "SET_USER";
 export const SET_USER_NAME = "SET_NAME";
+export const AUTHENTICATE = "AUTHENTICATE";
 
 interface SetUserAction {
   type: typeof SET_USER;
@@ -19,4 +20,11 @@ interface SetNameAction {
   name: string;
 }
 
-export type UserActionTypes = SetUserAction | SetNameAction;
+interface AuthenticateAction {
+  type: typeof AUTHENTICATE;
+}
+
+export type UserActionTypes =
+  | SetUserAction
+  | SetNameAction
+  | AuthenticateAction;

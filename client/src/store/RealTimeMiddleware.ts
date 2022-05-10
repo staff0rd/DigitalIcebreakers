@@ -19,7 +19,6 @@ import {
   setLobbyPlayers,
   joinLobby,
 } from "./lobby/actions";
-import { setUser } from "./user/actions";
 import history from "../history";
 import {
   CLEAR_LOBBY,
@@ -32,10 +31,15 @@ import {
   GAME_MESSAGE_PRESENTER,
   LobbyActionTypes,
 } from "./lobby/types";
-import { SET_USER_NAME, UserActionTypes } from "./user/types";
+import { AUTHENTICATE, SET_USER_NAME, UserActionTypes } from "./user/types";
 import { goToDefaultUrl, setMenuItems } from "./shell/actions";
 import { GO_TO_DEFAULT_URL, ShellActionTypes } from "./shell/types";
 import { RootState } from "./RootState";
+import { getAuth, updateProfile } from "firebase/auth";
+import { authenticate } from "./Authentication";
+import { guid } from "@util/guid";
+import { createLobby } from "./firebase/createLobby";
+import { initialise } from "./firebase/initialise";
 
 const navigateTo = (path: string) => {
   console.log(`Navigating to ${path}`);
@@ -66,12 +70,6 @@ export const onReconnect =
             response.currentGame
           )
         );
-        dispatch(
-          setUser({
-            id: response.playerId,
-            name: response.playerName,
-          })
-        );
 
         if (response.currentGame) {
           dispatch(setLobbyGame(response.currentGame));
@@ -83,6 +81,8 @@ export const onReconnect =
   };
 
 export const RealTimeMiddleware = () => {
+  const app = initialise();
+  const auth = getAuth(app);
   const connectionRetrySeconds = [0, 1, 4, 9, 16, 25, 36, 49];
   let connectionTimeout = 0;
   const connection = {
@@ -100,7 +100,7 @@ export const RealTimeMiddleware = () => {
       return Promise.resolve();
     },
     invoke: (...args: any) => {
-      console.warn(`invoke called ${args}`);
+      console.warn(`invoke called ${JSON.stringify(args, null, 2)}`);
       return Promise.resolve();
     },
   };
@@ -143,7 +143,7 @@ export const RealTimeMiddleware = () => {
       connection.invoke(methodName, ...params).catch((err) => console.log(err));
     };
     return (next: Dispatch) =>
-      (
+      async (
         action:
           | LobbyActionTypes
           | ConnectionActionTypes
@@ -219,8 +219,17 @@ export const RealTimeMiddleware = () => {
             }
             return value;
           }
+          case AUTHENTICATE: {
+            await authenticate(auth, dispatch);
+            break;
+          }
           case SET_USER_NAME: {
             const value = next(action);
+            if (auth.currentUser) {
+              await updateProfile(auth.currentUser, {
+                displayName: action.name,
+              });
+            }
             const { user, lobby } = getState();
             invoke("connectToLobby", user, lobby.id || lobby.joiningLobbyId);
             return value;
@@ -236,7 +245,7 @@ export const RealTimeMiddleware = () => {
             break;
           }
           case CREATE_LOBBY: {
-            invoke("createLobby", action.name, getState().user);
+            await createLobby(getState().user.id, action.name);
             break;
           }
           case GAME_MESSAGE_PRESENTER: {

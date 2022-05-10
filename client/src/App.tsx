@@ -1,19 +1,15 @@
 import React, { Component } from "react";
 import Layout from "./layout/layouts/Admin";
-import { guid } from "./util/guid";
+
 import history from "./history";
 import { Events } from "./Events";
 import { Provider } from "react-redux";
 import { configureAppStore } from "./store/configureAppStore";
-import { EnhancedStore, AnyAction } from "@reduxjs/toolkit";
-import { RootState } from "./store/RootState";
-import { connectionConnect } from "./store/connection/actions";
-import { setUser } from "./store/user/actions";
+import { authenticate } from "./store/user/actions";
 import { useSelector } from "./store/useSelector";
 import { Player } from "./Player";
 
 type AppState = {
-  user: Player;
   lobby?: AppLobby;
   players: Player[];
   menuItems: JSX.Element[];
@@ -29,21 +25,15 @@ type AppLobby = {
 export default class App extends Component<{}, AppState> {
   displayName = App.name;
   private isDebug = false;
-  private myStorage: Storage;
 
-  private user: Player;
   private store: ReturnType<typeof configureAppStore>;
 
-  constructor(props: any, context: any) {
-    super(props, context);
+  constructor(props: any) {
+    super(props);
 
     this.isDebug = true;
 
-    this.myStorage = window.sessionStorage;
-
-    this.user = this.getUser();
     this.state = {
-      user: this.user,
       isPresenter: false,
       menuItems: [],
       players: [],
@@ -51,31 +41,9 @@ export default class App extends Component<{}, AppState> {
 
     this.store = configureAppStore();
 
-    this.store.dispatch(setUser(this.user));
+    this.store.dispatch(authenticate());
 
     window.onresize = () => Events.emit("onresize");
-
-    this.store.dispatch(connectionConnect());
-  }
-
-  private getUser() {
-    if (this.myStorage) {
-      const raw = this.myStorage.getItem("user");
-      if (raw) {
-        try {
-          const user = JSON.parse(raw);
-          console.log("User retrieved", user);
-          return user;
-        } catch {
-          this.debug("Could not parse user");
-        }
-      }
-    }
-
-    const user = { id: guid() };
-    if (this.myStorage) this.myStorage.setItem("user", JSON.stringify(user));
-
-    return user;
   }
 
   debug(...a: any[]) {
