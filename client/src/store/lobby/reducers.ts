@@ -8,7 +8,6 @@ import {
   JOIN_LOBBY,
   PLAYER_JOINED_LOBBY,
   PLAYER_LEFT_LOBBY,
-  CREATE_LOBBY,
 } from "./types";
 
 const initialState: LobbyState = {
@@ -29,13 +28,6 @@ export function lobbyReducer(
         isPresenter: action.isPresenter,
         currentGame: action.game,
         players: action.players,
-      };
-    }
-    case CREATE_LOBBY: {
-      return {
-        ...state,
-        isPresenter: true,
-        name: action.name,
       };
     }
     case JOIN_LOBBY: {

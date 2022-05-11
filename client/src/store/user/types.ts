@@ -8,8 +8,6 @@ export interface UserState {
 
 export const SET_USER = "SET_USER";
 export const SET_USER_NAME = "SET_NAME";
-export const AUTHENTICATE = "AUTHENTICATE";
-
 interface SetUserAction {
   type: typeof SET_USER;
   user: Player;
@@ -20,11 +18,4 @@ interface SetNameAction {
   name: string;
 }
 
-interface AuthenticateAction {
-  type: typeof AUTHENTICATE;
-}
-
-export type UserActionTypes =
-  | SetUserAction
-  | SetNameAction
-  | AuthenticateAction;
+export type UserActionTypes = SetUserAction | SetNameAction;

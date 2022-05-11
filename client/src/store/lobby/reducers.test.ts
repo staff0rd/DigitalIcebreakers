@@ -18,15 +18,6 @@ describe("lobbyReducer", () => {
       expect(result.joiningLobbyId).toBeUndefined();
     });
   });
-  describe("when creating", () => {
-    it("should set admin", () => {
-      const result = lobbyReducer(
-        {} as LobbyState,
-        createLobby("my lobby name")
-      );
-      expect(result.isPresenter).toBe(true);
-    });
-  });
   describe("when joined more than once", () => {
     it("should de-dupe players", () => {
       const result = lobbyReducer(

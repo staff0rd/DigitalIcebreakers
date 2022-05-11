@@ -1,22 +1,21 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { rootReducer } from "./rootReducer";
-import { RealTimeMiddleware } from "./RealTimeMiddleware";
+import { createRealTimeMiddleware } from "./realTimeMiddleware";
 import { LoggerMiddleware } from "./LoggerMiddleware";
-import { getDatabase } from "firebase/database";
 
 export function configureAppStore() {
+  const { middleware: realTimeMiddleware, auth } = createRealTimeMiddleware();
   const store = configureStore({
     reducer: rootReducer,
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware()
-        .concat(LoggerMiddleware)
-        .concat(RealTimeMiddleware()),
+      getDefaultMiddleware().prepend(realTimeMiddleware),
+    // .concat(LoggerMiddleware),
   });
 
   // if (process.env.NODE_ENV !== 'production' && module.hot) {
   //   module.hot.accept('./reducers', () => store.replaceReducer(rootReducer))
   // }
-  return store;
+  return { store, auth };
 }
 
 export function configureTestStore() {

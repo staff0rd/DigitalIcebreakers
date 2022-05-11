@@ -1,27 +1,31 @@
 import { child, get, getDatabase, ref, set } from "firebase/database";
-import { sample, range } from "lodash";
-import { DbRootPath } from "./DbRootPath";
 
-export const createLobby = async (adminUserId: string, lobbyName: string) => {
+export enum DbRootPath {
+  Lobbys = "lobbys",
+  Players = "players",
+}
+
+export const createLobby = async (args: {
+  ownerId: string;
+  lobbyId: string;
+  name: string;
+}) => {
   const db = getDatabase();
-  const id = getRandomString(4);
+  const { ownerId, lobbyId, name } = args;
 
-  await set(ref(db, `${DbRootPath.Lobbys}/${id}`), {
+  await set(ref(db, `${DbRootPath.Lobbys}/${lobbyId}`), {
     players: [],
-    ownerId: adminUserId,
-    name: lobbyName,
+    ownerId,
+    name,
   });
 
-  await set(ref(db, `${DbRootPath.Players}/${adminUserId}`), { lobbyId: id });
+  await set(ref(db, `${DbRootPath.Players}/${ownerId}`), { lobbyId });
 
-  return id;
-};
-
-const getRandomString = (length: number) => {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  return range(0, length)
-    .map((p) => sample(chars))
-    .join("");
+  return {
+    ownerId,
+    lobbyId,
+    name,
+  };
 };
 
 export const getLobbyMembership = async (userId: string) => {

@@ -9,18 +9,19 @@ import {
   START_NEW_GAME,
   JOIN_LOBBY,
   CLOSE_LOBBY,
-  CREATE_LOBBY,
   GAME_MESSAGE_PRESENTER,
   GAME_MESSAGE_CLIENT,
 } from "./types";
 import { Player } from "../../Player";
+import { range, sample } from "lodash";
+import { createAction } from "@reduxjs/toolkit";
 
 export function setLobby(
   id: string,
   name: string,
   isPresenter: boolean,
   players: Player[],
-  game: string | undefined
+  game?: string
 ): LobbyActionTypes {
   return { type: SET_LOBBY, id, name, isPresenter, players, game };
 }
@@ -57,9 +58,19 @@ export function closeLobby(): LobbyActionTypes {
   return { type: CLOSE_LOBBY };
 }
 
-export function createLobby(name: string): LobbyActionTypes {
-  return { type: CREATE_LOBBY, name };
-}
+const getRandomString = (length: number) => {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  return range(0, length)
+    .map((p) => sample(chars))
+    .join("");
+};
+
+export const createLobby = createAction("CREATE_LOBBY", (name: string) => {
+  const id = getRandomString(4);
+  return { payload: { name, id } };
+});
+
+type t = ReturnType<typeof createLobby>;
 
 export function presenterMessage(message: any): LobbyActionTypes {
   return { type: GAME_MESSAGE_PRESENTER, message };
