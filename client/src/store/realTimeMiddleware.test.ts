@@ -32,26 +32,28 @@ describe("realTimeMiddleware", () => {
     await createLobby(store);
   });
 
-  it("should get lobby membership", async () => {
-    const store = await authenticate();
-    await createLobby(store);
+  describe("getLobbyMembership", () => {
+    it("should get lobby membership", async () => {
+      const store = await authenticate();
+      await createLobby(store);
 
-    const result = await getLobbyMembership(store.getState().user.id);
+      const result = await getLobbyMembership(store.getState().user.id);
 
-    expect(result).toBe(store.getState().lobby.id);
-  });
+      expect(result).toBe(store.getState().lobby.id);
+    });
 
-  it("should not allow anyone else to read", async () => {
-    let { store, auth } = configureAppStore();
+    it("should not allow anyone else to read", async () => {
+      let { store, auth } = configureAppStore();
 
-    await authenticate(store);
-    await createLobby(store);
+      await authenticate(store);
+      await createLobby(store);
 
-    await auth.signOut();
-    await authenticate();
+      await auth.signOut();
+      await authenticate();
 
-    await expect(
-      getLobbyMembership(store.getState().user.id)
-    ).rejects.toThrowError("Permission denied");
+      await expect(
+        getLobbyMembership(store.getState().user.id)
+      ).rejects.toThrowError("Permission denied");
+    });
   });
 });
