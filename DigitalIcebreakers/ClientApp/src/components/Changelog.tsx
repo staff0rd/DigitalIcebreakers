@@ -44,19 +44,24 @@ export function Changelog() {
 
   useEffect(() => {
     async function readFeed() {
-      const feed = await parser.parseURL(
-        "https://staffordwilliams.com/devlog/digital-icebreakers.xml"
-      );
+      try {
+        const feed = await parser.parseURL(
+            "https://staffordwilliams.com/devlog/digital-icebreakers.xml"
+        );
 
-      const changes = feed.items
-        .map((entry) => {
-          const date = new Date(entry.pubDate);
-          const change = new ChangelogItem(date, entry.title!, entry.link!);
-          return change;
-        })
-        .sort((a, b) => b.date.getTime() - a.date.getTime());
+        const changes = feed.items
+            .map((entry) => {
+              const date = new Date(entry.pubDate);
+              const change = new ChangelogItem(date, entry.title!, entry.link!);
+              return change;
+            })
+            .sort((a, b) => b.date.getTime() - a.date.getTime());
 
-      setChangelogs([...changes, ...changelogs]);
+        setChangelogs([...changes, ...changelogs]);
+      }
+      catch (e) {
+        console.error(e);
+      }
       setIsLoading(false);
     }
 
