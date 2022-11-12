@@ -11,8 +11,8 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        dotnet: [3.1.301]
-        node: [12]
+        dotnet: [7.0.100]
+        node: [18]
         #browser: [Chrome, Webkit, Firefox]
         browser: [Chrome]
 
@@ -57,8 +57,8 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        dotnet: [3.1.301]
-        node: [12]
+        dotnet: [7.0.100]
+        node: [18]
 
     runs-on: ${{ matrix.os }}
 
