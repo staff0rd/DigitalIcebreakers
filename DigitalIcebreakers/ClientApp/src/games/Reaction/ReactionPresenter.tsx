@@ -1,32 +1,33 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Shape } from "./Shape";
-import { Colors, ColorUtils } from "../../Colors";
-import { ShapeType } from "./ShapeType";
-import { shuffle } from "../../Random";
-import * as PIXI from "pixi.js";
-import { ShapeView } from "./ShapeView";
+import AutoRenewIcon from "@material-ui/icons/Autorenew";
+import { useResizeListener } from "games/pixi/useResizeListener";
 import * as gsap from "gsap";
+import * as PIXI from "pixi.js";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { presenterMessage } from "store/lobby/actions";
+import { useSelector } from "store/useSelector";
+import { useTimeout } from "util/useTimeout";
+import { Colors, ColorUtils } from "../../Colors";
+import { ContentContainer } from "../../components/ContentContainer";
 import Button from "../../layout/components/CustomButtons/Button";
 import Table from "../../layout/components/Table/Table";
-import { Pixi } from "../pixi/Pixi";
+import { shuffle } from "../../Random";
 import { RootState } from "../../store/RootState";
-import { ContentContainer } from "../../components/ContentContainer";
-import { useSelector } from "store/useSelector";
-import AutoRenewIcon from "@material-ui/icons/Autorenew";
+import { Pixi } from "../pixi/Pixi";
 import {
+  endRoundAction,
+  getPlayerName,
   startRoundAction,
   toggleAutoAgainAction,
-  getPlayerName,
-  endRoundAction,
 } from "./reactionReducer";
-import { useResizeListener } from "games/pixi/useResizeListener";
-import { useTimeout } from "util/useTimeout";
+import { Shape } from "./Shape";
+import { ShapeType } from "./ShapeType";
+import { ShapeView } from "./ShapeView";
 
 export const ReactionPresenter = () => {
   const [pixi, setPixi] = useState<PIXI.Application>();
-  const [againTween, setAgainTween] = useState<GSAPStatic.Tween>();
+  const [againTween, setAgainTween] =
+    useState<ReturnType<typeof gsap.TweenLite.to>>();
   const players = useSelector((state: RootState) => state.lobby.players);
   const againProgress = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();

@@ -1,20 +1,19 @@
+import ListItem from "@material-ui/core/ListItem";
+import { saveAs } from "file-saver";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import ListItem from "@material-ui/core/ListItem";
-import Button from "../../layout/components/CustomButtons/Button";
-import { clearIdeasAction, setCategories } from "./presenterReducer";
-import { ConfirmDialog } from "../../components/ConfirmDialog";
-import { useSelector } from "store/useSelector";
 import { RootState } from "store/RootState";
+import { useSelector } from "store/useSelector";
+import { ConfirmDialog } from "../../components/ConfirmDialog";
+import Button from "../../layout/components/CustomButtons/Button";
 import { ideasByCategory } from "./ideasByCategory";
+import { clearIdeasAction, setCategories } from "./presenterReducer";
 
 export const Menu = () => {
   const dispatch = useDispatch();
   const [confirmClearDialogOpen, setConfirmClearDialogOpen] = useState(false);
-  const [
-    confirmSetCategoriesDialogOpen,
-    setConfirmSetCategoriesDialogOpen,
-  ] = useState(false);
+  const [confirmSetCategoriesDialogOpen, setConfirmSetCategoriesDialogOpen] =
+    useState(false);
   const { ideas, categories } = useSelector(
     (state: RootState) => state.games.retrospective.presenter
   );
