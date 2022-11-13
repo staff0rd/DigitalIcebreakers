@@ -11,8 +11,8 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        dotnet: [3.1.301]
-        node: [12]
+        dotnet: [6.0.110]
+        node: [18]
         #browser: [Chrome, Webkit, Firefox]
         browser: [Chrome]
 
@@ -43,6 +43,8 @@ jobs:
       - name: build
         run: dotnet tye build -v Debug
 
+      - run: docker images
+
       - name: start container
         run: docker run -d -p 5000:80 staff0rd/digitalicebreakers:$(dotnet nbgv get-version -v AssemblyInformationalVersion | tr + -)
 
@@ -57,8 +59,8 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        dotnet: [3.1.301]
-        node: [12]
+        dotnet: [6.0.110]
+        node: [18]
 
     runs-on: ${{ matrix.os }}
 

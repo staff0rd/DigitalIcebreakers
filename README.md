@@ -11,7 +11,7 @@ A presenter creates a _Lobby_ and audience members join by pointing their phone 
 ## Build
 
 1. Clone this repo
-1. Install [.NET Core 3.1 SDK](https://dot.net)
+1. Install [.NET Core 7 SDK](https://dot.net)
 1. Run `ASPNETCORE_URLS=http://0.0.0.0:5000 ASPNETCORE_ENVIRONMENT=Development dotnet run --project DigitalIcebreakers`
 
 ## Infrastructure overview

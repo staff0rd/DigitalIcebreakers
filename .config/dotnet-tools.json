@@ -3,12 +3,16 @@
   "isRoot": true,
   "tools": {
     "microsoft.tye": {
-      "version": "0.6.0-alpha.21070.5",
-      "commands": ["tye"]
+      "version": "0.11.0-alpha.22111.1",
+      "commands": [
+        "tye"
+      ]
     },
     "nbgv": {
       "version": "3.3.37",
-      "commands": ["nbgv"]
+      "commands": [
+        "nbgv"
+      ]
     }
   }
 }
