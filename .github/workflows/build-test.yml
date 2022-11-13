@@ -43,8 +43,10 @@ jobs:
       - name: build
         run: dotnet tye build -v Debug
 
+      - run: docker images
+
       - name: start container
-        run: docker run -d -p 5000:80 localhost/staff0rd/digitalicebreakers:$(dotnet nbgv get-version -v AssemblyInformationalVersion | tr + -)
+        run: docker run -d -p 5000:80 staff0rd/digitalicebreakers:$(dotnet nbgv get-version -v AssemblyInformationalVersion | tr + -)
 
       - name: run end-to-end tests
         env:
