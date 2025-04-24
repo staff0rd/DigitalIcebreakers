@@ -1,0 +1,61 @@
+import { useDispatch } from "store/useSelector.js";
+import IconButton from "@mui/material/IconButton";
+import NavigateBefore from "@mui/icons-material/NavigateBefore";
+import NavigateNext from "@mui/icons-material/NavigateNext";
+import ScoreIcon from "@mui/icons-material/Score";
+import CloseIcon from "@mui/icons-material/Close";
+import { NameAndMode } from "games/shared/Poll/types/NameAndMode";
+import { toggleShowScoreBoardAction } from "games/Trivia/reducers/triviaPresenterReducer";
+import { ShowResponsesButton } from "./ShowResponsesButton";
+import { useButtonStyles } from "./useButtonStyles";
+
+type Props = {
+  gotoNextQuestion: Function;
+  gotoPreviousQuestion: Function;
+  nextQuestionId: string | null;
+  previousQuestionId: string | null;
+  showResponses: boolean;
+  showScoreBoard: boolean;
+} & NameAndMode;
+
+const PollButtons = ({
+  gotoNextQuestion,
+  gotoPreviousQuestion,
+  nextQuestionId,
+  previousQuestionId,
+  showResponses,
+  showScoreBoard,
+  isTriviaMode,
+  gameName,
+}: Props) => {
+  const dispatch = useDispatch();
+  const classes = useButtonStyles();
+  return (
+    <div className={classes.root}>
+      <IconButton
+        disabled={!previousQuestionId}
+        onClick={() => gotoPreviousQuestion()}
+      >
+        <NavigateBefore />
+      </IconButton>
+      <ShowResponsesButton
+        showResponses={showResponses}
+        gameName={gameName}
+        showScoreBoard={showScoreBoard}
+      />
+      {isTriviaMode && (
+        <IconButton
+          data-testid="show-scoreboard"
+          onClick={() => dispatch(toggleShowScoreBoardAction())}
+        >
+          {showScoreBoard ? <CloseIcon /> : <ScoreIcon />}
+        </IconButton>
+      )}
+      <IconButton disabled={!nextQuestionId} onClick={() => gotoNextQuestion()}>
+        <NavigateNext />
+      </IconButton>
+    </div>
+  );
+};
+
+export default PollButtons;

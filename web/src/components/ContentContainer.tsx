@@ -1,0 +1,32 @@
+import { ReactNode } from "react";
+import makeStyles from "@mui/styles/makeStyles";
+import { Typography } from "@mui/material";
+
+const useStyles = makeStyles(() => ({
+  root: {
+    padding: theme.spacing(3),
+  },
+  header: {
+    marginTop: 0,
+    paddingTop: 0,
+  },
+}));
+
+type Props = {
+  children: ReactNode;
+  header?: string;
+};
+
+export const ContentContainer = ({ children, header }: Props) => {
+  const classes = useStyles();
+  return (
+    <div className={classes.root}>
+      {header && (
+        <Typography variant="h4" className={classes.header}>
+          {header}
+        </Typography>
+      )}
+      {children}
+    </div>
+  );
+};
