@@ -8,13 +8,13 @@ import makeStyles from "@mui/styles/makeStyles";
 import AddAlert from "@mui/icons-material/AddAlert";
 // core components
 import GridItem from "../../components/Grid/GridItem";
-import GridContainer from "../../components/Grid/GridContainer.js";
+import GridContainer from "../../components/Grid/GridContainer";
 import Button from "../../components/CustomButtons/Button";
-import SnackbarContent from "../../components/Snackbar/SnackbarContent.js";
-import Snackbar from "../../components/Snackbar/Snackbar.js";
-import Card from "../../components/Card/Card.js";
-import CardHeader from "../../components/Card/CardHeader.js";
-import CardBody from "../../components/Card/CardBody.js";
+import SnackbarContent from "../../components/Snackbar/SnackbarContent";
+import Snackbar from "../../components/Snackbar/Snackbar";
+import Card from "../../components/Card/Card";
+import CardHeader from "../../components/Card/CardHeader";
+import CardBody from "../../components/Card/CardBody";
 
 const styles = {
   cardCategoryWhite: {

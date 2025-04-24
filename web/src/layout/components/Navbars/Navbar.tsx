@@ -1,9 +1,9 @@
 import IconButton from "@mui/material/IconButton";
-import Hidden from "@mui/material/Hidden";
 import Menu from "@mui/icons-material/Menu";
 import { toggleDrawer } from "../../../store/shell/actions";
-import { useDispatch } from "store/useSelector.js";
+import { useDispatch } from "store/useSelector";
 import makeStyles from "@mui/styles/makeStyles";
+import { Box } from "@mui/material";
 
 const useStyles = makeStyles({
   header: {
@@ -16,7 +16,7 @@ export default function Header(props) {
   const dispatch = useDispatch();
   const classes = useStyles();
   return (
-    <Hidden mdUp implementation="css">
+    <Box sx={{ display: { md: "none", sx: "block" } }}>
       <div className={classes.header}>
         <IconButton
           color="inherit"
@@ -26,6 +26,6 @@ export default function Header(props) {
           <Menu />
         </IconButton>
       </div>
-    </Hidden>
+    </Box>
   );
 }

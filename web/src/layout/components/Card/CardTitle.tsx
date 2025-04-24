@@ -1,5 +1,5 @@
 import makeStyles from "@mui/styles/makeStyles";
-import CardHeader from "./CardHeader.js";
+import CardHeader from "./CardHeader";
 
 const styles: any = {
   cardCategoryWhite: {

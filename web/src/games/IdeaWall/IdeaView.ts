@@ -30,7 +30,7 @@ export class IdeaView extends PIXI.Container {
     this.ideaUpdated = ideaUpdated;
 
     this.interactive = true;
-    this.buttonMode = true;
+    this.cursor = "pointer";
     this.on("pointerdown", this.onDragStart);
     this.on("pointermove", this.onDragMove);
     this.on("pointerup", this.onDragEnd);
@@ -44,7 +44,7 @@ export class IdeaView extends PIXI.Container {
       size || this.body.height + 2 * margin
     );
 
-    this.addChild(this.background as PIXI.DisplayObject, this.title, this.body);
+    this.addChild(this.background, this.title, this.body);
     this.alpha = 0.85;
     this.x = idea.x || 0;
     this.y = idea.y || 0;
@@ -81,7 +81,7 @@ export class IdeaView extends PIXI.Container {
     return body;
   }
 
-  onDragStart = (event: PIXI.interaction.InteractionEvent) => {
+  onDragStart = (event: PIXI.FederatedPointerEvent) => {
     const point = event.data.getLocalPosition(this.parent);
     this.pointerData = { x: this.x - point.x, y: this.y - point.y };
     this.parent.addChild(this);
@@ -94,7 +94,7 @@ export class IdeaView extends PIXI.Container {
     this.ideaUpdated(this.idea);
   };
 
-  onDragMove = (event: PIXI.interaction.InteractionEvent) => {
+  onDragMove = (event: PIXI.FederatedPointerEvent) => {
     if (this.pointerData) {
       const point = event.data.getLocalPosition(this.parent);
       const x = this.pointerData.x + point.x;

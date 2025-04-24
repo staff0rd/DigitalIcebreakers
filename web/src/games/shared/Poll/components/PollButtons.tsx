@@ -1,4 +1,4 @@
-import { useDispatch } from "store/useSelector.js";
+import { useDispatch } from "store/useSelector";
 import IconButton from "@mui/material/IconButton";
 import NavigateBefore from "@mui/icons-material/NavigateBefore";
 import NavigateNext from "@mui/icons-material/NavigateNext";

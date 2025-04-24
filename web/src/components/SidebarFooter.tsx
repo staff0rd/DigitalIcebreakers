@@ -2,7 +2,7 @@ import { ConnectionIcon } from "./ConnectionIcon";
 import { Config } from "../config";
 import makeStyles from "@mui/styles/makeStyles";
 import { defaultFont } from "../layout/assets/jss/material-dashboard-react";
-import { CSSProperties } from "@mui/material/styles/withStyles";
+import { CSSProperties } from "@mui/styles/withStyles";
 
 const useStyles = makeStyles(() => ({
   sidebarFooter: {

@@ -1,20 +1,21 @@
 import { createRoot } from "react-dom/client";
-import "./index.css";
 import App from "./App.tsx";
 import history from "./history";
+import "./layout/assets/css/material-dashboard-react.css";
+import { createTheme } from "@mui/material";
+import { ThemeProvider } from "@mui/styles";
 
-import { Router } from "react-router-dom";
+// TODO: probably switch to wouter
+import { unstable_HistoryRouter as HistoryRouter } from "react-router";
 
-// const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href");
+const baseUrl = import.meta.env.BASE_URL || "/";
+
+const theme = createTheme({});
 
 createRoot(document.getElementById("root")!).render(
-  <Router
-    /* TODO: determine whether this is neccessary basename={baseUrl} */ history={
-      history
-    }
-  >
-    <App />
-  </Router>
+  <HistoryRouter basename={baseUrl} history={history}>
+    <ThemeProvider theme={theme}>
+      <App />
+    </ThemeProvider>
+  </HistoryRouter>
 );
-
-import "./layout/assets/css/material-dashboard-react.css";

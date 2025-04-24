@@ -1,7 +1,7 @@
 import makeStyles from "@mui/styles/makeStyles";
 import Button from "layout/components/CustomButtons/Button";
 
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 const useStyles = makeStyles(() => ({
   header: {
@@ -12,12 +12,12 @@ const useStyles = makeStyles(() => ({
 }));
 
 export const NoQuestions = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const classes = useStyles();
   return (
     <>
       <h1 className={classes.header}>No questions</h1>
-      <Button color="primary" onClick={() => history.push("/questions")}>
+      <Button color="primary" onClick={() => navigate("/questions")}>
         Add some
       </Button>
     </>

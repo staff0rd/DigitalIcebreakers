@@ -65,7 +65,7 @@ const broadcastPresenterReducer = createReceiveReducer<
   }
 );
 
-export const broadcastReducer = combineReducers<BroadcastState>({
+export const broadcastReducer = combineReducers({
   client: broadcastClientReducer,
   presenter: broadcastPresenterReducer,
 });

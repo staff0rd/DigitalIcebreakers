@@ -1,5 +1,5 @@
 import Button from "../../layout/components/CustomButtons/Button";
-import { useDispatch } from "store/useSelector.js";
+import { useDispatch } from "store/useSelector";
 import { presenterMessage } from "../../store/lobby/actions";
 import ListItem from "@mui/material/ListItem";
 

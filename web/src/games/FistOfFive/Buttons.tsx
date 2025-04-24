@@ -5,6 +5,7 @@ import ReplayIcon from "@mui/icons-material/Replay";
 import PrintIcon from "@mui/icons-material/Print";
 import IconButton from "@mui/material/IconButton";
 import { Response } from "games/shared/Poll/types/Response";
+import { saveAs } from "file-saver";
 
 type Props = {
   showResponses: boolean;

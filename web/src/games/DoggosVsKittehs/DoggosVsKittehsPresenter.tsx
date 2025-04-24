@@ -4,6 +4,7 @@ import { Graph } from "../pixi/Graph";
 import { useState, useEffect } from "react";
 import { useResizeListener } from "../pixi/useResizeListener";
 import { useSelector } from "../../store/useSelector";
+import * as PIXI from "pixi.js";
 
 const DoggosVsKittehsPresenter = () => {
   const [app, setApp] = useState<PIXI.Application>();

@@ -20,18 +20,18 @@ import Cloud from "@mui/icons-material/Cloud";
 // core components
 import Button from "../../components/CustomButtons/Button";
 import GridItem from "../../components/Grid/GridItem";
-import GridContainer from "../../components/Grid/GridContainer.js";
-import Table from "../../components/Table/Table.js";
-import Tasks from "../../components/Tasks/Tasks.js";
-import CustomTabs from "../../components/CustomTabs/CustomTabs.js";
-import Danger from "../../components/Typography/Danger.js";
-import Card from "../../components/Card/Card.js";
-import CardHeader from "../../components/Card/CardHeader.js";
-import CardAvatar from "../../components/Card/CardAvatar.js";
-import CardIcon from "../../components/Card/CardIcon.js";
-import CardBody from "../../components/Card/CardBody.js";
-import CardFooter from "../../components/Card/CardFooter.js";
-import SnackbarContent from "../../components/Snackbar/SnackbarContent.js";
+import GridContainer from "../../components/Grid/GridContainer";
+import Table from "../../components/Table/Table";
+import Tasks from "../../components/Tasks/Tasks";
+import CustomTabs from "../../components/CustomTabs/CustomTabs";
+import Danger from "../../components/Typography/Danger";
+import Card from "../../components/Card/Card";
+import CardHeader from "../../components/Card/CardHeader";
+import CardAvatar from "../../components/Card/CardAvatar";
+import CardIcon from "../../components/Card/CardIcon";
+import CardBody from "../../components/Card/CardBody";
+import CardFooter from "../../components/Card/CardFooter";
+import SnackbarContent from "../../components/Snackbar/SnackbarContent";
 
 import {
   dailySalesChart,

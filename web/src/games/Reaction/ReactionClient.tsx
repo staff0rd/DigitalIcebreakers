@@ -3,7 +3,7 @@ import { Shape } from "./Shape";
 import * as PIXI from "pixi.js";
 import { drawShape } from "./ShapeView";
 import { Pixi } from "../pixi/Pixi";
-import { useDispatch } from "store/useSelector.js";
+import { useDispatch } from "store/useSelector";
 import { clientMessage } from "../../store/lobby/actions";
 import { useEffect, useState } from "react";
 import { RootState } from "store/RootState";
@@ -29,7 +29,7 @@ export const ReactionPlayer = () => {
     let alpha = 1;
     if (selectedId === null) {
       g.on("pointerdown", () => select(shape.id));
-      g.buttonMode = true;
+      g.cursor = "pointer";
       g.interactive = true;
     } else alpha = 0.5;
     if (selectedId === shape.id) {

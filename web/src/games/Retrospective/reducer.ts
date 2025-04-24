@@ -13,7 +13,7 @@ export type RetrospectiveState = {
   presenter: RetrospectivePresenterState;
 };
 
-export const retrospectiveReducer = combineReducers<RetrospectiveState>({
+export const retrospectiveReducer = combineReducers({
   participant: participantReducer,
   presenter: presenterReducer,
 });

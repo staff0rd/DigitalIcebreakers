@@ -9,7 +9,7 @@ import Grid from "@mui/material/GridLegacy";
 import { useSelector } from "../../../../store/useSelector";
 import { ContentContainer } from "../../../../components/ContentContainer";
 import makeStyles from "@mui/styles/makeStyles";
-import { useParams, useHistory } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import CustomInput from "../../../../layout/components/CustomInput/CustomInput";
 import SnackbarContent from "../../../../layout/components/Snackbar/SnackbarContent";
 import { Question } from "../types/Question";
@@ -17,7 +17,7 @@ import Typography from "@mui/material/Typography";
 import EditAnswers from "./EditAnswers";
 import { guid } from "../../../../util/guid";
 import { grayColor } from "../../../../layout/assets/jss/material-dashboard-react";
-import { useDispatch } from "store/useSelector.js";
+import { useDispatch } from "store/useSelector";
 import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
 import { NameAndMode } from "../types/NameAndMode";
 import { Answer } from "../types/Answer";
@@ -25,7 +25,7 @@ import { getPollOrTriviaState } from "../getPollOrTriviaState";
 import { RootState } from "store/RootState";
 import { Name as PollName } from "games/Poll";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   header: {
     marginBottom: theme.spacing(3),
     marginTop: theme.spacing(2),
@@ -56,7 +56,7 @@ const QuestionEditor = ({ question, gameName, editAnswersChildren }: Props) => {
   const [answers, setAnswers] = useState(question.answers);
 
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const isValid = () => {
     return text.length < 3;
@@ -74,12 +74,12 @@ const QuestionEditor = ({ question, gameName, editAnswersChildren }: Props) => {
         text: text,
       })
     );
-    history.push("/questions");
+    navigate("/questions");
   };
 
   const deleteQuestion = () => {
     dispatch(deleteQuestionAction(question));
-    history.push("/questions");
+    navigate("/questions");
   };
 
   return (
@@ -114,7 +114,7 @@ const QuestionEditor = ({ question, gameName, editAnswersChildren }: Props) => {
                 answers={answers}
                 setAnswers={(answers) => setAnswers(answers)}
                 questionId={question.id}
-                children={editAnswersChildren}
+                children={editAnswersChildren(setAnswers)}
               />
               <Button
                 onClick={() =>

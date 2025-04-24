@@ -8,6 +8,7 @@ export class ShapeView {
   private countView: PIXI.Text;
   private count = 0;
   private first: PIXI.Text;
+  // @ts-ignore TODO: why is this not used?
   private size: number;
   private graphics: PIXI.Graphics;
   private shape: Shape;
@@ -29,11 +30,7 @@ export class ShapeView {
     this.shape = shape;
     this.radius = (size * 0.9) / 2;
     this.graphics = this.draw();
-    this.view.addChild<PIXI.Container>(
-      this.graphics,
-      this.countView,
-      this.first
-    );
+    this.view.addChild(this.graphics, this.countView, this.first);
   }
 
   private draw() {

@@ -7,7 +7,7 @@ import {
   setPaddleSpeed,
   setBallSpeed,
 } from "./PongReducer";
-import { useDispatch } from "store/useSelector.js";
+import { useDispatch } from "store/useSelector";
 import { useSelector } from "../../store/useSelector";
 import { ListItem } from "@mui/material";
 

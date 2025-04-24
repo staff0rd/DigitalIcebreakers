@@ -1,4 +1,4 @@
-import { createReceiveGameMessageReducer } from "../../store/actionHelpers";
+import { createReceiveGameMessageReducer } from "store/actionHelpers";
 
 export interface YesNoMaybeState {
   yes: number;
@@ -8,8 +8,9 @@ export interface YesNoMaybeState {
 
 export const Name = "yes-no-maybe";
 
-export const yesNoMaybeReducer = createReceiveGameMessageReducer<YesNoMaybeState>(
-  Name,
-  { yes: 0, no: 0, maybe: 0 },
-  (_, action) => action.payload.payload
-);
+export const yesNoMaybeReducer =
+  createReceiveGameMessageReducer<YesNoMaybeState>(
+    Name,
+    { yes: 0, no: 0, maybe: 0 },
+    (_, action) => action.payload.payload
+  );

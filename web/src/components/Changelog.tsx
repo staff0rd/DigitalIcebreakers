@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { ChangelogItem } from "../ChangelogItem";
-import Parser from "rss-parser";
-import { CircularProgress, makeStyles, Typography } from "@mui/material";
+import { CircularProgress, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import { DateTime } from "luxon";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   updates: {
     display: "inline",
   },
@@ -19,8 +19,6 @@ type CustomItem = {
   pubDate: string;
   contentSnippet: string;
 };
-
-const parser: Parser<CustomFeed, CustomItem> = new Parser({});
 
 export function Changelog() {
   const [changelogs, setChangelogs] = useState<ChangelogItem[]>([

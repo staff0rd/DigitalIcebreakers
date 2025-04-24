@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
-import { useDispatch } from "store/useSelector.js";
+import { useDispatch } from "store/useSelector";
 import { Question } from "../types/Question";
 import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
 import { ConfirmDialog } from "components/ConfirmDialog";
@@ -13,12 +13,13 @@ import CustomInput from "layout/components/CustomInput/CustomInput";
 import {
   FormControl,
   InputLabel,
-  makeStyles,
   MenuItem,
   Select,
+  SelectChangeEvent,
 } from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   header: {
     display: "flex",
     justifyContent: "space-between",
@@ -110,10 +111,8 @@ export const AutoQuestions = (props: Props) => {
     setCount(e.target.value);
   };
 
-  const handleDifficultyChange = (
-    event: React.ChangeEvent<{ value: unknown }>
-  ) => {
-    setDifficulty(event.target.value as string);
+  const handleDifficultyChange = (event: SelectChangeEvent) => {
+    setDifficulty(event.target.value);
   };
 
   const [count, setCount] = useState("10");

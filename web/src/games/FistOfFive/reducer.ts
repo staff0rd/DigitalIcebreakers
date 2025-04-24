@@ -9,9 +9,8 @@ import { presenterPayloadReducer } from "games/shared/Poll/reducers/presenterPay
 
 export const Name = "fist-of-five";
 
-const { importQuestionsAction, toggleShowResponsesAction } = presenterActions(
-  Name
-);
+const { importQuestionsAction, toggleShowResponsesAction } =
+  presenterActions(Name);
 
 export const pollPresenterReducer = createReceiveGameMessageReducer<
   SelectedAnswer[],
@@ -47,7 +46,7 @@ export const pollPresenterReducer = createReceiveGameMessageReducer<
   }
 );
 
-export const fistOfFiveReducer = combineReducers<FistOfFiveState>({
+export const fistOfFiveReducer = combineReducers({
   player: sharedTriviaPlayerReducer(Name),
   presenter: pollPresenterReducer,
 });

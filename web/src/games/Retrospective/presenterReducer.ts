@@ -56,7 +56,7 @@ export const presenterReducer = createReceiveGameMessageReducer<
       storage.saveToStorage(storageKey, result);
       return result;
     });
-    builder.addCase(setCategories, (state, action) => {
+    builder.addCase(setCategories, (_, action) => {
       const result = {
         ideas: [],
         categories: [...action.payload],

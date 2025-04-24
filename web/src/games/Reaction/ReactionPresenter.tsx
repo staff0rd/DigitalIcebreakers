@@ -5,8 +5,8 @@ import { ShapeType } from "./ShapeType";
 import { shuffle } from "../../Random";
 import * as PIXI from "pixi.js";
 import { ShapeView } from "./ShapeView";
-import * as gsap from "gsap";
-import { useDispatch } from "store/useSelector.js";
+import { gsap } from "gsap";
+import { useDispatch } from "store/useSelector";
 import { presenterMessage } from "store/lobby/actions";
 import Button from "../../layout/components/CustomButtons/Button";
 import Table from "../../layout/components/Table/Table";
@@ -26,7 +26,7 @@ import { useTimeout } from "util/useTimeout";
 
 export const ReactionPresenter = () => {
   const [pixi, setPixi] = useState<PIXI.Application>();
-  const [againTween, setAgainTween] = useState<GSAPStatic.Tween>();
+  const [againTween, setAgainTween] = useState<gsap.core.Tween>();
   const players = useSelector((state: RootState) => state.lobby.players);
   const againProgress = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();
@@ -111,7 +111,7 @@ export const ReactionPresenter = () => {
   useEffect(() => {
     if (autoAgain) {
       setAgainTween(
-        gsap.TweenLite.to(againProgress.current!.style, 5, {
+        gsap.to(againProgress.current!.style, 5, {
           width: "0px",
           ease: "power1.in",
           onComplete: () => setShape(),

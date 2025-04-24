@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Colors, ColorUtils } from "../../Colors";
 import { Pixi } from "../pixi/Pixi";
 import { useSelector } from "store/useSelector";
-import { useDispatch } from "store/useSelector.js";
+import { useDispatch } from "store/useSelector";
 import { presenterMessage } from "store/lobby/actions";
 import { pick, between } from "Random";
 

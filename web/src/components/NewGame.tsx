@@ -1,6 +1,6 @@
 import Games from "../games/Games";
 import { startNewGame } from "../store/lobby/actions";
-import { useDispatch } from "store/useSelector.js";
+import { useDispatch } from "store/useSelector";
 import { ContentContainer } from "./ContentContainer";
 import Card from "../layout/components/Card/Card";
 import CardFooter from "../layout/components/Card/CardFooter";

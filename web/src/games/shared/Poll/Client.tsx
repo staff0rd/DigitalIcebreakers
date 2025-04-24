@@ -1,4 +1,4 @@
-import { useDispatch } from "store/useSelector.js";
+import { useDispatch } from "store/useSelector";
 import { clientMessage } from "../../../store/lobby/actions";
 import { ContentContainer } from "../../../components/ContentContainer";
 import List from "@mui/material/List";

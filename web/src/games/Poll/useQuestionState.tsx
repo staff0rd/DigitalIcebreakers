@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useSelector } from "store/useSelector";
 import { presenterMessage } from "store/lobby/actions";
-import { useDispatch } from "store/useSelector.js";
+import { useDispatch } from "store/useSelector";
 import {
   currentQuestionSelector,
   GameState,

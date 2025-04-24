@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useDispatch } from "store/useSelector.js";
+import { useDispatch } from "store/useSelector";
 import ListItem from "@mui/material/ListItem";
 import Button from "../../layout/components/CustomButtons/Button";
 import { clearIdeasAction, setCategories } from "./presenterReducer";
@@ -7,6 +7,7 @@ import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { useSelector } from "store/useSelector";
 import { RootState } from "store/RootState";
 import { ideasByCategory } from "./ideasByCategory";
+import { saveAs } from "file-saver";
 
 export const Menu = () => {
   const dispatch = useDispatch();

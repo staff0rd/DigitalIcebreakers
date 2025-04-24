@@ -7,7 +7,7 @@ export class Button extends PIXI.Container {
   constructor(onPointerUp: Function, onPointerDown: Function) {
     super();
     this.interactive = true;
-    this.buttonMode = true;
+    this.cursor = "pointer";
     this.g1 = new PIXI.Graphics();
     this.g2 = new PIXI.Graphics();
     this.addChild(this.g1);

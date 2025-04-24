@@ -1,10 +1,11 @@
 import { ChangeEvent, useEffect } from "react";
-import { useDispatch } from "store/useSelector.js";
+import { useDispatch } from "store/useSelector";
 import { presenterMessage } from "store/lobby/actions";
 import { ContentContainer } from "components/ContentContainer";
-import { makeStyles, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import { useSelector } from "store/useSelector";
 import { resetAction, setTextAction } from "./BroadcastReducer";
+import makeStyles from "@mui/styles/makeStyles";
 
 const useStyles = makeStyles(() => ({
   container: {

@@ -1,6 +1,6 @@
 import Button from "../../layout/components/CustomButtons/Button";
 import { reset, pick } from "./NamePickerReducer";
-import { useDispatch } from "store/useSelector.js";
+import { useDispatch } from "store/useSelector";
 import { ListItem } from "@mui/material";
 
 const NamePickerMenu = () => {

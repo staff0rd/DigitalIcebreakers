@@ -1,5 +1,5 @@
 import Button from "../../layout/components/CustomButtons/Button";
-import { useDispatch } from "store/useSelector.js";
+import { useDispatch } from "store/useSelector";
 import Notifications from "@mui/icons-material/Notifications";
 import { clientMessage } from "../../store/lobby/actions";
 import makeStyles from "@mui/styles/makeStyles";

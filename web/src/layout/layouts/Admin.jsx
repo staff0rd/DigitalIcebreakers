@@ -1,14 +1,15 @@
-import { Switch, Route, Redirect } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router";
+import React from "react";
 // creates a beautiful scrollbar
 import PerfectScrollbar from "perfect-scrollbar";
 import "perfect-scrollbar/css/perfect-scrollbar.css";
 // @mui/material components
 import makeStyles from "@mui/styles/makeStyles";
 // core components
-import Navbar from "../components/Navbars/Navbar.js";
+import Navbar from "../components/Navbars/Navbar";
 import { toggleDrawer } from "../../store/shell/actions";
 import { useSelector } from "../../store/useSelector";
-import Sidebar from "../components/Sidebar/Sidebar.js";
+import Sidebar from "../components/Sidebar/Sidebar";
 
 import useRoutes from "../useRoutes";
 
@@ -16,8 +17,8 @@ import styles from "../assets/jss/material-dashboard-react/layouts/adminStyle";
 
 let ps;
 
-const switchRoutes = (routes) => (
-  <Switch>
+const switchRoutes = (routes, navigate) => (
+  <Routes>
     {routes.map((prop, key) => (
       <Route
         exact
@@ -32,13 +33,15 @@ const switchRoutes = (routes) => (
           console.log(
             `redirecting to /join-lobby${location.pathname} from ${location.pathname}`
           );
-          return <Redirect to={`/join-lobby${location.pathname}`} />;
+          navigate(`/join-lobby${location.pathname}`);
         }
         console.log("redirecting to / from " + location.pathname);
-        return <Redirect to="/" />;
+        navigate("/");
+
+        return <></>;
       }}
     />
-  </Switch>
+  </Routes>
 );
 
 const useStyles = makeStyles(styles);
@@ -78,6 +81,7 @@ export default function Admin({ isPresenter, currentGame, lobbyId, ...rest }) {
   }, [mainPanel]);
 
   const routes = useRoutes();
+  const navigate = useNavigate();
 
   return (
     <div className={classes.wrapper}>
@@ -94,10 +98,12 @@ export default function Admin({ isPresenter, currentGame, lobbyId, ...rest }) {
         {/* On the /maps route we want the map to be on full screen - this is not possible if the content and conatiner classes are present because they have some paddings which would make the map smaller */}
         {getRoute() ? (
           <div className={classes.content}>
-            <div className={classes.container}>{switchRoutes(routes)}</div>
+            <div className={classes.container}>
+              {switchRoutes(routes, navigate)}
+            </div>
           </div>
         ) : (
-          <div className={classes.map}>{switchRoutes(routes)}</div>
+          <div className={classes.map}>{switchRoutes(routes, navigate)}</div>
         )}
         {/* {getRoute() ? <Footer /> : null} */}
       </div>

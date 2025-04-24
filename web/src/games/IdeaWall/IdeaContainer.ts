@@ -48,7 +48,7 @@ export class IdeaContainer {
   addToStage(stage: PIXI.Container) {
     stage.addChild(
       this.laneContainer,
-      this.ideaContainerDrag as PIXI.DisplayObject,
+      this.ideaContainerDrag,
       this.ideaContainer
     );
   }
@@ -88,7 +88,7 @@ export class IdeaContainer {
     this.ideaContainerDrag.endFill();
 
     this.ideaContainerDrag.interactive = true;
-    this.ideaContainerDrag.buttonMode = true;
+    this.ideaContainerDrag.cursor = "pointer";
     this.ideaContainerDrag.on("pointerdown", this.onDragStart);
     this.ideaContainerDrag.on("pointermove", this.onDragMove);
     this.ideaContainerDrag.on("pointerup", this.onDragEnd);
@@ -153,7 +153,7 @@ export class IdeaContainer {
     );
   }
 
-  private onDragStart = (event: PIXI.interaction.InteractionEvent) => {
+  private onDragStart = (event: PIXI.FederatedPointerEvent) => {
     const point = event.data.getLocalPosition(this.app.stage);
     this.pointerData = {
       x: this.ideaContainer.x - point.x,
@@ -165,7 +165,7 @@ export class IdeaContainer {
     this.pointerData = undefined;
   };
 
-  private onDragMove = (event: PIXI.interaction.InteractionEvent) => {
+  private onDragMove = (event: PIXI.FederatedPointerEvent) => {
     if (this.pointerData) {
       const point = event.data.getLocalPosition(this.app.stage);
       const x = this.pointerData.x + point.x;

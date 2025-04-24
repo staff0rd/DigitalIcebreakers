@@ -5,10 +5,10 @@ import makeStyles from "@mui/styles/makeStyles";
 import Hidden from "@mui/material/Hidden";
 // core components
 import GridItem from "../../components/Grid/GridItem";
-import GridContainer from "../../components/Grid/GridContainer.js";
-import Card from "../../components/Card/Card.js";
-import CardHeader from "../../components/Card/CardHeader.js";
-import CardBody from "../../components/Card/CardBody.js";
+import GridContainer from "../../components/Grid/GridContainer";
+import Card from "../../components/Card/Card";
+import CardHeader from "../../components/Card/CardHeader";
+import CardBody from "../../components/Card/CardBody";
 
 import styles from "../../assets/jss/material-dashboard-react/views/iconsStyle";
 

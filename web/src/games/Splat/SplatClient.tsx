@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import { Button } from "../pixi/Button";
 import { Pixi } from "../pixi/Pixi";
 import { Colors } from "../../Colors";
-import { useDispatch } from "store/useSelector.js";
+import { useDispatch } from "store/useSelector";
 import { clientMessage } from "../../store/lobby/actions";
 import { useResizeListener } from "../pixi/useResizeListener";
+import * as PIXI from "pixi.js";
 
 const SplatClient = () => {
   const [pixi, setPixi] = useState<PIXI.Application>();

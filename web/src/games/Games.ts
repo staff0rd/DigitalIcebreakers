@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { JSX, ReactNode } from "react";
 import DoggosVsKittehsClient from "./DoggosVsKittehs/DoggosVsKittehsClient";
 import DoggosVsKittehsPresenter from "./DoggosVsKittehs/DoggosVsKittehsPresenter";
 import { BroadcastClient } from "./Broadcast/BroadcastClient";
@@ -38,11 +38,11 @@ import FistOfFivePresenter from "./FistOfFive/FistOfFivePresenter";
 
 interface Game {
   name: string;
-  client: ReactNode;
-  presenter: ReactNode;
+  client: () => JSX.Element;
+  presenter: () => JSX.Element;
   title: string;
   description: string;
-  menu?: ReactNode;
+  menu?: () => JSX.Element;
   routes?: RouteLink[];
   isNew?: boolean;
 }
@@ -137,6 +137,7 @@ const games: Game[] = [
   {
     name: "pong",
     client: PongClient,
+    // @ts-expect-error TODO: broken by redux
     presenter: PongPresenter,
     menu: PongMenu,
     title: "Pong",
@@ -145,6 +146,7 @@ const games: Game[] = [
   {
     name: IdeaWallName,
     client: IdeaWallClient,
+    // @ts-expect-error TODO: broken by redux
     presenter: IdeaWallPresenter,
     menu: IdeaWallMenu,
     title: "Idea Wall",

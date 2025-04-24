@@ -1,6 +1,6 @@
 import makeStyles from "@mui/styles/makeStyles";
 
-export const useButtonStyles = makeStyles(() => ({
+export const useButtonStyles = makeStyles((theme) => ({
   root: {
     position: "fixed",
     bottom: 0,

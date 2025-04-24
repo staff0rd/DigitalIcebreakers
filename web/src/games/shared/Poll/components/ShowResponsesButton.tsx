@@ -1,4 +1,4 @@
-import { useDispatch } from "store/useSelector.js";
+import { useDispatch } from "store/useSelector";
 import IconButton from "@mui/material/IconButton";
 import BarChart from "@mui/icons-material/BarChart";
 import LiveHelp from "@mui/icons-material/LiveHelp";

@@ -1,14 +1,15 @@
-import { Card, CardActions, makeStyles } from "@mui/material";
+import { Card, CardActions } from "@mui/material";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/GridLegacy";
 
 import Button from "layout/components/CustomButtons/Button";
 import { useState } from "react";
-import { useDispatch } from "store/useSelector.js";
+import { useDispatch } from "store/useSelector";
 import { Category, setCategories } from "./presenterReducer";
 import CustomInput from "layout/components/CustomInput/CustomInput";
 import Alert from "@mui/material/Alert";
+import makeStyles from "@mui/styles/makeStyles";
 
 const useStyles = makeStyles(() => ({
   form: {

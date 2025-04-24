@@ -1,24 +1,27 @@
 /*eslint-disable*/
 
 import classNames from "classnames";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 import makeStyles from "@mui/styles/makeStyles";
 import Drawer from "@mui/material/Drawer";
-import Hidden from "@mui/material/Hidden";
+import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import Icon from "@mui/material/Icon";
 import styles from "../../assets/jss/material-dashboard-react/components/sidebarStyle";
 import { toggleDrawer } from "../../../store/shell/actions";
-import { useDispatch } from "store/useSelector.js";
+import { useDispatch } from "store/useSelector";
 import { useLocation } from "react-router";
 import SidebarFooter from "../../../components/SidebarFooter";
 import { useSelector } from "../../../store/useSelector";
 import LobbyQrCode from "../../../components/LobbyQrCode";
 import Games from "../../../games/Games";
+import { ListItemButton } from "@mui/material";
 
-const useStyles = (showQrCode) => makeStyles(() => styles(showQrCode)(theme));
+const useStyles = (showQrCode) =>
+  // @ts-expect-error
+  makeStyles((theme) => styles(showQrCode)(theme));
 
 export default function Sidebar(props) {
   const dispatch = useDispatch();
@@ -55,46 +58,52 @@ export default function Sidebar(props) {
             <>
               <NavLink
                 to={prop.path}
-                className={activePro + classes.item}
-                activeClassName="active"
+                className={classNames(activePro + classes.item, {
+                  active: activeRoute(prop.path),
+                })}
                 key={key}
                 onClick={() => dispatch(toggleDrawer(false))}
               >
-                <ListItem
-                  button
-                  className={classes.itemLink + listItemClasses}
-                  data-testid={prop.testId}
-                >
-                  {typeof prop.icon === "string" ? (
-                    <Icon
+                <ListItem>
+                  <ListItemButton
+                    className={classes.itemLink + listItemClasses}
+                    data-testid={prop.testId}
+                  >
+                    {typeof prop.icon === "string" ? (
+                      <Icon
+                        className={classNames(
+                          classes.itemIcon,
+                          whiteFontClasses,
+                          {
+                            [classes.itemIconRTL]: props.rtlActive,
+                          }
+                        )}
+                      >
+                        {prop.icon}
+                      </Icon>
+                    ) : (
+                      <prop.icon
+                        className={classNames(
+                          classes.itemIcon,
+                          whiteFontClasses,
+                          {
+                            [classes.itemIconRTL]: props.rtlActive,
+                          }
+                        )}
+                      />
+                    )}
+                    <ListItemText
+                      primary={props.rtlActive ? prop.rtlName : prop.name}
                       className={classNames(
-                        classes.itemIcon,
+                        classes.itemText,
                         whiteFontClasses,
                         {
-                          [classes.itemIconRTL]: props.rtlActive,
+                          [classes.itemTextRTL]: props.rtlActive,
                         }
                       )}
-                    >
-                      {prop.icon}
-                    </Icon>
-                  ) : (
-                    <prop.icon
-                      className={classNames(
-                        classes.itemIcon,
-                        whiteFontClasses,
-                        {
-                          [classes.itemIconRTL]: props.rtlActive,
-                        }
-                      )}
+                      disableTypography={true}
                     />
-                  )}
-                  <ListItemText
-                    primary={props.rtlActive ? prop.rtlName : prop.name}
-                    className={classNames(classes.itemText, whiteFontClasses, {
-                      [classes.itemTextRTL]: props.rtlActive,
-                    })}
-                    disableTypography={true}
-                  />
+                  </ListItemButton>
                 </ListItem>
               </NavLink>
               {isPresenter &&
@@ -126,7 +135,7 @@ export default function Sidebar(props) {
 
   return (
     <div>
-      <Hidden mdUp implementation="css">
+      <Box sx={{ display: { xs: "block", md: "none" } }}>
         <Drawer
           variant="temporary"
           anchor={props.rtlActive ? "left" : "right"}
@@ -149,8 +158,8 @@ export default function Sidebar(props) {
           </div>
           <div className={classes.background} />
         </Drawer>
-      </Hidden>
-      <Hidden smDown implementation="css">
+      </Box>
+      <Box sx={{ display: { xs: "none", md: "block" } }}>
         <Drawer
           anchor={props.rtlActive ? "right" : "left"}
           variant="permanent"
@@ -169,7 +178,7 @@ export default function Sidebar(props) {
           </div>
           <div className={classes.background} />
         </Drawer>
-      </Hidden>
+      </Box>
     </div>
   );
 }

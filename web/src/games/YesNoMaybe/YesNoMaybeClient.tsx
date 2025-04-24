@@ -1,7 +1,7 @@
 import Button from "../../layout/components/CustomButtons/Button";
 import { clientMessage } from "../../store/lobby/actions";
 import makeStyles from "@mui/styles/makeStyles";
-import { useDispatch } from "store/useSelector.js";
+import { useDispatch } from "store/useSelector";
 
 const useStyles = makeStyles(() => ({
   container: {

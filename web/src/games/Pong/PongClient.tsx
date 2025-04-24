@@ -3,7 +3,7 @@ import { Button } from "../pixi/Button";
 import { PongColors as Colors } from "./PongColors";
 import { Pixi } from "../pixi/Pixi";
 import * as PIXI from "pixi.js";
-import { useDispatch } from "store/useSelector.js";
+import { useDispatch } from "store/useSelector";
 import { clientMessage } from "../../store/lobby/actions";
 import { useResizeListener } from "../pixi/useResizeListener";
 import { useSelector } from "../../store/useSelector";

@@ -9,7 +9,7 @@ import { primaryColor } from "../../../../layout/assets/jss/material-dashboard-r
 import CustomisedAxisTick from "./CustomisedAccessTick";
 import { RootState } from "store/RootState";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   data: {
     display: "none",
   },

@@ -96,7 +96,7 @@ const reactionPresenterReducer = createReceiveGameMessageReducer<
     builder.addCase(endRoundAction, (state, action) => {
       const correct = [...state.choices]
         .filter((p) => p.choice === state.shape!.id)
-        .map((choice, ix: number) => {
+        .map((choice) => {
           return {
             id: choice.id,
             name: getPlayerName(action.payload, choice.id),
@@ -181,7 +181,7 @@ export type ReactionState = {
   presenter: ReactionPresenterState;
 };
 
-export const reactionReducer = combineReducers<ReactionState>({
+export const reactionReducer = combineReducers({
   player: reactionPlayerReducer,
   presenter: reactionPresenterReducer,
 });

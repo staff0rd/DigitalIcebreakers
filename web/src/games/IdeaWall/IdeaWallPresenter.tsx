@@ -12,6 +12,7 @@ import {
   arrangeIdeasAction,
 } from "./IdeaWallReducer";
 import { RootState } from "../../store/RootState";
+import * as PIXI from "pixi.js";
 
 const WIDTH = 200;
 const MARGIN = 5;

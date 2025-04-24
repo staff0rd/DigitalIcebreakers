@@ -3,14 +3,14 @@ import makeStyles from "@mui/styles/makeStyles";
 import Typography from "@mui/material/Typography";
 import CustomInput from "layout/components/CustomInput/CustomInput";
 import Alert from "@mui/material/Alert";
-import { useDispatch } from "store/useSelector.js";
+import { useDispatch } from "store/useSelector";
 import { Question } from "../types/Question";
 import { guid } from "util/guid";
 import { Answer } from "games/shared/Poll/types/Answer";
 import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
 import { ConfirmDialog } from "components/ConfirmDialog";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   form: {
     marginTop: theme.spacing(2),
   },

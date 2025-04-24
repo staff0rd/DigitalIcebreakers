@@ -41,7 +41,6 @@ export const Pixi = ({ backgroundColor, onAppChange }: PixiProps) => {
 
   useEffect(() => {
     const pixi = new PIXI.Application({
-      autoResize: true,
       backgroundColor: backgroundColor || 0xffffff,
     });
     resize(pixi);

@@ -47,7 +47,7 @@ export const namePickerPlayerReducer = createReceiveReducer<
   "client"
 );
 
-export const namePickerReducer = combineReducers<NamePickerState>({
+export const namePickerReducer = combineReducers({
   player: namePickerPlayerReducer,
   presenter: namePickerPresenterReducer,
 });

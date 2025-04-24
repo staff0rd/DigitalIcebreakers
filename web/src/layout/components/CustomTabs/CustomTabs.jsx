@@ -8,9 +8,9 @@ import makeStyles from "@mui/styles/makeStyles";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 // core components
-import Card from "../Card/Card.js";
-import CardBody from "../Card/CardBody.js";
-import CardHeader from "../Card/CardHeader.js";
+import Card from "../Card/Card";
+import CardBody from "../Card/CardBody";
+import CardHeader from "../Card/CardHeader";
 
 import styles from "../../assets/jss/material-dashboard-react/components/customTabsStyle";
 

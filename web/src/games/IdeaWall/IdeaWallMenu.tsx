@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useDispatch } from "store/useSelector.js";
+import { useDispatch } from "store/useSelector";
 import ListItem from "@mui/material/ListItem";
 import Button from "../../layout/components/CustomButtons/Button";
 import {

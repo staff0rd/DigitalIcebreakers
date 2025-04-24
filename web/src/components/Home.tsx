@@ -3,11 +3,11 @@ import { GithubFork } from "./GithubFork";
 import makeStyles from "@mui/styles/makeStyles";
 import { ContentContainer } from "./ContentContainer";
 import Button from "../layout/components/CustomButtons/Button";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { Typography } from "@mui/material";
 import Grid from "@mui/material/GridLegacy";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   imageContainer: {
     backgroundColor: "#191919",
     textAlign: "center",
@@ -33,7 +33,7 @@ const useStyles = makeStyles(() => ({
 
 export const Home = () => {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   return (
     <>
       <GithubFork />
@@ -49,7 +49,7 @@ export const Home = () => {
           <Button
             color="primary"
             size="lg"
-            onClick={() => history.push("/create-lobby")}
+            onClick={() => navigate("/create-lobby")}
             data-testid="present-button"
           >
             Present
@@ -58,7 +58,7 @@ export const Home = () => {
             className={classes.joinButton}
             color="primary"
             size="lg"
-            onClick={() => history.push("/join-lobby")}
+            onClick={() => navigate("/join-lobby")}
           >
             Join
           </Button>

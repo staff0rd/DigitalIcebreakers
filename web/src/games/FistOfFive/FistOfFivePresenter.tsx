@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import { guid } from "util/guid";
 import { presenterMessage } from "store/lobby/actions";
-import { useDispatch } from "store/useSelector.js";
+import { useDispatch } from "store/useSelector";
 import { ResponseCount } from "games/shared/Poll/components/ResponseCount";
 import { useQuestionState } from "games/Poll/useQuestionState";
 import { Name } from "./reducer";
@@ -11,7 +11,7 @@ import { Buttons } from "./Buttons";
 import makeStyles from "@mui/styles/makeStyles";
 import { Responses } from "./Responses";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(3),
     display: "flex",

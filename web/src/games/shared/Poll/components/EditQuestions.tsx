@@ -19,9 +19,9 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { useHistory, NavLink } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router";
 import { guid } from "../../../../util/guid";
-import { useDispatch } from "store/useSelector.js";
+import { useDispatch } from "store/useSelector";
 import array from "../../../../util/array";
 import { saveAs } from "file-saver";
 import { BulkEdit } from "./BulkEdit";
@@ -57,7 +57,7 @@ const useStyles = makeStyles(() => ({
 
 const EditQuestions = () => {
   const classes = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { questions, gameName, isTriviaMode } = useSelector((state) => {
     const gameName = state.lobby.currentGame!;
@@ -80,7 +80,7 @@ const EditQuestions = () => {
   const addQuestion = () => {
     const id = guid();
     dispatch(addQuestionAction(id));
-    history.push(`/questions/${id}`);
+    navigate(`/questions/${id}`);
   };
   const fileUpload = useRef<HTMLInputElement>(null);
 

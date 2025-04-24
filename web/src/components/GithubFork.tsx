@@ -1,6 +1,6 @@
 import makeStyles from "@mui/styles/makeStyles";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   link: {
     float: "right",
     position: "absolute",

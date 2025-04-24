@@ -5,13 +5,13 @@ import Close from "@mui/icons-material/Close";
 import Check from "@mui/icons-material/Check";
 // core components
 import GridItem from "../../components/Grid/GridItem";
-import GridContainer from "../../components/Grid/GridContainer.js";
-import Danger from "../../components/Typography/Danger.js";
-import Success from "../../components/Typography/Success.js";
+import GridContainer from "../../components/Grid/GridContainer";
+import Danger from "../../components/Typography/Danger";
+import Success from "../../components/Typography/Success";
 import Button from "../../components/CustomButtons/Button";
-import Card from "../../components/Card/Card.js";
-import CardHeader from "../../components/Card/CardHeader.js";
-import CardBody from "../../components/Card/CardBody.js";
+import Card from "../../components/Card/Card";
+import CardHeader from "../../components/Card/CardHeader";
+import CardBody from "../../components/Card/CardBody";
 
 const styles = {
   cardCategoryWhite: {

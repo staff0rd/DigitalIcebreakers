@@ -6,11 +6,11 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  makeStyles,
   Typography,
 } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   paper: {
     width: "50%",
     [theme.breakpoints.down("sm")]: {

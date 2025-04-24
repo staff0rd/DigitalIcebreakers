@@ -4,16 +4,17 @@ import GridContainer from "layout/components/Grid/GridContainer";
 import GridItem from "layout/components/Grid/GridItem";
 import CardBody from "layout/components/Card/CardBody";
 import Card from "layout/components/Card/Card";
-import { makeStyles, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { useSelector } from "store/useSelector";
 import { RootState } from "store/RootState";
 import { ideasByCategory } from "./ideasByCategory";
 import SetCategories from "./SetCategories";
-import { useDispatch } from "store/useSelector.js";
+import { useDispatch } from "store/useSelector";
 import { presenterMessage } from "store/lobby/actions";
 import { loadFromStore } from "./presenterReducer";
+import makeStyles from "@mui/styles/makeStyles";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   header: {},
   waiting: {
     marginLeft: theme.spacing(3),

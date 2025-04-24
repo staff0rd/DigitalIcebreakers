@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import makeStyles from "@mui/styles/makeStyles";
 import { Typography } from "@mui/material";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(3),
   },
