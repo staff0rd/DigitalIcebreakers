@@ -17,45 +17,44 @@ import styles from "../assets/jss/material-dashboard-react/layouts/adminStyle";
 
 let ps;
 
-const switchRoutes = (routes, navigate) => (
-  <Routes>
-    {routes.map((prop, key) => (
+const AppRoutes = () => {
+  const routes = useRoutes();
+  const navigate = useNavigate();
+  return (
+    <Routes>
+      {routes.map(({ route, path, component: Component }, key) => {
+        return (
+          <Route exact path={route || path} element={<Component />} key={key} />
+        );
+      })}
       <Route
-        exact
-        path={prop.route || prop.path}
-        component={prop.component}
-        key={key}
-      />
-    ))}
-    <Route
-      render={({ location }) => {
-        if (location.pathname.length === 5) {
-          console.log(
-            `redirecting to /join-lobby${location.pathname} from ${location.pathname}`
-          );
-          navigate(`/join-lobby${location.pathname}`);
-        }
-        console.log("redirecting to / from " + location.pathname);
-        navigate("/");
+        render={({ location }) => {
+          if (location.pathname.length === 5) {
+            console.log(
+              `redirecting to /join-lobby${location.pathname} from ${location.pathname}`
+            );
+            navigate(`/join-lobby${location.pathname}`);
+          }
+          console.log("redirecting to / from " + location.pathname);
+          navigate("/");
 
-        return <></>;
-      }}
-    />
-  </Routes>
-);
+          return <></>;
+        }}
+      />
+    </Routes>
+  );
+};
 
 const useStyles = makeStyles(styles);
 
 export default function Admin({ isPresenter, currentGame, lobbyId, ...rest }) {
   // styles
   const classes = useStyles();
+  const routes = useRoutes();
   // ref to help us initialize PerfectScrollbar on windows devices
   const mainPanel = React.createRef();
   const showDrawer = useSelector((state) => state.shell.showDrawer);
 
-  const getRoute = () => {
-    return window.location.pathname !== "/admin/maps";
-  };
   const resizeFunction = () => {
     if (window.innerWidth >= 960) {
       toggleDrawer(false);
@@ -80,9 +79,6 @@ export default function Admin({ isPresenter, currentGame, lobbyId, ...rest }) {
     };
   }, [mainPanel]);
 
-  const routes = useRoutes();
-  const navigate = useNavigate();
-
   return (
     <div className={classes.wrapper}>
       <Sidebar
@@ -95,17 +91,11 @@ export default function Admin({ isPresenter, currentGame, lobbyId, ...rest }) {
       />
       <div className={classes.mainPanel} ref={mainPanel}>
         <Navbar routes={routes} {...rest} />
-        {/* On the /maps route we want the map to be on full screen - this is not possible if the content and conatiner classes are present because they have some paddings which would make the map smaller */}
-        {getRoute() ? (
-          <div className={classes.content}>
-            <div className={classes.container}>
-              {switchRoutes(routes, navigate)}
-            </div>
+        <div className={classes.content}>
+          <div className={classes.container}>
+            <AppRoutes />
           </div>
-        ) : (
-          <div className={classes.map}>{switchRoutes(routes, navigate)}</div>
-        )}
-        {/* {getRoute() ? <Footer /> : null} */}
+        </div>
       </div>
     </div>
   );

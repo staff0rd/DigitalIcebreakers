@@ -4,8 +4,6 @@ import makeStyles from "@mui/styles/makeStyles";
 import Button from "@mui/material/Button";
 import styles from "../../assets/jss/material-dashboard-react/components/buttonStyle";
 
-const useStyles = makeStyles(styles);
-
 type Color =
   | "primary"
   | "info"
@@ -42,7 +40,6 @@ const useOverrides = makeStyles(() => ({
 }));
 
 export default function RegularButton(props: Props) {
-  const classes = useStyles();
   const overrides = useOverrides();
   const {
     color,

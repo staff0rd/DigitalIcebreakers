@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { rootReducer } from "./rootReducer";
 import { SignalRMiddleware } from "./SignalRMiddleware";
-import logger from "redux-logger";
+//import logger from "redux-logger";
 import { HubConnectionBuilder } from "@microsoft/signalr";
 
 const connectionFactory = () =>
@@ -11,9 +11,8 @@ export function configureAppStore() {
   const store = configureStore({
     reducer: rootReducer,
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware()
-        .concat([SignalRMiddleware(connectionFactory)])
-        .concat(logger),
+      getDefaultMiddleware().concat([SignalRMiddleware(connectionFactory)]),
+    //.concat(logger),
   });
   return store;
 }

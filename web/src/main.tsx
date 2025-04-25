@@ -2,7 +2,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import history from "./history";
 import "./layout/assets/css/material-dashboard-react.css";
-import { createTheme } from "@mui/material";
+import { createTheme, CssBaseline } from "@mui/material";
 import { ThemeProvider } from "@mui/styles";
 
 // TODO: probably switch to wouter
@@ -15,6 +15,7 @@ const theme = createTheme({});
 createRoot(document.getElementById("root")!).render(
   <HistoryRouter basename={baseUrl} history={history}>
     <ThemeProvider theme={theme}>
+      <CssBaseline />
       <App />
     </ThemeProvider>
   </HistoryRouter>

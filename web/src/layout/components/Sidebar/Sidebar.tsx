@@ -18,6 +18,7 @@ import { useSelector } from "../../../store/useSelector";
 import LobbyQrCode from "../../../components/LobbyQrCode";
 import Games from "../../../games/Games";
 import { ListItemButton } from "@mui/material";
+import { Fragment } from "react/jsx-runtime";
 
 const useStyles = (showQrCode) =>
   // @ts-expect-error
@@ -55,13 +56,12 @@ export default function Sidebar(props) {
             [" " + classes.whiteFont]: activeRoute(prop.path),
           });
           return (
-            <>
+            <Fragment key={key}>
               <NavLink
                 to={prop.path}
                 className={classNames(activePro + classes.item, {
                   active: activeRoute(prop.path),
                 })}
-                key={key}
                 onClick={() => dispatch(toggleDrawer(false))}
               >
                 <ListItem>
@@ -110,7 +110,7 @@ export default function Sidebar(props) {
                 prop.path === "/game" &&
                 location.pathname === "/game" &&
                 GameMenu && <GameMenu />}
-            </>
+            </Fragment>
           );
         })}
     </List>
