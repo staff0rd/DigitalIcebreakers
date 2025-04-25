@@ -1,8 +1,7 @@
 /*eslint-disable*/
 
 import classNames from "classnames";
-import { NavLink } from "react-router";
-import makeStyles from "@mui/styles/makeStyles";
+import { Link } from "react-router";
 import Drawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
@@ -17,12 +16,9 @@ import SidebarFooter from "../../../components/SidebarFooter";
 import { useSelector } from "../../../store/useSelector";
 import LobbyQrCode from "../../../components/LobbyQrCode";
 import Games from "../../../games/Games";
-import { ListItemButton } from "@mui/material";
+import { ListItemButton, useTheme } from "@mui/material";
 import { Fragment } from "react/jsx-runtime";
-
-const useStyles = (showQrCode) =>
-  // @ts-expect-error
-  makeStyles((theme) => styles(showQrCode)(theme));
+import { createSxClasses } from "createSxClasses";
 
 export default function Sidebar(props) {
   const dispatch = useDispatch();
@@ -30,7 +26,8 @@ export default function Sidebar(props) {
   const lobby = useSelector((state) => state.lobby);
   const isPresenter = lobby.isPresenter;
   const isLobby = location.pathname === "/";
-  const classes = useStyles(lobby.id && !isLobby)();
+  const theme = useTheme();
+  const classes = styles(lobby.id && !isLobby)(theme);
   const gameName = useSelector((state) => state.lobby.currentGame);
   const game = Games.find((g) => g.name == gameName);
   const GameMenu = game && game.menu;
@@ -41,7 +38,7 @@ export default function Sidebar(props) {
   }
   const { color, logo, logoText, routes } = props;
   var links = (
-    <List className={classes.list}>
+    <List sx={classes.list}>
       {routes
         .filter((r) => r.name)
         .map((prop, key) => {
@@ -57,55 +54,46 @@ export default function Sidebar(props) {
           });
           return (
             <Fragment key={key}>
-              <NavLink
-                to={prop.path}
-                className={classNames(activePro + classes.item, {
-                  active: activeRoute(prop.path),
-                })}
-                onClick={() => dispatch(toggleDrawer(false))}
-              >
-                <ListItem>
-                  <ListItemButton
-                    className={classes.itemLink + listItemClasses}
-                    data-testid={prop.testId}
-                  >
-                    {typeof prop.icon === "string" ? (
-                      <Icon
-                        className={classNames(
-                          classes.itemIcon,
-                          whiteFontClasses,
-                          {
-                            [classes.itemIconRTL]: props.rtlActive,
-                          }
-                        )}
-                      >
-                        {prop.icon}
-                      </Icon>
-                    ) : (
-                      <prop.icon
-                        className={classNames(
-                          classes.itemIcon,
-                          whiteFontClasses,
-                          {
-                            [classes.itemIconRTL]: props.rtlActive,
-                          }
-                        )}
-                      />
-                    )}
-                    <ListItemText
-                      primary={props.rtlActive ? prop.rtlName : prop.name}
-                      className={classNames(
-                        classes.itemText,
+              <ListItem>
+                <ListItemButton
+                  onClick={() => dispatch(toggleDrawer(false))}
+                  sx={classes.item}
+                  to={prop.path}
+                  component={Link}
+                  className={classes.itemLink + listItemClasses}
+                  data-testid={prop.testId}
+                >
+                  {typeof prop.icon === "string" ? (
+                    <Icon
+                      sx={createSxClasses(styles, {
+                        itemIcon: true,
                         whiteFontClasses,
-                        {
-                          [classes.itemTextRTL]: props.rtlActive,
-                        }
-                      )}
-                      disableTypography={true}
+                        itemIconRTL: props.rtlActive,
+                      })}
+                    >
+                      {prop.icon}
+                    </Icon>
+                  ) : (
+                    <prop.icon
+                      sx={createSxClasses(styles, {
+                        itemIcon: true,
+                        whiteFontClasses,
+                        itemIconRTL: props.rtlActive,
+                      })}
                     />
-                  </ListItemButton>
-                </ListItem>
-              </NavLink>
+                  )}
+                  <ListItemText
+                    primary={props.rtlActive ? prop.rtlName : prop.name}
+                    sx={createSxClasses(styles, {
+                      itemText: true,
+                      whiteFontClasses,
+                      itemTextRTL: props.rtlActive,
+                    })}
+                    disableTypography={true}
+                  />
+                </ListItemButton>
+              </ListItem>
+
               {isPresenter &&
                 prop.path === "/game" &&
                 location.pathname === "/game" &&
@@ -116,19 +104,30 @@ export default function Sidebar(props) {
     </List>
   );
   var brand = (
-    <div className={classes.logo}>
-      <NavLink
-        to="/"
-        className={classNames(classes.logoLink, {
-          [classes.logoLinkRTL]: props.rtlActive,
-        })}
-      >
-        <div className={classes.logoImage}>
-          <img src={logo} alt="logo" className={classes.img} />
-        </div>
+    <Box
+      sx={{
+        position: "relative",
+        padding: "15px 15px",
+        zIndex: "4",
+        "&:after": {
+          content: '""',
+          position: "absolute",
+          bottom: "0",
+
+          height: "1px",
+          right: "15px",
+          width: "calc(100% - 30px)",
+          backgroundColor: "rgba(" + hexToRgb(grayColor[6]) + ", 0.3)",
+        },
+      }}
+    >
+      <Link to="/" style={classes.logoLink}>
+        <Box sx={classes.logoImage}>
+          <Box component="img" src={logo} alt="logo" sx={classes.img} />
+        </Box>
         {logoText}
-      </NavLink>
-    </div>
+      </Link>
+    </Box>
   );
 
   const qrCode = lobby.id && !isLobby && <LobbyQrCode />;
@@ -140,10 +139,13 @@ export default function Sidebar(props) {
           variant="temporary"
           anchor={props.rtlActive ? "left" : "right"}
           open={props.open}
-          classes={{
-            paper: classNames(classes.drawerPaper, {
-              [classes.drawerPaperRTL]: props.rtlActive,
-            }),
+          slotProps={{
+            paper: {
+              sx: createSxClasses(styles, {
+                drawerPaper: true,
+                drawerPaperRTL: props.rtlActive,
+              }),
+            },
           }}
           onClose={() => dispatch(toggleDrawer())}
           ModalProps={{
@@ -151,12 +153,12 @@ export default function Sidebar(props) {
           }}
         >
           {brand}
-          <div className={classes.sidebarWrapper}>
+          <Box sx={classes.sidebarWrapper}>
             {qrCode}
             {links}
             <SidebarFooter lobbyId={lobby.id} />
-          </div>
-          <div className={classes.background} />
+          </Box>
+          <Box sx={classes.background} />
         </Drawer>
       </Box>
       <Box sx={{ display: { xs: "none", md: "block" } }}>
@@ -164,19 +166,22 @@ export default function Sidebar(props) {
           anchor={props.rtlActive ? "right" : "left"}
           variant="permanent"
           open
-          classes={{
-            paper: classNames(classes.drawerPaper, {
-              [classes.drawerPaperRTL]: props.rtlActive,
-            }),
+          slotProps={{
+            paper: {
+              sx: createSxClasses(styles, {
+                drawerPaper: true,
+                drawerPaperRTL: props.rtlActive,
+              }),
+            },
           }}
         >
           {brand}
-          <div className={classes.sidebarWrapper}>
+          <Box sx={classes.sidebarWrapper}>
             {qrCode}
             {links}
             <SidebarFooter lobbyId={lobby.id} />
-          </div>
-          <div className={classes.background} />
+          </Box>
+          <Box sx={classes.background} />
         </Drawer>
       </Box>
     </div>

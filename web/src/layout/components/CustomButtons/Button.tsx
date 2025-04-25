@@ -1,8 +1,8 @@
 import { ReactNode, DOMAttributes } from "react";
-import classNames from "classnames";
 import makeStyles from "@mui/styles/makeStyles";
 import Button from "@mui/material/Button";
 import styles from "../../assets/jss/material-dashboard-react/components/buttonStyle";
+import { createSxClasses } from "createSxClasses";
 
 type Color =
   | "primary"
@@ -56,23 +56,24 @@ export default function RegularButton(props: Props) {
     startIcon,
     ...rest
   } = props;
-  const btnClasses = classNames({
-    [classes.button]: true,
-    [classes[size || "sm"]]: size,
-    [classes[color || "primary"]]: color,
-    [classes.round]: round,
-    [classes.disabled]: disabled,
-    [classes.simple]: simple,
-    [classes.block]: block,
-    [classes.link]: link,
-    [classes.justIcon]: justIcon,
+  const btnSx = createSxClasses(styles, {
+    button: true,
+    [size || "sm"]: size,
+    [color || "primary"]: color,
+    round: round,
+    disabled,
+    simple,
+    block,
+    link,
+    justIcon,
     [className || ""]: className,
   });
   return (
     <Button
       {...rest}
       classes={muiClasses}
-      className={classNames(btnClasses, overrides.button)}
+      sx={btnSx}
+      className={overrides.button}
       startIcon={startIcon}
     >
       {children}

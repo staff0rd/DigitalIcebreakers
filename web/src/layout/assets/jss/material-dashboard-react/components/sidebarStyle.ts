@@ -60,21 +60,7 @@ const sidebarStyle = (showQrCode: boolean) => (theme: any) => ({
       right: "auto !important",
     },
   },
-  logo: {
-    position: "relative",
-    padding: "15px 15px",
-    zIndex: "4",
-    "&:after": {
-      content: '""',
-      position: "absolute",
-      bottom: "0",
 
-      height: "1px",
-      right: "15px",
-      width: "calc(100% - 30px)",
-      backgroundColor: "rgba(" + hexToRgb(grayColor[6]) + ", 0.3)",
-    },
-  },
   logoLink: {
     ...defaultFont,
     textTransform: "uppercase",
@@ -89,9 +75,6 @@ const sidebarStyle = (showQrCode: boolean) => (theme: any) => ({
     "&,&:hover,&:focus": {
       color: whiteColor,
     },
-  },
-  logoLinkRTL: {
-    textAlign: "right",
   },
   logoImage: {
     width: "30px",
