@@ -1,7 +1,7 @@
 /*eslint-disable*/
 
 import classNames from "classnames";
-import { Link } from "react-router";
+import { Link as RouterLink } from "react-router";
 import Drawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
@@ -16,9 +16,11 @@ import SidebarFooter from "../../../components/SidebarFooter";
 import { useSelector } from "../../../store/useSelector";
 import LobbyQrCode from "../../../components/LobbyQrCode";
 import Games from "../../../games/Games";
-import { ListItemButton, useTheme } from "@mui/material";
+import { Link, ListItemButton, useTheme } from "@mui/material";
 import { Fragment } from "react/jsx-runtime";
 import { createSxClasses } from "createSxClasses";
+import Color from "color";
+import { defaultFont, colors } from "../../assets/jss/palette";
 
 export default function Sidebar(props) {
   const dispatch = useDispatch();
@@ -42,32 +44,24 @@ export default function Sidebar(props) {
       {routes
         .filter((r) => r.name)
         .map((prop, key) => {
-          var activePro = " ";
-          var listItemClasses;
-
-          listItemClasses = classNames({
-            [" " + classes[color]]: activeRoute(prop.path),
-          });
-
-          const whiteFontClasses = classNames({
-            [" " + classes.whiteFont]: activeRoute(prop.path),
-          });
           return (
             <Fragment key={key}>
-              <ListItem>
+              <ListItem sx={classes.item}>
                 <ListItemButton
+                  component={RouterLink}
                   onClick={() => dispatch(toggleDrawer(false))}
-                  sx={classes.item}
                   to={prop.path}
-                  component={Link}
-                  className={classes.itemLink + listItemClasses}
+                  sx={createSxClasses(classes, {
+                    itemLink: true,
+                    [color]: activeRoute(prop.path),
+                  })}
                   data-testid={prop.testId}
                 >
                   {typeof prop.icon === "string" ? (
                     <Icon
-                      sx={createSxClasses(styles, {
+                      sx={createSxClasses(classes, {
                         itemIcon: true,
-                        whiteFontClasses,
+                        whiteFont: activeRoute(prop.path),
                         itemIconRTL: props.rtlActive,
                       })}
                     >
@@ -75,18 +69,18 @@ export default function Sidebar(props) {
                     </Icon>
                   ) : (
                     <prop.icon
-                      sx={createSxClasses(styles, {
+                      sx={createSxClasses(classes, {
                         itemIcon: true,
-                        whiteFontClasses,
+                        whiteFont: activeRoute(prop.path),
                         itemIconRTL: props.rtlActive,
                       })}
                     />
                   )}
                   <ListItemText
                     primary={props.rtlActive ? prop.rtlName : prop.name}
-                    sx={createSxClasses(styles, {
+                    sx={createSxClasses(classes, {
                       itemText: true,
-                      whiteFontClasses,
+                      whiteFont: activeRoute(prop.path),
                       itemTextRTL: props.rtlActive,
                     })}
                     disableTypography={true}
@@ -113,15 +107,32 @@ export default function Sidebar(props) {
           content: '""',
           position: "absolute",
           bottom: "0",
-
           height: "1px",
           right: "15px",
           width: "calc(100% - 30px)",
-          backgroundColor: "rgba(" + hexToRgb(grayColor[6]) + ", 0.3)",
+          backgroundColor: Color(colors.grayColor[6]).alpha(0.3).hex(),
         },
       }}
     >
-      <Link to="/" style={classes.logoLink}>
+      <Link
+        component={RouterLink}
+        to="/"
+        sx={{
+          ...defaultFont,
+          textTransform: "uppercase",
+          padding: "5px 0",
+          display: "block",
+          fontSize: "16px",
+          textAlign: "left",
+          fontWeight: "400",
+          lineHeight: "30px",
+          textDecoration: "none",
+          backgroundColor: "transparent",
+          "&,&:hover,&:focus": {
+            color: colors.whiteColor,
+          },
+        }}
+      >
         <Box sx={classes.logoImage}>
           <Box component="img" src={logo} alt="logo" sx={classes.img} />
         </Box>
@@ -141,7 +152,7 @@ export default function Sidebar(props) {
           open={props.open}
           slotProps={{
             paper: {
-              sx: createSxClasses(styles, {
+              sx: createSxClasses(classes, {
                 drawerPaper: true,
                 drawerPaperRTL: props.rtlActive,
               }),
@@ -168,7 +179,7 @@ export default function Sidebar(props) {
           open
           slotProps={{
             paper: {
-              sx: createSxClasses(styles, {
+              sx: createSxClasses(classes, {
                 drawerPaper: true,
                 drawerPaperRTL: props.rtlActive,
               }),

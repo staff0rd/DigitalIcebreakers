@@ -13,7 +13,7 @@ import {
   grayColor,
   blackColor,
   hexToRgb,
-} from "../../material-dashboard-react.js";
+} from "../../material-dashboard-react.jsx";
 
 const sidebarStyle = (showQrCode: boolean) => (theme: any) => ({
   drawerPaper: {
@@ -61,21 +61,6 @@ const sidebarStyle = (showQrCode: boolean) => (theme: any) => ({
     },
   },
 
-  logoLink: {
-    ...defaultFont,
-    textTransform: "uppercase",
-    padding: "5px 0",
-    display: "block",
-    fontSize: "16px",
-    textAlign: "left",
-    fontWeight: "400",
-    lineHeight: "30px",
-    textDecoration: "none",
-    backgroundColor: "transparent",
-    "&,&:hover,&:focus": {
-      color: whiteColor,
-    },
-  },
   logoImage: {
     width: "30px",
     display: "inline-block",
