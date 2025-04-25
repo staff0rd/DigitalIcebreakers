@@ -1,5 +1,5 @@
-import { Route, Routes, useNavigate } from "react-router";
-import React from "react";
+import { Route, Routes, useNavigate, useLocation } from "react-router";
+import React, { useEffect } from "react";
 // creates a beautiful scrollbar
 import PerfectScrollbar from "perfect-scrollbar";
 import "perfect-scrollbar/css/perfect-scrollbar.css";
@@ -17,6 +17,23 @@ import styles from "../assets/jss/material-dashboard-react/layouts/adminStyle";
 
 let ps;
 
+const Redirect = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (location.pathname.length === 5) {
+      console.log(
+        `redirecting to /join-lobby${location.pathname} from ${location.pathname}`
+      );
+      navigate(`/join-lobby${location.pathname}`);
+    }
+    console.log("redirecting to / from " + location.pathname);
+    navigate("/");
+  }, [location, navigate]);
+
+  return <></>;
+};
+
 const AppRoutes = () => {
   const routes = useRoutes();
   const navigate = useNavigate();
@@ -27,20 +44,7 @@ const AppRoutes = () => {
           <Route exact path={route || path} element={<Component />} key={key} />
         );
       })}
-      <Route
-        render={({ location }) => {
-          if (location.pathname.length === 5) {
-            console.log(
-              `redirecting to /join-lobby${location.pathname} from ${location.pathname}`
-            );
-            navigate(`/join-lobby${location.pathname}`);
-          }
-          console.log("redirecting to / from " + location.pathname);
-          navigate("/");
-
-          return <></>;
-        }}
-      />
+      <Route path="*" element={<Redirect />} />
     </Routes>
   );
 };
