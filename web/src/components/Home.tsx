@@ -64,15 +64,7 @@ export const Home = () => {
           </Button>
         </div>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={6}>
-            <Typography variant="h4">Feedback</Typography>
-            <Typography variant="body1">
-              Feature requests, suggestions, bugs &amp; feedback to{" "}
-              <a href="https://github.com/staff0rd/digitalicebreakers/issues">
-                backlog
-              </a>{" "}
-              or <a href="mailto:stafford@atqu.in">stafford@atqu.in</a>
-            </Typography>
+          <Grid item xs={12} sm={6}>
             <Typography variant="h4" className={classes.howItWorks}>
               How it works
             </Typography>
@@ -83,8 +75,18 @@ export const Home = () => {
               experiences by clicking New Activity.
             </Typography>
           </Grid>
-          <Grid item xs={12} md={6}>
-            <Changelog />
+          <Grid item xs={12} sm={6}>
+            <Typography variant="h4">Feedback</Typography>
+            <Typography variant="body1">
+              Feature requests, suggestions, bugs &amp; feedback to{" "}
+              <a href="https://github.com/staff0rd/digitalicebreakers/issues">
+                backlog
+              </a>{" "}
+              or{" "}
+              <a href="mailto:me@staffordwilliams.com">
+                me@staffordwilliams.com
+              </a>
+            </Typography>
           </Grid>
         </Grid>
       </ContentContainer>

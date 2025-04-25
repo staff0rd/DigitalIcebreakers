@@ -5,7 +5,7 @@ const useStyles = makeStyles((theme) => ({
     float: "right",
     position: "absolute",
     right: 0,
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down("md")]: {
       left: 0,
       right: "auto",
       transform: "rotate(-90deg)",

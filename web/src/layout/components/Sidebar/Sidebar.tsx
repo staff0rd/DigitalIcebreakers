@@ -1,6 +1,5 @@
 /*eslint-disable*/
 
-import classNames from "classnames";
 import { Link as RouterLink } from "react-router";
 import Drawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
@@ -29,7 +28,8 @@ export default function Sidebar(props) {
   const isPresenter = lobby.isPresenter;
   const isLobby = location.pathname === "/";
   const theme = useTheme();
-  const classes = styles(lobby.id && !isLobby)(theme);
+  const showQrCode = Boolean(lobby.id && !isLobby);
+  const classes = styles(showQrCode)(theme);
   const gameName = useSelector((state) => state.lobby.currentGame);
   const game = Games.find((g) => g.name == gameName);
   const GameMenu = game && game.menu;
@@ -40,13 +40,34 @@ export default function Sidebar(props) {
   }
   const { color, logo, logoText, routes } = props;
   var links = (
-    <List sx={classes.list}>
+    <List
+      sx={{
+        marginTop: showQrCode ? 0 : "20px",
+        paddingLeft: "0",
+        paddingTop: "0",
+        paddingBottom: "50px",
+        marginBottom: "0",
+        listStyle: "none",
+        position: "unset",
+      }}
+    >
       {routes
         .filter((r) => r.name)
         .map((prop, key) => {
           return (
             <Fragment key={key}>
-              <ListItem sx={classes.item}>
+              <ListItem
+                sx={{
+                  padding: 0,
+                  position: "relative",
+                  display: "block",
+                  textDecoration: "none",
+                  "&:hover,&:focus,&:visited,&": {
+                    color: colors.whiteColor,
+                  },
+                }}
+                disableGutters
+              >
                 <ListItemButton
                   component={RouterLink}
                   onClick={() => dispatch(toggleDrawer(false))}
@@ -110,7 +131,7 @@ export default function Sidebar(props) {
           height: "1px",
           right: "15px",
           width: "calc(100% - 30px)",
-          backgroundColor: Color(colors.grayColor[6]).alpha(0.3).hex(),
+          backgroundColor: Color(colors.grayColor[6]).alpha(0.3).hexa(),
         },
       }}
     >

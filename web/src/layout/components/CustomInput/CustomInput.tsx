@@ -1,7 +1,5 @@
 import { ReactNode } from "react";
-import classNames from "classnames";
 // @mui/material components
-import makeStyles from "@mui/styles/makeStyles";
 import FormControl, { FormControlProps } from "@mui/material/FormControl";
 import InputLabel, { InputLabelProps } from "@mui/material/InputLabel";
 import Input, { InputProps } from "@mui/material/Input";
@@ -10,8 +8,7 @@ import Clear from "@mui/icons-material/Clear";
 import Check from "@mui/icons-material/Check";
 // core components
 import styles from "../../assets/jss/material-dashboard-react/components/customInputStyle";
-
-const useStyles = makeStyles(styles);
+import { createSxClasses } from "createSxClasses";
 
 type Props = {
   labelText: ReactNode;
@@ -24,7 +21,6 @@ type Props = {
 } & Partial<InputProps>;
 
 export default function CustomInput(props: Props) {
-  const classes = useStyles();
   const {
     formControlProps,
     labelText,
@@ -35,26 +31,20 @@ export default function CustomInput(props: Props) {
     ...rest
   } = props;
 
-  const labelClasses = classNames({
-    [" " + classes.labelRootError]: error,
-    [" " + classes.labelRootSuccess]: success && !error,
-  });
-  const underlineClasses = classNames({
-    [classes.underlineError]: error,
-    [classes.underlineSuccess]: success && !error,
-    [classes.underline]: true,
-  });
-  const marginTop = classNames({
-    [classes.marginTop]: labelText === undefined,
-  });
   return (
     <FormControl
       {...formControlProps}
-      className={formControlProps.className + " " + classes.formControl}
+      sx={styles.formControl}
+      className={formControlProps.className}
     >
       {labelText !== undefined ? (
         <InputLabel
-          className={classes.labelRoot + labelClasses}
+          variant="standard"
+          sx={createSxClasses(styles, {
+            labelRoot: true,
+            labelRootError: error,
+            labelRootSuccess: success && !error,
+          })}
           htmlFor={id}
           {...labelProps}
         >
@@ -62,18 +52,36 @@ export default function CustomInput(props: Props) {
         </InputLabel>
       ) : null}
       <Input
-        classes={{
-          root: marginTop,
-          disabled: classes.disabled,
-          underline: underlineClasses,
+        slotProps={{
+          root: {
+            sx: {
+              ...styles.marginTop,
+              "&.MuiInput-disabled": styles.disabled,
+              "&.MuiInput-underline": createSxClasses(styles, {
+                underline: true,
+                underlineError: error,
+                underlineSuccess: success && !error,
+              }),
+            },
+          },
         }}
         id={id}
         {...rest}
       />
       {error ? (
-        <Clear className={classes.feedback + " " + classes.labelRootError} />
+        <Clear
+          sx={createSxClasses(styles, {
+            feedback: true,
+            labelRootError: error,
+          })}
+        />
       ) : success ? (
-        <Check className={classes.feedback + " " + classes.labelRootSuccess} />
+        <Check
+          sx={createSxClasses(styles, {
+            feedback: true,
+            labelRootSuccess: success && !error,
+          })}
+        />
       ) : null}
     </FormControl>
   );

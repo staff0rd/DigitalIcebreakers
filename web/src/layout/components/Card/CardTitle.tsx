@@ -1,26 +1,5 @@
-import makeStyles from "@mui/styles/makeStyles";
+import { Box, Typography } from "@mui/material";
 import CardHeader from "./CardHeader";
-
-const styles: any = {
-  cardCategoryWhite: {
-    color: "rgba(255,255,255,.62)",
-    margin: "0",
-    fontSize: "14px",
-    marginTop: "0",
-    marginBottom: "0",
-  },
-  cardTitleWhite: {
-    color: "#FFFFFF",
-    marginTop: "0px",
-    minHeight: "auto",
-    fontWeight: "300",
-    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-    marginBottom: "3px",
-    textDecoration: "none",
-  },
-};
-
-const useStyles = makeStyles(styles);
 
 type Props = {
   title: string;
@@ -28,11 +7,36 @@ type Props = {
 };
 
 const CardTitle = ({ title, subTitle }: Props) => {
-  const classes = useStyles();
   return (
     <CardHeader color="primary">
-      <h4 className={classes.cardTitleWhite}>{title}</h4>
-      {subTitle && <p className={classes.cardCategoryWhite}>{subTitle}</p>}
+      <Typography
+        variant="h5"
+        sx={{
+          color: "#FFFFFF",
+          marginTop: "0px",
+          minHeight: "auto",
+          fontWeight: "300",
+          fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+          marginBottom: "3px",
+          textDecoration: "none",
+        }}
+      >
+        {title}
+      </Typography>
+      {subTitle && (
+        <Box
+          component="p"
+          sx={{
+            color: "rgba(255,255,255,.62)",
+            margin: "0",
+            fontSize: "14px",
+            marginTop: "0",
+            marginBottom: "0",
+          }}
+        >
+          {subTitle}
+        </Box>
+      )}
     </CardHeader>
   );
 };

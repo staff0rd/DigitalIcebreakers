@@ -95,23 +95,7 @@ const sidebarStyle = (showQrCode: boolean) => (theme: any) => ({
       background: "#191919",
     },
   },
-  list: {
-    marginTop: showQrCode ? 0 : "20px",
-    paddingLeft: "0",
-    paddingTop: "0",
-    paddingBottom: "50px",
-    marginBottom: "0",
-    listStyle: "none",
-    position: "unset",
-  },
-  item: {
-    position: "relative",
-    display: "block",
-    textDecoration: "none",
-    "&:hover,&:focus,&:visited,&": {
-      color: whiteColor,
-    },
-  },
+
   itemLink: {
     width: "auto",
     transition: "all 300ms linear",
