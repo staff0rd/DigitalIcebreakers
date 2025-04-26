@@ -165,20 +165,12 @@ export default function Sidebar(props) {
   const qrCode = lobby.id && !isLobby && <LobbyQrCode />;
 
   return (
-    <div>
+    <Box>
       <Box sx={{ display: { xs: "block", md: "none" } }}>
         <Drawer
           variant="temporary"
-          anchor={props.rtlActive ? "left" : "right"}
+          anchor="right"
           open={props.open}
-          slotProps={{
-            paper: {
-              sx: createSxClasses(classes, {
-                drawerPaper: true,
-                drawerPaperRTL: props.rtlActive,
-              }),
-            },
-          }}
           onClose={() => dispatch(toggleDrawer())}
           ModalProps={{
             keepMounted: true, // Better open performance on mobile.
@@ -195,7 +187,7 @@ export default function Sidebar(props) {
       </Box>
       <Box sx={{ display: { xs: "none", md: "block" } }}>
         <Drawer
-          anchor={props.rtlActive ? "right" : "left"}
+          anchor="left"
           variant="permanent"
           open
           slotProps={{
@@ -216,6 +208,6 @@ export default function Sidebar(props) {
           <Box sx={classes.background} />
         </Drawer>
       </Box>
-    </div>
+    </Box>
   );
 }

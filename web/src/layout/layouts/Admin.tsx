@@ -3,8 +3,7 @@ import React, { useEffect } from "react";
 // creates a beautiful scrollbar
 import PerfectScrollbar from "perfect-scrollbar";
 import "perfect-scrollbar/css/perfect-scrollbar.css";
-// @mui/material components
-import makeStyles from "@mui/styles/makeStyles";
+
 // core components
 import Navbar from "../components/Navbars/Navbar";
 import { toggleDrawer } from "../../store/shell/actions";
@@ -13,7 +12,8 @@ import Sidebar from "../components/Sidebar/Sidebar";
 
 import useRoutes from "../useRoutes";
 
-import styles from "../assets/jss/material-dashboard-react/layouts/adminStyle";
+import stylesWithoutTheme from "../assets/jss/material-dashboard-react/layouts/adminStyle";
+import { Box, useTheme } from "@mui/material";
 
 let ps;
 
@@ -36,27 +36,22 @@ const Redirect = () => {
 
 const AppRoutes = () => {
   const routes = useRoutes();
-  const navigate = useNavigate();
   return (
     <Routes>
-      {routes.map(({ route, path, component: Component }, key) => {
-        return (
-          <Route exact path={route || path} element={<Component />} key={key} />
-        );
+      {routes.map(({ path, component: Component }, key) => {
+        return <Route path={path} element={<Component />} key={key} />;
       })}
       <Route path="*" element={<Redirect />} />
     </Routes>
   );
 };
 
-const useStyles = makeStyles(styles);
-
 export default function Admin({ isPresenter, currentGame, lobbyId, ...rest }) {
-  // styles
-  const classes = useStyles();
   const routes = useRoutes();
+  const theme = useTheme();
+  const styles = stylesWithoutTheme(theme);
   // ref to help us initialize PerfectScrollbar on windows devices
-  const mainPanel = React.createRef();
+  const mainPanel = React.createRef<HTMLDivElement>();
   const showDrawer = useSelector((state) => state.shell.showDrawer);
 
   const resizeFunction = () => {
@@ -84,7 +79,7 @@ export default function Admin({ isPresenter, currentGame, lobbyId, ...rest }) {
   }, [mainPanel]);
 
   return (
-    <div className={classes.wrapper}>
+    <Box sx={styles.wrapper}>
       <Sidebar
         routes={routes}
         logoText={"Digital Icebreakers"}
@@ -93,14 +88,14 @@ export default function Admin({ isPresenter, currentGame, lobbyId, ...rest }) {
         color="blue"
         {...rest}
       />
-      <div className={classes.mainPanel} ref={mainPanel}>
+      <Box sx={styles.mainPanel} ref={mainPanel}>
         <Navbar routes={routes} {...rest} />
-        <div className={classes.content}>
-          <div className={classes.container}>
+        <Box sx={styles.content}>
+          <Box sx={styles.container}>
             <AppRoutes />
-          </div>
-        </div>
-      </div>
-    </div>
+          </Box>
+        </Box>
+      </Box>
+    </Box>
   );
 }

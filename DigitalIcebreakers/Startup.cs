@@ -26,6 +26,7 @@ namespace DigitalIcebreakers
 
             services.AddSignalR(options =>
             {
+                options.EnableDetailedErrors = true;
                 options.ClientTimeoutInterval = new System.TimeSpan(0, 0, 4);
             });
 

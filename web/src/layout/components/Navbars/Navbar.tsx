@@ -12,14 +12,14 @@ const useStyles = makeStyles({
   },
 });
 
-export default function Header(props) {
+export default function Navbar(props) {
   const dispatch = useDispatch();
   const classes = useStyles();
   return (
     <Box sx={{ display: { md: "none", sx: "block" } }}>
       <div className={classes.header}>
         <IconButton
-          color="inherit"
+          sx={{ color: "white" }}
           aria-label="open drawer"
           onClick={() => dispatch(toggleDrawer())}
         >
