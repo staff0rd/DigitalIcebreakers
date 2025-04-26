@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
+using System;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using DigitalIcebreakers.Logging;
 
@@ -27,7 +28,8 @@ namespace DigitalIcebreakers
             services.AddSignalR(options =>
             {
                 options.EnableDetailedErrors = true;
-                options.ClientTimeoutInterval = new System.TimeSpan(0, 0, 4);
+                options.ClientTimeoutInterval = TimeSpan.FromSeconds(4);
+                options.KeepAliveInterval = TimeSpan.FromSeconds(2);
             });
 
             // In production, the React files will be served from this directory

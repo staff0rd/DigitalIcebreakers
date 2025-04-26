@@ -87,7 +87,6 @@ export const SignalRMiddleware = (connectionFactory: () => HubConnection) => {
   const connectionRetrySeconds = [0, 1, 4, 9, 16, 25, 36, 49];
   let connectionTimeout = 0;
   const connection = connectionFactory();
-  connection.keepAliveIntervalInMilliseconds = 2000;
   const bumpConnectionTimeout = () => {
     connectionTimeout = connectionRetrySeconds.filter(
       (s) => s > connectionTimeout

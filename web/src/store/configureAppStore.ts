@@ -2,10 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { rootReducer } from "./rootReducer";
 import { SignalRMiddleware } from "./SignalRMiddleware";
 //import logger from "redux-logger";
-import { HubConnectionBuilder } from "@microsoft/signalr";
-
-const connectionFactory = () =>
-  new HubConnectionBuilder().withUrl("/gameHub").build();
+import { connectionFactory } from "./connectionFactory";
 
 export function configureAppStore() {
   const store = configureStore({
