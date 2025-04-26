@@ -43,10 +43,9 @@ type SetAnswers = (answers: Answer[]) => void;
 
 type Props = {
   question: Question;
-  editAnswersChildren?: (setAnswers: SetAnswers) => ReactNode;
 } & NameAndMode;
 
-const QuestionEditor = ({ question, gameName, editAnswersChildren }: Props) => {
+const QuestionEditor = ({ question, gameName }: Props) => {
   const dispatch = useDispatch();
   const totalQuestions = useSelector((store) => {
     const state = getPollOrTriviaState(store, gameName);
@@ -114,7 +113,6 @@ const QuestionEditor = ({ question, gameName, editAnswersChildren }: Props) => {
                 answers={answers}
                 setAnswers={(answers) => setAnswers(answers)}
                 questionId={question.id}
-                children={editAnswersChildren(setAnswers)}
               />
               <Button
                 onClick={() =>

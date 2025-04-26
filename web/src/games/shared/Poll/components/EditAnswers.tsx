@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { PropsWithChildren, ReactNode } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -38,8 +38,7 @@ type Props = {
   answers: Answer[];
   setAnswers: (answers: Answer[]) => void;
   questionId: string;
-  children: ReactNode;
-};
+} & PropsWithChildren;
 
 const EditAnswers = ({ answers, setAnswers, children }: Props) => {
   const classes = useStyles();
