@@ -180,7 +180,7 @@ export default function Sidebar(props) {
           <Box sx={classes.sidebarWrapper}>
             {qrCode}
             {links}
-            <SidebarFooter lobbyId={lobby.id} />
+            <SidebarFooter />
           </Box>
           <Box sx={classes.background} />
         </Drawer>

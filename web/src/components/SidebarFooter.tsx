@@ -21,15 +21,17 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const SidebarFooter = ({ lobbyId }: { lobbyId: string | undefined }) => {
+const SidebarFooter = ({ lobbyId }: { lobbyId?: string }) => {
   const classes = useStyles();
   return (
     <div className={classes.sidebarFooter}>
       <ConnectionIcon />
       <div className={classes.text}>{`v${Config.version}`}</div>
-      <span data-testid="lobby-id" style={{ display: "none" }}>
-        {lobbyId}
-      </span>
+      {lobbyId && (
+        <span data-testid="lobby-id" style={{ display: "none" }}>
+          {lobbyId}
+        </span>
+      )}
     </div>
   );
 };

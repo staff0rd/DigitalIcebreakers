@@ -5,11 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:all": "cd .. && ASPNETCORE_ENVIRONMENT=Development ASPNETCORE_URLS=http://0.0.0.0:5000 dotnet run --project DigitalIcebreakers & npm run dev",
     "check-types": "tsc --noEmit",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "lint:e2e": "eslint e2e/**/*.ts",
     "preview": "vite preview",
-    "e2e": "npx playwright test"
+    "e2e:install": "npx playwright install --with-deps chromium",
+    "e2e": "npx playwright test",
+    "e2e:headed": "HEADED=true npx playwright test --headed"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
