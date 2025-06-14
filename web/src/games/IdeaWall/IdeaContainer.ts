@@ -120,7 +120,7 @@ export class IdeaContainer {
   }
 
   private getNextFreeSpot(laneId: number): Point {
-    let columns = Math.floor(this.laneWidth / this.ideaWidth) || 1;
+    const columns = Math.floor(this.laneWidth / this.ideaWidth) || 1;
     let row = 0;
     while (row < 50) {
       for (let column = 0; column < columns; column++) {
@@ -173,7 +173,7 @@ export class IdeaContainer {
       const mostTop = Math.min(
         ...this.ideaContainer.children.map((p) => this.app.screen.y - p.y)
       );
-      let mostLeft = Math.max(...this.ideaContainer.children.map((p) => p.x));
+      const mostLeft = Math.max(...this.ideaContainer.children.map((p) => p.x));
       const mostRight = Math.max(
         ...this.ideaContainer.children.map(
           (p) => this.app.screen.width - p.x - this.ideaWidth

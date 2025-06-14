@@ -57,8 +57,8 @@ export interface IdeaWallState {
 }
 
 const getNewIdea = (playerName: string, idea: string | ServerIdea): Idea => {
-  let content = (idea as ServerIdea).content || (idea as string);
-  let lane = (idea as ServerIdea).lane || 0;
+  const content = (idea as ServerIdea).content || (idea as string);
+  const lane = (idea as ServerIdea).lane || 0;
   return {
     id: guid(),
     playerName: playerName,

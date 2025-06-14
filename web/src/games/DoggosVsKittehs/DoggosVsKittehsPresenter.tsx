@@ -15,14 +15,14 @@ const DoggosVsKittehsPresenter = () => {
 
   const draw = () => {
     if (app) {
-      var data = [
+      const data = [
         { label: "Doggos", value: state.yes, color: Colors.Red.C500 },
         { label: "Undecided", value: state.maybe, color: Colors.Grey.C500 },
         { label: "Kittehs", value: state.no, color: Colors.Blue.C500 },
       ];
       app.stage.removeChildren();
       console.log("set new graph");
-      // eslint-disable-next-line
+       
       graph = new Graph(app, data);
     } else {
       console.log("no app");

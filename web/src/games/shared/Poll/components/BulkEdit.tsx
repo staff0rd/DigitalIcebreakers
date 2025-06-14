@@ -37,7 +37,7 @@ export const validate = (
   questionsAndAnswers: string,
   isTriviaMode: boolean
 ): ValidateResponse => {
-  let questions: Question[] = [];
+  const questions: Question[] = [];
   let errorMessage: string | undefined;
   let errorLine: number | undefined;
 

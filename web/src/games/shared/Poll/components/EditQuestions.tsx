@@ -96,7 +96,7 @@ const EditQuestions = () => {
     if (null !== fileUpload.current) {
       const file = fileUpload.current.files![0];
       if (file) {
-        var reader = new FileReader();
+        const reader = new FileReader();
         reader.readAsText(file, "UTF-8");
         reader.onload = (evt: ProgressEvent<FileReader>) => {
           if (evt.target && typeof evt.target.result === "string") {

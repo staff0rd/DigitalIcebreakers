@@ -3,7 +3,7 @@
 // Definitions by: robertop87 <https://github.com/robertop87>, Nava2 <https://github.com/Nava2>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
-declare var Reveal: RevealStatic;
+declare let Reveal: RevealStatic;
 
 declare module "reveal.js";
 

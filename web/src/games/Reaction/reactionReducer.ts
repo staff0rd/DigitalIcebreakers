@@ -143,7 +143,7 @@ const reactionPresenterReducer = createReceiveGameMessageReducer<
     builder.addCase(toggleAutoAgainAction, (state) => {
       return {
         ...state,
-        autoAgain: !!!state.autoAgain,
+        autoAgain: !state.autoAgain,
       };
     });
   }

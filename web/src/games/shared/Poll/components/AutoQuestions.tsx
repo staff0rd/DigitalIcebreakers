@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const htmlDecode = (input: string): string => {
-  var doc = new DOMParser().parseFromString(input, "text/html");
+  const doc = new DOMParser().parseFromString(input, "text/html");
   const result = doc.documentElement.textContent || "";
   return result;
 };

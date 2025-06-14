@@ -18,7 +18,7 @@ const moveDown = (array, element) => {
   return newArray;
 };
 
-// eslint-disable-next-line
+ 
 export default {
   moveUp,
   moveDown,

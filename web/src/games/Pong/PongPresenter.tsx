@@ -55,9 +55,9 @@ class PongPresenter extends BaseGame<PropsFromRedux, {}> {
   }
 
   paddleHit(paddle: PIXI.Graphics, direction: number) {
-    var relativeIntersect = paddle.y - this.ball.y;
-    var normalizedRelativeIntersect = relativeIntersect / (paddle.height / 2);
-    var bounceAngle =
+    const relativeIntersect = paddle.y - this.ball.y;
+    const normalizedRelativeIntersect = relativeIntersect / (paddle.height / 2);
+    const bounceAngle =
       normalizedRelativeIntersect * defaultMaxBounceAngle + 180 * direction;
 
     this.ballDx = this.props.ballSpeed * Math.cos(getRadians(bounceAngle));
