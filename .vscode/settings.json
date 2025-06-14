@@ -3,6 +3,30 @@
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "ms-dotnettools.csharp"
   },
+  "[typescript]": {
+    "editor.codeActionsOnSave": {
+      "source.removeUnusedImports": true,
+      "source.fixAll.eslint": true
+    }
+  },
+  "[typescriptreact]": {
+    "editor.codeActionsOnSave": {
+      "source.removeUnusedImports": true,
+      "source.fixAll.eslint": true
+    }
+  },
+  "[javascript]": {
+    "editor.codeActionsOnSave": {
+      "source.removeUnusedImports": true,
+      "source.fixAll.eslint": true
+    }
+  },
+  "[javascriptreact]": {
+    "editor.codeActionsOnSave": {
+      "source.removeUnusedImports": true,
+      "source.fixAll.eslint": true
+    }
+  },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "dotnet.unitTestDebuggingOptions": {

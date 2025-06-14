@@ -1,4 +1,4 @@
-import { Route, Routes, useNavigate, useLocation } from "react-router";
+import { Route, Routes, useNavigate, useLocation, useParams } from "react-router";
 import React, { useEffect } from "react";
 // creates a beautiful scrollbar
 import PerfectScrollbar from "perfect-scrollbar";
@@ -26,6 +26,7 @@ const Redirect = () => {
         `redirecting to /join-lobby${location.pathname} from ${location.pathname}`
       );
       navigate(`/join-lobby${location.pathname}`);
+      return;
     }
     console.log("redirecting to / from " + location.pathname);
     navigate("/");
@@ -36,14 +37,32 @@ const Redirect = () => {
 
 const AppRoutes = () => {
   const routes = useRoutes();
+  const navigate = useNavigate();
+  
   return (
     <Routes>
-      {routes.map(({ path, component: Component }, key) => {
-        return <Route path={path} element={<Component />} key={key} />;
+      {routes.map(({ path, route, component: Component }, key) => {
+        return <Route path={route || path} element={<Component />} key={key} />;
       })}
+      <Route path="/:lobbyCode" element={<LobbyCodeRedirect />} />
       <Route path="*" element={<Redirect />} />
     </Routes>
   );
+};
+
+const LobbyCodeRedirect = () => {
+  const navigate = useNavigate();
+  const { lobbyCode } = useParams();
+  
+  useEffect(() => {
+    if (lobbyCode && lobbyCode.length === 4) {
+      navigate(`/join-lobby/${lobbyCode}`);
+    } else {
+      navigate("/");
+    }
+  }, [lobbyCode, navigate]);
+  
+  return null;
 };
 
 export default function Admin({ isPresenter, currentGame, lobbyId, ...rest }) {

@@ -7,7 +7,7 @@ export class Presenter extends AbstractBrowser {
   }
 
   private async startGame(gameId: string): Promise<void> {
-    await this.page.getByRole("button", { name: "New Activity" }).click();
+    await this.page.getByRole("link", { name: "New Activity" }).click();
     await this.page.getByTestId(`game-${gameId}`).click();
   }
 

@@ -20,9 +20,11 @@ import Blank from "./Blank";
 
 export interface RouteLink {
   path: string;
+  route?: string;
   name?: string;
   icon?: typeof GroupAdd;
   component: () => JSX.Element;
+  testId?: string;
 }
 
 const useRoutes = () => {

@@ -59,19 +59,19 @@ The new test suite will use:
   - Tests basic join functionality
   - Good first test to validate infrastructure
 
-- [ ] **Given_a_lobby_When_players_join.cs** → `lobby/players-join.spec.ts`
+- [x] **Given_a_lobby_When_players_join.cs** → `lobby/lobby-player-join.spec.ts` ✅ (C# file deleted)
   - Tests lobby count updates
   - Simple assertions on UI elements
 
 ### Game Tests (Priority 2)
 
-- [ ] **BroadcastTests.cs** → `games/broadcast.spec.ts`
+- [x] **BroadcastTests.cs** → `games/broadcast.spec.ts` ✅ (C# file deleted)
 
   - Tests text broadcasting feature
   - Includes refresh scenario
   - Real-time communication testing
 
-- [ ] **FistOfFiveTests.cs** → `games/fist-of-five.spec.ts`
+- [x] **FistOfFiveTests.cs** → `games/fist-of-five.spec.ts` ✅ (C# file deleted)
 
   - Multiple players (2)
   - Tests voting and average calculation
@@ -83,7 +83,7 @@ The new test suite will use:
 ### Connection Tests (Priority 3)
 
 - [ ] **Given_a_Player_When_refreshed.cs** → `connection/player-refresh.spec.ts`
-- [ ] **Given_a_Presenter_When_page_loaded.cs** → `connection/presenter-page-load.spec.ts`
+- [x] **Given_a_Presenter_When_page_loaded.cs** → `connection/presenter-page-loaded.spec.ts` ✅ (C# file deleted)
 - [ ] **Given_a_Presenter_When_refreshed.cs** → `connection/presenter-refresh.spec.ts`
 - [ ] **Given_two_lobbys_When_a_player_switches.cs** → `connection/player-lobby-switch.spec.ts`
 
@@ -151,6 +151,8 @@ await page.getByRole('button', { name: 'Present' }).click();
 
 ### Preferred Patterns
 - **Buttons**: Use `getByRole('button', { name: 'Button Text' })` instead of `text=` selectors
+- **Links**: Use `getByRole('link', { name: 'Text' })` for navigation items (Note: "New Activity" is a link, not a button)
+- **Text inputs**: Use `getByRole('textbox')` instead of `locator("[type=text]")`
 - **Test IDs**: Use `getByTestId("element-id")` instead of `page.locator('[data-testid=...]')`
 - **Multiple matches**: Use `.first()` when multiple elements match: `page.getByTestId("lobby-id").first()`
 - **Avoid**: String selectors and locator syntax when Playwright's semantic locators are available
@@ -169,9 +171,40 @@ await page.getByRole('button', { name: 'Present' }).click();
 
 ## Notes and Learnings
 
-- Add discoveries and patterns here as migration progresses
-- Document any significant differences between C# and TypeScript implementations
-- Track any bugs found during migration
+### Routing and URL Handling
+- **Issue**: Direct navigation to lobby codes (e.g., `/XXXX`) was redirecting to root
+- **Solution**: Added catch-all route for 4-character lobby codes and updated RouteLink interface to support both `path` and `route` properties
+
+### Linting Requirements
+- **Always run** `npm run lint:e2e` before considering a test migration complete
+- **Common fixes**:
+  - Unused fixture parameters: Use `expect(fixture).toBeDefined()` when a fixture is required but not directly used
+  - This ensures fixtures are created (e.g., player joining affects presenter's lobby count)
+
+### Multiple Elements with Same Test ID
+- **Issue**: Some components appear multiple times (e.g., in desktop and mobile sidebars)
+- **Solution**: Use `.first()` or `.nth()` to select specific instances
+- **Example**: `presenter.page.getByTestId("menu-lobby").first()`
+
+### Fixture Dependencies
+- The `player` fixture automatically creates a player joined to the presenter's lobby
+- Use `browserFactory.createPlayers()` when you need multiple players
+- Both `presenter` and `player` fixtures are automatically cleaned up
+
+### Test File Organization
+- Connection tests go in `/e2e/connection/`
+- Game tests go in `/e2e/games/`
+- Lobby tests go in `/e2e/lobby/`
+
+### Wait Strategies
+- Replace C# `Task.Delay(300)` with `page.waitForTimeout(300)`
+- Consider using better wait strategies when possible (waitForSelector, waitForLoadState)
+
+### Migration Order Strategy
+1. Start with simplest tests to validate infrastructure
+2. Connection tests are simpler than game tests
+3. Single player tests before multi-player tests
+4. Delete C# files immediately after successful migration
 
 ## Completion Criteria
 
@@ -183,4 +216,4 @@ await page.getByRole('button', { name: 'Present' }).click();
 
 ---
 
-Last Updated: [Date will be updated as progress is made]
+Last Updated: 2025-06-14
