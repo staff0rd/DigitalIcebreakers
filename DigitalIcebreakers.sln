@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.352
@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalIcebreakers", "Digit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalIcebreakers.Test", "DigitalIcebreakers.Test\DigitalIcebreakers.Test.csproj", "{A71AC0CE-2795-4076-AE48-411F6CEA95EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalIcebreakers.EndToEndTests", "DigitalIcebreakers.EndToEndTests\DigitalIcebreakers.EndToEndTests.csproj", "{2DB672B7-5335-4DD1-9A00-B5956B82A220}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalIcebreakers.EndToEndTests", "DigitalIcebreakers.EndToEndTests\DigitalIcebreakers.EndToEndTests.csproj", "{2DB672B7-5335-4DD1-9A00-B5956B82A220}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

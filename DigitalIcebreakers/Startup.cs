@@ -6,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using DigitalIcebreakers.Logging;
 
 namespace DigitalIcebreakers
@@ -32,10 +31,10 @@ namespace DigitalIcebreakers
                 options.KeepAliveInterval = TimeSpan.FromSeconds(2);
             });
 
-            // In production, the React files will be served from this directory
+            // In production, the Vite build files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "ClientApp/build";
+                configuration.RootPath = "../web/dist";
             });
 
             services.Configure<AppSettings>(Configuration);
@@ -76,11 +75,12 @@ namespace DigitalIcebreakers
 
             app.UseSpa(spa =>
             {
-                spa.Options.SourcePath = "ClientApp";
+                spa.Options.SourcePath = "../web";
 
                 if (env.IsDevelopment())
                 {
-                    spa.UseReactDevelopmentServer(npmScript: "start");
+                    // In development, you'll run Vite separately on port 5173
+                    spa.UseProxyToSpaDevelopmentServer("http://localhost:5173");
                 }
             });
         }
