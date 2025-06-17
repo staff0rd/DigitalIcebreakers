@@ -49,7 +49,7 @@ The new test suite will use:
 - [x] Port `Player.cs` → `player.ts`
 - [x] Port `Presenter.cs` → `presenter.ts`
 - [x] Create base test fixtures and configuration
-- [ ] Set up test data management (for JSON files)
+- [x] Set up test data management (for JSON files)
 
 ### Simple Tests (Priority 1)
 
@@ -96,13 +96,13 @@ The new test suite will use:
   - Tests custom category functionality
   - Single player test with category management
 
-- [ ] **Trivia Tests** → `games/trivia/`
-  - [ ] **Given_Poll_When_switching_to_Trivia.cs** → `poll-to-trivia.spec.ts`
-  - [ ] **Given_Trivia_When_clearing_questions.cs** → `clear-questions.spec.ts`
-  - [ ] **Given_Trivia_When_clicking_scores.cs** → `scores.spec.ts`
-  - [ ] **Given_Trivia_When_editing_questions.cs** → `edit-questions.spec.ts`
-  - [ ] **Given_Trivia_with_multiple_players.cs** → `multiple-players.spec.ts`
-  - [ ] Migrate test data files (questions.json, questions1.json, questions2.json)
+- [x] **Trivia Tests** → `games/trivia/` ✅ (All C# files deleted)
+  - [x] **Given_Poll_When_switching_to_Trivia.cs** → `poll-to-trivia.spec.ts` ✅
+  - [x] **Given_Trivia_When_clearing_questions.cs** → `clear-questions.spec.ts` ✅
+  - [x] **Given_Trivia_When_clicking_scores.cs** → `scores.spec.ts` ✅
+  - [x] **Given_Trivia_When_editing_questions.cs** → `edit-questions.spec.ts` ✅
+  - [x] **Given_Trivia_with_multiple_players.cs** → `multiple-players.spec.ts` ✅
+  - [x] Migrate test data files (questions.json, questions1.json, questions2.json) ✅
 
 ## Helper Method Mapping
 
@@ -162,9 +162,9 @@ await page.getByRole('button', { name: 'Present' }).click();
 
 ## Test Data Migration
 
-- [ ] Create `/web/e2e/test-data/` directory
-- [ ] Copy trivia question JSON files
-- [ ] Update file paths in tests
+- [x] Create `/web/e2e/test-data/` directory ✅
+- [x] Copy trivia question JSON files ✅
+- [x] Update file paths in tests ✅
 
 ## CI/CD Considerations
 
@@ -208,6 +208,11 @@ await page.getByRole('button', { name: 'Present' }).click();
 2. Connection tests are simpler than game tests
 3. Single player tests before multi-player tests
 4. Delete C# files immediately after successful migration
+
+### ES Module Considerations
+- Use `import.meta.url` and `fileURLToPath` for file path resolution
+- `__dirname` is not available in ES modules by default
+- Must create it using `path.dirname(fileURLToPath(import.meta.url))`
 
 ## Completion Criteria
 
