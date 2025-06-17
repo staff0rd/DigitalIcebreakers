@@ -5,4 +5,8 @@ export abstract class AbstractBrowser {
     public readonly browser: Browser,
     public readonly page: Page
   ) {}
+
+  async close(): Promise<void> {
+    await this.page.context().close();
+  }
 }

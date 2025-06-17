@@ -77,21 +77,24 @@ The new test suite will use:
   - Tests voting and average calculation
   - More complex interactions
 
-- [ ] **PongTests.cs** → `games/pong.spec.ts`
-  - Check existing structure first
+- [x] **PongTests.cs** → `games/pong.spec.ts` ✅ (C# file deleted)
+  - Multiple players (6)
+  - Tests team balancing logic
+  - Complex player join/leave scenarios
 
 ### Connection Tests (Priority 3)
 
-- [ ] **Given_a_Player_When_refreshed.cs** → `connection/player-refresh.spec.ts`
+- [x] **Given_a_Player_When_refreshed.cs** → `connection/player-refresh.spec.ts` ✅ (C# file deleted)
 - [x] **Given_a_Presenter_When_page_loaded.cs** → `connection/presenter-page-loaded.spec.ts` ✅ (C# file deleted)
-- [ ] **Given_a_Presenter_When_refreshed.cs** → `connection/presenter-refresh.spec.ts`
-- [ ] **Given_two_lobbys_When_a_player_switches.cs** → `connection/player-lobby-switch.spec.ts`
+- [x] **Given_a_Presenter_When_refreshed.cs** → `connection/presenter-refresh.spec.ts` ✅ (C# file deleted)
+- [x] **Given_two_lobbys_When_a_player_switches.cs** → `connection/player-lobby-switch.spec.ts` ✅ (C# file deleted)
 
 ### Complex Game Tests (Priority 4)
 
-- [ ] **RetrospectiveTests.cs** → `games/retrospective.spec.ts`
+- [x] **RetrospectiveTests.cs** → `games/retrospective.spec.ts` ✅ (C# file deleted)
 
-  - Check complexity and dependencies
+  - Tests custom category functionality
+  - Single player test with category management
 
 - [ ] **Trivia Tests** → `games/trivia/`
   - [ ] **Given_Poll_When_switching_to_Trivia.cs** → `poll-to-trivia.spec.ts`
@@ -216,4 +219,4 @@ await page.getByRole('button', { name: 'Present' }).click();
 
 ---
 
-Last Updated: 2025-06-14
+Last Updated: 2025-06-17
