@@ -10,7 +10,9 @@ test.describe("Given Trivia When editing questions", () => {
     await presenter.page.getByRole("button", { name: "Add question" }).click();
     await presenter.page.getByRole("button", { name: "Save" }).click();
 
-    const rows = await presenter.page.locator("#questions-table tr").count();
-    expect(rows).toBe(2); // Header row + 1 question
+    await expect(
+      presenter.page.locator("#questions-table tr")
+      // header row + 1 for the new question
+    ).toHaveCount(2);
   });
 });
