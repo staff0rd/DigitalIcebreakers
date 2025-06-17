@@ -1,5 +1,7 @@
 import { Browser, Page } from "@playwright/test";
 import { AbstractBrowser } from "./abstractBrowser";
+import path from "path";
+import { fileURLToPath } from "url";
 
 export class Presenter extends AbstractBrowser {
   constructor(browser: Browser, page: Page, public readonly url: string) {
@@ -13,18 +15,22 @@ export class Presenter extends AbstractBrowser {
 
   async loadTriviaQuestions(json: string = "questions.json"): Promise<void> {
     await this.startTrivia();
-    await this.page.getByRole("button", { name: "Questions" }).click();
+    await this.page.getByRole("link", { name: "Questions" }).click();
     const fileInput = await this.page.locator("[type=file]");
-    await fileInput.setInputFiles(`./tests/Trivia/${json}`);
-    await this.page.getByRole("button", { name: "Trivia" }).click();
+    const __dirname = path.dirname(fileURLToPath(import.meta.url));
+    const filePath = path.resolve(__dirname, "../test-data/trivia", json);
+    await fileInput.setInputFiles(filePath);
+    await this.page.getByRole("link", { name: "Trivia" }).click();
   }
 
   async loadPollQuestions(json: string = "questions.json"): Promise<void> {
     await this.startPoll();
-    await this.page.getByRole("button", { name: "Questions" }).click();
+    await this.page.getByRole("link", { name: "Questions" }).click();
     const fileInput = await this.page.locator("[type=file]");
-    await fileInput.setInputFiles(`./tests/Trivia/${json}`);
-    await this.page.getByRole("button", { name: "Poll" }).click();
+    const __dirname = path.dirname(fileURLToPath(import.meta.url));
+    const filePath = path.resolve(__dirname, "../test-data/trivia", json);
+    await fileInput.setInputFiles(filePath);
+    await this.page.getByRole("link", { name: "Poll" }).click();
   }
 
   async startBroadcast(): Promise<void> {

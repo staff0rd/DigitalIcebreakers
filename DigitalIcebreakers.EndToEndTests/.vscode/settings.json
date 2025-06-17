@@ -1,7 +1,0 @@
-{
-  "csharp.unitTestDebuggingOptions": {
-    "env": {
-      "Headless": false
-    }
-  }
-}
