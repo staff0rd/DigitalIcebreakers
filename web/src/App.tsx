@@ -1,7 +1,6 @@
 import { Component } from "react";
 import Layout from "./layout/layouts/Admin";
 import { guid } from "./util/guid";
-import history from "./history";
 import { Events } from "./Events";
 import { Provider } from "react-redux";
 import { configureAppStore } from "./store/configureAppStore";
@@ -90,7 +89,7 @@ export default class App extends Component<{}, AppState> {
   }
 
   getCurrentLocation() {
-    return history.location || window.location;
+    return window.location;
   }
 
   setMenuItems = (items: Element[]) => {

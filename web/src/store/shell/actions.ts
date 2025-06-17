@@ -4,6 +4,7 @@ import {
   TOGGLE_DRAWER,
   SET_MENU_ITEMS,
   GO_TO_DEFAULT_URL,
+  NAVIGATE,
 } from "./types";
 
 export function toggleMenu(show: boolean): ShellActionTypes {
@@ -20,4 +21,8 @@ export function setMenuItems(items: Element[]): ShellActionTypes {
 
 export function goToDefaultUrl(): ShellActionTypes {
   return { type: GO_TO_DEFAULT_URL };
+}
+
+export function navigate(path: string): ShellActionTypes {
+  return { type: NAVIGATE, path };
 }

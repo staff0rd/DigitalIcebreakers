@@ -1,4 +1,4 @@
-import { Dispatch, AnyAction } from "@reduxjs/toolkit";
+import { Dispatch, UnknownAction } from "@reduxjs/toolkit";
 import { HubConnection } from "@microsoft/signalr";
 import {
   CONNECTION_CONNECT,
@@ -21,7 +21,6 @@ import {
   joinLobby,
 } from "./lobby/actions";
 import { setUser } from "./user/actions";
-import history from "../history";
 import {
   CLEAR_LOBBY,
   SET_LOBBY_GAME,
@@ -34,17 +33,12 @@ import {
   LobbyActionTypes,
 } from "./lobby/types";
 import { SET_USER_NAME, UserActionTypes } from "./user/types";
-import { goToDefaultUrl, setMenuItems } from "./shell/actions";
+import { goToDefaultUrl, setMenuItems, navigate } from "./shell/actions";
 import { GO_TO_DEFAULT_URL, ShellActionTypes } from "./shell/types";
 import { RootState } from "./RootState";
 
-const navigateTo = (path: string) => {
-  console.log(`Navigating to ${path}`);
-  history.push(path);
-};
-
 export const onReconnect =
-  (getState: () => RootState, dispatch: Dispatch<AnyAction>) =>
+  (getState: () => RootState, dispatch: Dispatch<UnknownAction>) =>
   (response: ReconnectPayload) => {
     const user = getState().user;
     const { joiningLobbyId, isPresenter } = getState().lobby;
@@ -134,7 +128,7 @@ export const SignalRMiddleware = (connectionFactory: () => HubConnection) => {
       ) => {
         switch (action.type) {
           case CLEAR_LOBBY: {
-            navigateTo("/lobby-closed");
+            dispatch(navigate("/lobby-closed"));
             break;
           }
           case START_NEW_GAME: {
@@ -234,13 +228,13 @@ export const SignalRMiddleware = (connectionFactory: () => HubConnection) => {
           case GO_TO_DEFAULT_URL: {
             const { user, lobby } = getState();
             if (lobby.joiningLobbyId && !user.isRegistered) {
-              navigateTo("/register");
+              dispatch(navigate("/register"));
             } else {
               const currentGame = getState().lobby.currentGame;
               if (currentGame) {
-                navigateTo("/game");
+                dispatch(navigate("/game"));
               } else {
-                navigateTo("/");
+                dispatch(navigate("/"));
               }
             }
             break;
