@@ -228,12 +228,15 @@ export const SignalRMiddleware = (connectionFactory: () => HubConnection) => {
           case GO_TO_DEFAULT_URL: {
             const { user, lobby } = getState();
             if (lobby.joiningLobbyId && !user.isRegistered) {
+              console.log("navigating to register");
               dispatch(navigate("/register"));
             } else {
               const currentGame = getState().lobby.currentGame;
               if (currentGame) {
+                console.log("navigating to game");
                 dispatch(navigate("/game"));
               } else {
+                console.log("navigating to home");
                 dispatch(navigate("/"));
               }
             }
