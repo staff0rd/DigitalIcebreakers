@@ -55,13 +55,16 @@ export class BrowserFactory {
     return Promise.all(playerPromises);
   }
 
-  private async joinLobby(
+  public async joinLobby(
     lobbyUrl: string,
     page: Page,
     playerName: string = "test-user"
   ): Promise<void> {
     await page.goto(lobbyUrl);
-    await page.fill("#user-name", playerName);
+    const textBox = page.getByRole("textbox");
+    await textBox.waitFor({ state: "visible" });
+    await page.waitForTimeout(100);
+    await textBox.fill(playerName);
     await page.getByTestId("join-lobby-button").click();
   }
 
@@ -87,5 +90,15 @@ export class BrowserFactory {
   async cleanup(): Promise<void> {
     await Promise.all(this.contexts.map((context) => context.close()));
     this.contexts = [];
+  }
+
+  static async joinLobby(
+    lobbyUrl: string,
+    page: Page,
+    playerName: string = "test-user"
+  ): Promise<void> {
+    await page.goto(lobbyUrl);
+    await page.fill("#user-name", playerName);
+    await page.getByTestId("join-lobby-button").click();
   }
 }

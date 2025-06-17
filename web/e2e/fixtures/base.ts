@@ -31,7 +31,10 @@ export const test = base.extend<BaseFixtures & TestFixtures>({
   },
 
   joinCode: async ({ presenter }, use) => {
-    const joinCode = await presenter.page.getByTestId("lobby-id").textContent();
+    const joinCode = await presenter.page
+      .getByTestId("lobby-id")
+      .first()
+      .textContent();
     if (!joinCode) {
       throw new Error("Could not get join code");
     }
