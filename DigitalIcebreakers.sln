@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalIcebreakers", "Digit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalIcebreakers.Test", "DigitalIcebreakers.Test\DigitalIcebreakers.Test.csproj", "{A71AC0CE-2795-4076-AE48-411F6CEA95EB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalIcebreakers.EndToEndTests", "DigitalIcebreakers.EndToEndTests\DigitalIcebreakers.EndToEndTests.csproj", "{2DB672B7-5335-4DD1-9A00-B5956B82A220}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
