@@ -48,11 +48,13 @@ export default defineConfig({
       command: "npm run dev",
       url: "http://localhost:5173",
       reuseExistingServer: !process.env.CI,
+      stdout: "pipe",
     },
     {
       command: "dotnet run --project ../DigitalIcebreakers",
       url: "http://localhost:5000", // Adjust port if needed
       reuseExistingServer: !process.env.CI,
+      stdout: "pipe",
     },
   ],
 });
