@@ -46,7 +46,20 @@ jobs:
         run: npm ci
         working-directory: ./web
 
+      - name: Get Playwright version
+        id: playwright-version
+        run: echo "version=$(npm ls @playwright/test --json | jq -r .dependencies[\"@playwright/test\"].version)" >> $GITHUB_OUTPUT
+        working-directory: ./web
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}
+
       - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npm run e2e:install
         working-directory: ./web
 
