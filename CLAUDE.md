@@ -37,7 +37,6 @@ Digital Icebreakers is a real-time collaborative platform where presenters creat
   - `Hubs/` - SignalR hub (GameHub.cs is central)
   - `ClientApp/` - OLD frontend location (deprecated)
 - `/DigitalIcebreakers.Test/` - Unit tests (xUnit)
-- `/DigitalIcebreakers.EndToEndTests/` - E2E tests (being deprecated)
 
 ### Frontend (React/TypeScript)
 
