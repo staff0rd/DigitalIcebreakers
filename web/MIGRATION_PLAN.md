@@ -147,12 +147,13 @@ await page.ClickAsync("text='Present'", delay: 1000);
 →
 
 ```typescript
-await page.getByRole('button', { name: 'Present' }).click();
+await page.getByRole("button", { name: "Present" }).click();
 ```
 
 ## Playwright Locator Conventions
 
 ### Preferred Patterns
+
 - **Buttons**: Use `getByRole('button', { name: 'Button Text' })` instead of `text=` selectors
 - **Links**: Use `getByRole('link', { name: 'Text' })` for navigation items (Note: "New Activity" is a link, not a button)
 - **Text inputs**: Use `getByRole('textbox')` instead of `locator("[type=text]")`
@@ -175,52 +176,59 @@ await page.getByRole('button', { name: 'Present' }).click();
 ## Notes and Learnings
 
 ### Routing and URL Handling
+
 - **Issue**: Direct navigation to lobby codes (e.g., `/XXXX`) was redirecting to root
 - **Solution**: Added catch-all route for 4-character lobby codes and updated RouteLink interface to support both `path` and `route` properties
 
 ### Linting Requirements
+
 - **Always run** `npm run lint:e2e` before considering a test migration complete
 - **Common fixes**:
   - Unused fixture parameters: Use `expect(fixture).toBeDefined()` when a fixture is required but not directly used
   - This ensures fixtures are created (e.g., player joining affects presenter's lobby count)
 
 ### Multiple Elements with Same Test ID
+
 - **Issue**: Some components appear multiple times (e.g., in desktop and mobile sidebars)
 - **Solution**: Use `.first()` or `.nth()` to select specific instances
 - **Example**: `presenter.page.getByTestId("menu-lobby").first()`
 
 ### Fixture Dependencies
+
 - The `player` fixture automatically creates a player joined to the presenter's lobby
 - Use `browserFactory.createPlayers()` when you need multiple players
 - Both `presenter` and `player` fixtures are automatically cleaned up
 
 ### Test File Organization
+
 - Connection tests go in `/e2e/connection/`
 - Game tests go in `/e2e/games/`
 - Lobby tests go in `/e2e/lobby/`
 
 ### Wait Strategies
+
 - Replace C# `Task.Delay(300)` with `page.waitForTimeout(300)`
 - Consider using better wait strategies when possible (waitForSelector, waitForLoadState)
 
 ### Migration Order Strategy
+
 1. Start with simplest tests to validate infrastructure
 2. Connection tests are simpler than game tests
 3. Single player tests before multi-player tests
 4. Delete C# files immediately after successful migration
 
 ### ES Module Considerations
+
 - Use `import.meta.url` and `fileURLToPath` for file path resolution
 - `__dirname` is not available in ES modules by default
 - Must create it using `path.dirname(fileURLToPath(import.meta.url))`
 
 ## Completion Criteria
 
-- [ ] All tests migrated and passing
-- [ ] Old C# tests can be safely removed
+- [x] All tests migrated and passing
+- [x] Old C# tests can be safely removed
 - [ ] CI/CD updated to use new tests
 - [ ] Documentation updated
-- [ ] Team trained on new test structure
 
 ---
 
