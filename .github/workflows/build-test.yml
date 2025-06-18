@@ -11,26 +11,25 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        dotnet: [3.1.301]
-        node: [12]
-        #browser: [Chrome, Webkit, Firefox]
-        browser: [Chrome]
+        dotnet: [9.0]
+        node: [20]
+        browser: [chromium]
 
     runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout git repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
 
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ matrix.dotnet }}
 
       - name: Setup Node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
 
@@ -40,51 +39,68 @@ jobs:
       - name: Install C# dependencies
         run: dotnet restore
 
-      - name: build
-        run: dotnet tye build -v Debug
+      - name: Run C# build
+        run: dotnet build --no-restore
 
-      - name: start container
-        run: docker run -d -p 5000:80 staff0rd/digitalicebreakers:$(dotnet nbgv get-version -v AssemblyInformationalVersion | tr + -)
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: ./web
+
+      - name: Install Playwright browsers
+        run: npm run e2e:install
+        working-directory: ./web
 
       - name: run end-to-end tests
         env:
-          Browser: ${{ matrix.browser }}
-        run: dotnet test
-        working-directory: DigitalIcebreakers.EndToEndTests
+          ASPNETCORE_URLS: http://localhost:5000
+        run: npm run e2e
+        working-directory: ./web
   build:
     name: Build ${{ matrix.os }} and Test
     if: github.event.pull_request.merged != true
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        dotnet: [3.1.301]
-        node: [12]
+        dotnet: [9.0]
+        node: [20]
 
     runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout git repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
 
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ matrix.dotnet }}
 
       - name: Setup Node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
 
       - name: Install node dependencies
-        run: npm i
-        working-directory: ./DigitalIcebreakers/ClientApp
+        run: npm ci
+        working-directory: ./web
 
-      - name: Lint
+      - name: Type check frontend
+        run: npm run check-types
+        working-directory: ./web
+
+      - name: Type check E2E tests
+        run: npm run check-types:e2e
+        working-directory: ./web
+
+      - name: Lint frontend
         run: npm run lint
-        working-directory: ./DigitalIcebreakers/ClientApp
+        working-directory: ./web
+
+      - name: Lint E2E tests
+        run: npm run lint:e2e
+        working-directory: ./web
 
       - name: Install dotnet tools
         run: dotnet tool restore
@@ -98,7 +114,3 @@ jobs:
       - name: Run C# tests
         run: dotnet test --no-restore --verbosity normal
         working-directory: ./DigitalIcebreakers.Test
-
-      - name: Front-end tests
-        run: npm run test-ci
-        working-directory: ./DigitalIcebreakers/ClientApp
