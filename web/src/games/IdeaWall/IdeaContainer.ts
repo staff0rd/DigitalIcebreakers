@@ -153,7 +153,7 @@ export class IdeaContainer {
     );
   }
 
-  private onDragStart = (event: PIXI.FederatedPointerEvent) => {
+  private onDragStart = (event: PIXI.interaction.InteractionEvent) => {
     const point = event.data.getLocalPosition(this.app.stage);
     this.pointerData = {
       x: this.ideaContainer.x - point.x,
@@ -165,7 +165,7 @@ export class IdeaContainer {
     this.pointerData = undefined;
   };
 
-  private onDragMove = (event: PIXI.FederatedPointerEvent) => {
+  private onDragMove = (event: PIXI.interaction.InteractionEvent) => {
     if (this.pointerData) {
       const point = event.data.getLocalPosition(this.app.stage);
       const x = this.pointerData.x + point.x;
