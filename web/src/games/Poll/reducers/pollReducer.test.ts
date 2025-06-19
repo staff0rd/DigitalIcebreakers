@@ -3,6 +3,7 @@ import { rootReducer } from "../../../store/rootReducer";
 import { configureStore } from "@reduxjs/toolkit";
 import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
 import { Name } from "..";
+import { describe, it, expect, beforeEach } from "vitest";
 
 const twoQuestions = [
   {

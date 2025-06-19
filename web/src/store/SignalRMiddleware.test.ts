@@ -6,11 +6,12 @@ import { LobbyState, SET_LOBBY } from "./lobby/types";
 import { RootState } from "./RootState";
 import { SignalRMiddleware } from "./SignalRMiddleware";
 import { UserState } from "./user/types";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 
-const connectionFactory = jest.fn();
+const connectionFactory = vi.fn();
 const mockConnection = {
-  on: jest.fn(),
-  onclose: jest.fn(),
+  on: vi.fn(),
+  onclose: vi.fn(),
   emit: (eventName: string, payload: any) => {
     const callback = mockConnection.on.mock.calls.find(
       (call) => call[0] === eventName
@@ -18,14 +19,14 @@ const mockConnection = {
     callback && callback[1](payload);
   },
 };
-const dispatch = jest.fn();
+const dispatch = vi.fn();
 
 const createMiddleware = (state: Partial<RootState> = {}) => {
   const store = {
-    getState: jest.fn(() => state as RootState),
+    getState: vi.fn(() => state as RootState),
     dispatch,
   };
-  const next = jest.fn();
+  const next = vi.fn();
 
   const invoke = (action) =>
     SignalRMiddleware(connectionFactory)(store)(next)(action);
@@ -35,6 +36,10 @@ const createMiddleware = (state: Partial<RootState> = {}) => {
 
 describe("SignalRMiddleware", () => {
   beforeEach(() => {
+    connectionFactory.mockClear();
+    mockConnection.on.mockClear();
+    mockConnection.onclose.mockClear();
+    dispatch.mockClear();
     connectionFactory.mockReturnValue(mockConnection);
   });
   describe("when joining a lobby", () => {

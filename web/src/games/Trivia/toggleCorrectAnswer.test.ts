@@ -1,4 +1,5 @@
 import { toggleCorrectAnswer } from "./toggleCorrectAnswer";
+import { describe, it, expect } from "vitest";
 
 describe("setCorrectAnswer", () => {
   describe("single toggle from true", () => {

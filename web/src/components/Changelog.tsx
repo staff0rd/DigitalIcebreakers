@@ -63,6 +63,7 @@ export function Changelog() {
     }
 
     readFeed();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const classes = useStyles();
   return (

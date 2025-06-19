@@ -1,6 +1,7 @@
 import { lobbyReducer } from "./reducers";
 import { createLobby, joinLobby, playerJoinedLobby, setLobby } from "./actions";
 import { LobbyState } from "./types";
+import { describe, it, expect } from "vitest";
 
 describe("lobbyReducer", () => {
   describe("when joining", () => {
