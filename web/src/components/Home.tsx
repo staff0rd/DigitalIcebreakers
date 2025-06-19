@@ -16,11 +16,6 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: "320px",
     maxWidth: "100%",
   },
-  howItWorks: {
-    [theme.breakpoints.up("sm")]: {
-      marginTop: theme.spacing(2),
-    },
-  },
   buttonContainer: {
     display: "flex",
     justifyContent: "center",
@@ -65,17 +60,6 @@ export const Home = () => {
         </div>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6}>
-            <Typography variant="h4" className={classes.howItWorks}>
-              How it works
-            </Typography>
-            <Typography variant="body1">
-              A presenter creates a Lobby and audience members join by pointing
-              their phone cameras at the presenter's screen and scanning the QR
-              code. The presenter can then guide the audience through games and
-              experiences by clicking New Activity.
-            </Typography>
-          </Grid>
-          <Grid item xs={12} sm={6}>
             <Typography variant="h4">Feedback</Typography>
             <Typography variant="body1">
               Feature requests, suggestions, bugs &amp; feedback to{" "}
@@ -87,6 +71,22 @@ export const Home = () => {
                 me@staffordwilliams.com
               </a>
             </Typography>
+            <Typography
+              sx={{ mt: 2 }}
+              variant="h4"
+              className={classes.howItWorks}
+            >
+              How it works
+            </Typography>
+            <Typography variant="body1">
+              A presenter creates a Lobby and audience members join by pointing
+              their phone cameras at the presenter's screen and scanning the QR
+              code. The presenter can then guide the audience through games and
+              experiences by clicking New Activity.
+            </Typography>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Changelog />
           </Grid>
         </Grid>
       </ContentContainer>

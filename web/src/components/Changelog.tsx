@@ -14,12 +14,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type CustomFeed = {};
-type CustomItem = {
-  pubDate: string;
-  contentSnippet: string;
-};
-
 export function Changelog() {
   const [changelogs, setChangelogs] = useState<ChangelogItem[]>([
     ChangelogItem.fromParts(2020, 4, 24, "added #poll"),
@@ -43,21 +37,26 @@ export function Changelog() {
   useEffect(() => {
     async function readFeed() {
       try {
-        const feed = await parser.parseURL(
-            "https://staffordwilliams.com/devlog/digital-icebreakers.xml"
+        const response = await fetch(
+          "https://staffordwilliams.com/devlog/digital-icebreakers.xml"
         );
+        const text = await response.text();
+        const parser = new DOMParser();
+        const xml = parser.parseFromString(text, "text/xml");
 
-        const changes = feed.items
-            .map((entry) => {
-              const date = new Date(entry.pubDate);
-              const change = new ChangelogItem(date, entry.title!, entry.link!);
-              return change;
-            })
-            .sort((a, b) => b.date.getTime() - a.date.getTime());
+        const items = xml.querySelectorAll("item");
+        const changes = Array.from(items)
+          .map((item) => {
+            const pubDate = item.querySelector("pubDate")?.textContent || "";
+            const title = item.querySelector("title")?.textContent || "";
+            const link = item.querySelector("link")?.textContent || "";
+            const date = new Date(pubDate);
+            return new ChangelogItem(date, title, link);
+          })
+          .sort((a, b) => b.date.getTime() - a.date.getTime());
 
         setChangelogs([...changes, ...changelogs]);
-      }
-      catch (e) {
+      } catch (e) {
         console.error(e);
       }
       setIsLoading(false);
@@ -71,11 +70,6 @@ export function Changelog() {
       <div>
         <Typography variant="h4" className={classes.updates}>
           Updates
-        </Typography>
-        <Typography variant="overline">
-          <a href="https://devlog.staffordwilliams.com/categories/digitalicebreakers/">
-            full
-          </a>
         </Typography>
       </div>
       {isLoading && <CircularProgress color="secondary" />}

@@ -1,4 +1,4 @@
-import { Dispatch, UnknownAction } from "@reduxjs/toolkit";
+import { AnyAction, Dispatch } from "@reduxjs/toolkit";
 import { HubConnection } from "@microsoft/signalr";
 import {
   CONNECTION_CONNECT,
@@ -38,7 +38,7 @@ import { GO_TO_DEFAULT_URL, ShellActionTypes } from "./shell/types";
 import { RootState } from "./RootState";
 
 export const onReconnect =
-  (getState: () => RootState, dispatch: Dispatch<UnknownAction>) =>
+  (getState: () => RootState, dispatch: Dispatch<AnyAction>) =>
   (response: ReconnectPayload) => {
     const user = getState().user;
     const { joiningLobbyId, isPresenter } = getState().lobby;
