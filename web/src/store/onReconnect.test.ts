@@ -2,11 +2,12 @@ import { ConnectionStatus } from "ConnectionStatus";
 import { ReconnectPayload } from "./connection/types";
 import { RootState } from "./RootState";
 import { onReconnect } from "./SignalRMiddleware";
+import { describe, it, expect, vi } from "vitest";
 
 describe("onReconnect", () => {
   describe("when joining lobby", () => {
     it("should allow case insensitive join code", () => {
-      const dispatch = jest.fn();
+      const dispatch = vi.fn();
       onReconnect(
         () =>
           ({
