@@ -30,7 +30,7 @@ export class ShapeView {
     this.shape = shape;
     this.radius = (size * 0.9) / 2;
     this.graphics = this.draw();
-    this.view.addChild(this.graphics, this.countView, this.first);
+    this.view.addChild<PIXI.Container>(this.graphics, this.countView, this.first);
   }
 
   private draw() {

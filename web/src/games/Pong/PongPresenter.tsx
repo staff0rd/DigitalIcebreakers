@@ -184,7 +184,7 @@ class PongPresenter extends BaseGame<PropsFromRedux, {}> {
       this.score.anchor.set(0.5, 0);
       this.score.position.set(this.app.screen.width / 2, 0);
 
-      this.app.stage.addChild(
+      this.app.stage.addChild<PIXI.Container>(
         this.score,
         this.leftPaddle,
         this.rightPaddle,

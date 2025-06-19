@@ -102,7 +102,7 @@ const NamePickerPresenter = () => {
     return 1;
   };
 
-  const draw = ({ deltaTime: delta }: PIXI.Ticker) => {
+  const draw = (delta: number): void => {
     if (app) {
       users.forEach((u) => {
         const text = app.stage.children.find(
