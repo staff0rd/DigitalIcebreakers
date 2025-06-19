@@ -71,11 +71,7 @@ export const Home = () => {
                 me@staffordwilliams.com
               </a>
             </Typography>
-            <Typography
-              sx={{ mt: 2 }}
-              variant="h4"
-              className={classes.howItWorks}
-            >
+            <Typography sx={{ mt: 2 }} variant="h4">
               How it works
             </Typography>
             <Typography variant="body1">
