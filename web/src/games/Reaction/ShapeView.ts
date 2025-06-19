@@ -8,7 +8,7 @@ export class ShapeView {
   private countView: PIXI.Text;
   private count = 0;
   private first: PIXI.Text;
-  // @ts-ignore TODO: why is this not used?
+  // TODO: why is this not used?
   private size: number;
   private graphics: PIXI.Graphics;
   private shape: Shape;
