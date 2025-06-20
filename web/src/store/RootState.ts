@@ -11,7 +11,6 @@ import { ReactionState } from "games/Reaction/reactionReducer";
 import { RetrospectiveState } from "games/Retrospective/reducer";
 
 export interface GamesState {
-  doggosVsKittehs: { yes: number; no: number; maybe: number };
   splat: SplatState;
   pong: {
     client: PongClientState;
