@@ -1,5 +1,8 @@
 import { atom } from "jotai";
-import { registerGame, GameMessageHandler } from "../../store/jotai/gameMessageHandlers";
+import {
+  registerGame,
+  GameMessageHandler,
+} from "../../store/jotai/gameMessageHandlers";
 
 export interface YesNoMaybeState {
   yes: number;
@@ -16,8 +19,7 @@ export const yesNoMaybeAtom = atom<YesNoMaybeState>({
 // Message handler for yes-no-maybe game
 const yesNoMaybeMessageHandler: GameMessageHandler<YesNoMaybeState> = (
   currentState,
-  message,
-  isPresenter
+  message
 ) => {
   // For yes-no-maybe, the message is the complete state update
   return message as YesNoMaybeState;

@@ -47,10 +47,10 @@ Incrementally migrate from Redux to Jotai using a strangler-fig pattern. Each mi
 
 3. **NamePicker** - Array of names
 
-   - [ ] Create NamePicker atoms
-   - [ ] Update components
-   - [ ] Test functionality
-   - [ ] Remove NamePickerReducer
+   - [x] Create NamePicker atoms
+   - [x] Update components
+   - [x] Test functionality
+   - [x] Remove NamePickerReducer
 
 4. **Buzzer** - Player array
    - [ ] Create Buzzer atoms
@@ -221,6 +221,25 @@ Last updated: 2025-06-20
 
 ✅ YesNoMaybe - Completed
 ✅ Broadcast - Completed
+✅ NamePicker - Completed
+
+### Lessons Learned from NamePicker Migration
+
+1. **Testing Animations**
+   - Made fade animation duration configurable via window object for testing
+   - Tests can override long animations to run faster
+   - Pattern: `(window as any).__NAME_PICKER_FADE_SECONDS__ = 0.5`
+
+2. **Data Attributes for Testing**
+   - Added data attributes to Pixi component for test assertions
+   - `data-names`: comma-separated list of player names
+   - `data-selected-name`: the selected player's name
+   - Pixi component passes through rest props including data attributes
+
+3. **E2E Test Creation**
+   - Created comprehensive e2e test with multiple players
+   - Test verifies exactly one winner is selected from the group
+   - No need for manual cleanup in tests - framework handles it
 
 ### Lessons Learned from Broadcast Migration
 

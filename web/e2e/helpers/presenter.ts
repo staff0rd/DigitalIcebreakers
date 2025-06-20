@@ -60,4 +60,8 @@ export class Presenter extends AbstractBrowser {
   async startYesNoMaybe(): Promise<void> {
     await this.startGame("yes-no-maybe");
   }
+
+  async startNamePicker(): Promise<void> {
+    await this.startGame("name-picker");
+  }
 }

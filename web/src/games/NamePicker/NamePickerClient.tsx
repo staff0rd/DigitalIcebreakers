@@ -1,24 +1,14 @@
+import { useAtomValue } from "jotai";
 import { useSelector } from "../../store/useSelector";
-import makeStyles from "@mui/styles/makeStyles";
+import { Box } from "@mui/material";
 import { Colors, ColorUtils } from "../../Colors";
-
-const useStyles = makeStyles(() => ({
-  root: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100%",
-    flexDirection: "column",
-  },
-}));
+import { namePickerAtom } from "./namePickerAtoms";
 
 const NamePickerClient = () => {
   const user = useSelector((s) => s.user);
-  const selectedId = useSelector(
-    (state) => state.games.namePicker.player.selectedId
-  );
+  const namePickerState = useAtomValue(namePickerAtom);
+  const selectedId = namePickerState.player.selectedId;
   const won = selectedId === user.id;
-  const classes = useStyles();
 
   const getBackgroundColor = () => {
     if (selectedId) {
@@ -32,9 +22,15 @@ const NamePickerClient = () => {
   };
 
   return (
-    <div
-      className={classes.root}
-      style={{ backgroundColor: getBackgroundColor() }}
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100%",
+        flexDirection: "column",
+        backgroundColor: getBackgroundColor(),
+      }}
     >
       <h1>{user.name}</h1>
       {selectedId && (
@@ -43,7 +39,7 @@ const NamePickerClient = () => {
           {!won && "You lost :("}
         </h2>
       )}
-    </div>
+    </Box>
   );
 };
 

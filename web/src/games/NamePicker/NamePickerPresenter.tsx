@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
+import { useAtomValue, useSetAtom } from "jotai";
 import { Colors, ColorUtils } from "../../Colors";
 import { Pixi } from "../pixi/Pixi";
 import { useSelector } from "store/useSelector";
 import { useDispatch } from "store/useSelector";
 import { presenterMessage } from "store/lobby/actions";
 import { pick, between } from "Random";
+import { namePickerAtom } from "./namePickerAtoms";
 
 import * as PIXI from "pixi.js";
 
@@ -14,20 +16,20 @@ interface AnimatedText extends PIXI.Text {
 }
 
 const speed = 2;
-const fadeOut = 5;
 const fadeUpdateMs = 250;
-const fadeOutMs = fadeOut * 1000;
 
 const NamePickerPresenter = () => {
+  // Allow override via window object for testing
+  const fadeOut = (window as any).__NAME_PICKER_FADE_SECONDS__ || 5;
+  const fadeOutMs = fadeOut * 1000;
   const [app, setApp] = useState<PIXI.Application>();
   const [pickStarted, setPickStarted] = useState<Date>();
   const [id, setId] = useState<string>();
   const dispatch = useDispatch();
 
   const users = useSelector((state) => state.lobby.players);
-  const { shouldPick } = useSelector(
-    (state) => state.games.namePicker.presenter
-  );
+  const namePickerState = useAtomValue(namePickerAtom);
+  const { shouldPick } = namePickerState.presenter;
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -170,7 +172,13 @@ const NamePickerPresenter = () => {
   }, [users, app]);
 
   return (
-    <Pixi backgroundColor={Colors.White} onAppChange={(app) => setApp(app)} />
+    <Pixi 
+      backgroundColor={Colors.White} 
+      onAppChange={(app) => setApp(app)}
+      data-names={users.map(u => u.name).join(',')}
+      data-selected-name={id ? users.find(u => u.id === id)?.name : ''}
+      data-selected-id={id || ''}
+    />
   );
 };
 

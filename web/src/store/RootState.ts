@@ -8,7 +8,6 @@ import { PongClientState, PongPresenterState } from "../games/Pong/PongReducer";
 import { IdeaWallState } from "../games/IdeaWall/IdeaWallReducer";
 import { FistOfFiveState, PollState } from "../games/shared/Poll/types/State";
 import { TriviaState } from "games/shared/Poll/types/State";
-import { NamePickerState } from "../games/NamePicker/NamePickerReducer";
 import { ReactionState } from "games/Reaction/reactionReducer";
 import { RetrospectiveState } from "games/Retrospective/reducer";
 
@@ -23,7 +22,6 @@ export interface GamesState {
   ideawall: IdeaWallState;
   poll: PollState;
   trivia: TriviaState;
-  namePicker: NamePickerState;
   reaction: ReactionState;
   retrospective: RetrospectiveState;
   fistOfFive: FistOfFiveState;
