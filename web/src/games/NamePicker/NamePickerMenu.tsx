@@ -1,17 +1,32 @@
+import { useSetAtom } from "jotai";
 import Button from "../../layout/components/CustomButtons/Button";
-import { reset, pick } from "./NamePickerReducer";
-import { useDispatch } from "store/useSelector";
 import { ListItem } from "@mui/material";
+import { namePickerAtom } from "./namePickerAtoms";
 
 const NamePickerMenu = () => {
-  const dispatch = useDispatch();
+  const setNamePickerState = useSetAtom(namePickerAtom);
+  
+  const handleReset = () => {
+    setNamePickerState((prev) => ({
+      ...prev,
+      presenter: { shouldPick: false },
+    }));
+  };
+  
+  const handlePick = () => {
+    setNamePickerState((prev) => ({
+      ...prev,
+      presenter: { shouldPick: true },
+    }));
+  };
+  
   return (
     <>
       <ListItem>
-        <Button onClick={() => dispatch(reset())}>Reset</Button>
+        <Button onClick={handleReset}>Reset</Button>
       </ListItem>
       <ListItem>
-        <Button onClick={() => dispatch(pick())}>Pick</Button>
+        <Button onClick={handlePick}>Pick</Button>
       </ListItem>
     </>
   );
