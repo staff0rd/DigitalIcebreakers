@@ -9,7 +9,6 @@ import NamePickerMenu from "./NamePicker/NamePickerMenu";
 import YesNoMaybePresenter from "./YesNoMaybe/YesNoMaybePresenter";
 import { YesNoMaybeMenu } from "./YesNoMaybe/YesNoMaybeMenu";
 import YesNoMaybeClient from "./YesNoMaybe/YesNoMaybeClient";
-import { Name as YesNoMaybeName } from "./YesNoMaybe/YesNoMaybeReducer";
 import { IdeaWallClient } from "./IdeaWall/IdeaWallClient";
 import IdeaWallPresenter from "./IdeaWall/IdeaWallPresenter";
 import IdeaWallMenu from "./IdeaWall/IdeaWallMenu";
@@ -112,7 +111,7 @@ const games: Game[] = [
     description: "Pick a name, out of a hat! (or a swirling void)",
   },
   {
-    name: YesNoMaybeName,
+    name: "yes-no-maybe",
     client: YesNoMaybeClient,
     presenter: YesNoMaybePresenter,
     menu: YesNoMaybeMenu,

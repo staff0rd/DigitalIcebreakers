@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { rootReducer } from "./rootReducer";
-import { SignalRMiddleware } from "./SignalRMiddleware";
+import { SignalRMiddlewareWithJotai } from "./SignalRMiddlewareWithJotai";
 //import logger from "redux-logger";
 import { connectionFactory } from "./connectionFactory";
 import { navigationMiddleware } from "./navigationMiddleware";
@@ -11,7 +11,7 @@ export function configureAppStore() {
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat([
         navigationMiddleware,
-        SignalRMiddleware(connectionFactory)
+        SignalRMiddlewareWithJotai(connectionFactory)
       ]),
     //.concat(logger),
   });

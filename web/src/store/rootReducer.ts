@@ -3,7 +3,6 @@ import { connectionReducer } from "./connection/reducers";
 import { userReducer } from "./user/reducers";
 import { lobbyReducer } from "./lobby/reducers";
 import { shellReducer } from "./shell/reducers";
-import { yesNoMaybeReducer } from "games/YesNoMaybe/YesNoMaybeReducer";
 import { doggosVsKittehsReducer } from "games/DoggosVsKittehs/DoggosVsKittehsReducer";
 import { buzzerReducer } from "games/Buzzer/BuzzerReducer";
 import { splatReducer } from "games/Splat/SplatReducer";
@@ -18,7 +17,6 @@ import { retrospectiveReducer } from "games/Retrospective/reducer";
 import { fistOfFiveReducer } from "games/FistOfFive/reducer";
 
 const gamesReducer = combineReducers({
-  yesnomaybe: yesNoMaybeReducer,
   doggosVsKittehs: doggosVsKittehsReducer,
   buzzer: buzzerReducer,
   splat: splatReducer,

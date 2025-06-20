@@ -3,12 +3,13 @@ import { Colors } from "../../Colors";
 import { Graph } from "../pixi/Graph";
 import { Pixi } from "../pixi/Pixi";
 import { useResizeListener } from "../pixi/useResizeListener";
-import { useSelector } from "../../store/useSelector";
+import { useAtomValue } from "jotai";
+import { yesNoMaybeAtom } from "./yesNoMaybeAtoms";
 import * as PIXI from "pixi.js";
 
 const YesNoMaybePresenter = () => {
   const [pixi, setPixi] = useState<PIXI.Application>();
-  const state = useSelector((state) => state.games.yesnomaybe);
+  const state = useAtomValue(yesNoMaybeAtom);
 
   const init = (app?: PIXI.Application) => {
     if (app) {
@@ -33,7 +34,16 @@ const YesNoMaybePresenter = () => {
   useResizeListener(resize);
   useEffect(() => resize(), [pixi, state]);
 
-  return <Pixi backgroundColor={0xffffff} onAppChange={(app) => init(app)} />;
+  return (
+    <Pixi
+      backgroundColor={0xffffff}
+      onAppChange={(app) => init(app)}
+      data-testid="yes-no-maybe-presenter"
+      data-yes={state.yes}
+      data-no={state.no}
+      data-maybe={state.maybe}
+    />
+  );
 };
 
 export default YesNoMaybePresenter;
