@@ -3,7 +3,7 @@ import { useRef, useEffect, useState, useCallback } from "react";
 import makeStyles from "@mui/styles/makeStyles";
 import { useResizeListener } from "./useResizeListener";
 
-interface PixiProps {
+interface PixiProps extends React.HTMLAttributes<HTMLDivElement> {
   backgroundColor?: number;
   onAppChange?: (app: PIXI.Application) => void;
 }
@@ -15,7 +15,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export const Pixi = ({ backgroundColor, onAppChange }: PixiProps) => {
+export const Pixi = ({ backgroundColor, onAppChange, ...rest }: PixiProps) => {
   const classes = useStyles();
   const [app, setApp] = useState<PIXI.Application>();
   const pixiElement = useRef<HTMLDivElement>(null);
@@ -58,5 +58,5 @@ export const Pixi = ({ backgroundColor, onAppChange }: PixiProps) => {
 
   useResizeListener(onResize);
 
-  return <div id="pixi-root" className={classes.pixi} ref={pixiElement} />;
+  return <div id="pixi-root" className={classes.pixi} ref={pixiElement} {...rest} />;
 };

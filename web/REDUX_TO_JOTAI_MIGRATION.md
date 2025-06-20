@@ -17,10 +17,12 @@ Incrementally migrate from Redux to Jotai using a strangler-fig pattern. Each mi
    - Install Jotai if not already installed
    - Create atoms to replace the reducer
    - Update components to use Jotai atoms instead of Redux
-   - Verify with existing e2e tests
-   - Add React Testing Library tests if needed. Each reducer should have at least one test to ensure functionality.
+   - Verify with e2e tests, add new tests if necessary
    - Remove the Redux reducer
-   - Pause for feedback from the team
+   - Write any approach modifications or lessons learned in this document - only do this if it will affect future migration steps
+   - Update the checkboxes in this document to reflect the completed migration step
+   - Pause for feedback from the team - wait for approval before proceeding to the next step
+   - Write a commit message summarizing the change
 
 ### Migration Order (Subject to Change)
 
@@ -28,12 +30,12 @@ Incrementally migrate from Redux to Jotai using a strangler-fig pattern. Each mi
 
 1. **YesNoMaybe** - Simplest game, just vote counts
 
-   - [ ] Install Jotai and add provider to App.tsx
-   - [ ] Create YesNoMaybe atoms
-   - [ ] Update YesNoMaybeClient and YesNoMaybePresenter to use atoms
-   - [ ] Run e2e tests
-   - [ ] Remove YesNoMaybeReducer
-   - [ ] Remove from games reducer
+   - [x] Install Jotai and add provider to App.tsx
+   - [x] Create YesNoMaybe atoms
+   - [x] Update YesNoMaybeClient and YesNoMaybePresenter to use atoms
+   - [x] Run e2e tests
+   - [x] Remove YesNoMaybeReducer
+   - [x] Remove from games reducer
 
 2. **Broadcast** - Simple message state
 
@@ -185,7 +187,33 @@ Last updated: 2025-06-20
 
 ### Current Status
 
-Starting fresh with strangler-fig approach. No migrations completed yet.
+✅ YesNoMaybe - Completed
+
+### Lessons Learned from YesNoMaybe Migration
+
+1. **SignalR Integration Approach**
+
+   - Created a hybrid SignalR middleware (`SignalRMiddlewareWithJotai`) that checks if a game is migrated to Jotai
+   - Maintains a game registry (`gameAtomRegistry`) to track migrated games
+   - Updates both Jotai atoms AND dispatches Redux actions during transition (for backward compatibility)
+   - This allows incremental migration without breaking non-migrated games
+
+2. **Testing Considerations**
+
+   - For games using Pixi.js or canvas rendering, add data attributes to expose state for e2e tests
+   - Modified the Pixi component to accept and pass through props via `{...rest}` spread
+   - E2E tests should assert on actual state changes, not just UI interactions
+
+3. **Cleanup Process**
+
+   - Remove the reducer file completely
+   - Remove from rootReducer.ts and RootState.ts
+   - Update any games that were importing types from the removed reducer (e.g., DoggosVsKittehs was using YesNoMaybeState)
+   - Update Games.ts to use string literals instead of importing Name constants from reducers
+
+4. **Type Safety**
+   - Jotai atoms need proper TypeScript interfaces
+   - The hybrid middleware needs careful typing to handle both systems
 
 ### Notes
 

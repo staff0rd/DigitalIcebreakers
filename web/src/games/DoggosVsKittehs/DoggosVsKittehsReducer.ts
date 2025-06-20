@@ -1,5 +1,4 @@
 import { createReceiveGameMessageReducer } from "../../store/actionHelpers";
-import { YesNoMaybeState } from "../YesNoMaybe/YesNoMaybeReducer";
 
 export const Name = "doggos-vs-kittehs";
 
@@ -9,9 +8,15 @@ interface ServerState {
   undecided: number;
 }
 
+interface DoggosVsKittehsState {
+  yes: number;
+  no: number;
+  maybe: number;
+}
+
 export const doggosVsKittehsReducer = createReceiveGameMessageReducer<
   ServerState,
-  YesNoMaybeState
+  DoggosVsKittehsState
 >(
   Name,
   {
