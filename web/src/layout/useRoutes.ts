@@ -27,7 +27,7 @@ export interface RouteLink {
   testId?: string;
 }
 
-const useRoutes = () => {
+const useRoutes = (): RouteLink[] => {
   const lobby = useSelector((state) => state.lobby);
   const game = useSelector((state) =>
     Games.find((g) => g.name === state.lobby.currentGame)

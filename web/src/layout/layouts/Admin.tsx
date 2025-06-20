@@ -46,8 +46,8 @@ const AppRoutes = () => {
 
   return (
     <Routes>
-      {routes.map(({ path, component: Component }, key) => {
-        return <Route path={path} element={<Component />} key={key} />;
+      {routes.map(({ path, route, component: Component }, key) => {
+        return <Route path={route || path} element={<Component />} key={key} />;
       })}
       <Route path="/:lobbyCode" element={<LobbyCodeRedirect />} />
       <Route path="*" element={<Redirect />} />
