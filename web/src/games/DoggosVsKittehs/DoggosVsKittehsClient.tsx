@@ -3,30 +3,11 @@ import doggo from "./doggo.jpeg";
 import kitteh from "./kitteh.jpg";
 import { clientMessage } from "../../store/lobby/actions";
 import { useDispatch } from "store/useSelector";
-import { List, ListItem, ListItemButton } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
-
-const useStyles = makeStyles(() => ({
-  container: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "column",
-    height: "100%",
-  },
-  header: {
-    margin: 0,
-  },
-  item: {
-    width: 300,
-    height: 200,
-  },
-}));
+import { List, ListItem, ListItemButton, Box } from "@mui/material";
 
 const DoggosVsKittehsClient = () => {
   const [choice, setChoice] = useState("");
   const dispatch = useDispatch();
-  const classes = useStyles();
 
   const choose = (newChoice: string) => {
     setChoice(newChoice);
@@ -34,37 +15,51 @@ const DoggosVsKittehsClient = () => {
   };
 
   return (
-    <div className={classes.container}>
-      <h2 className={classes.header}>Choose one</h2>
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexDirection: "column",
+        height: "100%",
+      }}
+    >
+      <Box component="h2" sx={{ margin: 0 }}>
+        Choose one
+      </Box>
       <List>
         <ListItem>
           <ListItemButton
-            className={classes.item}
+            aria-label="Vote for kittehs"
             onClick={() => choose("1")}
             selected={choice === "1"}
-            style={{
+            sx={{
+              width: 300,
+              height: 200,
               background: `url(${kitteh}) no-repeat`,
               backgroundSize: "contain",
               backgroundOrigin: "content-box",
-              border: `${choice === "1" ? 3 : 0}px solid`,
+              border: choice === "1" ? "3px solid" : "0px solid",
             }}
-          ></ListItemButton>
+          />
         </ListItem>
         <ListItem>
           <ListItemButton
-            className={classes.item}
+            aria-label="Vote for doggos"
             onClick={() => choose("0")}
             selected={choice === "0"}
-            style={{
+            sx={{
+              width: 300,
+              height: 200,
               background: `url(${doggo}) no-repeat`,
               backgroundSize: "contain",
               backgroundOrigin: "content-box",
-              border: `${choice === "0" ? 3 : 0}px solid`,
+              border: choice === "0" ? "3px solid" : "0px solid",
             }}
-          ></ListItemButton>
+          />
         </ListItem>
       </List>
-    </div>
+    </Box>
   );
 };
 

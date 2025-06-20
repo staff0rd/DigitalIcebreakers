@@ -53,18 +53,18 @@ Incrementally migrate from Redux to Jotai using a strangler-fig pattern. Each mi
    - [x] Remove NamePickerReducer
 
 4. **Buzzer** - Player array
-   - [ ] Create Buzzer atoms
-   - [ ] Update components
-   - [ ] Test functionality
-   - [ ] Remove BuzzerReducer
+   - [x] Create Buzzer atoms
+   - [x] Update components
+   - [x] Test functionality
+   - [x] Remove BuzzerReducer
 
 #### Phase 2: Medium Complexity Games
 
 5. **DoggosVsKittehs** - Vote counts with images
 
-   - [ ] Create atoms
-   - [ ] Migrate components
-   - [ ] Test and remove reducer
+   - [x] Create atoms
+   - [x] Migrate components
+   - [x] Test and remove reducer
 
 6. **FistOfFive** - Response tracking
 
@@ -195,6 +195,7 @@ When migrating a game to Jotai, each game must register itself with the SignalR 
 ### Message Handler Function
 
 The message handler receives:
+
 - `currentState`: The current state from the atom
 - `message`: The incoming message from SignalR
 - `isPresenter`: Boolean indicating if this is the presenter
@@ -226,11 +227,13 @@ Last updated: 2025-06-20
 ### Lessons Learned from NamePicker Migration
 
 1. **Testing Animations**
+
    - Made fade animation duration configurable via window object for testing
    - Tests can override long animations to run faster
    - Pattern: `(window as any).__NAME_PICKER_FADE_SECONDS__ = 0.5`
 
 2. **Data Attributes for Testing**
+
    - Added data attributes to Pixi component for test assertions
    - `data-names`: comma-separated list of player names
    - `data-selected-name`: the selected player's name
@@ -244,6 +247,7 @@ Last updated: 2025-06-20
 ### Lessons Learned from Broadcast Migration
 
 1. **Game-Agnostic Message Handling**
+
    - Created a registration pattern where each game provides its own message handler
    - SignalR middleware remains completely game-agnostic
    - Games register themselves with: `registerGame(gameName, atom, messageHandler)`
