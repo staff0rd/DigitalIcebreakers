@@ -36,7 +36,7 @@ import { SET_USER_NAME, UserActionTypes } from "./user/types";
 import { goToDefaultUrl, setMenuItems, navigate } from "./shell/actions";
 import { GO_TO_DEFAULT_URL, ShellActionTypes } from "./shell/types";
 import { RootState } from "./RootState";
-import { getGameAtom, isGameMigratedToJotai } from "./jotai/gameAtoms";
+import { getGameHandler, isGameRegistered } from "./jotai/gameMessageHandlers";
 
 type JotaiStore = ReturnType<typeof import("jotai").createStore>;
 
@@ -148,11 +148,14 @@ export const SignalRMiddlewareWithJotai = (connectionFactory: () => HubConnectio
             const isPresenter = getState().lobby.isPresenter;
             connection.off("gameMessage");
             connection.on("gameMessage", (args: any) => {
-              // Check if this game is migrated to Jotai
-              if (isGameMigratedToJotai(action.game) && jotaiStoreRef) {
-                const atom = getGameAtom(action.game);
-                if (atom) {
-                  jotaiStoreRef.set(atom, args.payload);
+              // Check if this game has a registered handler
+              if (isGameRegistered(action.game) && jotaiStoreRef) {
+                const gameHandler = getGameHandler(action.game);
+                if (gameHandler) {
+                  const { atom, messageHandler } = gameHandler;
+                  const currentState = jotaiStoreRef.get(atom);
+                  const newState = messageHandler(currentState, args, isPresenter);
+                  jotaiStoreRef.set(atom, newState);
                 }
               }
               

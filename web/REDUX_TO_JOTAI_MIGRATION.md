@@ -39,11 +39,11 @@ Incrementally migrate from Redux to Jotai using a strangler-fig pattern. Each mi
 
 2. **Broadcast** - Simple message state
 
-   - [ ] Create Broadcast atoms
-   - [ ] Update BroadcastClient and BroadcastPresenter
-   - [ ] Run e2e tests (broadcast.spec.ts)
-   - [ ] Remove BroadcastReducer
-   - [ ] Remove from games reducer
+   - [x] Create Broadcast atoms
+   - [x] Update BroadcastClient and BroadcastPresenter
+   - [x] Run e2e tests (broadcast.spec.ts)
+   - [x] Remove BroadcastReducer
+   - [x] Remove from games reducer
 
 3. **NamePicker** - Array of names
 
@@ -181,6 +181,38 @@ For each migration:
 - No TypeScript errors
 - Real-time functionality maintained
 
+## Game Message Handler Registration Pattern
+
+When migrating a game to Jotai, each game must register itself with the SignalR middleware. This keeps the middleware game-agnostic while allowing each game to handle its own message processing.
+
+### Registration Steps
+
+1. **Create your Jotai atom** with the game state interface
+2. **Define a message handler function** that processes incoming SignalR messages
+3. **Register the game** using the `registerGame()` function
+4. **Remove the Redux reducer** after successful migration
+
+### Message Handler Function
+
+The message handler receives:
+- `currentState`: The current state from the atom
+- `message`: The incoming message from SignalR
+- `isPresenter`: Boolean indicating if this is the presenter
+
+It should return the new state for the atom.
+
+### Implementation Examples
+
+- **Simple state replacement**: See `yesNoMaybeAtoms.ts` - the handler simply returns the incoming message as the new state
+- **Conditional updates**: See `broadcastAtoms.ts` - the handler has different logic for presenter (increment dings) vs client (update text)
+
+### File References
+
+- Registration pattern: `src/store/jotai/gameMessageHandlers.ts`
+- YesNoMaybe example: `src/games/YesNoMaybe/yesNoMaybeAtoms.ts`
+- Broadcast example: `src/games/Broadcast/broadcastAtoms.ts`
+- SignalR middleware: `src/store/SignalRMiddlewareWithJotai.ts`
+
 ## Progress Tracking
 
 Last updated: 2025-06-20
@@ -188,6 +220,20 @@ Last updated: 2025-06-20
 ### Current Status
 
 ✅ YesNoMaybe - Completed
+✅ Broadcast - Completed
+
+### Lessons Learned from Broadcast Migration
+
+1. **Game-Agnostic Message Handling**
+   - Created a registration pattern where each game provides its own message handler
+   - SignalR middleware remains completely game-agnostic
+   - Games register themselves with: `registerGame(gameName, atom, messageHandler)`
+   - Each game encapsulates its own message handling logic
+   - This pattern maintains separation of concerns and improves maintainability
+
+2. **Material-UI Migration**
+   - Migrated from makeStyles to sx props as part of the Jotai migration
+   - Custom Button component doesn't support sx prop, use style or className instead
 
 ### Lessons Learned from YesNoMaybe Migration
 

@@ -11,7 +11,6 @@ import { ideaWallReducer } from "games/IdeaWall/IdeaWallReducer";
 import { pollReducer } from "games/Poll/reducers/pollReducer";
 import { triviaReducer } from "games/Trivia/reducers/triviaReducer";
 import { namePickerReducer } from "games/NamePicker/NamePickerReducer";
-import { broadcastReducer } from "games/Broadcast/BroadcastReducer";
 import { reactionReducer } from "games/Reaction/reactionReducer";
 import { retrospectiveReducer } from "games/Retrospective/reducer";
 import { fistOfFiveReducer } from "games/FistOfFive/reducer";
@@ -25,7 +24,6 @@ const gamesReducer = combineReducers({
   poll: pollReducer,
   trivia: triviaReducer,
   namePicker: namePickerReducer,
-  broadcast: broadcastReducer,
   reaction: reactionReducer,
   retrospective: retrospectiveReducer,
   fistOfFive: fistOfFiveReducer,
