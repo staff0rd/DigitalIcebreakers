@@ -1,11 +1,12 @@
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import { ContentContainer } from "../../components/ContentContainer";
-import { useSelector } from "../../store/useSelector";
 import { ListItemButton } from "@mui/material";
+import { useAtom } from "jotai";
+import { buzzerAtom } from "./buzzerAtoms";
 
 const BuzzerPresenter = () => {
-  const players = useSelector((state) => state.games.buzzer);
+  const [players] = useAtom(buzzerAtom);
 
   return (
     <ContentContainer header="Buzzer">
