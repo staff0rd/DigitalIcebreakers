@@ -18,15 +18,16 @@ Incrementally migrate from Redux to Jotai using a strangler-fig pattern. Each mi
    - Create atoms to replace the reducer
    - Update components to use Jotai atoms instead of Redux
    - Verify with existing e2e tests
-   - Add React Testing Library tests if needed
+   - Add React Testing Library tests if needed. Each reducer should have at least one test to ensure functionality.
    - Remove the Redux reducer
-   - Commit and verify everything still works
+   - Pause for feedback from the team
 
 ### Migration Order (Subject to Change)
 
 #### Phase 1: Simple Games (No external dependencies)
 
 1. **YesNoMaybe** - Simplest game, just vote counts
+
    - [ ] Install Jotai and add provider to App.tsx
    - [ ] Create YesNoMaybe atoms
    - [ ] Update YesNoMaybeClient and YesNoMaybePresenter to use atoms
@@ -35,6 +36,7 @@ Incrementally migrate from Redux to Jotai using a strangler-fig pattern. Each mi
    - [ ] Remove from games reducer
 
 2. **Broadcast** - Simple message state
+
    - [ ] Create Broadcast atoms
    - [ ] Update BroadcastClient and BroadcastPresenter
    - [ ] Run e2e tests (broadcast.spec.ts)
@@ -42,6 +44,7 @@ Incrementally migrate from Redux to Jotai using a strangler-fig pattern. Each mi
    - [ ] Remove from games reducer
 
 3. **NamePicker** - Array of names
+
    - [ ] Create NamePicker atoms
    - [ ] Update components
    - [ ] Test functionality
@@ -56,22 +59,26 @@ Incrementally migrate from Redux to Jotai using a strangler-fig pattern. Each mi
 #### Phase 2: Medium Complexity Games
 
 5. **DoggosVsKittehs** - Vote counts with images
+
    - [ ] Create atoms
    - [ ] Migrate components
    - [ ] Test and remove reducer
 
 6. **FistOfFive** - Response tracking
+
    - [ ] Create atoms
    - [ ] Migrate components
    - [ ] Run e2e tests (fist-of-five.spec.ts)
    - [ ] Remove reducer
 
 7. **Splat** - Canvas interactions
+
    - [ ] Create atoms
    - [ ] Migrate components
    - [ ] Test and remove reducer
 
 8. **Pong** - Team assignments
+
    - [ ] Create atoms
    - [ ] Migrate components
    - [ ] Run e2e tests (pong.spec.ts)
@@ -85,18 +92,21 @@ Incrementally migrate from Redux to Jotai using a strangler-fig pattern. Each mi
 #### Phase 3: Complex Games
 
 10. **IdeaWall** - Ideas with localStorage
+
     - [ ] Create atoms with localStorage sync
     - [ ] Migrate components
     - [ ] Test persistence
     - [ ] Remove reducer
 
 11. **Poll** - Questions and responses
+
     - [ ] Create atoms for questions/responses
     - [ ] Migrate presenter and client views
     - [ ] Test functionality
     - [ ] Remove reducer
 
 12. **Retrospective** - Categories and ideas
+
     - [ ] Create atoms
     - [ ] Migrate components
     - [ ] Run e2e tests (retrospective.spec.ts)
@@ -105,24 +115,27 @@ Incrementally migrate from Redux to Jotai using a strangler-fig pattern. Each mi
 13. **Trivia** - Questions, scores, and state
     - [ ] Create atoms
     - [ ] Migrate components
-    - [ ] Run e2e tests (trivia/*.spec.ts)
+    - [ ] Run e2e tests (trivia/\*.spec.ts)
     - [ ] Remove reducer
 
 #### Phase 4: Core App State
 
 14. **User State** - id, name, isRegistered
+
     - [ ] Create user atoms
     - [ ] Update all components using user state
     - [ ] Test registration flow
     - [ ] Remove user reducer
 
 15. **Shell State** - UI state, navigation
+
     - [ ] Create shell atoms
     - [ ] Update navigation components
     - [ ] Test navigation
     - [ ] Remove shell reducer
 
 16. **Connection State** - connection status
+
     - [ ] Create connection atoms
     - [ ] Update connection-dependent components
     - [ ] Test connection states
@@ -153,6 +166,7 @@ Incrementally migrate from Redux to Jotai using a strangler-fig pattern. Each mi
 ## Verification Strategy
 
 For each migration:
+
 1. Run `npm run check-types`
 2. Run relevant e2e tests: `npm run e2e -- <test-file>`
 3. Manual testing with presenter + player windows
