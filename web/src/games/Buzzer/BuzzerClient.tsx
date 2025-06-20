@@ -1,46 +1,48 @@
-import { useState, useEffect } from "react";
-import { Button } from "../pixi/Button";
-import { Pixi } from "../pixi/Pixi";
-import { Colors } from "../../Colors";
+import { Box, Button } from "@mui/material";
 import { useDispatch } from "store/useSelector";
 import { clientMessage } from "../../store/lobby/actions";
-import { useResizeListener } from "../pixi/useResizeListener";
-import * as PIXI from "pixi.js";
 
 const BuzzerClient = () => {
-  const [pixi, setPixi] = useState<PIXI.Application>();
   const dispatch = useDispatch();
-  const [button] = useState(
-    new Button(
-      () => dispatch(clientMessage("up")),
-      () => dispatch(clientMessage("down"))
-    )
-  );
 
-  const resize = () => {
-    if (pixi) {
-      pixi.stage.addChild(button);
-      button.x = pixi.screen.width / 4;
-      button.y = pixi.screen.height / 4;
-      button.render(
-        Colors.Blue.C400,
-        Colors.Red.C400,
-        0,
-        0,
-        pixi.screen.width / 2,
-        pixi.screen.height / 2
-      );
-    }
+  const handleMouseDown = () => {
+    dispatch(clientMessage("down"));
   };
 
-  useResizeListener(resize);
-  useEffect(resize, [pixi]);
+  const handleMouseUp = () => {
+    dispatch(clientMessage("up"));
+  };
 
   return (
-    <Pixi
-      backgroundColor={Colors.BlueGrey.C400}
-      onAppChange={(app) => setPixi(app)}
-    />
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100vh",
+        bgcolor: "grey.600",
+      }}
+    >
+      <Button
+        variant="contained"
+        color="primary"
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        onTouchStart={handleMouseDown}
+        onTouchEnd={handleMouseUp}
+        sx={{
+          width: "50%",
+          height: "50%",
+          fontSize: "2rem",
+          bgcolor: "primary.main",
+          "&:active": {
+            bgcolor: "error.main",
+          },
+        }}
+      >
+        BUZZ
+      </Button>
+    </Box>
   );
 };
 
