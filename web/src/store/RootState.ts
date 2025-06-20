@@ -9,7 +9,6 @@ import { IdeaWallState } from "../games/IdeaWall/IdeaWallReducer";
 import { FistOfFiveState, PollState } from "../games/shared/Poll/types/State";
 import { TriviaState } from "games/shared/Poll/types/State";
 import { NamePickerState } from "../games/NamePicker/NamePickerReducer";
-import { BroadcastState } from "games/Broadcast/BroadcastReducer";
 import { ReactionState } from "games/Reaction/reactionReducer";
 import { RetrospectiveState } from "games/Retrospective/reducer";
 
@@ -25,7 +24,6 @@ export interface GamesState {
   poll: PollState;
   trivia: TriviaState;
   namePicker: NamePickerState;
-  broadcast: BroadcastState;
   reaction: ReactionState;
   retrospective: RetrospectiveState;
   fistOfFive: FistOfFiveState;
