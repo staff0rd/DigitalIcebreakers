@@ -21,8 +21,8 @@ const yesNoMaybeMessageHandler: GameMessageHandler<YesNoMaybeState> = (
   currentState,
   message
 ) => {
-  // For yes-no-maybe, the message is the complete state update
-  return message as YesNoMaybeState;
+  // Extract the payload from the wrapped message
+  return message.payload as YesNoMaybeState;
 };
 
 // Register the game with its handler
