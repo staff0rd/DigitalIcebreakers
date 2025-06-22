@@ -10,7 +10,6 @@ import { pollReducer } from "games/Poll/reducers/pollReducer";
 import { triviaReducer } from "games/Trivia/reducers/triviaReducer";
 import { reactionReducer } from "games/Reaction/reactionReducer";
 import { retrospectiveReducer } from "games/Retrospective/reducer";
-import { fistOfFiveReducer } from "games/FistOfFive/reducer";
 
 const gamesReducer = combineReducers({
   splat: splatReducer,
@@ -20,7 +19,6 @@ const gamesReducer = combineReducers({
   trivia: triviaReducer,
   reaction: reactionReducer,
   retrospective: retrospectiveReducer,
-  fistOfFive: fistOfFiveReducer,
 });
 
 export const rootReducer = combineReducers({

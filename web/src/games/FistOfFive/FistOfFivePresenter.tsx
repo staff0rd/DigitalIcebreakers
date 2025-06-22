@@ -1,26 +1,16 @@
 import { useEffect } from "react";
 import Typography from "@mui/material/Typography";
+import { Box } from "@mui/material";
 import { guid } from "util/guid";
 import { presenterMessage } from "store/lobby/actions";
 import { useDispatch } from "store/useSelector";
 import { ResponseCount } from "games/shared/Poll/components/ResponseCount";
-import { useQuestionState } from "games/Poll/useQuestionState";
-import { Name } from "./reducer";
-import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
 import { Buttons } from "./Buttons";
-import makeStyles from "@mui/styles/makeStyles";
 import { Responses } from "./Responses";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    padding: theme.spacing(3),
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "column",
-    height: "80%",
-  },
-}));
+import { useAtom } from "jotai";
+import { fistOfFiveAtom } from "./fistOfFiveAtoms";
+import { useSelector } from "react-redux";
+import { RootState } from "store/RootState";
 
 const getQuestion = () => [
   {
@@ -34,33 +24,58 @@ const getQuestion = () => [
   },
 ];
 
-const { importQuestionsAction } = presenterActions(Name);
-
 const FistOfFivePresenter = () => {
-  const classes = useStyles();
-
   const dispatch = useDispatch();
+  const [fistOfFiveState, setFistOfFiveState] = useAtom(fistOfFiveAtom);
+  const playerCount = useSelector((state: RootState) => state.lobby.players.length);
+  
+  const { presenter } = fistOfFiveState;
+  const question = presenter.questions[0];
+  
+  // Count responses from the question data
+  const responseCount = question?.responses?.length || 0;
 
   const canAnswer = true;
   useEffect(() => {
     dispatch(presenterMessage({ canAnswer }));
-    dispatch(importQuestionsAction(getQuestion()));
+    // Initialize with question structure
+    setFistOfFiveState(prev => ({
+      ...prev,
+      presenter: {
+        ...prev.presenter,
+        questions: getQuestion()
+      }
+    }));
     return () => {
       dispatch(presenterMessage({ canAnswer: false }));
     };
-  }, [canAnswer]);
+  }, []);
 
-  const { responseCount, showResponses, playerCount, question } =
-    useQuestionState(Name, (state) => ({
-      currentQuestionId: state.games.fistOfFive.presenter.currentQuestionId,
-      questions: state.games.fistOfFive.presenter.questions,
-      showResponses: state.games.fistOfFive.presenter.showResponses,
+  const handleReset = () => {
+    dispatch(presenterMessage({ action: "clearScores" }));
+    setFistOfFiveState(prev => ({
+      ...prev,
+      presenter: {
+        ...prev.presenter,
+        questions: getQuestion(),
+        showResponses: false
+      }
     }));
+  };
 
   return (
-    <div className={classes.root}>
+    <Box
+      sx={{
+        padding: 3,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "column",
+        height: "80%",
+      }}
+    >
       <Typography variant="h1">✊ ✋</Typography>
-      {showResponses ? (
+      {presenter.showResponses ? (
         question && <Responses question={question} />
       ) : (
         <ResponseCount
@@ -69,11 +84,11 @@ const FistOfFivePresenter = () => {
         />
       )}
       <Buttons
-        showResponses={showResponses}
-        reset={() => dispatch(importQuestionsAction(getQuestion()))}
+        showResponses={presenter.showResponses}
+        reset={handleReset}
         responses={question?.responses}
       />
-    </div>
+    </Box>
   );
 };
 
