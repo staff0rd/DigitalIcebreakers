@@ -3,7 +3,6 @@ import { connectionReducer } from "./connection/reducers";
 import { userReducer } from "./user/reducers";
 import { lobbyReducer } from "./lobby/reducers";
 import { shellReducer } from "./shell/reducers";
-import { splatReducer } from "games/Splat/SplatReducer";
 import { pongReducer } from "games/Pong/PongReducer";
 import { ideaWallReducer } from "games/IdeaWall/IdeaWallReducer";
 import { pollReducer } from "games/Poll/reducers/pollReducer";
@@ -12,7 +11,6 @@ import { reactionReducer } from "games/Reaction/reactionReducer";
 import { retrospectiveReducer } from "games/Retrospective/reducer";
 
 const gamesReducer = combineReducers({
-  splat: splatReducer,
   pong: pongReducer,
   ideawall: ideaWallReducer,
   poll: pollReducer,
