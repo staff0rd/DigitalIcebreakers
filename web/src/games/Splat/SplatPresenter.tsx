@@ -2,13 +2,15 @@ import { useState, useEffect } from "react";
 import { Colors, ColorUtils } from "../../Colors";
 import { between } from "../../Random";
 import { Pixi } from "../pixi/Pixi";
-import { useSelector } from "../../store/useSelector";
+import { useAtom } from "jotai";
+import { splatAtom } from "./splatAtoms";
 import * as PIXI from "pixi.js";
 
 const SplatPresenter = () => {
   const [app, setApp] = useState<PIXI.Application>();
 
-  const splats = useSelector((state) => state.games.splat.count);
+  const [splatState] = useAtom(splatAtom);
+  const splats = splatState.count;
 
   const draw = () => {
     if (app) {

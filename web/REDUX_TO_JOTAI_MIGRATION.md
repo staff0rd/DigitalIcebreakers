@@ -75,9 +75,9 @@ Incrementally migrate from Redux to Jotai using a strangler-fig pattern. Each mi
 
 7. **Splat** - Canvas interactions
 
-   - [ ] Create atoms
-   - [ ] Migrate components
-   - [ ] Test and remove reducer
+   - [x] Create atoms
+   - [x] Migrate components
+   - [x] Test and remove reducer
 
 8. **Pong** - Team assignments
 
@@ -226,6 +226,7 @@ Last updated: 2025-06-21
 ✅ Buzzer - Completed
 ✅ DoggosVsKittehs - Completed
 ✅ FistOfFive - Completed
+✅ Splat - Completed
 
 ### Lessons Learned from NamePicker Migration
 
