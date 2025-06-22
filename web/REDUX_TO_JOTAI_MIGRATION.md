@@ -68,10 +68,10 @@ Incrementally migrate from Redux to Jotai using a strangler-fig pattern. Each mi
 
 6. **FistOfFive** - Response tracking
 
-   - [ ] Create atoms
-   - [ ] Migrate components
-   - [ ] Run e2e tests (fist-of-five.spec.ts)
-   - [ ] Remove reducer
+   - [x] Create atoms
+   - [x] Migrate components
+   - [x] Run e2e tests (fist-of-five.spec.ts)
+   - [x] Remove reducer
 
 7. **Splat** - Canvas interactions
 
@@ -216,13 +216,16 @@ It should return the new state for the atom.
 
 ## Progress Tracking
 
-Last updated: 2025-06-20
+Last updated: 2025-06-21
 
 ### Current Status
 
 ✅ YesNoMaybe - Completed
 ✅ Broadcast - Completed
 ✅ NamePicker - Completed
+✅ Buzzer - Completed
+✅ DoggosVsKittehs - Completed
+✅ FistOfFive - Completed
 
 ### Lessons Learned from NamePicker Migration
 
@@ -283,6 +286,23 @@ Last updated: 2025-06-20
 4. **Type Safety**
    - Jotai atoms need proper TypeScript interfaces
    - The hybrid middleware needs careful typing to handle both systems
+
+### Lessons Learned from FistOfFive Migration
+
+1. **Message Handling Flexibility**
+   - SignalR messages can come in different formats depending on the source
+   - Presenter messages from clients may arrive as direct payloads without type wrapper
+   - Message handler should check for both `message.type` and handle direct payloads
+   - Pattern: Check if message has type property, otherwise infer from context
+
+2. **Shared Components Migration**
+   - FistOfFive reused PollClient, so created a new FistOfFiveClient using Jotai
+   - Custom Button component doesn't support sx prop - wrap content in Box instead
+   - Migrated makeStyles to sx props for better MUI v5 compatibility
+
+3. **Type Consistency**
+   - Ensured all IDs are strings (questionId, answerId) for consistency
+   - Response tracking requires proper typing for player responses
 
 ### Notes
 

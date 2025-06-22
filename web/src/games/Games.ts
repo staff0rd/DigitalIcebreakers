@@ -32,8 +32,8 @@ import EditQuestions from "./shared/Poll/components/EditQuestions";
 import EditQuestion from "./shared/Poll/components/EditQuestion";
 import { Name as IdeaWallName } from "./IdeaWall/IdeaWallReducer";
 import * as Retrospective from "./Retrospective";
-import { Name as FistOfFiveName } from "./FistOfFive/reducer";
 import FistOfFivePresenter from "./FistOfFive/FistOfFivePresenter";
+import FistOfFiveClient from "./FistOfFive/FistOfFiveClient";
 
 interface Game {
   name: string;
@@ -71,8 +71,8 @@ const games: Game[] = [
   {
     isNew: true,
     title: "Fist of Five",
-    name: FistOfFiveName,
-    client: PollClient,
+    name: "fist-of-five",
+    client: FistOfFiveClient,
     presenter: FistOfFivePresenter,
     description:
       "Quickly getting feedback or gauging consensus during a meeting",
