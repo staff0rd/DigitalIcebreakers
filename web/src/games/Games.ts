@@ -136,7 +136,6 @@ const games: Game[] = [
   {
     name: "pong",
     client: PongClient,
-    // @ts-expect-error TODO: broken by redux
     presenter: PongPresenter,
     menu: PongMenu,
     title: "Pong",
@@ -145,7 +144,6 @@ const games: Game[] = [
   {
     name: IdeaWallName,
     client: IdeaWallClient,
-    // @ts-expect-error TODO: broken by redux
     presenter: IdeaWallPresenter,
     menu: IdeaWallMenu,
     title: "Idea Wall",

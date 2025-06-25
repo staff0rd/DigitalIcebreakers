@@ -3,17 +3,15 @@ import * as PIXI from "pixi.js";
 import ReactAnimationFrame from "./ReactAnimationFrame";
 import { BaseGame, BaseGameProps } from "../BaseGame";
 import { between } from "../../Random";
-import { connect, ConnectedProps } from "react-redux";
 import { Pixi } from "../pixi/Pixi";
-import { RootState } from "../../store/RootState";
-import { rightScores, leftScores } from "./PongReducer";
-
-const connector = connect((state: RootState) => state.games.pong.presenter, {
-  rightScores,
-  leftScores,
-});
-
-type PropsFromRedux = ConnectedProps<typeof connector> & BaseGameProps;
+import { useAtom, useSetAtom } from "jotai";
+import { 
+  pongAtom, 
+  rightScoresAtom, 
+  leftScoresAtom 
+} from "./pongAtoms";
+import React from "react";
+import { Typography, Box } from "@mui/material";
 
 const defaultMaxBounceAngle = 45;
 
@@ -21,16 +19,29 @@ function getRadians(degrees: number) {
   return (degrees * Math.PI) / 180;
 }
 
-class PongPresenter extends BaseGame<PropsFromRedux, {}> {
+type PongPresenterProps = BaseGameProps & {
+  paddleHeight: number;
+  paddleWidth: number;
+  paddleSpeed: number;
+  ballSpeed: number;
+  score: number[];
+  leftSpeed: number;
+  rightSpeed: number;
+  leftTeam: number;
+  rightTeam: number;
+  rightScores: () => void;
+  leftScores: () => void;
+};
+
+class PongPresenterCore extends BaseGame<PongPresenterProps, {}> {
   app!: PIXI.Application;
-  score!: PIXI.Text;
   ballDx = 0;
   ballDy = 0;
   leftPaddle!: PIXI.Graphics;
   rightPaddle!: PIXI.Graphics;
   ball!: PIXI.Graphics;
 
-  constructor(props: PropsFromRedux) {
+  constructor(props: PongPresenterProps) {
     super(props);
     this.ballDx = props.ballSpeed;
     this.state = {
@@ -177,15 +188,7 @@ class PongPresenter extends BaseGame<PropsFromRedux, {}> {
         this.app.screen.height / 2
       );
 
-      this.score = new PIXI.Text(this.getScore(), {
-        fontSize: this.app.renderer.width / 15,
-        fill: Colors.Score,
-      });
-      this.score.anchor.set(0.5, 0);
-      this.score.position.set(this.app.screen.width / 2, 0);
-
       this.app.stage.addChild<PIXI.Container>(
-        this.score,
         this.leftPaddle,
         this.rightPaddle,
         this.ball
@@ -195,13 +198,8 @@ class PongPresenter extends BaseGame<PropsFromRedux, {}> {
     }
   }
 
-  getScore() {
-    return `${this.props.score[0]}-${this.props.score[1]}`;
-  }
-
-  componentDidUpdate(prevProps: PropsFromRedux) {
+  componentDidUpdate(prevProps: PongPresenterProps) {
     if (this.app) {
-      this.score.text = this.getScore();
       this.setPaddleSizes();
       if (prevProps.ballSpeed !== this.props.ballSpeed) {
         this.ballDx =
@@ -237,7 +235,22 @@ class PongPresenter extends BaseGame<PropsFromRedux, {}> {
 
   render() {
     return (
-      <>
+      <Box sx={{ position: "relative", height: "100vh", width: "100%" }}>
+        <Typography
+          variant="h2"
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: "50%",
+            transform: "translateX(-50%)",
+            color: "#" + Colors.Score.toString(16).padStart(6, "0"),
+            fontSize: "6rem",
+            fontWeight: "bold",
+            zIndex: 10,
+          }}
+        >
+          {this.props.score[0]}-{this.props.score[1]}
+        </Typography>
         <div style={{ display: "none" }}>
           <span id="red-team" data-count={this.props.rightTeam}></span>
           <span id="blue-team" data-count={this.props.leftTeam}></span>
@@ -246,9 +259,30 @@ class PongPresenter extends BaseGame<PropsFromRedux, {}> {
           backgroundColor={Colors.Background}
           onAppChange={(app) => this.init(app)}
         />
-      </>
+      </Box>
     );
   }
 }
 
-export default connector(ReactAnimationFrame(PongPresenter));
+// Wrapper component that uses Jotai hooks
+const PongPresenterWrapper = (props: BaseGameProps) => {
+  const [state] = useAtom(pongAtom);
+  const rightScores = useSetAtom(rightScoresAtom);
+  const leftScores = useSetAtom(leftScoresAtom);
+  
+  const presenterState = state.presenter;
+  
+  return (
+    <PongPresenterCore
+      {...props}
+      {...presenterState}
+      rightScores={rightScores}
+      leftScores={leftScores}
+    />
+  );
+};
+
+// Apply ReactAnimationFrame HOC to the wrapper
+const PongPresenter = ReactAnimationFrame(PongPresenterWrapper);
+
+export default PongPresenter;

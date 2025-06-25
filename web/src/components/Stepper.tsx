@@ -1,36 +1,8 @@
-import Button from "../layout/components/CustomButtons/Button";
-import { whiteColor } from "../layout/assets/jss/material-dashboard-react";
-import Grid from "@mui/material/GridLegacy";
-
-import makeStyles from "@mui/styles/makeStyles";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-
-const useStyles = makeStyles(() => ({
-  container: {
-    margin: "0px 6px",
-  },
-  stepper: {
-    width: "70px",
-  },
-  button: {
-    backgroundColor: "#9d9d9d",
-    fontSize: "15px",
-  },
-  label: {
-    textTransform: "uppercase",
-    color: whiteColor,
-    fontSize: "12px",
-    lineHeight: ".5em",
-  },
-  value: {
-    fontSize: "15px",
-    lineHeight: 1.42857143,
-    padding: "12px 30px",
-    background: "#535353",
-    borderRadius: "3px",
-    margin: ".3125rem 1px", // same as button
-  },
-}));
+import RemoveIcon from "@mui/icons-material/Remove";
+import AddIcon from "@mui/icons-material/Add";
 
 interface StepProps {
   label: string;
@@ -40,31 +12,78 @@ interface StepProps {
 }
 
 const Stepper = ({ label, step, value, setValue }: StepProps) => {
-  const classes = useStyles();
-
   const increaseValue = () => setValue(value + step);
 
   const decreaseValue = () => setValue(value - step);
 
   return (
-    <Grid container spacing={0}>
-      <Grid item xs={12}>
-        <Typography className={classes.label}>{label}</Typography>
-      </Grid>
-      <Grid item>
-        <Button className={classes.button} onClick={decreaseValue}>
-          &lt;
+    <Box>
+      <Typography
+        sx={{
+          textTransform: "uppercase",
+          color: "white",
+          fontSize: "12px",
+          lineHeight: ".5em",
+          mb: 1,
+        }}
+      >
+        {label}
+      </Typography>
+      <Box sx={{ display: "flex", alignItems: "stretch" }}>
+        <Button
+          variant="contained"
+          sx={{
+            backgroundColor: "#9d9d9d",
+            fontSize: "15px",
+            minWidth: "auto",
+            borderRadius: "3px 0 0 3px",
+            px: 2,
+            "&:hover": {
+              backgroundColor: "#8d8d8d",
+            },
+          }}
+          onClick={decreaseValue}
+          aria-label={`Decrease ${label}`}
+        >
+          <RemoveIcon />
         </Button>
-      </Grid>
-      <Grid item>
-        <Typography className={classes.value}>{value}</Typography>
-      </Grid>
-      <Grid item>
-        <Button className={classes.button} onClick={increaseValue}>
-          &gt;
+        <Box
+          sx={{
+            fontSize: "15px",
+            lineHeight: 1.42857143,
+            padding: 1.5,
+            background: "#535353",
+            borderRadius: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "white",
+            pointerEvents: "none",
+            userSelect: "none",
+            minWidth: "80px",
+          }}
+        >
+          {value}
+        </Box>
+        <Button
+          variant="contained"
+          sx={{
+            backgroundColor: "#9d9d9d",
+            fontSize: "15px",
+            minWidth: "auto",
+            borderRadius: "0 3px 3px 0",
+            px: 2,
+            "&:hover": {
+              backgroundColor: "#8d8d8d",
+            },
+          }}
+          onClick={increaseValue}
+          aria-label={`Increase ${label}`}
+        >
+          <AddIcon />
         </Button>
-      </Grid>
-    </Grid>
+      </Box>
+    </Box>
   );
 };
 
