@@ -81,10 +81,10 @@ Incrementally migrate from Redux to Jotai using a strangler-fig pattern. Each mi
 
 8. **Pong** - Team assignments
 
-   - [ ] Create atoms
-   - [ ] Migrate components
-   - [ ] Run e2e tests (pong.spec.ts)
-   - [ ] Remove reducer
+   - [x] Create atoms
+   - [x] Migrate components
+   - [x] Run e2e tests (pong.spec.ts)
+   - [x] Remove reducer
 
 9. **Reaction** - Shape tracking
    - [ ] Create atoms
@@ -216,7 +216,7 @@ It should return the new state for the atom.
 
 ## Progress Tracking
 
-Last updated: 2025-06-21
+Last updated: 2025-06-24
 
 ### Current Status
 
@@ -227,6 +227,7 @@ Last updated: 2025-06-21
 ✅ DoggosVsKittehs - Completed
 ✅ FistOfFive - Completed
 ✅ Splat - Completed
+✅ Pong - Completed
 
 ### Lessons Learned from NamePicker Migration
 
@@ -304,6 +305,28 @@ Last updated: 2025-06-21
 3. **Type Consistency**
    - Ensured all IDs are strings (questionId, answerId) for consistency
    - Response tracking requires proper typing for player responses
+
+### Lessons Learned from Pong Migration
+
+1. **GameMessage Wrapper Structure**
+   - Redux implementation wraps presenter messages in a `GameMessage` structure with a `payload` field
+   - Message handler needs to handle both wrapped (`message.payload`) and unwrapped formats
+   - Pattern: `const payload = message.payload || message;` for backward compatibility
+
+2. **Combined State Pattern**
+   - Successfully used combined atom pattern with client and presenter states in single atom
+   - Action atoms for presenter-specific actions (score updates, paddle settings)
+   - Message handler routes messages based on `isPresenter` flag
+
+3. **Class Component Migration**
+   - Used wrapper component pattern to migrate class components with HOCs
+   - Wrapper uses hooks and passes props to the core class component
+   - ReactAnimationFrame HOC applied to the wrapper component
+
+4. **Testing Considerations**
+   - E2E tests may fail if message format expectations don't match
+   - Need to properly type message handlers in tests using `GameAtomWithHandler<StateType>`
+   - Some component tests may be difficult to mock during migration if they still use Redux for actions
 
 ### Notes
 

@@ -1,54 +1,59 @@
 import Button from "../../layout/components/CustomButtons/Button";
 import Stepper from "../../components/Stepper";
+import { useAtom, useSetAtom } from "jotai";
 import {
-  resetScores,
-  setPaddleHeight,
-  setPaddleWidth,
-  setPaddleSpeed,
-  setBallSpeed,
-} from "./PongReducer";
-import { useDispatch } from "store/useSelector";
-import { useSelector } from "../../store/useSelector";
+  pongAtom,
+  resetScoresAtom,
+  setPaddleHeightAtom,
+  setPaddleWidthAtom,
+  setPaddleSpeedAtom,
+  setBallSpeedAtom,
+} from "./pongAtoms";
 import { ListItem } from "@mui/material";
 
 const PongMenu = () => {
-  const dispatch = useDispatch();
-  const state = useSelector((state) => state.games.pong.presenter);
+  const [state] = useAtom(pongAtom);
+  const resetScores = useSetAtom(resetScoresAtom);
+  const setPaddleHeight = useSetAtom(setPaddleHeightAtom);
+  const setPaddleWidth = useSetAtom(setPaddleWidthAtom);
+  const setPaddleSpeed = useSetAtom(setPaddleSpeedAtom);
+  const setBallSpeed = useSetAtom(setBallSpeedAtom);
+  
   return (
     <>
       <ListItem>
-        <Button onClick={() => dispatch(resetScores())}>Reset score</Button>
+        <Button onClick={() => resetScores()}>Reset score</Button>
       </ListItem>
       <ListItem>
         <Stepper
           label="Paddle height"
           step={1}
-          value={state.paddleHeight}
-          setValue={(value) => dispatch(setPaddleHeight(value))}
+          value={state.presenter.paddleHeight}
+          setValue={(value) => setPaddleHeight(value)}
         />
       </ListItem>
       <ListItem>
         <Stepper
           label="Paddle width"
           step={-5}
-          value={state.paddleWidth}
-          setValue={(value) => dispatch(setPaddleWidth(value))}
+          value={state.presenter.paddleWidth}
+          setValue={(value) => setPaddleWidth(value)}
         />
       </ListItem>
       <ListItem>
         <Stepper
           label="Paddle speed"
           step={25}
-          value={state.paddleSpeed}
-          setValue={(value) => dispatch(setPaddleSpeed(value))}
+          value={state.presenter.paddleSpeed}
+          setValue={(value) => setPaddleSpeed(value)}
         />
       </ListItem>
       <ListItem>
         <Stepper
           label="Ball speed"
           step={1}
-          value={state.ballSpeed}
-          setValue={(value) => dispatch(setBallSpeed(value))}
+          value={state.presenter.ballSpeed}
+          setValue={(value) => setBallSpeed(value)}
         />
       </ListItem>
     </>

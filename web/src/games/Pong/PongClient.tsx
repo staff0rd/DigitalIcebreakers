@@ -1,80 +1,68 @@
-import { useState, useEffect } from "react";
-import { Button } from "../pixi/Button";
-import { PongColors as Colors } from "./PongColors";
-import { Pixi } from "../pixi/Pixi";
-import * as PIXI from "pixi.js";
+import { Button, Box } from "@mui/material";
 import { useDispatch } from "store/useSelector";
 import { clientMessage } from "../../store/lobby/actions";
-import { useResizeListener } from "../pixi/useResizeListener";
-import { useSelector } from "../../store/useSelector";
+import { useAtom } from "jotai";
+import { pongAtom } from "./pongAtoms";
+import { ColorUtils } from "../../Colors";
 
 export const PongClient = () => {
-  const [app, setApp] = useState<PIXI.Application>();
-  const { pressedColor, releasedColor, team } = useSelector(
-    (state) => state.games.pong.client
-  );
+  const [state] = useAtom(pongAtom);
+  const { releasedColor, team } = state.client;
   const dispatch = useDispatch();
 
-  const message = (action: string) => () => dispatch(clientMessage(action));
-
-  const appHandler = (newApp?: PIXI.Application) => {
-    if (newApp) {
-      setApp(newApp);
-    }
-    resize();
+  const handleMouseDown = (action: string) => () => {
+    dispatch(clientMessage(action));
   };
 
-  const resize = () => {
-    if (app) {
-      console.log("sizing buttons");
-      app.stage.removeChildren();
-
-      const topButton = new Button(message("release"), message("up"));
-      const bottomButton = new Button(message("release"), message("down"));
-
-      const width = app.screen.width / 2;
-
-      topButton.x = app.screen.width / 4;
-      topButton.y = app.screen.height / 8;
-      topButton.render(
-        releasedColor,
-        pressedColor,
-        0,
-        0,
-        width,
-        (app.screen.height / 16) * 5
-      );
-
-      bottomButton.x = app.screen.width / 4;
-      bottomButton.y = (app.screen.height / 16) * 9;
-      bottomButton.render(
-        releasedColor,
-        pressedColor,
-        0,
-        0,
-        width,
-        (app.screen.height / 16) * 5
-      );
-
-      app.stage.addChild(topButton, bottomButton);
-
-      console.log("button width: " + width);
-    }
+  const handleMouseUp = () => {
+    dispatch(clientMessage("release"));
   };
 
-  useEffect(resize, [app, team]);
-
-  useResizeListener(resize);
+  const buttonStyle = {
+    backgroundColor: ColorUtils.toHtml(releasedColor),
+    height: "40vh",
+    width: "80%",
+    fontSize: "2rem",
+    "&:hover": {
+      backgroundColor: ColorUtils.toHtml(releasedColor),
+    },
+  };
 
   return (
-    <>
+    <Box
+      sx={{
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#000",
+        gap: "10vh", // Same gap between buttons as from edges
+        padding: "10vh 0",
+        boxSizing: "border-box",
+      }}
+    >
       <div style={{ display: "none" }} data-testid="team">
         {team}
       </div>
-      <Pixi
-        backgroundColor={Colors.ClientBackground}
-        onAppChange={appHandler}
+      <Button
+        variant="contained"
+        onMouseDown={handleMouseDown("up")}
+        onMouseUp={handleMouseUp}
+        onTouchStart={handleMouseDown("up")}
+        onTouchEnd={handleMouseUp}
+        sx={buttonStyle}
+        aria-label="up"
       />
-    </>
+      <Button
+        variant="contained"
+        onMouseDown={handleMouseDown("down")}
+        onMouseUp={handleMouseUp}
+        onTouchStart={handleMouseDown("down")}
+        onTouchEnd={handleMouseUp}
+        sx={buttonStyle}
+        aria-label="down"
+      />
+    </Box>
   );
 };
