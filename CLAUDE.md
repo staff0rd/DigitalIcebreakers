@@ -21,7 +21,7 @@ I follow Test-Driven Development (TDD) with a strong emphasis on behavior-driven
 **Preferred Tools:**
 
 - **Language**: TypeScript (strict mode)
-- **Testing**: Jest/Vitest + React Testing Library
+- **Testing**: Vitest + React Testing Library
 - **State Management**: Prefer immutable patterns
 
 ## Testing Principles
@@ -37,21 +37,10 @@ I follow Test-Driven Development (TDD) with a strong emphasis on behavior-driven
 
 ### Testing Tools
 
-- **Jest** or **Vitest** for testing frameworks
+- **Vitest** for testing frameworks
 - **React Testing Library** for React components
 - **MSW (Mock Service Worker)** for API mocking when needed
 - All test code must follow the same TypeScript strict mode rules as production code
-
-### Test Organization
-
-```
-src/
-  features/
-    payment/
-      payment-processor.ts
-      payment-validator.ts
-      payment-processor.test.ts // The validator is an implementation detail. Validation is fully covered, but by testing the expected business behaviour, treating the validation code itself as an implementation detail
-```
 
 ### Test Structure Best Practices
 
@@ -63,7 +52,7 @@ describe("PaymentProcessor", () => {
   it("should decline payment when insufficient funds", () => {
     // ...
   });
-  
+
   it("should process payment when funds are sufficient", () => {
     // ...
   });
@@ -76,7 +65,7 @@ describe("PaymentProcessor", () => {
       // ...
     });
   });
-  
+
   describe("when funds are sufficient", () => {
     it("should process payment", () => {
       // ...
@@ -86,6 +75,7 @@ describe("PaymentProcessor", () => {
 ```
 
 **Key principles for test structure:**
+
 - If your test name contains "when" or describes initial state, that context belongs in a `describe` block
 - Each test should verify ONE unique business rule - no duplication
 - Use `beforeEach` to set up shared context within a describe block
@@ -197,8 +187,6 @@ Key principles:
 - **Prefer `type` over `interface`** in all cases
 - Use explicit typing where it aids clarity, but leverage inference where appropriate
 - Utilize utility types effectively (`Pick`, `Omit`, `Partial`, `Required`, etc.)
-- Create domain-specific types (e.g., `UserId`, `PaymentId`) for type safety
-- Use Zod or any other [Standard Schema](https://standardschema.dev/) compliant schema library to create types, by creating schemas first
 
 ```typescript
 // Good
@@ -208,120 +196,6 @@ type PaymentAmount = number & { readonly brand: unique symbol };
 // Avoid
 type UserId = string;
 type PaymentAmount = number;
-```
-
-#### Schema-First Development with Zod
-
-Always define your schemas first, then derive types from them:
-
-```typescript
-import { z } from "zod";
-
-// Define schemas first - these provide runtime validation
-const AddressDetailsSchema = z.object({
-  houseNumber: z.string(),
-  houseName: z.string().optional(),
-  addressLine1: z.string().min(1),
-  addressLine2: z.string().optional(),
-  city: z.string().min(1),
-  postcode: z.string().regex(/^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$/i),
-});
-
-const PayingCardDetailsSchema = z.object({
-  cvv: z.string().regex(/^\d{3,4}$/),
-  token: z.string().min(1),
-});
-
-const PostPaymentsRequestV3Schema = z.object({
-  cardAccountId: z.string().length(16),
-  amount: z.number().positive(),
-  source: z.enum(["Web", "Mobile", "API"]),
-  accountStatus: z.enum(["Normal", "Restricted", "Closed"]),
-  lastName: z.string().min(1),
-  dateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  payingCardDetails: PayingCardDetailsSchema,
-  addressDetails: AddressDetailsSchema,
-  brand: z.enum(["Visa", "Mastercard", "Amex"]),
-});
-
-// Derive types from schemas
-type AddressDetails = z.infer<typeof AddressDetailsSchema>;
-type PayingCardDetails = z.infer<typeof PayingCardDetailsSchema>;
-type PostPaymentsRequestV3 = z.infer<typeof PostPaymentsRequestV3Schema>;
-
-// Use schemas at runtime boundaries
-export const parsePaymentRequest = (data: unknown): PostPaymentsRequestV3 => {
-  return PostPaymentsRequestV3Schema.parse(data);
-};
-
-// Example of schema composition for complex domains
-const BaseEntitySchema = z.object({
-  id: z.string().uuid(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-});
-
-const CustomerSchema = BaseEntitySchema.extend({
-  email: z.string().email(),
-  tier: z.enum(["standard", "premium", "enterprise"]),
-  creditLimit: z.number().positive(),
-});
-
-type Customer = z.infer<typeof CustomerSchema>;
-```
-
-#### Schema Usage in Tests
-
-**CRITICAL**: Tests must use real schemas and types from the main project, not redefine their own.
-
-```typescript
-// ❌ WRONG - Defining schemas in test files
-const ProjectSchema = z.object({
-  id: z.string(),
-  workspaceId: z.string(),
-  ownerId: z.string().nullable(),
-  name: z.string(),
-  createdAt: z.coerce.date(),
-  updatedAt: z.coerce.date(),
-});
-
-// ✅ CORRECT - Import schemas from the shared schema package
-import { ProjectSchema, type Project } from "@your-org/schemas";
-```
-
-**Why this matters:**
-
-- **Type Safety**: Ensures tests use the same types as production code
-- **Consistency**: Changes to schemas automatically propagate to tests
-- **Maintainability**: Single source of truth for data structures
-- **Prevents Drift**: Tests can't accidentally diverge from real schemas
-
-**Implementation:**
-
-- All domain schemas should be exported from a shared schema package or module
-- Test files should import schemas from the shared location
-- If a schema isn't exported yet, add it to the exports rather than duplicating it
-- Mock data factories should use the real types derived from real schemas
-
-```typescript
-// ✅ CORRECT - Test factories using real schemas
-import { ProjectSchema, type Project } from "@your-org/schemas";
-
-const getMockProject = (overrides?: Partial<Project>): Project => {
-  const baseProject = {
-    id: "proj_123",
-    workspaceId: "ws_456",
-    ownerId: "user_789",
-    name: "Test Project",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
-
-  const projectData = { ...baseProject, ...overrides };
-
-  // Validate against real schema to catch type mismatches
-  return ProjectSchema.parse(projectData);
-};
 ```
 
 ## Code Style
@@ -1112,26 +986,6 @@ const applyDiscount = (price: number, discountRate: number): number => {
 // git commit -m "feat: add discount calculation"
 ```
 
-### Commit Guidelines
-
-- Each commit should represent a complete, working change
-- Use conventional commits format:
-  ```
-  feat: add payment validation
-  fix: correct date formatting in payment processor
-  refactor: extract payment validation logic
-  test: add edge cases for payment validation
-  ```
-- Include test changes with feature changes in the same commit
-
-### Pull Request Standards
-
-- Every PR must have all tests passing
-- All linting and quality checks must pass
-- Work in small increments that maintain a working state
-- PRs should be focused on a single feature or fix
-- Include description of the behavior change, not implementation details
-
 ## Working with Claude
 
 ### Expectations
@@ -1416,13 +1270,14 @@ When migrating from Redux to Jotai or other state management solutions:
 2. **Migrate tests to component level** - Test through the UI components that display the state
 3. **Keep messaging infrastructure separate** - If Redux is used for server communication (like `dispatch(clientMessage)`), keep it until that's migrated
 4. **Test structure example:**
+
    ```typescript
    // ❌ WRONG - Testing state implementation
    it("should update team to blue when receiving team:0 message", () => {
      const newState = reducer(initialState, { type: "SET_TEAM", payload: 0 });
      expect(newState.team).toBe("blue");
    });
-   
+
    // ✅ CORRECT - Testing user-visible behavior
    describe("when player is assigned to blue team", () => {
      it("should display blue control buttons", () => {
