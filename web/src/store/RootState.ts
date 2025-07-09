@@ -5,14 +5,12 @@ import { ShellState } from "./shell/types";
 import { IdeaWallState } from "../games/IdeaWall/IdeaWallReducer";
 import { PollState } from "../games/shared/Poll/types/State";
 import { TriviaState } from "games/shared/Poll/types/State";
-import { ReactionState } from "games/Reaction/reactionReducer";
 import { RetrospectiveState } from "games/Retrospective/reducer";
 
 export interface GamesState {
   ideawall: IdeaWallState;
   poll: PollState;
   trivia: TriviaState;
-  reaction: ReactionState;
   retrospective: RetrospectiveState;
 }
 

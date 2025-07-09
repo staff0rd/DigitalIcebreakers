@@ -6,14 +6,12 @@ import { shellReducer } from "./shell/reducers";
 import { ideaWallReducer } from "games/IdeaWall/IdeaWallReducer";
 import { pollReducer } from "games/Poll/reducers/pollReducer";
 import { triviaReducer } from "games/Trivia/reducers/triviaReducer";
-import { reactionReducer } from "games/Reaction/reactionReducer";
 import { retrospectiveReducer } from "games/Retrospective/reducer";
 
 const gamesReducer = combineReducers({
   ideawall: ideaWallReducer,
   poll: pollReducer,
   trivia: triviaReducer,
-  reaction: reactionReducer,
   retrospective: retrospectiveReducer,
 });
 

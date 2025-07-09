@@ -1,73 +1,153 @@
 import { Colors } from "../../Colors";
 import { Shape } from "./Shape";
-import * as PIXI from "pixi.js";
-import { drawShape } from "./ShapeView";
-import { Pixi } from "../pixi/Pixi";
-import { useDispatch } from "store/useSelector";
+import { ShapeType } from "./ShapeType";
+import { useAtomValue, useSetAtom } from "jotai";
 import { clientMessage } from "../../store/lobby/actions";
-import { useEffect, useState } from "react";
-import { RootState } from "store/RootState";
-import { useResizeListener } from "games/pixi/useResizeListener";
-import { useSelector } from "store/useSelector";
-import { selectShape } from "./reactionReducer";
+import { useDispatch } from "store/useSelector";
+import { reactionAtom, selectShapeAtom } from "./atoms";
+import { Box } from "@mui/material";
+
+const getShapeColor = (color: number) => {
+  return `#${color.toString(16).padStart(6, '0')}`;
+};
+
+const ShapeComponent = ({ shape, isSelected, isDisabled, onSelect }: {
+  shape: Shape;
+  isSelected: boolean;
+  isDisabled: boolean;
+  onSelect: (id: number) => void;
+}) => {
+  const shapeColor = getShapeColor(shape.color);
+  const opacity = isDisabled && !isSelected ? 0.5 : 1;
+  const borderColor = isSelected ? getShapeColor(Colors.BlueGrey.C900) : 'transparent';
+  
+  let shapeElement;
+  const size = 120;
+  
+  switch (shape.type) {
+    case ShapeType.Circle:
+      shapeElement = (
+        <div
+          style={{
+            width: size,
+            height: size,
+            borderRadius: '50%',
+            backgroundColor: shapeColor,
+            opacity,
+            border: `5px solid ${borderColor}`,
+            cursor: isDisabled ? 'default' : 'pointer',
+          }}
+          data-testid={`shape-${shape.id}`}
+          data-shape-type="circle"
+          data-selected={isSelected}
+          onClick={() => !isDisabled && onSelect(shape.id)}
+        />
+      );
+      break;
+    case ShapeType.Triangle:
+      shapeElement = (
+        <div
+          style={{
+            width: 0,
+            height: 0,
+            borderLeft: `${size / 2}px solid transparent`,
+            borderRight: `${size / 2}px solid transparent`,
+            borderBottom: `${size}px solid ${shapeColor}`,
+            opacity,
+            cursor: isDisabled ? 'default' : 'pointer',
+            position: 'relative',
+          }}
+          data-testid={`shape-${shape.id}`}
+          data-shape-type="triangle"
+          data-selected={isSelected}
+          onClick={() => !isDisabled && onSelect(shape.id)}
+        >
+          {isSelected && (
+            <div
+              style={{
+                position: 'absolute',
+                top: -5,
+                left: -5,
+                width: 0,
+                height: 0,
+                borderLeft: `${size / 2 + 5}px solid transparent`,
+                borderRight: `${size / 2 + 5}px solid transparent`,
+                borderBottom: `${size + 10}px solid ${borderColor}`,
+                zIndex: -1,
+              }}
+            />
+          )}
+        </div>
+      );
+      break;
+    case ShapeType.Square:
+      shapeElement = (
+        <div
+          style={{
+            width: size,
+            height: size,
+            backgroundColor: shapeColor,
+            opacity,
+            border: `5px solid ${borderColor}`,
+            cursor: isDisabled ? 'default' : 'pointer',
+          }}
+          data-testid={`shape-${shape.id}`}
+          data-shape-type="square"
+          data-selected={isSelected}
+          onClick={() => !isDisabled && onSelect(shape.id)}
+        />
+      );
+      break;
+    default:
+      shapeElement = null;
+  }
+  
+  return shapeElement;
+};
 
 export const ReactionPlayer = () => {
-  const [pixi, setPixi] = useState<PIXI.Application>();
   const dispatch = useDispatch();
-  const { shapes, selectedId } = useSelector(
-    (state: RootState) => state.games.reaction.player
-  );
+  const reactionState = useAtomValue(reactionAtom);
+  const selectShape = useSetAtom(selectShapeAtom);
+  const { shapes, selectedId } = reactionState.player;
 
   const select = (id: number) => {
     dispatch(clientMessage(id));
-    dispatch(selectShape(id));
-    resize();
+    selectShape(id);
   };
-
-  const draw = (shape: Shape, radius: number, leftOffset = radius) => {
-    const g = new PIXI.Graphics();
-    let alpha = 1;
-    if (selectedId === null) {
-      g.on("pointerdown", () => select(shape.id));
-      g.cursor = "pointer";
-      g.interactive = true;
-    } else alpha = 0.5;
-    if (selectedId === shape.id) {
-      g.lineStyle(5, Colors.BlueGrey.C900);
-      alpha = 1;
-    }
-    g.beginFill(shape.color, alpha);
-
-    return drawShape(g, shape.type, leftOffset, radius, radius).endFill();
-  };
-
-  const resize = () => {
-    if (pixi) {
-      console.log("performing layout");
-      pixi.stage.removeChildren();
-      const margin = 25;
-      const radius = Math.min(
-        (pixi.screen.width - 3 * margin) / 4,
-        (pixi.screen.height - (shapes.length / 2 + 1) * margin) / 6
-      );
-      for (let i = 0; i < shapes.length; i += 2) {
-        const g1 = draw(shapes[i], radius);
-        const g2 = draw(shapes[i + 1], radius, radius * 3 + margin);
-        const container = new PIXI.Container();
-        container.addChild(g1, g2);
-        container.position.set(
-          pixi.screen.width / 2 - container.width / 2,
-          margin + (i / 2) * (radius * 2 + margin)
-        );
-        pixi.stage.addChild(container);
-      }
-    }
-  };
-
-  useResizeListener(resize);
-  useEffect(resize, [pixi, shapes, selectedId]);
 
   return (
-    <Pixi backgroundColor={Colors.White} onAppChange={(app) => setPixi(app)} />
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '100vh',
+        backgroundColor: getShapeColor(Colors.White),
+        gap: 3,
+        padding: 2,
+      }}
+      data-testid="reaction-client"
+    >
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',
+          gap: 3,
+          maxWidth: '400px',
+        }}
+      >
+        {shapes.map((shape) => (
+          <ShapeComponent
+            key={shape.id}
+            shape={shape}
+            isSelected={selectedId === shape.id}
+            isDisabled={selectedId !== undefined}
+            onSelect={select}
+          />
+        ))}
+      </Box>
+    </Box>
   );
 };

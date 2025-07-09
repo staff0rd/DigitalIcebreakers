@@ -13,10 +13,12 @@ Incrementally migrate from Redux to Jotai using a strangler-fig pattern. Each mi
 ### Approach
 
 1. Start with the simplest, most isolated game reducers
-2. For each migration:
+2. For each migration (following strict TDD):
    - Install Jotai if not already installed
-   - Create atoms to replace the reducer
+   - **FIRST**: Write failing BDD tests that describe the desired behavior with Jotai atoms
+   - Create atoms to make the tests pass (minimum implementation)
    - Update components to use Jotai atoms instead of Redux
+   - Refactor and ensure all tests pass
    - Verify with e2e tests, add new tests if necessary
    - Remove the Redux reducer
    - Write any approach modifications or lessons learned in this document - only do this if it will affect future migration steps
@@ -87,9 +89,10 @@ Incrementally migrate from Redux to Jotai using a strangler-fig pattern. Each mi
    - [x] Remove reducer
 
 9. **Reaction** - Shape tracking
-   - [ ] Create atoms
-   - [ ] Migrate components
-   - [ ] Test and remove reducer
+   - [x] Convert PIXI.js components to React DOM elements
+   - [x] Write BDD tests for Jotai behavior
+   - [x] Create minimal atoms to make behavior tests pass
+   - [x] Remove Redux reducer after all tests pass
 
 #### Phase 3: Complex Games
 
@@ -165,14 +168,83 @@ Incrementally migrate from Redux to Jotai using a strangler-fig pattern. Each mi
     - [ ] Remove all Redux-related files
     - [ ] Update documentation
 
+## TDD Compliance for Migrations
+
+**CRITICAL**: All migrations must follow strict TDD principles:
+
+### Test-First Approach
+
+1. **Test Existing Redux Behavior**: First write BDD tests that verify current Redux components work correctly
+2. **Convert to Jotai Expectations**: Modify tests to expect the same behavior but using Jotai patterns
+3. **Minimal Implementation**: Write only the atoms needed to make behavior tests pass
+4. **Never Test Internal State**: Focus on user interactions and observable outcomes
+
+### Test Structure for Component Migration
+
+```typescript
+// CORRECT: Test component behavior, not atoms
+describe('Reaction game', () => {
+  describe('player interactions', () => {
+    it('should allow player to click on shapes', () => {
+      // Test clicking behavior and visual feedback
+    });
+    
+    it('should show selected shape visually', () => {
+      // Test UI changes when shape is selected
+    });
+  });
+  
+  describe('presenter controls', () => {
+    it('should display shapes when round starts', () => {
+      // Test presenter view updates
+    });
+    
+    it('should show correct scores after round ends', () => {
+      // Test score display behavior
+    });
+  });
+});
+```
+
+### WRONG Examples to Avoid
+
+```typescript
+// WRONG: Testing atoms directly
+import { reactionAtom } from './atoms';
+it('should update atom when called', () => {
+  // This tests implementation, not behavior
+});
+
+// WRONG: Testing reducers/state management
+it('should return new state when action is dispatched', () => {
+  // This tests internal implementation
+});
+```
+
+### Factory Functions
+
+Create reusable factory functions for test data:
+
+```typescript
+// Create factory functions instead of duplicating setup
+function createMockShapes(overrides: Partial<Shape>[] = []): Shape[] {
+  // Return sensible defaults with overrides
+}
+
+function createMockPlayers(count: number = 2): Player[] {
+  // Return mock players
+}
+```
+
 ## Verification Strategy
 
 For each migration:
 
-1. Run `npm run check-types`
-2. Run relevant e2e tests: `npm run e2e -- <test-file>`
-3. Manual testing with presenter + player windows
-4. Add React Testing Library tests if e2e coverage is insufficient
+1. **TDD Cycle**: Ensure all tests fail first, then pass after implementation
+2. Run `npm run check-types`
+3. Run relevant e2e tests: `npm run e2e -- <test-file>`
+4. Manual testing with presenter + player windows
+5. Add React Testing Library tests if e2e coverage is insufficient
 
 ## Success Criteria
 
@@ -228,6 +300,7 @@ Last updated: 2025-06-24
 ✅ FistOfFive - Completed
 ✅ Splat - Completed
 ✅ Pong - Completed
+✅ Reaction - Completed
 
 ### Lessons Learned from NamePicker Migration
 
