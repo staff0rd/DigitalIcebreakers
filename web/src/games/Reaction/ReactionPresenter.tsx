@@ -3,81 +3,189 @@ import { Shape } from "./Shape";
 import { Colors, ColorUtils } from "../../Colors";
 import { ShapeType } from "./ShapeType";
 import { shuffle } from "../../Random";
-import * as PIXI from "pixi.js";
-import { ShapeView } from "./ShapeView";
 import { gsap } from "gsap";
 import { useDispatch } from "store/useSelector";
 import { presenterMessage } from "store/lobby/actions";
 import Button from "../../layout/components/CustomButtons/Button";
 import Table from "../../layout/components/Table/Table";
-import { Pixi } from "../pixi/Pixi";
 import { RootState } from "../../store/RootState";
 import { ContentContainer } from "../../components/ContentContainer";
 import { useSelector } from "store/useSelector";
 import AutoRenewIcon from "@mui/icons-material/Autorenew";
+import { useAtomValue, useSetAtom } from "jotai";
 import {
-  startRoundAction,
-  toggleAutoAgainAction,
-  getPlayerName,
-  endRoundAction,
-} from "./reactionReducer";
-import { useResizeListener } from "games/pixi/useResizeListener";
+  reactionAtom,
+  startRoundAtom,
+  endRoundAtom,
+  toggleAutoAgainAtom,
+} from "./atoms";
 import { useTimeout } from "util/useTimeout";
+import { Box, Typography } from "@mui/material";
+
+const getShapeColor = (color: number) => {
+  return `#${color.toString(16).padStart(6, '0')}`;
+};
+
+const PresenterShapeComponent = ({ shape, choiceCount, firstPlayerName, isMainShape }: {
+  shape: Shape;
+  choiceCount: number;
+  firstPlayerName: string;
+  isMainShape: boolean;
+}) => {
+  const shapeColor = getShapeColor(shape.color);
+  const size = isMainShape ? 200 : 80;
+  
+  let shapeElement;
+  
+  switch (shape.type) {
+    case ShapeType.Circle:
+      shapeElement = (
+        <div
+          style={{
+            width: size,
+            height: size,
+            borderRadius: '50%',
+            backgroundColor: shapeColor,
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          data-testid={`presenter-shape-${shape.id}`}
+          data-shape-type="circle"
+          data-choice-count={choiceCount}
+          data-first-player={firstPlayerName}
+        >
+          {!isMainShape && choiceCount > 0 && (
+            <Typography variant="h6" color="white" fontWeight="bold">
+              {choiceCount}
+            </Typography>
+          )}
+          {!isMainShape && firstPlayerName && (
+            <Typography 
+              variant="caption" 
+              color="black"
+              sx={{ position: 'absolute', bottom: -20, fontSize: '10px', fontWeight: 'bold' }}
+            >
+              {firstPlayerName}
+            </Typography>
+          )}
+        </div>
+      );
+      break;
+    case ShapeType.Triangle:
+      shapeElement = (
+        <div
+          style={{
+            width: 0,
+            height: 0,
+            borderLeft: `${size / 2}px solid transparent`,
+            borderRight: `${size / 2}px solid transparent`,
+            borderBottom: `${size}px solid ${shapeColor}`,
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          data-testid={`presenter-shape-${shape.id}`}
+          data-shape-type="triangle"
+          data-choice-count={choiceCount}
+          data-first-player={firstPlayerName}
+        >
+          {!isMainShape && choiceCount > 0 && (
+            <Typography 
+              variant="h6" 
+              color="white" 
+              fontWeight="bold"
+              sx={{ 
+                position: 'absolute', 
+                top: size * 0.4, 
+                left: '50%', 
+                transform: 'translateX(-50%)',
+                textAlign: 'center'
+              }}
+            >
+              {choiceCount}
+            </Typography>
+          )}
+          {!isMainShape && firstPlayerName && (
+            <Typography 
+              variant="caption" 
+              color="black"
+              sx={{ 
+                position: 'absolute', 
+                top: size + 10, 
+                fontSize: '10px', 
+                left: '50%', 
+                transform: 'translateX(-50%)',
+                textAlign: 'center',
+                fontWeight: 'bold',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              {firstPlayerName}
+            </Typography>
+          )}
+        </div>
+      );
+      break;
+    case ShapeType.Square:
+      shapeElement = (
+        <div
+          style={{
+            width: size,
+            height: size,
+            backgroundColor: shapeColor,
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          data-testid={`presenter-shape-${shape.id}`}
+          data-shape-type="square"
+          data-choice-count={choiceCount}
+          data-first-player={firstPlayerName}
+        >
+          {!isMainShape && choiceCount > 0 && (
+            <Typography variant="h6" color="white" fontWeight="bold">
+              {choiceCount}
+            </Typography>
+          )}
+          {!isMainShape && firstPlayerName && (
+            <Typography 
+              variant="caption" 
+              color="black"
+              sx={{ position: 'absolute', bottom: -20, fontSize: '10px', fontWeight: 'bold' }}
+            >
+              {firstPlayerName}
+            </Typography>
+          )}
+        </div>
+      );
+      break;
+    default:
+      shapeElement = null;
+  }
+  
+  return shapeElement;
+};
 
 export const ReactionPresenter = () => {
-  const [pixi, setPixi] = useState<PIXI.Application>();
   const [againTween, setAgainTween] = useState<gsap.core.Tween>();
   const players = useSelector((state: RootState) => state.lobby.players);
   const againProgress = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();
-  const { shape, shapes, scores, showScores, autoAgain, choices } = useSelector(
-    (state: RootState) => state.games.reaction.presenter
-  );
+  const reactionState = useAtomValue(reactionAtom);
+  const startRound = useSetAtom(startRoundAtom);
+  const endRound = useSetAtom(endRoundAtom);
+  const toggleAutoAgainAction = useSetAtom(toggleAutoAgainAtom);
+  const { shape, shapes, scores, showScores, autoAgain, choices } = reactionState.presenter;
 
   const getOtherShapes = () => shapes.filter((s) => s.id !== shape!.id);
 
-  const resize = () => {
-    if (pixi && shape) {
-      pixi.stage.removeChildren();
-      const bottomShapes = getOtherShapes();
-      const size = pixi.screen.height * 0.7;
-      const mainShape = new ShapeView(size, shape);
-      mainShape.view.position.set(pixi.screen.width / 2, size / 2);
-      const bottomShapesContainer = new PIXI.Container();
-      const views = [mainShape];
-
-      let smallShapeWidth: number = 0;
-      const shapeMargin = 20;
-      bottomShapes.forEach((s) => {
-        const shapeView = new ShapeView(pixi!.screen.height * 0.2, s);
-        shapeView.view.position.set(
-          (shapeView.view.width + shapeMargin) *
-            bottomShapesContainer.children.length,
-          0
-        );
-        smallShapeWidth = shapeView.view.width;
-        bottomShapesContainer.addChild(shapeView.view);
-        views.push(shapeView);
-      });
-      bottomShapesContainer.position.set(
-        pixi.screen.width / 2 -
-          ((bottomShapes.length - 1) * (smallShapeWidth + shapeMargin)) / 2,
-        pixi.screen.height - shapeMargin + smallShapeWidth / 2
-      );
-      bottomShapesContainer.pivot.set(0, bottomShapesContainer.height);
-      pixi.stage.addChild(mainShape.view, bottomShapesContainer);
-      views.forEach((view) => {
-        view.update(
-          choices.filter((choice) => choice.choice === view.id).length,
-          getPlayerName(
-            players,
-            choices.find(
-              (choice) => choice.isFirst && choice.choice === view.id
-            )?.id
-          )
-        );
-      });
-    }
+  const getPlayerName = (playerId?: string) => {
+    const player = players.find((p) => p.id === playerId);
+    return player ? player.name : "";
   };
 
   const setShape = () => {
@@ -99,43 +207,42 @@ export const ReactionPresenter = () => {
     });
 
     const newRoundShapes = shuffle(allShapes).slice(0, 6);
-    dispatch(
-      startRoundAction({ shapes: newRoundShapes, shape: newRoundShapes[0] })
-    );
+    startRound({ shapes: newRoundShapes, shape: newRoundShapes[0] });
     dispatch(presenterMessage(shuffle([...newRoundShapes])));
   };
 
-  useResizeListener(resize);
-  useEffect(resize, [pixi, shape, choices]);
-
   useEffect(() => {
-    if (autoAgain) {
+    if (autoAgain && showScores && againProgress.current) {
+      // Reset the progress bar width first
+      gsap.set(againProgress.current, { width: "500px" });
       setAgainTween(
-        gsap.to(againProgress.current!.style, 5, {
+        gsap.to(againProgress.current, {
           width: "0px",
+          duration: 5,
           ease: "power1.in",
           onComplete: () => setShape(),
         })
       );
-    } else againTween && againTween.kill();
-  }, [autoAgain, scores]);
+    } else if (againTween) {
+      againTween.kill();
+      setAgainTween(undefined);
+    }
+  }, [autoAgain, showScores]);
 
   useTimeout(
     () => {
       if (shape) {
-        dispatch(endRoundAction([...players]));
+        endRound([...players]);
       }
     },
     2000,
     [shape, autoAgain]
   );
 
+
   useEffect(() => setShape(), []);
 
   if (showScores) {
-    if (pixi)
-      pixi.view.parentElement && pixi.view.parentElement.removeChild(pixi.view);
-
     const tableData: any[] = [...scores]
       .sort((a, b) => b.score - a.score)
       .map((p, ix) => [p.score, p.name]);
@@ -147,28 +254,93 @@ export const ReactionPresenter = () => {
           className="primary"
           startIcon={autoAgain ? <AutoRenewIcon /> : undefined}
           onClick={() => {
-            dispatch(toggleAutoAgainAction());
+            toggleAutoAgainAction();
           }}
         >
           Again
         </Button>
-        <div
-          ref={againProgress}
-          style={{
-            marginTop: 15,
-            width: 500,
-            height: 50,
-            backgroundColor: ColorUtils.toHtml(Colors.Red.C400),
-          }}
-        ></div>
+        {autoAgain && (
+          <div
+            ref={againProgress}
+            style={{
+              marginTop: 15,
+              width: 500,
+              height: 50,
+              backgroundColor: ColorUtils.toHtml(Colors.Red.C400),
+            }}
+          />
+        )}
       </ContentContainer>
+    );
+  } else if (shape) {
+    const otherShapes = getOtherShapes();
+    
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '100vh',
+          backgroundColor: getShapeColor(Colors.White),
+          gap: 4,
+          padding: 2,
+        }}
+        data-testid="reaction-presenter"
+      >
+        {/* Main shape */}
+        <Box sx={{ mb: 4 }}>
+          <PresenterShapeComponent
+            shape={shape}
+            choiceCount={choices.filter((choice) => choice.choice === shape.id).length}
+            firstPlayerName={getPlayerName(
+              choices.find((choice) => choice.isFirst && choice.choice === shape.id)?.id
+            )}
+            isMainShape={true}
+          />
+        </Box>
+
+        {/* Other shapes */}
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            gap: 3,
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            alignItems: 'flex-end',
+          }}
+        >
+          {otherShapes.map((s) => (
+            <Box key={s.id} sx={{ position: 'relative' }}>
+              <PresenterShapeComponent
+                shape={s}
+                choiceCount={choices.filter((choice) => choice.choice === s.id).length}
+                firstPlayerName={getPlayerName(
+                  choices.find((choice) => choice.isFirst && choice.choice === s.id)?.id
+                )}
+                isMainShape={false}
+              />
+            </Box>
+          ))}
+        </Box>
+      </Box>
     );
   } else {
     return (
-      <Pixi
-        backgroundColor={Colors.White}
-        onAppChange={(app) => setPixi(app)}
-      />
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '100vh',
+          backgroundColor: getShapeColor(Colors.White),
+        }}
+        data-testid="reaction-presenter-loading"
+      >
+        <Typography variant="h4">Starting round...</Typography>
+      </Box>
     );
   }
 };
