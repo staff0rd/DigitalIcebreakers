@@ -21,6 +21,7 @@ import {
 } from "./atoms";
 import { useTimeout } from "util/useTimeout";
 import { Box, Typography } from "@mui/material";
+import { ShapeRenderer } from "./ShapeRenderer";
 
 const getShapeColor = (color: number) => {
   return `#${color.toString(16).padStart(6, '0')}`;
@@ -32,142 +33,67 @@ const PresenterShapeComponent = ({ shape, choiceCount, firstPlayerName, isMainSh
   firstPlayerName: string;
   isMainShape: boolean;
 }) => {
-  const shapeColor = getShapeColor(shape.color);
-  const size = isMainShape ? 200 : 80;
+  const size = isMainShape ? '30vmin' : '15vmin';
   
-  let shapeElement;
-  
-  switch (shape.type) {
-    case ShapeType.Circle:
-      shapeElement = (
-        <div
-          style={{
-            width: size,
-            height: size,
-            borderRadius: '50%',
-            backgroundColor: shapeColor,
-            position: 'relative',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+  return (
+    <ShapeRenderer
+      shape={shape}
+      size={size}
+      testId={`presenter-shape-${shape.id}`}
+      extraAttributes={{ 
+        'data-choice-count': choiceCount,
+        'data-first-player': firstPlayerName
+      }}
+    >
+      {choiceCount > 0 && (
+        <Typography 
+          variant="h6" 
+          color="white" 
+          fontWeight="bold"
+          sx={shape.type === ShapeType.Triangle ? { 
+            position: 'absolute', 
+            top: `calc(${size} * 0.4)`, 
+            left: '50%', 
+            transform: 'translateX(-50%)',
+            textAlign: 'center',
+            fontSize: isMainShape ? '6vmin' : '4vmin'
+          } : {
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            textAlign: 'center',
+            fontSize: isMainShape ? '6vmin' : '4vmin'
           }}
-          data-testid={`presenter-shape-${shape.id}`}
-          data-shape-type="circle"
-          data-choice-count={choiceCount}
-          data-first-player={firstPlayerName}
         >
-          {!isMainShape && choiceCount > 0 && (
-            <Typography variant="h6" color="white" fontWeight="bold">
-              {choiceCount}
-            </Typography>
-          )}
-          {!isMainShape && firstPlayerName && (
-            <Typography 
-              variant="caption" 
-              color="black"
-              sx={{ position: 'absolute', bottom: -20, fontSize: '10px', fontWeight: 'bold' }}
-            >
-              {firstPlayerName}
-            </Typography>
-          )}
-        </div>
-      );
-      break;
-    case ShapeType.Triangle:
-      shapeElement = (
-        <div
-          style={{
-            width: 0,
-            height: 0,
-            borderLeft: `${size / 2}px solid transparent`,
-            borderRight: `${size / 2}px solid transparent`,
-            borderBottom: `${size}px solid ${shapeColor}`,
-            position: 'relative',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+          {choiceCount}
+        </Typography>
+      )}
+      {!isMainShape && firstPlayerName && (
+        <Typography 
+          variant="caption" 
+          color="black"
+          sx={shape.type === ShapeType.Triangle ? { 
+            position: 'absolute', 
+            top: `calc(${size} + 1vmin)`, 
+            fontSize: '2vmin', 
+            left: '50%', 
+            transform: 'translateX(-50%)',
+            textAlign: 'center',
+            fontWeight: 'bold',
+            whiteSpace: 'nowrap'
+          } : { 
+            position: 'absolute', 
+            bottom: `calc(-3vmin - 10px)`, 
+            fontSize: '2vmin', 
+            fontWeight: 'bold' 
           }}
-          data-testid={`presenter-shape-${shape.id}`}
-          data-shape-type="triangle"
-          data-choice-count={choiceCount}
-          data-first-player={firstPlayerName}
         >
-          {!isMainShape && choiceCount > 0 && (
-            <Typography 
-              variant="h6" 
-              color="white" 
-              fontWeight="bold"
-              sx={{ 
-                position: 'absolute', 
-                top: size * 0.4, 
-                left: '50%', 
-                transform: 'translateX(-50%)',
-                textAlign: 'center'
-              }}
-            >
-              {choiceCount}
-            </Typography>
-          )}
-          {!isMainShape && firstPlayerName && (
-            <Typography 
-              variant="caption" 
-              color="black"
-              sx={{ 
-                position: 'absolute', 
-                top: size + 10, 
-                fontSize: '10px', 
-                left: '50%', 
-                transform: 'translateX(-50%)',
-                textAlign: 'center',
-                fontWeight: 'bold',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              {firstPlayerName}
-            </Typography>
-          )}
-        </div>
-      );
-      break;
-    case ShapeType.Square:
-      shapeElement = (
-        <div
-          style={{
-            width: size,
-            height: size,
-            backgroundColor: shapeColor,
-            position: 'relative',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-          data-testid={`presenter-shape-${shape.id}`}
-          data-shape-type="square"
-          data-choice-count={choiceCount}
-          data-first-player={firstPlayerName}
-        >
-          {!isMainShape && choiceCount > 0 && (
-            <Typography variant="h6" color="white" fontWeight="bold">
-              {choiceCount}
-            </Typography>
-          )}
-          {!isMainShape && firstPlayerName && (
-            <Typography 
-              variant="caption" 
-              color="black"
-              sx={{ position: 'absolute', bottom: -20, fontSize: '10px', fontWeight: 'bold' }}
-            >
-              {firstPlayerName}
-            </Typography>
-          )}
-        </div>
-      );
-      break;
-    default:
-      shapeElement = null;
-  }
-  
-  return shapeElement;
+          {firstPlayerName}
+        </Typography>
+      )}
+    </ShapeRenderer>
+  );
 };
 
 export const ReactionPresenter = () => {
@@ -310,6 +236,7 @@ export const ReactionPresenter = () => {
             flexWrap: 'wrap',
             justifyContent: 'center',
             alignItems: 'flex-end',
+            mb: 4,
           }}
         >
           {otherShapes.map((s) => (
