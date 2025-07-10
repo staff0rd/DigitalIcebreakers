@@ -1,135 +1,105 @@
-import { Events } from "../../Events";
-import { IdeaContainer, Lane } from "./IdeaContainer";
-import { IdeaView } from "./IdeaView";
-import { BaseGameProps, BaseGame } from "../BaseGame";
-import { Idea } from "./Idea";
-import { connect, ConnectedProps } from "react-redux";
-import { Pixi } from "../pixi/Pixi";
+import { useAtomValue, useSetAtom } from "jotai";
+import { ideaWallWithStorageAtom, updateIdeaPositionAtom, bringCardToFrontAtom } from "./atoms";
+import { Box, Typography } from "@mui/material";
 import {
-  ideaUpdatedAction,
-  clearIdeasAction,
-  loadIdeasAction,
-  arrangeIdeasAction,
-} from "./IdeaWallReducer";
-import { RootState } from "../../store/RootState";
-import * as PIXI from "pixi.js";
+  DndContext,
+  DragEndEvent,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import DraggableIdeaCard from "./DraggableIdeaCard";
+import { useCanvasPanning } from "./useCanvasPanning";
+import { useArrangeCards } from "./useArrangeCards";
+import { useAutoPositioning } from "./useAutoPositioning";
 
-const WIDTH = 200;
-const MARGIN = 5;
-
-interface IdeaWallPresenterProps extends BaseGameProps {
-  storageKey: string;
-  lanes?: Lane[];
-  dynamicSize: boolean;
-}
-
-interface IdeaWallPresenterState {
-  ideas: Idea[];
-  showNames: boolean;
-}
-
-const connector = connect((state: RootState) => state.games.ideawall, {
-  ideaUpdatedAction,
-  clearIdeasAction,
-  loadIdeasAction,
-  arrangeIdeasAction,
-});
-
-type PropsFromRedux = ConnectedProps<typeof connector> & IdeaWallPresenterProps;
-
-class IdeaWallPresenter extends BaseGame<
-  PropsFromRedux,
-  IdeaWallPresenterState
-> {
-  displayName = IdeaWallPresenter.name;
-  ideaContainer?: IdeaContainer;
-  app?: PIXI.Application;
-
-  constructor(props: PropsFromRedux) {
-    super(props);
-
-    this.state = {
-      ideas: [],
-      showNames: false,
-    };
-  }
-
-  init(app: PIXI.Application) {
-    this.app = app;
-    this.draw();
-  }
-
-  draw() {
-    if (this.app) {
-      this.app.stage.removeChildren();
-      this.ideaContainer = new IdeaContainer(
-        this.app,
-        WIDTH,
-        MARGIN,
-        this.props.lanes || []
-      );
-      this.ideaContainer.addToStage(this.app.stage);
-
-      this.ideaContainer!.clear();
-      this.props.ideas.forEach((idea) => {
-        this.addIdeaToContainer(idea);
-      });
+const IdeaWallPresenter = () => {
+  const gameState = useAtomValue(ideaWallWithStorageAtom);
+  const updateIdeaPosition = useSetAtom(updateIdeaPositionAtom);
+  const bringCardToFront = useSetAtom(bringCardToFrontAtom);
+  
+  const {
+    isPanning,
+    handleCanvasMouseDown,
+    handleCanvasMouseMove,
+    handleCanvasMouseUp,
+  } = useCanvasPanning();
+  
+  const { containerRef } = useArrangeCards();
+  
+  useAutoPositioning(containerRef);
+  
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    })
+  );
+  
+  
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, delta } = event;
+    
+    if (delta.x !== 0 || delta.y !== 0) {
+      const activeIdea = gameState.ideas.find((idea) => idea.id === active.id);
+      if (activeIdea) {
+        const newX = (activeIdea.x || 0) + delta.x;
+        const newY = (activeIdea.y || 0) + delta.y;
+        
+        updateIdeaPosition({
+          id: active.id as string,
+          x: Math.max(0, newX),
+          y: Math.max(0, newY),
+        });
+      }
     }
-  }
-
-  ideaUpdated = (idea: Idea) => {
-    this.props.ideaUpdatedAction(idea);
   };
 
-  addIdeaToContainer(idea: Idea, isNew: boolean = false) {
-    const view = new IdeaView(
-      idea,
-      this.props.dynamicSize ? 0 : WIDTH,
-      MARGIN,
-      this.props.showNames,
-      this.ideaContainer!.laneWidth,
-      (idea) => this.ideaUpdated(idea)
-    );
-    this.ideaContainer!.add(view, isNew);
-  }
+  return (
+    <Box 
+      ref={containerRef}
+      onMouseDown={handleCanvasMouseDown}
+      onMouseMove={handleCanvasMouseMove}
+      onMouseUp={handleCanvasMouseUp}
+      sx={{ 
+        p: 2, 
+        position: 'relative', 
+        minHeight: '100vh',
+        overflow: 'hidden',
+        cursor: isPanning ? 'grabbing' : 'grab',
+        userSelect: 'none'
+      }}
+    >
+      {gameState.ideas.length > 0 ? (
+        <DndContext 
+          sensors={sensors}
+          onDragEnd={handleDragEnd}
+        >
+          {gameState.ideas.map((idea) => (
+            <DraggableIdeaCard 
+              key={idea.id} 
+              idea={idea} 
+              showNames={gameState.showNames}
+              panOffset={gameState.panOffset}
+              onBringToFront={bringCardToFront}
+            />
+          ))}
+        </DndContext>
+      ) : (
+        <Box sx={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          minHeight: '60vh' 
+        }}>
+          <Typography variant="h6" sx={{ opacity: 0.6 }}>
+            Waiting on ideas...
+          </Typography>
+        </Box>
+      )}
+    </Box>
+  );
+};
 
-  componentDidMount() {
-    const resize = () => {
-      this.ideaContainer && this.ideaContainer.resize();
-    };
-
-    resize();
-    Events.add("onresize", "ideawall", resize);
-    this.props.loadIdeasAction();
-    this.draw();
-  }
-
-  componentDidUpdate() {
-    if (this.app) {
-      if (this.props.ideas.length) {
-        this.props.ideas.forEach((idea) => {
-          if (!this.ideaContainer!.containsIdea(idea)) {
-            this.addIdeaToContainer(idea, true);
-          }
-        });
-      } else {
-        this.ideaContainer!.reset();
-      }
-      if (this.props.pendingArrange) {
-        this.ideaContainer!.arrange();
-        this.props.arrangeIdeasAction(false);
-      }
-      this.draw();
-    }
-  }
-
-  componentWillUnmount() {
-    Events.remove("onresize", "ideawall");
-  }
-
-  render() {
-    return <Pixi onAppChange={(app) => this.init(app)} />;
-  }
-}
-
-export default connector(IdeaWallPresenter);
+export default IdeaWallPresenter;

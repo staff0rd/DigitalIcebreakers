@@ -68,4 +68,8 @@ export class Presenter extends AbstractBrowser {
   async startReaction(): Promise<void> {
     await this.startGame("reaction");
   }
+
+  async startIdeaWall(): Promise<void> {
+    await this.startGame("idea-wall");
+  }
 }

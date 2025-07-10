@@ -6,4 +6,5 @@ export interface Idea {
   lane: number;
   x: number | undefined;
   y: number | undefined;
+  zIndex: number;
 }
