@@ -1,16 +1,18 @@
 import { useState } from "react";
-import { useDispatch } from "store/useSelector";
+import { useSetAtom } from "jotai";
 import ListItem from "@mui/material/ListItem";
 import Button from "../../layout/components/CustomButtons/Button";
 import {
-  clearIdeasAction,
-  arrangeIdeasAction,
-  toggleNamesAction,
-} from "./IdeaWallReducer";
+  clearIdeasAtom,
+  arrangeIdeasAtom,
+  toggleNamesAtom,
+} from "./atoms";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 
 const IdeaWallMenu = () => {
-  const dispatch = useDispatch();
+  const clearIdeas = useSetAtom(clearIdeasAtom);
+  const arrangeIdeas = useSetAtom(arrangeIdeasAtom);
+  const toggleNames = useSetAtom(toggleNamesAtom);
   const [confirmArrangeDialogOpen, setConfirmArrangeDialogOpen] =
     useState(false);
   const [confirmClearDialogOpen, setConfirmClearDialogOpen] = useState(false);
@@ -18,7 +20,7 @@ const IdeaWallMenu = () => {
   return (
     <>
       <ListItem>
-        <Button onClick={() => dispatch(toggleNamesAction())}>
+        <Button onClick={() => toggleNames()}>
           Toggle Names
         </Button>
       </ListItem>
@@ -32,10 +34,10 @@ const IdeaWallMenu = () => {
         content="This will re-arrange all ideas"
         setOpen={setConfirmArrangeDialogOpen}
         open={confirmArrangeDialogOpen}
-        action={() =>
-          dispatch(arrangeIdeasAction(true)) &&
-          setConfirmArrangeDialogOpen(false)
-        }
+        action={() => {
+          arrangeIdeas(true);
+          setConfirmArrangeDialogOpen(false);
+        }}
       />
       <ListItem>
         <Button onClick={() => setConfirmClearDialogOpen(true)}>Clear</Button>
@@ -45,9 +47,10 @@ const IdeaWallMenu = () => {
         content="All ideas will be removed!"
         open={confirmClearDialogOpen}
         setOpen={setConfirmClearDialogOpen}
-        action={() =>
-          dispatch(clearIdeasAction()) && setConfirmClearDialogOpen(false)
-        }
+        action={() => {
+          clearIdeas();
+          setConfirmClearDialogOpen(false);
+        }}
       />
     </>
   );

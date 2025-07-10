@@ -98,10 +98,11 @@ Incrementally migrate from Redux to Jotai using a strangler-fig pattern. Each mi
 
 10. **IdeaWall** - Ideas with localStorage
 
-    - [ ] Create atoms with localStorage sync
-    - [ ] Migrate components
-    - [ ] Test persistence
-    - [ ] Remove reducer
+    - [x] Convert PixiJS presenter to React components
+    - [x] Create atoms with localStorage sync using atomWithStorage
+    - [x] Migrate components to use Jotai atoms
+    - [x] Test persistence and React text-based rendering
+    - [x] Remove reducer
 
 11. **Poll** - Questions and responses
 
@@ -301,6 +302,7 @@ Last updated: 2025-06-24
 ✅ Splat - Completed
 ✅ Pong - Completed
 ✅ Reaction - Completed
+✅ IdeaWall - Completed
 
 ### Lessons Learned from NamePicker Migration
 
@@ -400,6 +402,37 @@ Last updated: 2025-06-24
    - E2E tests may fail if message format expectations don't match
    - Need to properly type message handlers in tests using `GameAtomWithHandler<StateType>`
    - Some component tests may be difficult to mock during migration if they still use Redux for actions
+
+### Lessons Learned from IdeaWall Migration
+
+1. **PixiJS to React Conversion**
+   - Successfully converted PixiJS-based rendering to React components using Material-UI
+   - React components make testing much easier - can assert on actual text content instead of data attributes
+   - Used `Paper` components with dynamic background colors to replicate the visual appeal of PixiJS cards
+   - Typography components handle text rendering and word-breaking automatically
+
+2. **localStorage Integration with Jotai**
+   - `atomWithStorage` from `jotai/utils` provides seamless localStorage persistence
+   - Combined storage atom with main game state using derived atoms
+   - Storage persistence happens automatically without manual save/load operations
+   - Pattern: separate storage atom + derived atom that combines with other state
+
+3. **Complex State Management**
+   - Successfully used multiple action atoms for different presenter controls
+   - Message handler pattern scales well to more complex state updates
+   - localStorage sync only updates when ideas array changes, not other state properties
+   - Action atoms can trigger immediate side effects (like setTimeout for arrange flag reset)
+
+4. **Menu Component Migration**
+   - Menu components also needed migration from Redux actions to Jotai atoms
+   - Action atoms work well with UI event handlers - cleaner than dispatch calls
+   - Dialog confirmation patterns work the same with Jotai as with Redux
+
+5. **Testing Approach**
+   - BDD tests can focus on actual text content rather than implementation details
+   - React text content is directly accessible to e2e tests without special data attributes
+   - Tests describe behavior from user perspective rather than testing internal state
+   - E2E tests require running backend but provide the most confidence
 
 ### Notes
 

@@ -30,7 +30,6 @@ import { RouteLink } from "../layout/useRoutes";
 import LiveHelp from "@mui/icons-material/LiveHelp";
 import EditQuestions from "./shared/Poll/components/EditQuestions";
 import EditQuestion from "./shared/Poll/components/EditQuestion";
-import { Name as IdeaWallName } from "./IdeaWall/IdeaWallReducer";
 import * as Retrospective from "./Retrospective";
 import FistOfFivePresenter from "./FistOfFive/FistOfFivePresenter";
 import FistOfFiveClient from "./FistOfFive/FistOfFiveClient";
@@ -142,7 +141,7 @@ const games: Game[] = [
     description: "Mob pong for large audiences - red vs blue!",
   },
   {
-    name: IdeaWallName,
+    name: "idea-wall",
     client: IdeaWallClient,
     presenter: IdeaWallPresenter,
     menu: IdeaWallMenu,
