@@ -1,6 +1,6 @@
 import { test, expect } from "../fixtures/base";
 
-test.describe.only("Reaction Tests", () => {
+test.describe("Reaction Tests", () => {
   test("round flow: client shapes disabled after selection, presenter shows counts, new round re-enables shapes", async ({
     presenter,
     player,
