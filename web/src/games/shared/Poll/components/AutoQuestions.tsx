@@ -1,12 +1,10 @@
 import { useState } from "react";
 import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
-import { useDispatch } from "store/useSelector";
+import { useAtom } from "jotai";
 import { Question } from "../types/Question";
-import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
+import { setQuestionsAtom as setTriviaQuestionsAtom } from "games/Trivia/triviaAtoms";
 import { ConfirmDialog } from "components/ConfirmDialog";
-import { useSelector } from "store/useSelector";
-import { RootState } from "store/RootState";
 import { guid } from "util/guid";
 import { shuffle } from "Random";
 import CustomInput from "layout/components/CustomInput/CustomInput";
@@ -63,12 +61,9 @@ type Props = {
   setOpen: (open: boolean) => void;
 };
 export const AutoQuestions = (props: Props) => {
-  const currentGame = useSelector(
-    (state: RootState) => state.lobby.currentGame
-  );
   const { open, setOpen } = props;
-  const { importQuestionsAction } = presenterActions(currentGame!);
-  const dispatch = useDispatch();
+  // AutoQuestions is only rendered in trivia mode
+  const [, setTriviaQuestions] = useAtom(setTriviaQuestionsAtom);
 
   const handleOk = async () => {
     if (!countIsValid()) {
@@ -97,7 +92,7 @@ export const AutoQuestions = (props: Props) => {
             })),
           ]),
         }));
-        dispatch(importQuestionsAction(questions));
+        setTriviaQuestions(questions);
         setOpen(false);
       } catch (error) {
         setError("Could not get questions");

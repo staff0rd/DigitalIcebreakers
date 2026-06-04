@@ -3,11 +3,13 @@ import makeStyles from "@mui/styles/makeStyles";
 import Typography from "@mui/material/Typography";
 import CustomInput from "layout/components/CustomInput/CustomInput";
 import Alert from "@mui/material/Alert";
-import { useDispatch } from "store/useSelector";
+import { useAtom } from "jotai";
 import { Question } from "../types/Question";
 import { guid } from "util/guid";
 import { Answer } from "games/shared/Poll/types/Answer";
-import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
+import { Name as PollName } from "games/Poll";
+import { setQuestionsAtom as setPollQuestionsAtom } from "games/Poll/pollAtoms";
+import { setQuestionsAtom as setTriviaQuestionsAtom } from "games/Trivia/triviaAtoms";
 import { ConfirmDialog } from "components/ConfirmDialog";
 
 const useStyles = makeStyles((theme) => ({
@@ -125,19 +127,21 @@ type Props = {
 };
 export const BulkEdit = (props: Props) => {
   const { gameName, isTriviaMode, questions, open, setOpen } = props;
-  const { importQuestionsAction } = presenterActions(gameName);
+  const [, setPollQuestions] = useAtom(setPollQuestionsAtom);
+  const [, setTriviaQuestions] = useAtom(setTriviaQuestionsAtom);
+  const setQuestions =
+    gameName === PollName ? setPollQuestions : setTriviaQuestions;
   const classes = useStyles();
-  const dispatch = useDispatch();
-  const questionsFromRedux = questionsForBulkEditSelector(
+  const existingQuestionLines = questionsForBulkEditSelector(
     questions,
     isTriviaMode
   );
 
   const [questionLines, setQuestionLines] =
-    useState<string>(questionsFromRedux);
+    useState<string>(existingQuestionLines);
   useEffect(() => {
-    setQuestionLines(questionsFromRedux);
-  }, [questionsFromRedux]);
+    setQuestionLines(existingQuestionLines);
+  }, [existingQuestionLines]);
   const [error, setError] = useState<string>("");
 
   const handleOk = () => {
@@ -147,7 +151,7 @@ export const BulkEdit = (props: Props) => {
     );
     if (isValid) {
       setError("");
-      dispatch(importQuestionsAction(questions));
+      setQuestions(questions);
       setOpen(false);
     } else {
       setError(`Line ${errorLine}: ${errorMessage}`);

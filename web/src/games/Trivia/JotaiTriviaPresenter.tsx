@@ -98,19 +98,9 @@ export const JotaiTriviaPresenter = () => {
     }
   };
 
-  // Create a mock gameStateSelector for compatibility with shared components
-  const gameStateSelector = () => ({
-    currentQuestionId,
-    questions,
-    showResponses,
-  });
-
   const QuestionDisplay = () =>
     showResponses ? (
-      <ResponseChart
-        gameStateSelector={gameStateSelector}
-        isTriviaMode={true}
-      />
+      <ResponseChart question={question} isTriviaMode={true} />
     ) : (
       <QuestionAndResponseCount
         responseCount={responseCount}

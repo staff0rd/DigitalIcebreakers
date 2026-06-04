@@ -1,13 +1,8 @@
-import { useSelector } from "../../../../store/useSelector";
-import {
-  currentQuestionSelector,
-  GameState,
-} from "../reducers/currentQuestionSelector";
 import makeStyles from "@mui/styles/makeStyles";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import { primaryColor } from "../../../../layout/assets/jss/material-dashboard-react";
 import CustomisedAxisTick from "./CustomisedAccessTick";
-import { RootState } from "store/RootState";
+import { Question } from "../types/Question";
 
 const useStyles = makeStyles((theme) => ({
   data: {
@@ -37,12 +32,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 type Props = {
-  gameStateSelector: (state: RootState) => GameState;
+  question: Question | undefined;
   isTriviaMode: boolean;
 };
-const ResponseChart = ({ gameStateSelector, isTriviaMode }: Props) => {
+const ResponseChart = ({ question, isTriviaMode }: Props) => {
   const classes = useStyles();
-  const { question } = useSelector(currentQuestionSelector(gameStateSelector));
 
   const answers = question
     ? question.answers.map((a) => {

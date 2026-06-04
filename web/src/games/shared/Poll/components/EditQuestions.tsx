@@ -22,13 +22,10 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { useNavigate, NavLink } from "react-router";
 import { guid } from "../../../../util/guid";
-import { useDispatch } from "store/useSelector";
 import array from "../../../../util/array";
 import { saveAs } from "file-saver";
 import { BulkEdit } from "./BulkEdit";
-import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
 import { Name as PollName } from "games/Poll";
-import { Name as TriviaName } from "games/Trivia";
 import { ConfirmDialog } from "components/ConfirmDialog";
 import { AutoQuestions } from "./AutoQuestions";
 import { pollStateAtom, setQuestionsAtom as setPollQuestionsAtom } from "../../../Poll/pollAtoms";
@@ -62,7 +59,6 @@ const useStyles = makeStyles(() => ({
 const EditQuestions = () => {
   const classes = useStyles();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   // Get state from both Jotai atoms
   const [pollState] = useAtom(pollStateAtom);
@@ -137,27 +133,6 @@ const EditQuestions = () => {
       }
     }
   };
-
-  // const {
-  //   component: ConfirmClearQuestions,
-  //   open: openConfirmClearQuestions,
-  // } = useConfirmDialog(
-  //   ,
-  //   ,
-  //   (close) => dispatch(importQuestionsAction([])) && close()
-  // );
-
-  // const {
-  //   component: ConfirmClearResponses,
-  //   open: openConfirmClearResponses,
-  // } = useConfirmDialog(
-
-  // );
-
-  // const {
-  //   dialog: BulkEditDialog,
-  //   openDialog: openBulkEditDialog,
-  // } = useBulkEdit(gameName, isTriviaMode, questions);
 
   const [confirmClearQuestionsOpen, setConfirmClearQuestionsOpen] =
     useState(false);

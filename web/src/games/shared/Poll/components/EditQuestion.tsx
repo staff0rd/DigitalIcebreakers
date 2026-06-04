@@ -18,12 +18,9 @@ import Typography from "@mui/material/Typography";
 import EditAnswers from "./EditAnswers";
 import { guid } from "../../../../util/guid";
 import { grayColor } from "../../../../layout/assets/jss/material-dashboard-react";
-import { useDispatch } from "store/useSelector";
-import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
 import { NameAndMode } from "../types/NameAndMode";
 import { Answer } from "../types/Answer";
 import { Name as PollName } from "games/Poll";
-import { Name as TriviaName } from "games/Trivia";
 import { pollStateAtom, setQuestionsAtom as setPollQuestionsAtom } from "../../../Poll/pollAtoms";
 import { triviaStateAtom, setQuestionsAtom as setTriviaQuestionsAtom } from "../../../Trivia/triviaAtoms";
 
@@ -48,13 +45,19 @@ type Props = {
 } & NameAndMode;
 
 const QuestionEditor = ({ question, gameName }: Props) => {
-  const dispatch = useDispatch();
   const [pollState] = useAtom(pollStateAtom);
   const [triviaState] = useAtom(triviaStateAtom);
+  const [, setPollQuestions] = useAtom(setPollQuestionsAtom);
+  const [, setTriviaQuestions] = useAtom(setTriviaQuestionsAtom);
 
-  const totalQuestions = gameName === PollName
-    ? pollState.presenter.questions.length
-    : triviaState.presenter.questions.length;
+  const questions =
+    gameName === PollName
+      ? pollState.presenter.questions
+      : triviaState.presenter.questions;
+  const setQuestions =
+    gameName === PollName ? setPollQuestions : setTriviaQuestions;
+
+  const totalQuestions = questions.length;
   const [text, setText] = useState(question.text);
   const [answers, setAnswers] = useState(question.answers);
 
@@ -65,23 +68,21 @@ const QuestionEditor = ({ question, gameName }: Props) => {
     return text.length < 3;
   };
 
-  const { updateQuestionAction, deleteQuestionAction } =
-    presenterActions(gameName);
-
   const saveQuestion = () => {
-    dispatch(
-      updateQuestionAction({
-        id: question.id,
-        answers,
-        responses: question.responses,
-        text: text,
-      })
+    const updatedQuestion = {
+      id: question.id,
+      answers,
+      responses: question.responses,
+      text,
+    };
+    setQuestions(
+      questions.map((q) => (q.id === question.id ? updatedQuestion : q))
     );
     navigate("/questions");
   };
 
   const deleteQuestion = () => {
-    dispatch(deleteQuestionAction(question));
+    setQuestions(questions.filter((q) => q.id !== question.id));
     navigate("/questions");
   };
 
