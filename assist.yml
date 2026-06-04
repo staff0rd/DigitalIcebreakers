@@ -1,0 +1,27 @@
+run:
+  - name: verify:lint
+    command: npm
+    args:
+      - run
+      - lint
+    cwd: web
+  - name: verify:test
+    command: npm
+    args:
+      - test
+    cwd: web
+  - name: verify:typecheck
+    command: npm
+    args:
+      - run
+      - check-types
+    cwd: web
+  - name: verify:e2e
+    command: npx
+    args:
+      - playwright
+      - test
+      - --workers=4
+      - --timeout=15000
+      - --retries=2
+    cwd: web
