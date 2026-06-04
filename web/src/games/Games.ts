@@ -23,7 +23,8 @@ import { ReactionPlayer } from "./Reaction/ReactionClient";
 import { ReactionPresenter } from "./Reaction/ReactionPresenter";
 import { Name as PollName } from "./Poll";
 import { PollPresenter } from "./Poll/PollPresenter";
-import PollClient from "./shared/Poll/Client";
+import PollClient from "./Poll/PollClient";
+import TriviaClient from "./Trivia/TriviaClient";
 import { TriviaPresenter } from "./Trivia/TriviaPresenter";
 import { Name as TriviaName } from "./Trivia";
 import { RouteLink } from "../layout/useRoutes";
@@ -79,7 +80,7 @@ const games: Game[] = [
   {
     title: "Trivia",
     name: TriviaName,
-    client: PollClient,
+    client: TriviaClient,
     presenter: TriviaPresenter,
     description:
       "Like polling but with a scoreboard: Add or generate questions and run a trivia session.",

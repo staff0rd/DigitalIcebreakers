@@ -106,10 +106,10 @@ Incrementally migrate from Redux to Jotai using a strangler-fig pattern. Each mi
 
 11. **Poll** - Questions and responses
 
-    - [ ] Create atoms for questions/responses
-    - [ ] Migrate presenter and client views
-    - [ ] Test functionality
-    - [ ] Remove reducer
+    - [x] Create atoms for questions/responses
+    - [x] Migrate presenter and client views
+    - [x] Test functionality
+    - [x] Remove reducer
 
 12. **Retrospective** - Categories and ideas
 
@@ -303,6 +303,7 @@ Last updated: 2025-06-24
 ✅ Pong - Completed
 ✅ Reaction - Completed
 ✅ IdeaWall - Completed
+✅ Poll - Completed
 
 ### Lessons Learned from NamePicker Migration
 

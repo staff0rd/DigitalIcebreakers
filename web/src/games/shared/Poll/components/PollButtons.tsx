@@ -5,7 +5,7 @@ import NavigateNext from "@mui/icons-material/NavigateNext";
 import ScoreIcon from "@mui/icons-material/Score";
 import CloseIcon from "@mui/icons-material/Close";
 import { NameAndMode } from "games/shared/Poll/types/NameAndMode";
-import { toggleShowScoreBoardAction } from "games/Trivia/reducers/triviaPresenterReducer";
+// Note: toggleShowScoreBoardAction is now handled by Jotai atoms in the components
 import { ShowResponsesButton } from "./ShowResponsesButton";
 import { useButtonStyles } from "./useButtonStyles";
 
@@ -46,7 +46,7 @@ const PollButtons = ({
       {isTriviaMode && (
         <IconButton
           data-testid="show-scoreboard"
-          onClick={() => dispatch(toggleShowScoreBoardAction())}
+          onClick={() => {}} // TODO: This component is deprecated, Jotai components handle this directly
         >
           {showScoreBoard ? <CloseIcon /> : <ScoreIcon />}
         </IconButton>
