@@ -1,22 +1,23 @@
 import { useState } from "react";
-import { useDispatch } from "store/useSelector";
+import { useAtomValue, useSetAtom } from "jotai";
 import ListItem from "@mui/material/ListItem";
 import Button from "../../layout/components/CustomButtons/Button";
-import { clearIdeasAction, setCategories } from "./presenterReducer";
+import {
+  clearIdeasAtom,
+  retrospectiveAtom,
+  setCategoriesAtom,
+} from "./retrospectiveAtoms";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
-import { useSelector } from "store/useSelector";
-import { RootState } from "store/RootState";
 import { ideasByCategory } from "./ideasByCategory";
 import { saveAs } from "file-saver";
 
 export const Menu = () => {
-  const dispatch = useDispatch();
   const [confirmClearDialogOpen, setConfirmClearDialogOpen] = useState(false);
   const [confirmSetCategoriesDialogOpen, setConfirmSetCategoriesDialogOpen] =
     useState(false);
-  const { ideas, categories } = useSelector(
-    (state: RootState) => state.games.retrospective.presenter
-  );
+  const { ideas, categories } = useAtomValue(retrospectiveAtom).presenter;
+  const clearIdeas = useSetAtom(clearIdeasAtom);
+  const setCategories = useSetAtom(setCategoriesAtom);
 
   const exportIdeas = () => {
     const fileName = "retrospective.txt";
@@ -53,19 +54,20 @@ export const Menu = () => {
         content="All ideas will be removed!"
         open={confirmClearDialogOpen}
         setOpen={setConfirmClearDialogOpen}
-        action={() =>
-          dispatch(clearIdeasAction()) && setConfirmClearDialogOpen(false)
-        }
+        action={() => {
+          clearIdeas();
+          setConfirmClearDialogOpen(false);
+        }}
       />
       <ConfirmDialog
         header="Set categories?"
         content="All ideas will be removed!"
         open={confirmSetCategoriesDialogOpen}
         setOpen={setConfirmSetCategoriesDialogOpen}
-        action={() =>
-          dispatch(setCategories([])) &&
-          setConfirmSetCategoriesDialogOpen(false)
-        }
+        action={() => {
+          setCategories([]);
+          setConfirmSetCategoriesDialogOpen(false);
+        }}
       />
     </>
   );

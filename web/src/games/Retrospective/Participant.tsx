@@ -8,7 +8,8 @@ import Card from "../../layout/components/Card/Card";
 import CardFooter from "../../layout/components/Card/CardFooter";
 import Button from "../../layout/components/CustomButtons/Button";
 import { IdeaEntry } from "games/shared/IdeaEntry";
-import { useSelector } from "store/useSelector";
+import { useAtomValue } from "jotai";
+import { PayloadFromParticipant, retrospectiveAtom } from "./retrospectiveAtoms";
 import makeStyles from "@mui/styles/makeStyles";
 
 const useStyles = makeStyles(() => ({
@@ -18,18 +19,11 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export type PayloadFromParticipant = {
-  category: number;
-  message: string;
-};
-
 export const Participant = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const [idea, setIdea] = useState<string>("");
-  const categories = useSelector(
-    (state) => state.games.retrospective.participant.categories
-  );
+  const { categories } = useAtomValue(retrospectiveAtom).participant;
 
   const onClick = (category: number) => {
     if (idea.length) {

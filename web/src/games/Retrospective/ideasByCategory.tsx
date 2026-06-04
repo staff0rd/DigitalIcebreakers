@@ -1,5 +1,5 @@
 import { GameMessage } from "games/GameMessage";
-import { PayloadFromParticipant } from "./Participant";
+import { PayloadFromParticipant } from "./retrospectiveAtoms";
 
 export const ideasByCategory = (
   ideas: GameMessage<PayloadFromParticipant>[],

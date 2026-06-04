@@ -53,6 +53,8 @@ export default defineConfig({
       command: "dotnet run --project ../DigitalIcebreakers",
       url: "http://localhost:5000", // Adjust port if needed
       reuseExistingServer: !process.env.CI,
+      // Without this the backend boots in Production, finds no wwwroot and 500s
+      env: { ASPNETCORE_ENVIRONMENT: "Development" },
     },
   ],
 });

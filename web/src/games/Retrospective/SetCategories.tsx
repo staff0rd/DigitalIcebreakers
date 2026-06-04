@@ -5,8 +5,8 @@ import Grid from "@mui/material/GridLegacy";
 
 import Button from "layout/components/CustomButtons/Button";
 import { useState } from "react";
-import { useDispatch } from "store/useSelector";
-import { Category, setCategories } from "./presenterReducer";
+import { useSetAtom } from "jotai";
+import { Category, setCategoriesAtom } from "./retrospectiveAtoms";
 import CustomInput from "layout/components/CustomInput/CustomInput";
 import Alert from "@mui/material/Alert";
 import makeStyles from "@mui/styles/makeStyles";
@@ -34,7 +34,7 @@ const categories: Category[][] = [
 ];
 
 const SetCategories = () => {
-  const dispatch = useDispatch();
+  const setCategories = useSetAtom(setCategoriesAtom);
   const [error, setError] = useState<string>("");
   const classes = useStyles();
   const [categoryLines, setCategoryLines] = useState<string>(
@@ -53,7 +53,7 @@ const SetCategories = () => {
       setError("Specify at least one category");
     } else {
       setError("");
-      dispatch(setCategories(trimmed.map((t, ix) => ({ id: ix, name: t }))));
+      setCategories(trimmed.map((t, ix) => ({ id: ix, name: t })));
     }
   };
   return (
@@ -72,7 +72,7 @@ const SetCategories = () => {
               </CardContent>
               <CardActions>
                 <Button
-                  onClick={() => dispatch(setCategories(category))}
+                  onClick={() => setCategories(category)}
                   size="sm"
                   color="primary"
                 >

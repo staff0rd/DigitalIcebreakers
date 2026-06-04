@@ -27,4 +27,31 @@ test.describe("Retrospective Tests", () => {
     const ideaElement = presenter.page.getByText("my idea");
     await expect(ideaElement).toBeVisible();
   });
+
+  test("Ideas persist after presenter refresh", async ({
+    presenter,
+    player,
+  }) => {
+    await presenter.startRetrospective();
+
+    // Select the Start/Stop/Continue preset
+    await presenter.page
+      .getByRole("button", { name: "Select" })
+      .first()
+      .click();
+
+    // Player adds an idea to category 'Start'
+    await player.page.locator("#idea-value").fill("persistent idea");
+    await player.page.getByRole("button", { name: "Start" }).click();
+
+    await expect(presenter.page.getByText("persistent idea")).toBeVisible();
+
+    await presenter.page.reload();
+
+    // Categories and ideas should be restored from localStorage
+    await expect(
+      presenter.page.getByRole("heading", { name: "Start" })
+    ).toBeVisible();
+    await expect(presenter.page.getByText("persistent idea")).toBeVisible();
+  });
 });
