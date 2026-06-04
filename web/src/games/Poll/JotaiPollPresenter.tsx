@@ -70,7 +70,8 @@ export const JotaiPollPresenter = () => {
     } else {
       dispatch(presenterMessage(null));
     }
-  }, [currentQuestionId, dispatch, question]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- resend only when the current question changes
+  }, [currentQuestionId, dispatch]);
 
   const gotoNextQuestion = () => {
     if (nextQuestionId) {
@@ -135,6 +136,7 @@ export const JotaiPollPresenter = () => {
         }}
       >
         <IconButton
+          data-testid="previous-question"
           disabled={!previousQuestionId}
           onClick={gotoPreviousQuestion}
           sx={{ color: "white" }}
@@ -152,6 +154,7 @@ export const JotaiPollPresenter = () => {
         </IconButton>
 
         <IconButton
+          data-testid="next-question"
           disabled={!nextQuestionId}
           onClick={gotoNextQuestion}
           sx={{ color: "white" }}

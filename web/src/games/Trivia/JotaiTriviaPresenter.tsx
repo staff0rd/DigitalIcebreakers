@@ -61,23 +61,30 @@ export const JotaiTriviaPresenter = () => {
     }
   }, [questionIds, currentQuestionId, setCurrentQuestionId]);
 
-  // Send current question to players with canAnswer flag
+  // The backend treats any message containing canAnswer as a CanAnswer broadcast and
+  // never forwards the answers, so the question and canAnswer must be sent separately
   useEffect(() => {
     if (question) {
-      const hasCorrectAnswers = question.answers.some(answer => answer.correct);
-
       dispatch(
         presenterMessage({
           questionId: question.id,
           answers: question.answers,
           question: question.text,
-          canAnswer: !hasCorrectAnswers || !showResponses, // Can answer if no correct answers or not showing responses
         })
       );
     } else {
       dispatch(presenterMessage(null));
     }
-  }, [currentQuestionId, showResponses, dispatch, question]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- resend only when the current question changes
+  }, [currentQuestionId, dispatch]);
+
+  const canAnswer = !showResponses && !showScoreBoard;
+  useEffect(() => {
+    dispatch(presenterMessage({ canAnswer }));
+    return () => {
+      dispatch(presenterMessage({ canAnswer: false }));
+    };
+  }, [canAnswer, dispatch]);
 
   const gotoNextQuestion = () => {
     if (nextQuestionId) {
@@ -151,6 +158,7 @@ export const JotaiTriviaPresenter = () => {
         }}
       >
         <IconButton
+          data-testid="previous-question"
           disabled={!previousQuestionId}
           onClick={gotoPreviousQuestion}
           sx={{ color: "white" }}
@@ -177,6 +185,7 @@ export const JotaiTriviaPresenter = () => {
         </IconButton>
 
         <IconButton
+          data-testid="next-question"
           disabled={!nextQuestionId}
           onClick={gotoNextQuestion}
           sx={{ color: "white" }}

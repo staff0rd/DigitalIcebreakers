@@ -90,12 +90,9 @@ const EditQuestions = () => {
 
     const newQuestion = {
       id,
-      text: "",
-      answers: [
-        { id: guid(), text: "" },
-        { id: guid(), text: "" }
-      ],
-      responses: []
+      text: "Change this text to your question",
+      answers: [{ id: guid(), text: "An answer", correct: false }],
+      responses: [],
     };
 
     if (gameName === PollName) {

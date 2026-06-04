@@ -30,6 +30,9 @@ const PollClient = () => {
   };
 
   const handleLockAnswer = () => {
+    if (!selectedAnswerId) {
+      return;
+    }
     dispatch(
       clientMessage({
         questionId,

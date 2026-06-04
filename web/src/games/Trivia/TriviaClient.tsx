@@ -30,6 +30,9 @@ const TriviaClient = () => {
   };
 
   const handleLockAnswer = () => {
+    if (!selectedAnswerId) {
+      return;
+    }
     dispatch(
       clientMessage({
         questionId,
