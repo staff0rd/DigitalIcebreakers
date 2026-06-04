@@ -3,13 +3,9 @@ import { connectionReducer } from "./connection/reducers";
 import { userReducer } from "./user/reducers";
 import { lobbyReducer } from "./lobby/reducers";
 import { shellReducer } from "./shell/reducers";
-import { pollReducer } from "games/Poll/reducers/pollReducer";
-import { triviaReducer } from "games/Trivia/reducers/triviaReducer";
 import { retrospectiveReducer } from "games/Retrospective/reducer";
 
 const gamesReducer = combineReducers({
-  poll: pollReducer,
-  trivia: triviaReducer,
   retrospective: retrospectiveReducer,
 });
 

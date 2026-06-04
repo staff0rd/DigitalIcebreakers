@@ -10,6 +10,7 @@ import IconButton from "@mui/material/IconButton";
 import Delete from "@mui/icons-material/Delete";
 import Edit from "@mui/icons-material/Edit";
 import { useSelector } from "../../../../store/useSelector";
+import { useAtom } from "jotai";
 import { ContentContainer } from "../../../../components/ContentContainer";
 import makeStyles from "@mui/styles/makeStyles";
 import Table from "@mui/material/Table";
@@ -27,9 +28,12 @@ import { saveAs } from "file-saver";
 import { BulkEdit } from "./BulkEdit";
 import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
 import { Name as PollName } from "games/Poll";
-import { getPollOrTriviaState } from "../getPollOrTriviaState";
+import { Name as TriviaName } from "games/Trivia";
 import { ConfirmDialog } from "components/ConfirmDialog";
 import { AutoQuestions } from "./AutoQuestions";
+import { pollStateAtom, setQuestionsAtom as setPollQuestionsAtom } from "../../../Poll/pollAtoms";
+import { triviaStateAtom, setQuestionsAtom as setTriviaQuestionsAtom } from "../../../Trivia/triviaAtoms";
+import { Question } from "../types/Question";
 
 const useStyles = makeStyles(() => ({
   table: {},
@@ -59,10 +63,21 @@ const EditQuestions = () => {
   const classes = useStyles();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  // Get state from both Jotai atoms
+  const [pollState] = useAtom(pollStateAtom);
+  const [triviaState] = useAtom(triviaStateAtom);
+  const [, setPollQuestions] = useAtom(setPollQuestionsAtom);
+  const [, setTriviaQuestions] = useAtom(setTriviaQuestionsAtom);
+
   const { questions, gameName, isTriviaMode } = useSelector((state) => {
     const gameName = state.lobby.currentGame!;
     const isTriviaMode = gameName !== PollName;
-    const questions = getPollOrTriviaState(state, gameName).presenter.questions;
+
+    // Use Jotai state for both Poll and Trivia
+    const questions = gameName === PollName
+      ? pollState.presenter.questions
+      : triviaState.presenter.questions;
 
     return {
       questions,
@@ -70,16 +85,25 @@ const EditQuestions = () => {
       isTriviaMode,
     };
   });
-  const {
-    addQuestionAction,
-    importQuestionsAction,
-    clearResponsesAction,
-    deleteQuestionAction,
-  } = presenterActions(gameName);
-
   const addQuestion = () => {
     const id = guid();
-    dispatch(addQuestionAction(id));
+
+    const newQuestion = {
+      id,
+      text: "",
+      answers: [
+        { id: guid(), text: "" },
+        { id: guid(), text: "" }
+      ],
+      responses: []
+    };
+
+    if (gameName === PollName) {
+      setPollQuestions([...questions, newQuestion]);
+    } else {
+      setTriviaQuestions([...questions, newQuestion]);
+    }
+
     navigate(`/questions/${id}`);
   };
   const fileUpload = useRef<HTMLInputElement>(null);
@@ -100,8 +124,14 @@ const EditQuestions = () => {
         reader.readAsText(file, "UTF-8");
         reader.onload = (evt: ProgressEvent<FileReader>) => {
           if (evt.target && typeof evt.target.result === "string") {
-            const questions = JSON.parse(evt.target.result);
-            dispatch(importQuestionsAction(questions));
+            const importedQuestions = JSON.parse(evt.target.result);
+
+            if (gameName === PollName) {
+              setPollQuestions(importedQuestions);
+            } else {
+              setTriviaQuestions(importedQuestions);
+            }
+
             if (fileUpload.current !== null) {
               fileUpload.current.value = "";
             }
@@ -173,10 +203,14 @@ const EditQuestions = () => {
             <ConfirmDialog
               header="Clear all questions?"
               content="All questions and responses will be deleted"
-              action={() =>
-                dispatch(importQuestionsAction([])) &&
-                setConfirmClearQuestionsOpen(false)
-              }
+              action={() => {
+                if (gameName === PollName) {
+                  setPollQuestions([]);
+                } else {
+                  setTriviaQuestions([]);
+                }
+                setConfirmClearQuestionsOpen(false);
+              }}
               open={confirmClearQuestionsOpen}
               setOpen={setConfirmClearQuestionsOpen}
             />
@@ -186,10 +220,15 @@ const EditQuestions = () => {
             <ConfirmDialog
               header="Clear all responses?"
               content="All responses will be deleted"
-              action={() =>
-                dispatch(clearResponsesAction()) &&
-                setConfirmClearResponsesOpen(false)
-              }
+              action={() => {
+                const clearedQuestions = questions.map(q => ({ ...q, responses: [] }));
+                if (gameName === PollName) {
+                  setPollQuestions(clearedQuestions);
+                } else {
+                  setTriviaQuestions(clearedQuestions);
+                }
+                setConfirmClearResponsesOpen(false);
+              }}
               open={confirmClearResponsesOpen}
               setOpen={setConfirmClearResponsesOpen}
             />
@@ -254,39 +293,46 @@ const EditQuestions = () => {
                         </NavLink>
                         <IconButton
                           disabled={ix === 0}
-                          onClick={() =>
-                            dispatch(
-                              importQuestionsAction(
-                                array.moveUp(
-                                  questions,
-                                  questions.indexOf(question)
-                                )
-                              )
-                            )
-                          }
+                          onClick={() => {
+                            const reorderedQuestions = array.moveUp(
+                              questions,
+                              questions.indexOf(question)
+                            );
+                            if (gameName === PollName) {
+                              setPollQuestions(reorderedQuestions);
+                            } else {
+                              setTriviaQuestions(reorderedQuestions);
+                            }
+                          }}
                         >
                           <ArrowUpward />
                         </IconButton>
                         <IconButton
                           disabled={ix === questions.length - 1}
-                          onClick={() =>
-                            dispatch(
-                              importQuestionsAction(
-                                array.moveDown(
-                                  questions,
-                                  questions.indexOf(question)
-                                )
-                              )
-                            )
-                          }
+                          onClick={() => {
+                            const reorderedQuestions = array.moveDown(
+                              questions,
+                              questions.indexOf(question)
+                            );
+                            if (gameName === PollName) {
+                              setPollQuestions(reorderedQuestions);
+                            } else {
+                              setTriviaQuestions(reorderedQuestions);
+                            }
+                          }}
                         >
                           <ArrowDownward />
                         </IconButton>
                         <IconButton
                           disabled={questions.length === 1}
-                          onClick={() =>
-                            dispatch(deleteQuestionAction(question))
-                          }
+                          onClick={() => {
+                            const updatedQuestions = questions.filter(q => q.id !== question.id);
+                            if (gameName === PollName) {
+                              setPollQuestions(updatedQuestions);
+                            } else {
+                              setTriviaQuestions(updatedQuestions);
+                            }
+                          }}
                         >
                           <Delete />
                         </IconButton>

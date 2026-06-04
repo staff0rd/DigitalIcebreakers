@@ -7,6 +7,7 @@ import Button from "../../../../layout/components/CustomButtons/Button";
 import Grid from "@mui/material/GridLegacy";
 
 import { useSelector } from "../../../../store/useSelector";
+import { useAtom } from "jotai";
 import { ContentContainer } from "../../../../components/ContentContainer";
 import makeStyles from "@mui/styles/makeStyles";
 import { useParams, useNavigate } from "react-router";
@@ -21,9 +22,10 @@ import { useDispatch } from "store/useSelector";
 import { presenterActions } from "games/shared/Poll/reducers/presenterActions";
 import { NameAndMode } from "../types/NameAndMode";
 import { Answer } from "../types/Answer";
-import { getPollOrTriviaState } from "../getPollOrTriviaState";
-import { RootState } from "store/RootState";
 import { Name as PollName } from "games/Poll";
+import { Name as TriviaName } from "games/Trivia";
+import { pollStateAtom, setQuestionsAtom as setPollQuestionsAtom } from "../../../Poll/pollAtoms";
+import { triviaStateAtom, setQuestionsAtom as setTriviaQuestionsAtom } from "../../../Trivia/triviaAtoms";
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -47,10 +49,12 @@ type Props = {
 
 const QuestionEditor = ({ question, gameName }: Props) => {
   const dispatch = useDispatch();
-  const totalQuestions = useSelector((store) => {
-    const state = getPollOrTriviaState(store, gameName);
-    return state.presenter.questions.length;
-  });
+  const [pollState] = useAtom(pollStateAtom);
+  const [triviaState] = useAtom(triviaStateAtom);
+
+  const totalQuestions = gameName === PollName
+    ? pollState.presenter.questions.length
+    : triviaState.presenter.questions.length;
   const [text, setText] = useState(question.text);
   const [answers, setAnswers] = useState(question.answers);
 
@@ -158,14 +162,16 @@ const QuestionEditor = ({ question, gameName }: Props) => {
 };
 
 const EditQuestion = () => {
-  const gameName = useSelector((state: RootState) => state.lobby.currentGame!);
+  const [pollState] = useAtom(pollStateAtom);
+  const [triviaState] = useAtom(triviaStateAtom);
+
+  const gameName = useSelector((state) => state.lobby.currentGame!);
   const isTriviaMode = gameName !== PollName;
   const questionId = useParams<{ id: string }>().id;
 
-  const question = useSelector((store) => {
-    const state = getPollOrTriviaState(store, gameName);
-    return state.presenter.questions.find((q) => q.id === questionId);
-  });
+  const question = gameName === PollName
+    ? pollState.presenter.questions.find((q) => q.id === questionId)
+    : triviaState.presenter.questions.find((q) => q.id === questionId);
 
   return question ? (
     <QuestionEditor
