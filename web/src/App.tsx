@@ -8,10 +8,10 @@ import { configureAppStore } from "./store/configureAppStore";
 import { EnhancedStore, AnyAction } from "@reduxjs/toolkit";
 import { RootState } from "./store/RootState";
 import { connectionConnect } from "./store/connection/actions";
-import { setUser } from "./store/user/actions";
 import { useSelector } from "./store/useSelector";
 import { Player } from "./Player";
 import { setJotaiStore } from "./store/SignalRMiddlewareWithJotai";
+import { userAtom } from "./store/atoms/userAtoms";
 
 import { Theme } from "@mui/material/styles";
 
@@ -61,7 +61,11 @@ export default class App extends Component<{}, AppState> {
     
     setJotaiStore(this.jotaiStore);
 
-    this.store.dispatch(setUser(this.user));
+    this.jotaiStore.set(userAtom, {
+      id: this.user.id,
+      name: this.user.name || "",
+      isRegistered: false,
+    });
 
     window.onresize = () => Events.emit("onresize");
 

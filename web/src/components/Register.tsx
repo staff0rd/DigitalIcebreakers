@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { useSelector } from "../store/useSelector";
+import { useAtomValue } from "jotai";
+import { userAtom } from "../store/atoms/userAtoms";
 import { setUserName } from "../store/user/actions";
 import { goToDefaultUrl } from "../store/shell/actions";
 import GridItem from "../layout/components/Grid/GridItem";
@@ -14,7 +15,7 @@ import CardTitle from "../layout/components/Card/CardTitle";
 import { ContentContainer } from "../components/ContentContainer";
 
 const Register = () => {
-  const initialName = useSelector((state) => state.user.name || "");
+  const initialName = useAtomValue(userAtom).name || "";
   const [name, setName] = useState<string>(initialName);
   const dispatch = useDispatch();
 

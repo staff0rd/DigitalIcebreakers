@@ -1,7 +1,8 @@
 import UnknownIcon from "@mui/icons-material/Help";
 import ConnectedIcon from "@mui/icons-material/Power";
 import NotConnectedIcon from "@mui/icons-material/PowerOff";
-import { useSelector } from "../store/useSelector";
+import { useAtomValue } from "jotai";
+import { connectionStatusAtom } from "../store/atoms/connectionAtoms";
 import makeStyles from "@mui/styles/makeStyles";
 
 const useStyles = makeStyles(() => ({
@@ -19,7 +20,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 export const ConnectionIcon = () => {
-  const status = useSelector((state) => state.connection.status);
+  const status = useAtomValue(connectionStatusAtom);
   const classes = useStyles();
 
   switch (status) {

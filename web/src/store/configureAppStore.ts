@@ -1,4 +1,4 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { AnyAction, configureStore, Dispatch } from "@reduxjs/toolkit";
 import { rootReducer } from "./rootReducer";
 import { SignalRMiddlewareWithJotai } from "./SignalRMiddlewareWithJotai";
 //import logger from "redux-logger";
@@ -18,4 +18,6 @@ export function configureAppStore() {
   return store;
 }
 
-export type AppDispatch = ReturnType<typeof configureAppStore>["dispatch"];
+// Middleware-only command actions (e.g. SET_USER_NAME, CONNECTION_CONNECT) have
+// no reducer, so widen dispatch beyond the reducer-derived action union.
+export type AppDispatch = Dispatch<AnyAction>;

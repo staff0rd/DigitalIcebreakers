@@ -1,11 +1,11 @@
 import { useAtomValue } from "jotai";
-import { useSelector } from "../../store/useSelector";
 import { Box } from "@mui/material";
 import { Colors, ColorUtils } from "../../Colors";
 import { namePickerAtom } from "./namePickerAtoms";
+import { userAtom } from "../../store/atoms/userAtoms";
 
 const NamePickerClient = () => {
-  const user = useSelector((s) => s.user);
+  const user = useAtomValue(userAtom);
   const namePickerState = useAtomValue(namePickerAtom);
   const selectedId = namePickerState.player.selectedId;
   const won = selectedId === user.id;
