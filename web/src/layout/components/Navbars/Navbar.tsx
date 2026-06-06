@@ -1,7 +1,7 @@
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/icons-material/Menu";
-import { toggleDrawer } from "../../../store/shell/actions";
-import { useDispatch } from "store/useSelector";
+import { useSetAtom } from "jotai";
+import { toggleDrawerAtom } from "../../../store/atoms/shellAtoms";
 import makeStyles from "@mui/styles/makeStyles";
 import { Box } from "@mui/material";
 
@@ -13,7 +13,7 @@ const useStyles = makeStyles({
 });
 
 export default function Navbar(props) {
-  const dispatch = useDispatch();
+  const toggleDrawer = useSetAtom(toggleDrawerAtom);
   const classes = useStyles();
   return (
     <Box sx={{ display: { md: "none", sx: "block" } }}>
@@ -21,7 +21,7 @@ export default function Navbar(props) {
         <IconButton
           sx={{ color: "white" }}
           aria-label="open drawer"
-          onClick={() => dispatch(toggleDrawer())}
+          onClick={() => toggleDrawer()}
         >
           <Menu />
         </IconButton>

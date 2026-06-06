@@ -1,4 +1,3 @@
-import { AnyAction, Dispatch } from "@reduxjs/toolkit";
 import { HubConnection } from "@microsoft/signalr";
 import {
   CONNECTION_CONNECT,
@@ -11,15 +10,7 @@ import {
   connectionConnect,
 } from "./connection/actions";
 import { ConnectionStatus } from "../ConnectionStatus";
-import {
-  setLobby,
-  clearLobby,
-  playerJoinedLobby,
-  playerLeftLobby,
-  setLobbyGame,
-  setLobbyPlayers,
-  joinLobby,
-} from "./lobby/actions";
+import { clearLobby, setLobbyGame, joinLobby } from "./lobby/actions";
 import {
   CLEAR_LOBBY,
   SET_LOBBY_GAME,
@@ -32,14 +23,21 @@ import {
   LobbyActionTypes,
 } from "./lobby/types";
 import { SET_USER_NAME, UserActionTypes } from "./user/types";
-import { goToDefaultUrl, setMenuItems, navigate } from "./shell/actions";
+import { goToDefaultUrl, navigate } from "./shell/actions";
 import { GO_TO_DEFAULT_URL, ShellActionTypes } from "./shell/types";
-import { RootState } from "./RootState";
 import { getGameHandler, isGameRegistered } from "./jotai/gameMessageHandlers";
 import { userAtom } from "./atoms/userAtoms";
 import { connectionStatusAtom } from "./atoms/connectionAtoms";
+import {
+  lobbyAtom,
+  initialLobbyState,
+  playerJoinedAtom,
+  playerLeftAtom,
+} from "./atoms/lobbyAtoms";
 
 type JotaiStore = ReturnType<typeof import("jotai").createStore>;
+
+type Dispatch = (action: unknown) => unknown;
 
 let jotaiStoreRef: JotaiStore | null = null;
 
@@ -55,10 +53,9 @@ const jotai = (): JotaiStore => {
 };
 
 export const onReconnect =
-  (getState: () => RootState, dispatch: Dispatch<AnyAction>) =>
-  (response: ReconnectPayload) => {
+  (dispatch: Dispatch) => (response: ReconnectPayload) => {
     const user = jotai().get(userAtom);
-    const { joiningLobbyId, isPresenter } = getState().lobby;
+    const { joiningLobbyId, isPresenter } = jotai().get(lobbyAtom);
     if (jotai().get(connectionStatusAtom) !== ConnectionStatus.Connected) {
       dispatch(updateConnectionStatus(ConnectionStatus.Connected));
     }
@@ -69,15 +66,13 @@ export const onReconnect =
       if (!user.isRegistered && !isPresenter && !response.isRegistered) {
         dispatch(goToDefaultUrl());
       } else {
-        dispatch(
-          setLobby(
-            response.lobbyId,
-            response.lobbyName,
-            response.isPresenter,
-            response.players,
-            response.currentGame
-          )
-        );
+        jotai().set(lobbyAtom, {
+          id: response.lobbyId,
+          name: response.lobbyName,
+          isPresenter: response.isPresenter,
+          currentGame: response.currentGame,
+          players: response.players,
+        });
         jotai().set(userAtom, {
           ...user,
           id: response.playerId,
@@ -106,16 +101,16 @@ export const SignalRMiddlewareWithJotai = (connectionFactory: () => HubConnectio
         connectionRetrySeconds[connectionRetrySeconds.length - 1];
   };
 
-  return ({ getState, dispatch }) => {
-    connection.on("reconnect", onReconnect(getState, dispatch));
+  return ({ dispatch }) => {
+    connection.on("reconnect", onReconnect(dispatch));
     connection.on("joined", (user) => {
-      dispatch(playerJoinedLobby(user));
+      jotai().set(playerJoinedAtom, user);
     });
     connection.on("left", (user) => {
-      dispatch(playerLeftLobby(user));
+      jotai().set(playerLeftAtom, user);
     });
     connection.on("players", (players) => {
-      dispatch(setLobbyPlayers(players));
+      jotai().set(lobbyAtom, { ...jotai().get(lobbyAtom), players });
     });
     connection.onclose(() => {
       dispatch(updateConnectionStatus(ConnectionStatus.NotConnected));
@@ -128,7 +123,6 @@ export const SignalRMiddlewareWithJotai = (connectionFactory: () => HubConnectio
     });
     connection.on("newgame", (name) => {
       connection.off("gameMessage");
-      dispatch(setMenuItems([]));
       dispatch(setLobbyGame(name));
     });
     const invoke = (methodName: string, ...params: any[]) => {
@@ -144,6 +138,7 @@ export const SignalRMiddlewareWithJotai = (connectionFactory: () => HubConnectio
       ) => {
         switch (action.type) {
           case CLEAR_LOBBY: {
+            jotai().set(lobbyAtom, initialLobbyState);
             dispatch(navigate("/lobby-closed"));
             break;
           }
@@ -152,27 +147,26 @@ export const SignalRMiddlewareWithJotai = (connectionFactory: () => HubConnectio
             break;
           }
           case SET_LOBBY_GAME: {
-            const isPresenter = getState().lobby.isPresenter;
+            jotai().set(lobbyAtom, {
+              ...jotai().get(lobbyAtom),
+              currentGame: action.game,
+            });
+            const isPresenter = jotai().get(lobbyAtom).isPresenter;
             connection.off("gameMessage");
             connection.on("gameMessage", (args: any) => {
-              // Check if this game has a registered handler
-              if (isGameRegistered(action.game) && jotaiStoreRef) {
+              if (isGameRegistered(action.game)) {
                 const gameHandler = getGameHandler(action.game);
                 if (gameHandler) {
                   const { atom, messageHandler } = gameHandler;
-                  const currentState = jotaiStoreRef.get(atom);
-                  const newState = messageHandler(currentState, args, isPresenter);
-                  jotaiStoreRef.set(atom, newState);
+                  const currentState = jotai().get(atom);
+                  const newState = messageHandler(
+                    currentState,
+                    args,
+                    isPresenter
+                  );
+                  jotai().set(atom, newState);
                 }
               }
-              
-              // Always dispatch Redux action for now (during migration)
-              dispatch({
-                type: `${action.game}-${
-                  isPresenter ? "presenter" : "client"
-                }-receive-game-message`,
-                payload: args,
-              });
             });
             const value = next(action);
             dispatch(goToDefaultUrl());
@@ -215,7 +209,7 @@ export const SignalRMiddlewareWithJotai = (connectionFactory: () => HubConnectio
                 dispatch(connectionConnect());
                 break;
               case ConnectionStatus.Connected: {
-                const { lobby } = getState();
+                const lobby = jotai().get(lobbyAtom);
                 if (lobby.joiningLobbyId) {
                   dispatch(joinLobby(lobby.joiningLobbyId));
                 } else if (lobby.id) dispatch(joinLobby(lobby.id));
@@ -233,11 +227,15 @@ export const SignalRMiddlewareWithJotai = (connectionFactory: () => HubConnectio
             };
             jotai().set(userAtom, user);
             const value = next(action);
-            const { lobby } = getState();
+            const lobby = jotai().get(lobbyAtom);
             invoke("connectToLobby", user, lobby.id || lobby.joiningLobbyId);
             return value;
           }
           case JOIN_LOBBY: {
+            jotai().set(lobbyAtom, {
+              ...jotai().get(lobbyAtom),
+              joiningLobbyId: action.id,
+            });
             if (
               jotai().get(connectionStatusAtom) === ConnectionStatus.Connected
             ) {
@@ -250,6 +248,11 @@ export const SignalRMiddlewareWithJotai = (connectionFactory: () => HubConnectio
             break;
           }
           case CREATE_LOBBY: {
+            jotai().set(lobbyAtom, {
+              ...jotai().get(lobbyAtom),
+              isPresenter: true,
+              name: action.name,
+            });
             invoke("createLobby", action.name, jotai().get(userAtom));
             break;
           }
@@ -265,13 +268,12 @@ export const SignalRMiddlewareWithJotai = (connectionFactory: () => HubConnectio
           }
           case GO_TO_DEFAULT_URL: {
             const user = jotai().get(userAtom);
-            const { lobby } = getState();
+            const lobby = jotai().get(lobbyAtom);
             if (lobby.joiningLobbyId && !user.isRegistered) {
               console.log("navigating to register");
               dispatch(navigate("/register"));
             } else {
-              const currentGame = getState().lobby.currentGame;
-              if (currentGame) {
+              if (lobby.currentGame) {
                 console.log("navigating to game");
                 dispatch(navigate("/game"));
               } else {

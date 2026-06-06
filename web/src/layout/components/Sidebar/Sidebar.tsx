@@ -8,11 +8,11 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import Icon from "@mui/material/Icon";
 import styles from "../../assets/jss/material-dashboard-react/components/sidebarStyle";
-import { toggleDrawer } from "../../../store/shell/actions";
-import { useDispatch } from "store/useSelector";
+import { useAtomValue, useSetAtom } from "jotai";
+import { toggleDrawerAtom } from "../../../store/atoms/shellAtoms";
+import { lobbyAtom } from "../../../store/atoms/lobbyAtoms";
 import { useLocation } from "react-router";
 import SidebarFooter from "../../../components/SidebarFooter";
-import { useSelector } from "../../../store/useSelector";
 import LobbyQrCode from "../../../components/LobbyQrCode";
 import Games from "../../../games/Games";
 import { Link, ListItemButton, useTheme } from "@mui/material";
@@ -22,16 +22,15 @@ import Color from "color";
 import { defaultFont, colors } from "../../assets/jss/palette";
 
 export default function Sidebar(props) {
-  const dispatch = useDispatch();
+  const toggleDrawer = useSetAtom(toggleDrawerAtom);
   const location = useLocation();
-  const lobby = useSelector((state) => state.lobby);
+  const lobby = useAtomValue(lobbyAtom);
   const isPresenter = lobby.isPresenter;
   const isLobby = location.pathname === "/";
   const theme = useTheme();
   const showQrCode = Boolean(lobby.id && !isLobby);
   const classes = styles(showQrCode)(theme);
-  const gameName = useSelector((state) => state.lobby.currentGame);
-  const game = Games.find((g) => g.name == gameName);
+  const game = Games.find((g) => g.name == lobby.currentGame);
   const GameMenu = game && game.menu;
 
   // verifies if routeName is the one active (in browser input)
@@ -70,7 +69,7 @@ export default function Sidebar(props) {
               >
                 <ListItemButton
                   component={RouterLink}
-                  onClick={() => dispatch(toggleDrawer(false))}
+                  onClick={() => toggleDrawer(false)}
                   to={prop.path}
                   sx={createSxClasses(classes, {
                     itemLink: true,
@@ -171,7 +170,7 @@ export default function Sidebar(props) {
           variant="temporary"
           anchor="right"
           open={props.open}
-          onClose={() => dispatch(toggleDrawer())}
+          onClose={() => toggleDrawer()}
           ModalProps={{
             keepMounted: true, // Better open performance on mobile.
           }}

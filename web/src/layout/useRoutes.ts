@@ -12,7 +12,8 @@ import LobbyClosed from "../components/LobbyClosed";
 import { Lobby } from "../components/Lobby";
 import { Home } from "../components/Home";
 import NewGame from "../components/NewGame";
-import { useSelector } from "../store/useSelector";
+import { useAtomValue } from "jotai";
+import { lobbyAtom } from "../store/atoms/lobbyAtoms";
 import Games from "../games/Games";
 import { Game } from "../components/Game";
 import { JSX } from "react";
@@ -28,10 +29,8 @@ export interface RouteLink {
 }
 
 const useRoutes = (): RouteLink[] => {
-  const lobby = useSelector((state) => state.lobby);
-  const game = useSelector((state) =>
-    Games.find((g) => g.name === state.lobby.currentGame)
-  );
+  const lobby = useAtomValue(lobbyAtom);
+  const game = Games.find((g) => g.name === lobby.currentGame);
   const gameRoutes: RouteLink[] =
     lobby.isPresenter && game && game.routes ? game.routes : [];
 

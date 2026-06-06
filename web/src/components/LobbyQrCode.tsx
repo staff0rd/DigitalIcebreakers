@@ -1,5 +1,6 @@
 import { Config } from "../config";
-import { useSelector } from "../store/useSelector";
+import { useAtomValue } from "jotai";
+import { lobbyAtom } from "../store/atoms/lobbyAtoms";
 import makeStyles from "@mui/styles/makeStyles";
 import { Typography } from "@mui/material";
 import { QRCodeSVG } from "qrcode.react";
@@ -65,7 +66,7 @@ const LobbyQrCode = ({ lg }: Props) => {
   const smStyles = useStylesSm();
   const classes = lg ? lgStyles : smStyles;
   const sm = !lg;
-  const lobby = useSelector((state) => state.lobby);
+  const lobby = useAtomValue(lobbyAtom);
   const joinUrl = `${Config.baseUrl}/${lobby.id}`;
   return (
     <>
