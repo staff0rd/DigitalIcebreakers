@@ -8,7 +8,6 @@ import { configureAppStore } from "./store/configureAppStore";
 import { EnhancedStore, AnyAction } from "@reduxjs/toolkit";
 import { RootState } from "./store/RootState";
 import { connectionConnect } from "./store/connection/actions";
-import { useSelector } from "./store/useSelector";
 import { Player } from "./Player";
 import { setJotaiStore } from "./store/SignalRMiddlewareWithJotai";
 import { userAtom } from "./store/atoms/userAtoms";
@@ -108,21 +107,9 @@ export default class App extends Component<{}, AppState> {
     return (
       <JotaiProvider store={this.jotaiStore}>
         <Provider store={this.store}>
-          <Main />
+          <Layout />
         </Provider>
       </JotaiProvider>
     );
   }
 }
-
-const Main = () => {
-  const lobby = useSelector((state) => state.lobby);
-
-  return (
-    <Layout
-      isPresenter={lobby.isPresenter}
-      currentGame={lobby.currentGame}
-      lobbyId={lobby.id}
-    />
-  );
-};

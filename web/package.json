@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:all": "cd .. && ASPNETCORE_ENVIRONMENT=Development ASPNETCORE_URLS=http://0.0.0.0:5000 dotnet run --project DigitalIcebreakers & npm run dev",
+    "dev:all": "cd .. && ASPNETCORE_ENVIRONMENT=Development ASPNETCORE_URLS=http://0.0.0.0:5050 dotnet run --project DigitalIcebreakers & npm run dev",
     "check-types": "tsc -b --noEmit",
     "check-types:e2e": "tsc --project tsconfig.e2e.json --noEmit",
     "build": "tsc -b && vite build",

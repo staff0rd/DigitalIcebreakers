@@ -8,9 +8,8 @@ import { useDispatch } from "store/useSelector";
 import { presenterMessage } from "store/lobby/actions";
 import Button from "../../layout/components/CustomButtons/Button";
 import Table from "../../layout/components/Table/Table";
-import { RootState } from "../../store/RootState";
 import { ContentContainer } from "../../components/ContentContainer";
-import { useSelector } from "store/useSelector";
+import { lobbyAtom } from "store/atoms/lobbyAtoms";
 import AutoRenewIcon from "@mui/icons-material/Autorenew";
 import { useAtomValue, useSetAtom } from "jotai";
 import {
@@ -98,7 +97,7 @@ const PresenterShapeComponent = ({ shape, choiceCount, firstPlayerName, isMainSh
 
 export const ReactionPresenter = () => {
   const [againTween, setAgainTween] = useState<gsap.core.Tween>();
-  const players = useSelector((state: RootState) => state.lobby.players);
+  const players = useAtomValue(lobbyAtom).players;
   const againProgress = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();
   const reactionState = useAtomValue(reactionAtom);

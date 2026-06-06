@@ -7,10 +7,9 @@ import { useDispatch } from "store/useSelector";
 import { ResponseCount } from "games/shared/Poll/components/ResponseCount";
 import { Buttons } from "./Buttons";
 import { Responses } from "./Responses";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { fistOfFiveAtom } from "./fistOfFiveAtoms";
-import { useSelector } from "react-redux";
-import { RootState } from "store/RootState";
+import { lobbyAtom } from "store/atoms/lobbyAtoms";
 
 const getQuestion = () => [
   {
@@ -27,7 +26,7 @@ const getQuestion = () => [
 const FistOfFivePresenter = () => {
   const dispatch = useDispatch();
   const [fistOfFiveState, setFistOfFiveState] = useAtom(fistOfFiveAtom);
-  const playerCount = useSelector((state: RootState) => state.lobby.players.length);
+  const playerCount = useAtomValue(lobbyAtom).players.length;
   
   const { presenter } = fistOfFiveState;
   const question = presenter.questions[0];

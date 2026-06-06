@@ -51,10 +51,15 @@ export default defineConfig({
     },
     {
       command: "dotnet run --project ../DigitalIcebreakers",
-      url: "http://localhost:5000", // Adjust port if needed
+      // 5050 because macOS AirPlay Receiver squats on 5000 and its 403
+      // satisfies the readiness probe, so the backend would never start
+      url: "http://localhost:5050",
       reuseExistingServer: !process.env.CI,
-      // Without this the backend boots in Production, finds no wwwroot and 500s
-      env: { ASPNETCORE_ENVIRONMENT: "Development" },
+      env: {
+        // Without this the backend boots in Production, finds no wwwroot and 500s
+        ASPNETCORE_ENVIRONMENT: "Development",
+        ASPNETCORE_URLS: "http://localhost:5050",
+      },
     },
   ],
 });

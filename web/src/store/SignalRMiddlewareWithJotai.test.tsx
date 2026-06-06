@@ -10,10 +10,9 @@ import { updateConnectionStatus } from "./connection/actions";
 import { setUserName } from "./user/actions";
 import { UserState } from "./user/types";
 import { createLobby, joinLobby } from "./lobby/actions";
-import { LobbyState, SET_LOBBY } from "./lobby/types";
+import { LobbyState } from "./lobby/types";
 import { goToDefaultUrl, navigate } from "./shell/actions";
 import { ConnectionActionTypes } from "./connection/types";
-import { RootState } from "./RootState";
 import {
   SignalRMiddlewareWithJotai,
   onReconnect,
@@ -21,6 +20,7 @@ import {
 } from "./SignalRMiddlewareWithJotai";
 import { userAtom } from "./atoms/userAtoms";
 import { connectionStatusAtom } from "./atoms/connectionAtoms";
+import { lobbyAtom, initialLobbyState } from "./atoms/lobbyAtoms";
 
 const connectionFactory = vi.fn();
 const mockConnection = {
@@ -56,9 +56,10 @@ const createMiddleware = (options: MiddlewareOptions = {}) => {
     connectionStatusAtom,
     options.connectionStatus ?? ConnectionStatus.NotConnected
   );
+  jotaiStore.set(lobbyAtom, { ...initialLobbyState, ...options.lobby });
   setJotaiStore(jotaiStore);
   const store = {
-    getState: vi.fn(() => ({ lobby: options.lobby } as RootState)),
+    getState: vi.fn(() => ({})),
     dispatch,
   };
   const next = vi.fn();
@@ -86,7 +87,7 @@ describe("SignalRMiddlewareWithJotai", () => {
     describe("when not yet registered", () => {
       describe("when player", () => {
         it("should not set lobby", () => {
-          const { invoke } = createMiddleware({
+          const { invoke, jotaiStore } = createMiddleware({
             user: { isRegistered: false },
             lobby: { joiningLobbyId: "new-lobby" } as LobbyState,
             connectionStatus: ConnectionStatus.Connected,
@@ -95,16 +96,12 @@ describe("SignalRMiddlewareWithJotai", () => {
           mockConnection.emit("reconnect", {
             lobbyId: "new-lobby",
           });
-          expect(dispatch).not.toBeCalledWith(
-            expect.objectContaining({
-              type: SET_LOBBY,
-            })
-          );
+          expect(jotaiStore.get(lobbyAtom).id).toBeUndefined();
         });
       });
       describe("when presenter", () => {
         it("should set lobby", () => {
-          const { invoke } = createMiddleware({
+          const { invoke, jotaiStore } = createMiddleware({
             user: { isRegistered: false },
             lobby: {
               joiningLobbyId: "new-lobby",
@@ -116,11 +113,7 @@ describe("SignalRMiddlewareWithJotai", () => {
           mockConnection.emit("reconnect", {
             lobbyId: "new-lobby",
           });
-          expect(dispatch).toBeCalledWith(
-            expect.objectContaining({
-              type: SET_LOBBY,
-            })
-          );
+          expect(jotaiStore.get(lobbyAtom).id).toBe("new-lobby");
         });
       });
     });
@@ -128,7 +121,7 @@ describe("SignalRMiddlewareWithJotai", () => {
 
   describe("when connected to an old lobby", () => {
     it("should not update to old lobby", () => {
-      const { invoke } = createMiddleware({
+      const { invoke, jotaiStore } = createMiddleware({
         lobby: { joiningLobbyId: "new-lobby" } as LobbyState,
         connectionStatus: ConnectionStatus.Connected,
       });
@@ -136,11 +129,7 @@ describe("SignalRMiddlewareWithJotai", () => {
       mockConnection.emit("reconnect", {
         lobbyId: "old-lobby",
       });
-      expect(dispatch).not.toBeCalledWith(
-        expect.objectContaining({
-          type: SET_LOBBY,
-        })
-      );
+      expect(jotaiStore.get(lobbyAtom).id).toBeUndefined();
     });
   });
 
@@ -259,15 +248,11 @@ describe("onReconnect", () => {
       });
       jotaiStore.set(connectionStatusAtom, ConnectionStatus.Connected);
       setJotaiStore(jotaiStore);
-      onReconnect(
-        () =>
-          ({
-            lobby: {
-              joiningLobbyId: "aaaa",
-            },
-          } as RootState),
-        localDispatch
-      )({
+      jotaiStore.set(lobbyAtom, {
+        ...initialLobbyState,
+        joiningLobbyId: "aaaa",
+      });
+      onReconnect(localDispatch)({
         lobbyId: "AAAA",
         playerId: "player-1",
         playerName: "Bob",
@@ -277,11 +262,7 @@ describe("onReconnect", () => {
         lobbyName: "lobby",
         isPresenter: false,
       });
-      const setLobbyAction = localDispatch.mock.calls.find(
-        (call) => call[0].type === "SET_LOBBY"
-      );
-      expect(setLobbyAction).not.toBeUndefined();
-      expect(setLobbyAction![0].id).toBe("AAAA");
+      expect(jotaiStore.get(lobbyAtom).id).toBe("AAAA");
     });
   });
 });

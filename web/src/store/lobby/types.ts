@@ -9,27 +9,14 @@ export interface LobbyState {
   joiningLobbyId?: string;
 }
 
-export const SET_LOBBY = "SET_LOBBY";
-export const SET_LOBBY_PLAYERS = "SET_LOBBY_PLAYERS";
 export const SET_LOBBY_GAME = "SET_LOBBY_GAME";
 export const CLEAR_LOBBY = "CLEAR_LOBBY";
 export const CLOSE_LOBBY = "CLOSE_LOBBY";
-export const PLAYER_JOINED_LOBBY = "PLAYER_JOINED_LOBBY";
-export const PLAYER_LEFT_LOBBY = "PLAYER_LEFT_LOBBY";
 export const START_NEW_GAME = "START_NEW_GAME";
 export const JOIN_LOBBY = "JOIN_LOBBY";
 export const CREATE_LOBBY = "CREATE_LOBBY";
 export const GAME_MESSAGE_PRESENTER = "GAME_MESSAGE_PRESENTER";
 export const GAME_MESSAGE_CLIENT = "GAME_MESSAGE_CLIENT";
-
-interface SetLobbyAction {
-  type: typeof SET_LOBBY;
-  id: string;
-  name: string;
-  isPresenter: boolean;
-  players: Player[];
-  game: string | undefined;
-}
 
 interface ClearLobbyAction {
   type: typeof CLEAR_LOBBY;
@@ -39,24 +26,9 @@ interface CloseLobbyAction {
   type: typeof CLOSE_LOBBY;
 }
 
-interface SetLobbyPlayers {
-  type: typeof SET_LOBBY_PLAYERS;
-  players: Player[];
-}
-
 interface SetLobbyGame {
   type: typeof SET_LOBBY_GAME;
   game: string;
-}
-
-interface PlayerJoinedLobbyAction {
-  type: typeof PLAYER_JOINED_LOBBY;
-  player: Player;
-}
-
-interface PlayerLeftLobbyAction {
-  type: typeof PLAYER_LEFT_LOBBY;
-  player: Player;
 }
 
 interface StartNewGameAction {
@@ -85,13 +57,9 @@ interface GameMessageClientAction {
 }
 
 export type LobbyActionTypes =
-  | SetLobbyAction
-  | SetLobbyPlayers
   | SetLobbyGame
   | ClearLobbyAction
   | CloseLobbyAction
-  | PlayerJoinedLobbyAction
-  | PlayerLeftLobbyAction
   | StartNewGameAction
   | JoinLobbyAction
   | CreateLobbyAction

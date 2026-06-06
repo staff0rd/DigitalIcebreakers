@@ -13,6 +13,11 @@ if (!globalThis.ResizeObserver) {
   globalThis.ResizeObserver = ResizeObserverStub;
 }
 
+// Tests must not hit the network: Changelog fetches a devlog feed on mount,
+// which raced past test teardown (DOMParser is gone by then)
+globalThis.fetch = (() =>
+  Promise.resolve(new Response("<rss></rss>"))) as typeof fetch;
+
 // jsdom returns null for canvas 2d contexts, which breaks pixi.js at import
 // time (it paints a white texture on module load); return a permissive no-op
 // context instead
@@ -26,4 +31,4 @@ HTMLCanvasElement.prototype.getContext = function (this: HTMLCanvasElement) {
       set: () => true,
     }
   );
-} as typeof HTMLCanvasElement.prototype.getContext;
+} as unknown as typeof HTMLCanvasElement.prototype.getContext;

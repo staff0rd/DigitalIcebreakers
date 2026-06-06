@@ -200,6 +200,31 @@ describe("lobby flow", () => {
     });
   });
 
+  describe("when a player registers for a lobby with a game in progress", () => {
+    it("lands on the game, not the lobby", async () => {
+      const { emit } = renderLobbyApp(<Admin />, {
+        route: "/join-lobby/abcd",
+        user: { isRegistered: false, name: "" },
+      });
+      confirmLobby(emit, {
+        isPresenter: false,
+        currentGame: "broadcast",
+        isRegistered: false,
+      });
+      fireEvent.change(await screen.findByLabelText("User name"), {
+        target: { value: "Alice" },
+      });
+      fireEvent.click(screen.getByTestId("join-lobby-button"));
+      confirmLobby(emit, {
+        isPresenter: false,
+        currentGame: "broadcast",
+        isRegistered: true,
+        playerName: "Alice",
+      });
+      expect(await screen.findByTestId("client-text")).toBeInTheDocument();
+    });
+  });
+
   describe("closing the lobby", () => {
     it("tells the server to close the lobby", async () => {
       const { emit, connection } = renderLobbyApp(<Admin />);

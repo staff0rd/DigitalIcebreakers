@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
 import { Colors, ColorUtils } from "../../Colors";
 import { Pixi } from "../pixi/Pixi";
-import { useSelector } from "store/useSelector";
 import { useDispatch } from "store/useSelector";
 import { presenterMessage } from "store/lobby/actions";
 import { pick, between } from "Random";
 import { namePickerAtom } from "./namePickerAtoms";
+import { lobbyAtom } from "store/atoms/lobbyAtoms";
 
 import * as PIXI from "pixi.js";
 
@@ -27,7 +27,7 @@ const NamePickerPresenter = () => {
   const [id, setId] = useState<string>();
   const dispatch = useDispatch();
 
-  const users = useSelector((state) => state.lobby.players);
+  const users = useAtomValue(lobbyAtom).players;
   const namePickerState = useAtomValue(namePickerAtom);
   const { shouldPick } = namePickerState.presenter;
 

@@ -4,7 +4,7 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import { Box } from "@mui/material";
 import { useAtomValue } from "jotai";
-import { useSelector } from "../../../../store/useSelector";
+import { lobbyAtom } from "../../../../store/atoms/lobbyAtoms";
 import { triviaStateAtom } from "../../../Trivia/triviaAtoms";
 import { Response } from "../types/Response";
 
@@ -16,7 +16,7 @@ interface UserScore {
 
 const ScoreBoard = () => {
   const { presenter } = useAtomValue(triviaStateAtom);
-  const players = useSelector((state) => state.lobby.players);
+  const { players } = useAtomValue(lobbyAtom);
 
   const correctResponses = presenter.questions.flatMap((question) => {
     const correctAnswer = question.answers.find((answer) => answer.correct);

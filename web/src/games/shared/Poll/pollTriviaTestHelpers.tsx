@@ -7,7 +7,7 @@ import { AnyAction, configureStore, Middleware } from "@reduxjs/toolkit";
 import { ReactElement } from "react";
 import { rootReducer } from "store/rootReducer";
 import { getGameHandler } from "store/jotai/gameMessageHandlers";
-import { setLobbyGame, setLobbyPlayers } from "store/lobby/actions";
+import { lobbyAtom, initialLobbyState } from "store/atoms/lobbyAtoms";
 import { Player } from "Player";
 import { Answer } from "./types/Answer";
 import { Question } from "./types/Question";
@@ -63,13 +63,12 @@ export const renderPollTrivia = (
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat(actionRecorder),
   });
-  if (options.players) {
-    reduxStore.dispatch(setLobbyPlayers(options.players));
-  }
-  if (options.currentGame) {
-    reduxStore.dispatch(setLobbyGame(options.currentGame));
-  }
   const jotaiStore = createStore();
+  jotaiStore.set(lobbyAtom, {
+    ...initialLobbyState,
+    players: options.players ?? [],
+    currentGame: options.currentGame ?? "",
+  });
   if (options.pollPresenter) {
     jotaiStore.set(pollStateAtom, {
       presenter: {

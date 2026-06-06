@@ -8,7 +8,8 @@ export default defineConfig({
   server: {
     proxy: {
       "/gameHub": {
-        target: "http://localhost:5000",
+        // 5050: macOS AirPlay Receiver occupies 5000
+        target: "http://localhost:5050",
         ws: true, // Enable WebSocket proxy
       },
     },

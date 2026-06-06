@@ -9,8 +9,8 @@ import ArrowDownward from "@mui/icons-material/ArrowDownward";
 import IconButton from "@mui/material/IconButton";
 import Delete from "@mui/icons-material/Delete";
 import Edit from "@mui/icons-material/Edit";
-import { useSelector } from "../../../../store/useSelector";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
+import { lobbyAtom } from "../../../../store/atoms/lobbyAtoms";
 import { ContentContainer } from "../../../../components/ContentContainer";
 import makeStyles from "@mui/styles/makeStyles";
 import Table from "@mui/material/Table";
@@ -66,21 +66,12 @@ const EditQuestions = () => {
   const [, setPollQuestions] = useAtom(setPollQuestionsAtom);
   const [, setTriviaQuestions] = useAtom(setTriviaQuestionsAtom);
 
-  const { questions, gameName, isTriviaMode } = useSelector((state) => {
-    const gameName = state.lobby.currentGame!;
-    const isTriviaMode = gameName !== PollName;
-
-    // Use Jotai state for both Poll and Trivia
-    const questions = gameName === PollName
+  const gameName = useAtomValue(lobbyAtom).currentGame!;
+  const isTriviaMode = gameName !== PollName;
+  const questions =
+    gameName === PollName
       ? pollState.presenter.questions
       : triviaState.presenter.questions;
-
-    return {
-      questions,
-      gameName,
-      isTriviaMode,
-    };
-  });
   const addQuestion = () => {
     const id = guid();
 

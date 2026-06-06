@@ -1,8 +1,8 @@
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { useEffect } from "react";
 import { useDispatch } from "store/useSelector";
-import { useSelector } from "store/useSelector";
 import { presenterMessage } from "store/lobby/actions";
+import { lobbyAtom } from "store/atoms/lobbyAtoms";
 import { Box, IconButton } from "@mui/material";
 import NavigateBefore from "@mui/icons-material/NavigateBefore";
 import NavigateNext from "@mui/icons-material/NavigateNext";
@@ -28,9 +28,7 @@ export const JotaiTriviaPresenter = () => {
   const [, toggleScoreBoard] = useAtom(toggleScoreBoardAtom);
   const dispatch = useDispatch();
 
-  const { playerCount } = useSelector((state) => ({
-    playerCount: state.lobby.players.length,
-  }));
+  const playerCount = useAtomValue(lobbyAtom).players.length;
 
   const { questions, currentQuestionId, showResponses, showScoreBoard } = triviaState.presenter;
 

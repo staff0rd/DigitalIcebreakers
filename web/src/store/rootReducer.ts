@@ -1,8 +1,5 @@
-import { combineReducers } from "redux";
-import { lobbyReducer } from "./lobby/reducers";
-import { shellReducer } from "./shell/reducers";
+import { RootState } from "./RootState";
 
-export const rootReducer = combineReducers({
-  lobby: lobbyReducer,
-  shell: shellReducer,
-});
+// All state lives in Jotai atoms now; redux remains only to route
+// middleware command actions (removed entirely in a later phase).
+export const rootReducer = (state: RootState = {}): RootState => state;

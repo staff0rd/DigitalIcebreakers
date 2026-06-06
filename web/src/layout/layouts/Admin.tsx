@@ -12,8 +12,11 @@ import "perfect-scrollbar/css/perfect-scrollbar.css";
 
 // core components
 import Navbar from "../components/Navbars/Navbar";
-import { toggleDrawer } from "../../store/shell/actions";
-import { useSelector } from "../../store/useSelector";
+import { useAtomValue, useSetAtom } from "jotai";
+import {
+  showDrawerAtom,
+  toggleDrawerAtom,
+} from "../../store/atoms/shellAtoms";
 import Sidebar from "../components/Sidebar/Sidebar";
 
 import useRoutes from "../useRoutes";
@@ -70,13 +73,14 @@ const LobbyCodeRedirect = () => {
   return null;
 };
 
-export default function Admin({ isPresenter, currentGame, lobbyId, ...rest }) {
+export default function Admin(props: Record<string, unknown>) {
   const routes = useRoutes();
   const theme = useTheme();
   const styles = stylesWithoutTheme(theme);
   // ref to help us initialize PerfectScrollbar on windows devices
   const mainPanel = React.createRef<HTMLDivElement>();
-  const showDrawer = useSelector((state) => state.shell.showDrawer);
+  const showDrawer = useAtomValue(showDrawerAtom);
+  const toggleDrawer = useSetAtom(toggleDrawerAtom);
 
   const resizeFunction = () => {
     if (window.innerWidth >= 960) {
@@ -110,10 +114,10 @@ export default function Admin({ isPresenter, currentGame, lobbyId, ...rest }) {
         logo="/img/icon.svg"
         open={showDrawer}
         color="blue"
-        {...rest}
+        {...props}
       />
       <Box sx={styles.mainPanel} ref={mainPanel}>
-        <Navbar routes={routes} {...rest} />
+        <Navbar routes={routes} {...props} />
         <Box sx={styles.content}>
           <Box sx={styles.container}>
             <AppRoutes />

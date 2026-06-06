@@ -6,8 +6,8 @@ import CardBody from "../../../../layout/components/Card/CardBody";
 import Button from "../../../../layout/components/CustomButtons/Button";
 import Grid from "@mui/material/GridLegacy";
 
-import { useSelector } from "../../../../store/useSelector";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
+import { lobbyAtom } from "../../../../store/atoms/lobbyAtoms";
 import { ContentContainer } from "../../../../components/ContentContainer";
 import makeStyles from "@mui/styles/makeStyles";
 import { useParams, useNavigate } from "react-router";
@@ -166,7 +166,7 @@ const EditQuestion = () => {
   const [pollState] = useAtom(pollStateAtom);
   const [triviaState] = useAtom(triviaStateAtom);
 
-  const gameName = useSelector((state) => state.lobby.currentGame!);
+  const gameName = useAtomValue(lobbyAtom).currentGame!;
   const isTriviaMode = gameName !== PollName;
   const questionId = useParams<{ id: string }>().id;
 
