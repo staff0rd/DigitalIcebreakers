@@ -113,61 +113,61 @@ Incrementally migrate from Redux to Jotai using a strangler-fig pattern. Each mi
 
 12. **Retrospective** - Categories and ideas
 
-    - [ ] Create atoms
-    - [ ] Migrate components
-    - [ ] Run e2e tests (retrospective.spec.ts)
-    - [ ] Remove reducer
+    - [x] Create atoms
+    - [x] Migrate components
+    - [x] Run e2e tests (retrospective.spec.ts)
+    - [x] Remove reducer
 
 13. **Trivia** - Questions, scores, and state
-    - [ ] Create atoms
-    - [ ] Migrate components
-    - [ ] Run e2e tests (trivia/\*.spec.ts)
-    - [ ] Remove reducer
+    - [x] Create atoms
+    - [x] Migrate components
+    - [x] Run e2e tests (trivia/\*.spec.ts)
+    - [x] Remove reducer
 
 #### Phase 4: Core App State
 
 14. **User State** - id, name, isRegistered
 
-    - [ ] Create user atoms
-    - [ ] Update all components using user state
-    - [ ] Test registration flow
-    - [ ] Remove user reducer
+    - [x] Create user atoms
+    - [x] Update all components using user state
+    - [x] Test registration flow
+    - [x] Remove user reducer
 
 15. **Shell State** - UI state, navigation
 
-    - [ ] Create shell atoms
-    - [ ] Update navigation components
-    - [ ] Test navigation
-    - [ ] Remove shell reducer
+    - [x] Create shell atoms
+    - [x] Update navigation components
+    - [x] Test navigation
+    - [x] Remove shell reducer
 
 16. **Connection State** - connection status
 
-    - [ ] Create connection atoms
-    - [ ] Update connection-dependent components
-    - [ ] Test connection states
-    - [ ] Remove connection reducer
+    - [x] Create connection atoms
+    - [x] Update connection-dependent components
+    - [x] Test connection states
+    - [x] Remove connection reducer
 
 17. **Lobby State** - lobby info, players, current game
-    - [ ] Create lobby atoms
-    - [ ] Update lobby components
-    - [ ] Test lobby functionality
-    - [ ] Remove lobby reducer
+    - [x] Create lobby atoms
+    - [x] Update lobby components
+    - [x] Test lobby functionality
+    - [x] Remove lobby reducer
 
 #### Phase 5: SignalR Migration
 
 18. **SignalR Middleware**
-    - [ ] Create Jotai-based SignalR handling
-    - [ ] Migrate message routing
-    - [ ] Test real-time sync
-    - [ ] Remove Redux middleware
+    - [x] Create Jotai-based SignalR handling
+    - [x] Migrate message routing
+    - [x] Test real-time sync
+    - [x] Remove Redux middleware
 
 #### Phase 6: Cleanup
 
 19. **Final Cleanup**
-    - [ ] Remove Redux store configuration
-    - [ ] Remove Redux dependencies from package.json
-    - [ ] Remove all Redux-related files
-    - [ ] Update documentation
+    - [x] Remove Redux store configuration
+    - [x] Remove Redux dependencies from package.json
+    - [x] Remove all Redux-related files
+    - [x] Update documentation
 
 ## TDD Compliance for Migrations
 
@@ -285,13 +285,15 @@ It should return the new state for the atom.
 - Registration pattern: `src/store/jotai/gameMessageHandlers.ts`
 - YesNoMaybe example: `src/games/YesNoMaybe/yesNoMaybeAtoms.ts`
 - Broadcast example: `src/games/Broadcast/broadcastAtoms.ts`
-- SignalR middleware: `src/store/SignalRMiddlewareWithJotai.ts`
+- SignalR message routing: `src/store/jotai/signalRAtoms.ts`
 
 ## Progress Tracking
 
-Last updated: 2025-06-24
+Last updated: 2026-06-06
 
 ### Current Status
+
+**Migration complete.** All games, core app state (user, lobby, connection, shell) and SignalR message routing run on Jotai. Redux, react-redux, @reduxjs/toolkit and redux-logger have been removed from the project entirely.
 
 ✅ YesNoMaybe - Completed
 ✅ Broadcast - Completed
@@ -304,6 +306,11 @@ Last updated: 2025-06-24
 ✅ Reaction - Completed
 ✅ IdeaWall - Completed
 ✅ Poll - Completed
+✅ Retrospective - Completed
+✅ Trivia - Completed
+✅ User/Shell/Connection/Lobby state - Completed
+✅ SignalR routing - Completed
+✅ Redux removal - Completed
 
 ### Lessons Learned from NamePicker Migration
 
