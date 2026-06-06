@@ -1,21 +1,20 @@
 import { Button, Box } from "@mui/material";
-import { useDispatch } from "store/useSelector";
-import { clientMessage } from "../../store/lobby/actions";
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
+import { clientMessageAtom } from "../../store/jotai/signalRAtoms";
 import { pongAtom } from "./pongAtoms";
 import { ColorUtils } from "../../Colors";
 
 export const PongClient = () => {
   const [state] = useAtom(pongAtom);
   const { releasedColor, team } = state.client;
-  const dispatch = useDispatch();
+  const sendClientMessage = useSetAtom(clientMessageAtom);
 
   const handleMouseDown = (action: string) => () => {
-    dispatch(clientMessage(action));
+    sendClientMessage(action);
   };
 
   const handleMouseUp = () => {
-    dispatch(clientMessage("release"));
+    sendClientMessage("release");
   };
 
   const buttonStyle = {

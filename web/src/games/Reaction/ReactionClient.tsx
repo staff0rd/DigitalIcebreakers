@@ -2,8 +2,7 @@ import { Colors } from "../../Colors";
 import { Shape } from "./Shape";
 import { ShapeType } from "./ShapeType";
 import { useAtomValue, useSetAtom } from "jotai";
-import { clientMessage } from "../../store/lobby/actions";
-import { useDispatch } from "store/useSelector";
+import { clientMessageAtom } from "../../store/jotai/signalRAtoms";
 import { reactionAtom, selectShapeAtom } from "./atoms";
 import { Box } from "@mui/material";
 import { ShapeRenderer } from "./ShapeRenderer";
@@ -38,13 +37,13 @@ const ShapeComponent = ({ shape, isSelected, isDisabled, onSelect }: {
 };
 
 export const ReactionPlayer = () => {
-  const dispatch = useDispatch();
+  const sendClientMessage = useSetAtom(clientMessageAtom);
   const reactionState = useAtomValue(reactionAtom);
   const selectShape = useSetAtom(selectShapeAtom);
   const { shapes, selectedId } = reactionState.player;
 
   const select = (id: number) => {
-    dispatch(clientMessage(id));
+    sendClientMessage(id);
     selectShape(id);
   };
 

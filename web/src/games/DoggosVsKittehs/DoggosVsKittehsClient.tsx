@@ -1,17 +1,17 @@
 import { useState } from "react";
 import doggo from "./doggo.jpeg";
 import kitteh from "./kitteh.jpg";
-import { clientMessage } from "../../store/lobby/actions";
-import { useDispatch } from "store/useSelector";
+import { useSetAtom } from "jotai";
+import { clientMessageAtom } from "../../store/jotai/signalRAtoms";
 import { List, ListItem, ListItemButton, Box } from "@mui/material";
 
 const DoggosVsKittehsClient = () => {
   const [choice, setChoice] = useState("");
-  const dispatch = useDispatch();
+  const sendClientMessage = useSetAtom(clientMessageAtom);
 
   const choose = (newChoice: string) => {
     setChoice(newChoice);
-    dispatch(clientMessage(newChoice));
+    sendClientMessage(newChoice);
   };
 
   return (

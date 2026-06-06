@@ -1,15 +1,15 @@
 import Button from "../layout/components/CustomButtons/Button";
-import { closeLobby } from "../store/lobby/actions";
+import { useSetAtom } from "jotai";
+import { closeLobbyAtom } from "../store/jotai/signalRAtoms";
 import GridItem from "../layout/components/Grid/GridItem";
 import GridContainer from "../layout/components/Grid/GridContainer";
 import Card from "../layout/components/Card/Card";
 import CardFooter from "../layout/components/Card/CardFooter";
 import CardTitle from "../layout/components/Card/CardTitle";
 import { ContentContainer } from "./ContentContainer";
-import { useDispatch } from "store/useSelector";
 
 export default function CloseLobby() {
-  const dispatch = useDispatch();
+  const closeLobby = useSetAtom(closeLobbyAtom);
 
   return (
     <ContentContainer>
@@ -21,7 +21,7 @@ export default function CloseLobby() {
               subTitle="Closing the lobby will disconnect all players"
             />
             <CardFooter>
-              <Button color="primary" onClick={() => dispatch(closeLobby())}>
+              <Button color="primary" onClick={() => closeLobby()}>
                 Close
               </Button>
             </CardFooter>

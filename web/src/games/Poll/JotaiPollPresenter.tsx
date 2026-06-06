@@ -1,7 +1,6 @@
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useEffect } from "react";
-import { useDispatch } from "store/useSelector";
-import { presenterMessage } from "store/lobby/actions";
+import { presenterMessageAtom } from "store/jotai/signalRAtoms";
 import { lobbyAtom } from "store/atoms/lobbyAtoms";
 import { Box, IconButton } from "@mui/material";
 import NavigateBefore from "@mui/icons-material/NavigateBefore";
@@ -22,7 +21,7 @@ export const JotaiPollPresenter = () => {
   const [pollState] = useAtom(pollStateAtom);
   const [, setCurrentQuestionId] = useAtom(setCurrentQuestionIdAtom);
   const [, toggleResponses] = useAtom(toggleResponsesAtom);
-  const dispatch = useDispatch();
+  const sendPresenterMessage = useSetAtom(presenterMessageAtom);
 
   const playerCount = useAtomValue(lobbyAtom).players.length;
 
@@ -58,18 +57,16 @@ export const JotaiPollPresenter = () => {
   // Send current question to players
   useEffect(() => {
     if (question) {
-      dispatch(
-        presenterMessage({
-          questionId: question.id,
-          answers: question.answers,
-          question: question.text,
-        })
-      );
+      sendPresenterMessage({
+        questionId: question.id,
+        answers: question.answers,
+        question: question.text,
+      });
     } else {
-      dispatch(presenterMessage(null));
+      sendPresenterMessage(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- resend only when the current question changes
-  }, [currentQuestionId, dispatch]);
+  }, [currentQuestionId, sendPresenterMessage]);
 
   const gotoNextQuestion = () => {
     if (nextQuestionId) {

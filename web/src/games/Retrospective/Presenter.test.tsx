@@ -1,6 +1,5 @@
 import { screen, act, fireEvent } from "@testing-library/react";
 import { Presenter } from "./Presenter";
-import { GAME_MESSAGE_PRESENTER } from "store/lobby/types";
 import {
   createCategories,
   createIdeaMessage,
@@ -40,12 +39,9 @@ describe("Retrospective Presenter", () => {
     });
 
     it("sends the categories to participants", () => {
-      const { actions } = selectPreset();
+      const { sentPresenterMessages } = selectPreset();
 
-      expect(actions).toContainEqual({
-        type: GAME_MESSAGE_PRESENTER,
-        message: createCategories(),
-      });
+      expect(sentPresenterMessages()).toContainEqual(createCategories());
     });
   });
 

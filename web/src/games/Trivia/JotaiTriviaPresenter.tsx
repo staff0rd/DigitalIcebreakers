@@ -1,7 +1,6 @@
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useEffect } from "react";
-import { useDispatch } from "store/useSelector";
-import { presenterMessage } from "store/lobby/actions";
+import { presenterMessageAtom } from "store/jotai/signalRAtoms";
 import { lobbyAtom } from "store/atoms/lobbyAtoms";
 import { Box, IconButton } from "@mui/material";
 import NavigateBefore from "@mui/icons-material/NavigateBefore";
@@ -26,7 +25,7 @@ export const JotaiTriviaPresenter = () => {
   const [, setCurrentQuestionId] = useAtom(setCurrentQuestionIdAtom);
   const [, toggleResponses] = useAtom(toggleResponsesAtom);
   const [, toggleScoreBoard] = useAtom(toggleScoreBoardAtom);
-  const dispatch = useDispatch();
+  const sendPresenterMessage = useSetAtom(presenterMessageAtom);
 
   const playerCount = useAtomValue(lobbyAtom).players.length;
 
@@ -63,26 +62,24 @@ export const JotaiTriviaPresenter = () => {
   // never forwards the answers, so the question and canAnswer must be sent separately
   useEffect(() => {
     if (question) {
-      dispatch(
-        presenterMessage({
-          questionId: question.id,
-          answers: question.answers,
-          question: question.text,
-        })
-      );
+      sendPresenterMessage({
+        questionId: question.id,
+        answers: question.answers,
+        question: question.text,
+      });
     } else {
-      dispatch(presenterMessage(null));
+      sendPresenterMessage(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- resend only when the current question changes
-  }, [currentQuestionId, dispatch]);
+  }, [currentQuestionId, sendPresenterMessage]);
 
   const canAnswer = !showResponses && !showScoreBoard;
   useEffect(() => {
-    dispatch(presenterMessage({ canAnswer }));
+    sendPresenterMessage({ canAnswer });
     return () => {
-      dispatch(presenterMessage({ canAnswer: false }));
+      sendPresenterMessage({ canAnswer: false });
     };
-  }, [canAnswer, dispatch]);
+  }, [canAnswer, sendPresenterMessage]);
 
   const gotoNextQuestion = () => {
     if (nextQuestionId) {

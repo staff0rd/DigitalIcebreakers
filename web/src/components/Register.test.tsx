@@ -2,39 +2,25 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { createTheme } from "@mui/material";
 import { ThemeProvider } from "@mui/styles";
 import { Provider as JotaiProvider, createStore } from "jotai";
-import { Provider as ReduxProvider } from "react-redux";
-import { AnyAction, configureStore, Middleware } from "@reduxjs/toolkit";
 import { describe, it, expect } from "vitest";
 import Register from "./Register";
-import { rootReducer } from "../store/rootReducer";
 import { userAtom } from "../store/atoms/userAtoms";
-import { setUserName } from "../store/user/actions";
-import { SET_USER_NAME } from "../store/user/types";
-import { goToDefaultUrl } from "../store/shell/actions";
+import { lobbyAtom, initialLobbyState } from "../store/atoms/lobbyAtoms";
+import { initializeMockSignalR } from "../store/jotai/signalRTestHelpers";
 
 const renderRegister = ({ name = "" }: { name?: string } = {}) => {
-  const actions: AnyAction[] = [];
-  const actionRecorder: Middleware = () => (next) => (action) => {
-    actions.push(action as AnyAction);
-    return next(action);
-  };
-  const reduxStore = configureStore({
-    reducer: rootReducer,
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat(actionRecorder),
-  });
   const jotaiStore = createStore();
   jotaiStore.set(userAtom, { id: "user-1", name, isRegistered: false });
+  jotaiStore.set(lobbyAtom, { ...initialLobbyState, joiningLobbyId: "abcd" });
+  const signalR = initializeMockSignalR(jotaiStore);
   render(
     <ThemeProvider theme={createTheme({})}>
-      <ReduxProvider store={reduxStore}>
-        <JotaiProvider store={jotaiStore}>
-          <Register />
-        </JotaiProvider>
-      </ReduxProvider>
+      <JotaiProvider store={jotaiStore}>
+        <Register />
+      </JotaiProvider>
     </ThemeProvider>
   );
-  return { actions, jotaiStore };
+  return { ...signalR, jotaiStore };
 };
 
 const typeName = (name: string) =>
@@ -51,21 +37,26 @@ describe("Register", () => {
   });
 
   it("registers the entered name when joining", () => {
-    const { actions } = renderRegister();
+    const { connection } = renderRegister();
     typeName("Alice");
     join();
-    expect(actions).toContainEqual(setUserName("Alice"));
-    expect(actions).toContainEqual(goToDefaultUrl());
+    expect(connection.invoke).toHaveBeenCalledWith(
+      "connectToLobby",
+      expect.objectContaining({
+        id: "user-1",
+        name: "Alice",
+        isRegistered: true,
+      }),
+      "abcd"
+    );
   });
 
   describe("when the entered name is too short", () => {
     it("does not register", () => {
-      const { actions } = renderRegister();
+      const { connection } = renderRegister();
       typeName("ab");
       join();
-      expect(
-        actions.filter((action) => action.type === SET_USER_NAME)
-      ).toHaveLength(0);
+      expect(connection.invoke).not.toHaveBeenCalled();
     });
   });
 });

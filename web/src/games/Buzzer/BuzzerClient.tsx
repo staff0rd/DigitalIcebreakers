@@ -1,16 +1,16 @@
 import { Box, Button } from "@mui/material";
-import { useDispatch } from "store/useSelector";
-import { clientMessage } from "../../store/lobby/actions";
+import { useSetAtom } from "jotai";
+import { clientMessageAtom } from "../../store/jotai/signalRAtoms";
 
 const BuzzerClient = () => {
-  const dispatch = useDispatch();
+  const sendClientMessage = useSetAtom(clientMessageAtom);
 
   const handleMouseDown = () => {
-    dispatch(clientMessage("down"));
+    sendClientMessage("down");
   };
 
   const handleMouseUp = () => {
-    dispatch(clientMessage("up"));
+    sendClientMessage("up");
   };
 
   return (

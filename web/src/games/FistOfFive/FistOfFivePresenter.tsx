@@ -2,12 +2,11 @@ import { useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import { Box } from "@mui/material";
 import { guid } from "util/guid";
-import { presenterMessage } from "store/lobby/actions";
-import { useDispatch } from "store/useSelector";
+import { presenterMessageAtom } from "store/jotai/signalRAtoms";
 import { ResponseCount } from "games/shared/Poll/components/ResponseCount";
 import { Buttons } from "./Buttons";
 import { Responses } from "./Responses";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { fistOfFiveAtom } from "./fistOfFiveAtoms";
 import { lobbyAtom } from "store/atoms/lobbyAtoms";
 
@@ -24,7 +23,7 @@ const getQuestion = () => [
 ];
 
 const FistOfFivePresenter = () => {
-  const dispatch = useDispatch();
+  const sendPresenterMessage = useSetAtom(presenterMessageAtom);
   const [fistOfFiveState, setFistOfFiveState] = useAtom(fistOfFiveAtom);
   const playerCount = useAtomValue(lobbyAtom).players.length;
   
@@ -36,7 +35,7 @@ const FistOfFivePresenter = () => {
 
   const canAnswer = true;
   useEffect(() => {
-    dispatch(presenterMessage({ canAnswer }));
+    sendPresenterMessage({ canAnswer });
     // Initialize with question structure
     setFistOfFiveState(prev => ({
       ...prev,
@@ -46,12 +45,12 @@ const FistOfFivePresenter = () => {
       }
     }));
     return () => {
-      dispatch(presenterMessage({ canAnswer: false }));
+      sendPresenterMessage({ canAnswer: false });
     };
   }, []);
 
   const handleReset = () => {
-    dispatch(presenterMessage({ action: "clearScores" }));
+    sendPresenterMessage({ action: "clearScores" });
     setFistOfFiveState(prev => ({
       ...prev,
       presenter: {

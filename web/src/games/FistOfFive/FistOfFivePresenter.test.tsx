@@ -2,11 +2,10 @@ import { render, screen } from "@testing-library/react";
 import { createTheme } from "@mui/material";
 import { ThemeProvider } from "@mui/styles";
 import { Provider as JotaiProvider, createStore } from "jotai";
-import { Provider as ReduxProvider } from "react-redux";
-import { configureStore } from "@reduxjs/toolkit";
 import { describe, it, expect } from "vitest";
 import FistOfFivePresenter from "./FistOfFivePresenter";
 import { lobbyAtom, initialLobbyState } from "store/atoms/lobbyAtoms";
+import { initializeMockSignalR } from "store/jotai/signalRTestHelpers";
 import { Player } from "Player";
 
 const createPlayers = (count: number): Player[] =>
@@ -18,14 +17,12 @@ const createPlayers = (count: number): Player[] =>
 const renderPresenter = ({ players = [] }: { players?: Player[] } = {}) => {
   const jotaiStore = createStore();
   jotaiStore.set(lobbyAtom, { ...initialLobbyState, players });
-  const reduxStore = configureStore({ reducer: () => ({}) });
+  initializeMockSignalR(jotaiStore);
   return render(
     <ThemeProvider theme={createTheme({})}>
-      <ReduxProvider store={reduxStore}>
-        <JotaiProvider store={jotaiStore}>
-          <FistOfFivePresenter />
-        </JotaiProvider>
-      </ReduxProvider>
+      <JotaiProvider store={jotaiStore}>
+        <FistOfFivePresenter />
+      </JotaiProvider>
     </ThemeProvider>
   );
 };

@@ -1,12 +1,12 @@
 import Button from "../../layout/components/CustomButtons/Button";
-import { useDispatch } from "store/useSelector";
-import { presenterMessage } from "../../store/lobby/actions";
+import { useSetAtom } from "jotai";
+import { presenterMessageAtom } from "../../store/jotai/signalRAtoms";
 import ListItem from "@mui/material/ListItem";
 
 export const YesNoMaybeMenu = () => {
-  const dispatch = useDispatch();
+  const sendPresenterMessage = useSetAtom(presenterMessageAtom);
   const reset = () => {
-    dispatch(presenterMessage("reset"));
+    sendPresenterMessage("reset");
   };
   return (
     <ListItem>

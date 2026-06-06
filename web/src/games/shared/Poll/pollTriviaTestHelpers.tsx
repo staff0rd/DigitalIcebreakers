@@ -2,11 +2,9 @@ import { render } from "@testing-library/react";
 import { createTheme } from "@mui/material";
 import { ThemeProvider } from "@mui/styles";
 import { Provider as JotaiProvider, createStore } from "jotai";
-import { Provider as ReduxProvider } from "react-redux";
-import { AnyAction, configureStore, Middleware } from "@reduxjs/toolkit";
 import { ReactElement } from "react";
-import { rootReducer } from "store/rootReducer";
 import { getGameHandler } from "store/jotai/gameMessageHandlers";
+import { initializeMockSignalR } from "store/jotai/signalRTestHelpers";
 import { lobbyAtom, initialLobbyState } from "store/atoms/lobbyAtoms";
 import { Player } from "Player";
 import { Answer } from "./types/Answer";
@@ -53,17 +51,8 @@ export const renderPollTrivia = (
   ui: ReactElement,
   options: RenderPollTriviaOptions = {}
 ) => {
-  const actions: AnyAction[] = [];
-  const actionRecorder: Middleware = () => (next) => (action) => {
-    actions.push(action as AnyAction);
-    return next(action);
-  };
-  const reduxStore = configureStore({
-    reducer: rootReducer,
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat(actionRecorder),
-  });
   const jotaiStore = createStore();
+  const signalR = initializeMockSignalR(jotaiStore);
   jotaiStore.set(lobbyAtom, {
     ...initialLobbyState,
     players: options.players ?? [],
@@ -106,13 +95,11 @@ export const renderPollTrivia = (
   return {
     ...render(
       <ThemeProvider theme={createTheme({})}>
-        <ReduxProvider store={reduxStore}>
-          <JotaiProvider store={jotaiStore}>{ui}</JotaiProvider>
-        </ReduxProvider>
+        <JotaiProvider store={jotaiStore}>{ui}</JotaiProvider>
       </ThemeProvider>
     ),
     jotaiStore,
-    actions,
+    ...signalR,
   };
 };
 

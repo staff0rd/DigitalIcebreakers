@@ -6,14 +6,14 @@ import Button from "../layout/components/CustomButtons/Button";
 import Card from "../layout/components/Card/Card";
 import CardBody from "../layout/components/Card/CardBody";
 import CardFooter from "../layout/components/Card/CardFooter";
-import { useDispatch } from "store/useSelector";
-import { joinLobby } from "../store/lobby/actions";
+import { useSetAtom } from "jotai";
+import { joinLobbyAtom } from "../store/jotai/signalRAtoms";
 import CardTitle from "../layout/components/Card/CardTitle";
 import { ContentContainer } from "./ContentContainer";
 import { useParams } from "react-router";
 
 export default function Join() {
-  const dispatch = useDispatch();
+  const joinLobby = useSetAtom(joinLobbyAtom);
   const { id } = useParams();
 
   const [lobbyCode, setLobbyCode] = useState<string>("");
@@ -38,7 +38,7 @@ export default function Join() {
 
   const join = (lobbyCode: string | undefined) => {
     if (isValid(lobbyCode)) {
-      dispatch(joinLobby(lobbyCode!));
+      joinLobby(lobbyCode!);
     }
   };
 

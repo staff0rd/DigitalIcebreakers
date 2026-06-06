@@ -6,13 +6,13 @@ import Button from "../layout/components/CustomButtons/Button";
 import Card from "../layout/components/Card/Card";
 import CardBody from "../layout/components/Card/CardBody";
 import CardFooter from "../layout/components/Card/CardFooter";
-import { useDispatch } from "store/useSelector";
-import { createLobby } from "../store/lobby/actions";
+import { useSetAtom } from "jotai";
+import { createLobbyAtom } from "../store/jotai/signalRAtoms";
 import CardTitle from "../layout/components/Card/CardTitle";
 import { ContentContainer } from "./ContentContainer";
 
 export default function CreateLobby() {
-  const dispatch = useDispatch();
+  const createLobby = useSetAtom(createLobbyAtom);
 
   const [lobbyName, setLobbyName] = useState<string>("My Lobby");
 
@@ -29,7 +29,7 @@ export default function CreateLobby() {
 
   const onClick = () => {
     if (isValid()) {
-      dispatch(createLobby(lobbyName!));
+      createLobby(lobbyName!);
     }
   };
 

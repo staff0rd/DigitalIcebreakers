@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { useDispatch } from "store/useSelector";
-import { clientMessage } from "../../store/lobby/actions";
+import { clientMessageAtom } from "../../store/jotai/signalRAtoms";
 import { ContentContainer } from "../../components/ContentContainer";
 import Grid from "@mui/material/GridLegacy";
 
@@ -8,7 +7,7 @@ import Card from "../../layout/components/Card/Card";
 import CardFooter from "../../layout/components/Card/CardFooter";
 import Button from "../../layout/components/CustomButtons/Button";
 import { IdeaEntry } from "games/shared/IdeaEntry";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { PayloadFromParticipant, retrospectiveAtom } from "./retrospectiveAtoms";
 import makeStyles from "@mui/styles/makeStyles";
 
@@ -20,16 +19,17 @@ const useStyles = makeStyles(() => ({
 }));
 
 export const Participant = () => {
-  const dispatch = useDispatch();
+  const sendClientMessage = useSetAtom(clientMessageAtom);
   const classes = useStyles();
   const [idea, setIdea] = useState<string>("");
   const { categories } = useAtomValue(retrospectiveAtom).participant;
 
   const onClick = (category: number) => {
     if (idea.length) {
-      dispatch(
-        clientMessage({ category, message: idea } as PayloadFromParticipant)
-      );
+      sendClientMessage({
+        category,
+        message: idea,
+      } as PayloadFromParticipant);
       setIdea("");
     }
   };

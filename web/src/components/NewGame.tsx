@@ -1,6 +1,6 @@
 import Games from "../games/Games";
-import { startNewGame } from "../store/lobby/actions";
-import { useDispatch } from "store/useSelector";
+import { useSetAtom } from "jotai";
+import { startNewGameAtom } from "../store/jotai/signalRAtoms";
 import { ContentContainer } from "./ContentContainer";
 import Card from "../layout/components/Card/Card";
 import CardFooter from "../layout/components/Card/CardFooter";
@@ -45,11 +45,11 @@ const useStyles = makeStyles(() => ({
 }));
 
 const NewGame = () => {
-  const dispatch = useDispatch();
+  const startNewGame = useSetAtom(startNewGameAtom);
   const classes = useStyles();
 
   const newGame = (name: string) => {
-    dispatch(startNewGame(name));
+    startNewGame(name);
   };
 
   return (

@@ -4,8 +4,7 @@ import { Colors, ColorUtils } from "../../Colors";
 import { ShapeType } from "./ShapeType";
 import { shuffle } from "../../Random";
 import { gsap } from "gsap";
-import { useDispatch } from "store/useSelector";
-import { presenterMessage } from "store/lobby/actions";
+import { presenterMessageAtom } from "store/jotai/signalRAtoms";
 import Button from "../../layout/components/CustomButtons/Button";
 import Table from "../../layout/components/Table/Table";
 import { ContentContainer } from "../../components/ContentContainer";
@@ -99,7 +98,7 @@ export const ReactionPresenter = () => {
   const [againTween, setAgainTween] = useState<gsap.core.Tween>();
   const players = useAtomValue(lobbyAtom).players;
   const againProgress = useRef<HTMLDivElement>(null);
-  const dispatch = useDispatch();
+  const sendPresenterMessage = useSetAtom(presenterMessageAtom);
   const reactionState = useAtomValue(reactionAtom);
   const startRound = useSetAtom(startRoundAtom);
   const endRound = useSetAtom(endRoundAtom);
@@ -133,7 +132,7 @@ export const ReactionPresenter = () => {
 
     const newRoundShapes = shuffle(allShapes).slice(0, 6);
     startRound({ shapes: newRoundShapes, shape: newRoundShapes[0] });
-    dispatch(presenterMessage(shuffle([...newRoundShapes])));
+    sendPresenterMessage(shuffle([...newRoundShapes]));
   };
 
   useEffect(() => {

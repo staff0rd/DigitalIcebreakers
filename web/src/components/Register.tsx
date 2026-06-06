@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { userAtom } from "../store/atoms/userAtoms";
-import { setUserName } from "../store/user/actions";
-import { goToDefaultUrl } from "../store/shell/actions";
+import {
+  setUserNameAtom,
+  goToDefaultUrlAtom,
+} from "../store/jotai/signalRAtoms";
 import GridItem from "../layout/components/Grid/GridItem";
 import GridContainer from "../layout/components/Grid/GridContainer";
 import CustomInput from "../layout/components/CustomInput/CustomInput";
@@ -10,14 +12,14 @@ import Button from "../layout/components/CustomButtons/Button";
 import Card from "../layout/components/Card/Card";
 import CardBody from "../layout/components/Card/CardBody";
 import CardFooter from "../layout/components/Card/CardFooter";
-import { useDispatch } from "store/useSelector";
 import CardTitle from "../layout/components/Card/CardTitle";
 import { ContentContainer } from "../components/ContentContainer";
 
 const Register = () => {
   const initialName = useAtomValue(userAtom).name || "";
   const [name, setName] = useState<string>(initialName);
-  const dispatch = useDispatch();
+  const setUserName = useSetAtom(setUserNameAtom);
+  const goToDefaultUrl = useSetAtom(goToDefaultUrlAtom);
 
   const isValid = () => {
     return name.trim().length > 2;
@@ -25,8 +27,8 @@ const Register = () => {
 
   const onSubmit = (e: any) => {
     if (isValid()) {
-      dispatch(setUserName(name));
-      dispatch(goToDefaultUrl());
+      setUserName(name);
+      goToDefaultUrl();
     }
   };
 

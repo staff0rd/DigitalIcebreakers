@@ -1,7 +1,7 @@
 import Button from "../../layout/components/CustomButtons/Button";
-import { clientMessage } from "../../store/lobby/actions";
+import { useSetAtom } from "jotai";
+import { clientMessageAtom } from "../../store/jotai/signalRAtoms";
 import makeStyles from "@mui/styles/makeStyles";
-import { useDispatch } from "store/useSelector";
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -19,11 +19,11 @@ const useStyles = makeStyles(() => ({
 }));
 
 const YesNoMaybeClient = () => {
-  const dispatch = useDispatch();
+  const sendClientMessage = useSetAtom(clientMessageAtom);
   const classes = useStyles();
 
   const choose = (newChoice: string) => {
-    dispatch(clientMessage(newChoice));
+    sendClientMessage(newChoice);
   };
 
   return (

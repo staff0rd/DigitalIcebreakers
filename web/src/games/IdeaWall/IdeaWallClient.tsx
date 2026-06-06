@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useDispatch } from "store/useSelector";
-import { clientMessage } from "../../store/lobby/actions";
+import { useSetAtom } from "jotai";
+import { clientMessageAtom } from "../../store/jotai/signalRAtoms";
 import { ContentContainer } from "../../components/ContentContainer";
 import Grid from "@mui/material/GridLegacy";
 
@@ -10,12 +10,12 @@ import Button from "../../layout/components/CustomButtons/Button";
 import { IdeaEntry } from "../shared/IdeaEntry";
 
 export const IdeaWallClient = () => {
-  const dispatch = useDispatch();
+  const sendClientMessage = useSetAtom(clientMessageAtom);
   const [idea, setIdea] = useState<string>("");
 
   const onClick = (e: React.SyntheticEvent<EventTarget>) => {
     if (idea.length) {
-      dispatch(clientMessage(idea));
+      sendClientMessage(idea);
       setIdea("");
     }
   };

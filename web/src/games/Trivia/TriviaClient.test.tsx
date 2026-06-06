@@ -1,6 +1,5 @@
 import { screen, act, fireEvent } from "@testing-library/react";
 import TriviaClient from "./TriviaClient";
-import { GAME_MESSAGE_CLIENT } from "store/lobby/types";
 import {
   receiveGameMessage,
   renderPollTrivia,
@@ -60,13 +59,11 @@ describe("Trivia Client", () => {
     });
 
     it("ignores lock in before an answer is selected", () => {
-      const { actions } = renderWithQuestion();
+      const { sentClientMessages } = renderWithQuestion();
 
       fireEvent.click(screen.getByRole("button", { name: "Lock In & Send" }));
 
-      expect(
-        actions.filter((action) => action.type === GAME_MESSAGE_CLIENT)
-      ).toHaveLength(0);
+      expect(sentClientMessages()).toHaveLength(0);
     });
 
     describe("and the player locks in an answer", () => {
@@ -78,11 +75,11 @@ describe("Trivia Client", () => {
       };
 
       it("sends the answer to the presenter", () => {
-        const { actions } = lockInAnswer();
+        const { sentClientMessages } = lockInAnswer();
 
-        expect(actions).toContainEqual({
-          type: GAME_MESSAGE_CLIENT,
-          message: { questionId: "question-1", answerId: "answer-1" },
+        expect(sentClientMessages()).toContainEqual({
+          questionId: "question-1",
+          answerId: "answer-1",
         });
       });
 

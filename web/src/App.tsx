@@ -2,14 +2,13 @@ import { Component } from "react";
 import Layout from "./layout/layouts/Admin";
 import { guid } from "./util/guid";
 import { Events } from "./Events";
-import { Provider } from "react-redux";
 import { Provider as JotaiProvider, createStore } from "jotai";
-import { configureAppStore } from "./store/configureAppStore";
-import { EnhancedStore, AnyAction } from "@reduxjs/toolkit";
-import { RootState } from "./store/RootState";
-import { connectionConnect } from "./store/connection/actions";
 import { Player } from "./Player";
-import { setJotaiStore } from "./store/SignalRMiddlewareWithJotai";
+import {
+  initializeSignalR,
+  connectionConnectAtom,
+} from "./store/jotai/signalRAtoms";
+import { connectionFactory } from "./store/connectionFactory";
 import { userAtom } from "./store/atoms/userAtoms";
 
 import { Theme } from "@mui/material/styles";
@@ -38,7 +37,6 @@ export default class App extends Component<{}, AppState> {
   private myStorage: Storage;
 
   private user: Player;
-  private store: EnhancedStore<RootState, AnyAction>;
   private jotaiStore = createStore();
 
   constructor(props: any) {
@@ -56,9 +54,7 @@ export default class App extends Component<{}, AppState> {
       players: [],
     };
 
-    this.store = configureAppStore();
-    
-    setJotaiStore(this.jotaiStore);
+    initializeSignalR(this.jotaiStore, connectionFactory);
 
     this.jotaiStore.set(userAtom, {
       id: this.user.id,
@@ -68,7 +64,7 @@ export default class App extends Component<{}, AppState> {
 
     window.onresize = () => Events.emit("onresize");
 
-    this.store.dispatch(connectionConnect());
+    this.jotaiStore.set(connectionConnectAtom);
   }
 
   private getUser() {
@@ -106,9 +102,7 @@ export default class App extends Component<{}, AppState> {
   render() {
     return (
       <JotaiProvider store={this.jotaiStore}>
-        <Provider store={this.store}>
-          <Layout />
-        </Provider>
+        <Layout />
       </JotaiProvider>
     );
   }

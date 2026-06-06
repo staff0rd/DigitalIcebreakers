@@ -7,8 +7,7 @@ import { saveAs } from "file-saver";
 import Button from "../../layout/components/CustomButtons/Button";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import { useDispatch } from "../../store/useSelector";
-import { presenterMessage } from "../../store/lobby/actions";
+import { presenterMessageAtom } from "../../store/jotai/signalRAtoms";
 import { useSetAtom } from "jotai";
 import { fistOfFiveAtom } from "./fistOfFiveAtoms";
 
@@ -19,7 +18,7 @@ type Props = {
 };
 
 export const Buttons = ({ showResponses, reset, responses }: Props) => {
-  const dispatch = useDispatch();
+  const sendPresenterMessage = useSetAtom(presenterMessageAtom);
   const setFistOfFiveState = useSetAtom(fistOfFiveAtom);
 
   const print = () => {
@@ -36,7 +35,7 @@ export const Buttons = ({ showResponses, reset, responses }: Props) => {
   };
 
   const toggleResponses = () => {
-    dispatch(presenterMessage({ action: "toggleResponses" }));
+    sendPresenterMessage({ action: "toggleResponses" });
     setFistOfFiveState((prev) => ({
       ...prev,
       presenter: {

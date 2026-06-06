@@ -5,12 +5,11 @@ import GridItem from "layout/components/Grid/GridItem";
 import CardBody from "layout/components/Card/CardBody";
 import Card from "layout/components/Card/Card";
 import { Typography } from "@mui/material";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { retrospectiveAtom } from "./retrospectiveAtoms";
 import { ideasByCategory } from "./ideasByCategory";
 import SetCategories from "./SetCategories";
-import { useDispatch } from "store/useSelector";
-import { presenterMessage } from "store/lobby/actions";
+import { presenterMessageAtom } from "store/jotai/signalRAtoms";
 import makeStyles from "@mui/styles/makeStyles";
 
 const useStyles = makeStyles((theme) => ({
@@ -27,11 +26,11 @@ const useStyles = makeStyles((theme) => ({
 
 export const Presenter = () => {
   const classes = useStyles();
-  const dispatch = useDispatch();
+  const sendPresenterMessage = useSetAtom(presenterMessageAtom);
   const { ideas, categories } = useAtomValue(retrospectiveAtom).presenter;
 
   useEffect(() => {
-    if (categories.length) dispatch(presenterMessage(categories));
+    if (categories.length) sendPresenterMessage(categories);
   }, [categories]);
 
   return (

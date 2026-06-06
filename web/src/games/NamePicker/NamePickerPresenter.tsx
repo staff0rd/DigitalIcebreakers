@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
 import { Colors, ColorUtils } from "../../Colors";
 import { Pixi } from "../pixi/Pixi";
-import { useDispatch } from "store/useSelector";
-import { presenterMessage } from "store/lobby/actions";
+import { presenterMessageAtom } from "store/jotai/signalRAtoms";
 import { pick, between } from "Random";
 import { namePickerAtom } from "./namePickerAtoms";
 import { lobbyAtom } from "store/atoms/lobbyAtoms";
@@ -25,7 +24,7 @@ const NamePickerPresenter = () => {
   const [app, setApp] = useState<PIXI.Application>();
   const [pickStarted, setPickStarted] = useState<Date>();
   const [id, setId] = useState<string>();
-  const dispatch = useDispatch();
+  const sendPresenterMessage = useSetAtom(presenterMessageAtom);
 
   const users = useAtomValue(lobbyAtom).players;
   const namePickerState = useAtomValue(namePickerAtom);
@@ -51,7 +50,7 @@ const NamePickerPresenter = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       if (id) {
-        dispatch(presenterMessage({ id }));
+        sendPresenterMessage({ id });
       }
     }, fadeOutMs);
     return () => clearTimeout(timer);
@@ -70,7 +69,7 @@ const NamePickerPresenter = () => {
       setId(undefined);
       setPickStarted(undefined);
       app?.stage.children.forEach((t) => (t.alpha = 1));
-      dispatch(presenterMessage({}));
+      sendPresenterMessage({});
     }
   }, [shouldPick]);
 

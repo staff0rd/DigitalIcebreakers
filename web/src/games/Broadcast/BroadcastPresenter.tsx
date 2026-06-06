@@ -1,7 +1,6 @@
 import { ChangeEvent, useEffect } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
-import { useDispatch } from "store/useSelector";
-import { presenterMessage } from "store/lobby/actions";
+import { presenterMessageAtom } from "store/jotai/signalRAtoms";
 import { ContentContainer } from "components/ContentContainer";
 import { TextField, Box } from "@mui/material";
 import { broadcastAtom } from "./broadcastAtoms";
@@ -10,7 +9,7 @@ export const BroadcastPresenter = () => {
   const broadcastState = useAtomValue(broadcastAtom);
   const setBroadcastState = useSetAtom(broadcastAtom);
   const { dings, text } = broadcastState.presenter;
-  const dispatch = useDispatch();
+  const sendPresenterMessage = useSetAtom(presenterMessageAtom);
 
   useEffect(() => {
     // Reset state on mount
@@ -18,8 +17,8 @@ export const BroadcastPresenter = () => {
       client: { text: "" },
       presenter: { text: "", dings: 0 },
     });
-    dispatch(presenterMessage(""));
-  }, [setBroadcastState, dispatch]);
+    sendPresenterMessage("");
+  }, [setBroadcastState, sendPresenterMessage]);
 
   const updateClientText = (e: ChangeEvent<HTMLInputElement>) => {
     const newText = e.target.value;
@@ -27,7 +26,7 @@ export const BroadcastPresenter = () => {
       ...prev,
       presenter: { ...prev.presenter, text: newText },
     }));
-    dispatch(presenterMessage(newText));
+    sendPresenterMessage(newText);
   };
 
   return (

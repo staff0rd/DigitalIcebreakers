@@ -1,10 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import { Provider as JotaiProvider, createStore } from "jotai";
-import { Provider as ReduxProvider } from "react-redux";
-import { configureStore } from "@reduxjs/toolkit";
 import { describe, it, expect, vi } from "vitest";
 import NamePickerPresenter from "./NamePickerPresenter";
 import { lobbyAtom, initialLobbyState } from "store/atoms/lobbyAtoms";
+import { initializeMockSignalR } from "store/jotai/signalRTestHelpers";
 import { Player } from "Player";
 
 vi.mock("../pixi/Pixi", () => ({
@@ -18,13 +17,11 @@ vi.mock("../pixi/Pixi", () => ({
 const renderPresenter = ({ players = [] }: { players?: Player[] } = {}) => {
   const jotaiStore = createStore();
   jotaiStore.set(lobbyAtom, { ...initialLobbyState, players });
-  const reduxStore = configureStore({ reducer: () => ({}) });
+  initializeMockSignalR(jotaiStore);
   return render(
-    <ReduxProvider store={reduxStore}>
-      <JotaiProvider store={jotaiStore}>
-        <NamePickerPresenter />
-      </JotaiProvider>
-    </ReduxProvider>
+    <JotaiProvider store={jotaiStore}>
+      <NamePickerPresenter />
+    </JotaiProvider>
   );
 };
 

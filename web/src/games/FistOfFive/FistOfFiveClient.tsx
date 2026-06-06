@@ -1,16 +1,15 @@
-import { useDispatch } from "../../store/useSelector";
-import { clientMessage } from "../../store/lobby/actions";
+import { clientMessageAtom } from "../../store/jotai/signalRAtoms";
 import { ContentContainer } from "../../components/ContentContainer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import Typography from "@mui/material/Typography";
 import Button from "../../layout/components/CustomButtons/Button";
 import { Box, ListItemButton } from "@mui/material";
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { fistOfFiveAtom } from "./fistOfFiveAtoms";
 
 const FistOfFiveClient = () => {
-  const dispatch = useDispatch();
+  const sendClientMessage = useSetAtom(clientMessageAtom);
   const [fistOfFiveState, setFistOfFiveState] = useAtom(fistOfFiveAtom);
   const { player } = fistOfFiveState;
   const { questionId, selectedAnswerId, answerLocked, canAnswer, question, answers } = player;
@@ -26,12 +25,10 @@ const FistOfFiveClient = () => {
   };
 
   const lockAnswer = () => {
-    dispatch(
-      clientMessage({
-        questionId,
-        answerId: selectedAnswerId,
-      })
-    );
+    sendClientMessage({
+      questionId,
+      answerId: selectedAnswerId,
+    });
     setFistOfFiveState(prev => ({
       ...prev,
       player: {

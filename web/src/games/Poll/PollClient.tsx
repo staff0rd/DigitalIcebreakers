@@ -1,6 +1,5 @@
-import { useAtom } from "jotai";
-import { useDispatch } from "store/useSelector";
-import { clientMessage } from "../../store/lobby/actions";
+import { useAtom, useSetAtom } from "jotai";
+import { clientMessageAtom } from "../../store/jotai/signalRAtoms";
 import { ContentContainer } from "../../components/ContentContainer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -15,7 +14,7 @@ const PollClient = () => {
   const [pollState] = useAtom(pollStateAtom);
   const [, selectAnswer] = useAtom(selectAnswerAtom);
   const [, lockAnswer] = useAtom(lockAnswerAtom);
-  const dispatch = useDispatch();
+  const sendClientMessage = useSetAtom(clientMessageAtom);
 
   const {
     questionId,
@@ -33,12 +32,10 @@ const PollClient = () => {
     if (!selectedAnswerId) {
       return;
     }
-    dispatch(
-      clientMessage({
-        questionId,
-        answerId: selectedAnswerId,
-      })
-    );
+    sendClientMessage({
+      questionId,
+      answerId: selectedAnswerId,
+    });
     lockAnswer();
   };
 

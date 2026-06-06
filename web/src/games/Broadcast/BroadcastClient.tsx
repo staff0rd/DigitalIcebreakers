@@ -1,18 +1,17 @@
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import Button from "../../layout/components/CustomButtons/Button";
-import { useDispatch } from "store/useSelector";
 import Notifications from "@mui/icons-material/Notifications";
-import { clientMessage } from "../../store/lobby/actions";
+import { clientMessageAtom } from "../../store/jotai/signalRAtoms";
 import { broadcastAtom } from "./broadcastAtoms";
 import { Box } from "@mui/material";
 
 export const BroadcastClient = () => {
-  const dispatch = useDispatch();
+  const sendClientMessage = useSetAtom(clientMessageAtom);
   const broadcastState = useAtomValue(broadcastAtom);
   const clientText = broadcastState.client.text;
 
   const ding = () => {
-    dispatch(clientMessage(1));
+    sendClientMessage(1);
   };
 
   return (

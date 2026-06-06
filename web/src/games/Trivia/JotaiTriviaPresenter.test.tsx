@@ -1,6 +1,5 @@
 import { screen, act, fireEvent } from "@testing-library/react";
 import { JotaiTriviaPresenter } from "./JotaiTriviaPresenter";
-import { GAME_MESSAGE_PRESENTER } from "store/lobby/types";
 import {
   createAnswer,
   createPlayers,
@@ -42,18 +41,12 @@ const renderPresenter = ({
   });
 
 const questionMessage = (question: ReturnType<typeof createQuestion>) => ({
-  type: GAME_MESSAGE_PRESENTER,
-  message: {
-    questionId: question.id,
-    answers: question.answers,
-    question: question.text,
-  },
+  questionId: question.id,
+  answers: question.answers,
+  question: question.text,
 });
 
-const canAnswerMessage = (canAnswer: boolean) => ({
-  type: GAME_MESSAGE_PRESENTER,
-  message: { canAnswer },
-});
+const canAnswerMessage = (canAnswer: boolean) => ({ canAnswer });
 
 describe("Trivia Presenter", () => {
   describe("when questions are loaded", () => {
@@ -65,15 +58,17 @@ describe("Trivia Presenter", () => {
 
     it("sends the current question to players without bundling canAnswer", () => {
       const questions = createTriviaQuestions();
-      const { actions } = renderPresenter({ questions });
+      const { sentPresenterMessages } = renderPresenter({ questions });
 
-      expect(actions).toContainEqual(questionMessage(questions[0]));
+      expect(sentPresenterMessages()).toContainEqual(
+        questionMessage(questions[0])
+      );
     });
 
     it("tells players they can answer", () => {
-      const { actions } = renderPresenter();
+      const { sentPresenterMessages } = renderPresenter();
 
-      expect(actions).toContainEqual(canAnswerMessage(true));
+      expect(sentPresenterMessages()).toContainEqual(canAnswerMessage(true));
     });
 
     describe("when advancing to the next question", () => {
@@ -87,11 +82,13 @@ describe("Trivia Presenter", () => {
 
       it("sends the next question to players", () => {
         const questions = createTriviaQuestions();
-        const { actions } = renderPresenter({ questions });
+        const { sentPresenterMessages } = renderPresenter({ questions });
 
         fireEvent.click(screen.getByTestId("next-question"));
 
-        expect(actions).toContainEqual(questionMessage(questions[1]));
+        expect(sentPresenterMessages()).toContainEqual(
+          questionMessage(questions[1])
+        );
       });
     });
 
@@ -105,11 +102,11 @@ describe("Trivia Presenter", () => {
       });
 
       it("tells players they can no longer answer", () => {
-        const { actions } = renderPresenter();
+        const { sentPresenterMessages } = renderPresenter();
 
         fireEvent.click(screen.getByTestId("show-responses"));
 
-        expect(actions).toContainEqual(canAnswerMessage(false));
+        expect(sentPresenterMessages()).toContainEqual(canAnswerMessage(false));
       });
 
       describe("and advancing to a question with a correct answer", () => {
@@ -195,9 +192,11 @@ describe("Trivia Presenter", () => {
         });
 
         it("tells players they can no longer answer", () => {
-          const { actions } = showScoreBoard();
+          const { sentPresenterMessages } = showScoreBoard();
 
-          expect(actions).toContainEqual(canAnswerMessage(false));
+          expect(sentPresenterMessages()).toContainEqual(
+            canAnswerMessage(false)
+          );
         });
 
         describe("and advancing to the next question", () => {
@@ -215,11 +214,11 @@ describe("Trivia Presenter", () => {
 
     describe("when the presenter leaves the game", () => {
       it("tells players they can no longer answer", () => {
-        const { actions, unmount } = renderPresenter();
+        const { sentPresenterMessages, unmount } = renderPresenter();
 
         unmount();
 
-        expect(actions).toContainEqual(canAnswerMessage(false));
+        expect(sentPresenterMessages()).toContainEqual(canAnswerMessage(false));
       });
     });
   });

@@ -2,18 +2,18 @@ import { useState, useEffect } from "react";
 import { Button } from "../pixi/Button";
 import { Pixi } from "../pixi/Pixi";
 import { Colors } from "../../Colors";
-import { useDispatch } from "store/useSelector";
-import { clientMessage } from "../../store/lobby/actions";
+import { useSetAtom } from "jotai";
+import { clientMessageAtom } from "../../store/jotai/signalRAtoms";
 import { useResizeListener } from "../pixi/useResizeListener";
 import * as PIXI from "pixi.js";
 
 const SplatClient = () => {
   const [pixi, setPixi] = useState<PIXI.Application>();
-  const dispatch = useDispatch();
+  const sendClientMessage = useSetAtom(clientMessageAtom);
   const [button] = useState(
     new Button(
-      () => dispatch(clientMessage("up")),
-      () => dispatch(clientMessage("down"))
+      () => sendClientMessage("up"),
+      () => sendClientMessage("down")
     )
   );
 

@@ -1,6 +1,5 @@
 import { screen, act, fireEvent } from "@testing-library/react";
 import { JotaiPollPresenter } from "./JotaiPollPresenter";
-import { GAME_MESSAGE_PRESENTER } from "store/lobby/types";
 import {
   createAnswer,
   createPlayers,
@@ -45,15 +44,12 @@ describe("Poll Presenter", () => {
 
     it("sends the current question to players", () => {
       const questions = createPollQuestions();
-      const { actions } = renderPresenter({ questions });
+      const { sentPresenterMessages } = renderPresenter({ questions });
 
-      expect(actions).toContainEqual({
-        type: GAME_MESSAGE_PRESENTER,
-        message: {
-          questionId: "question-1",
-          answers: questions[0].answers,
-          question: "first question",
-        },
+      expect(sentPresenterMessages()).toContainEqual({
+        questionId: "question-1",
+        answers: questions[0].answers,
+        question: "first question",
       });
     });
 
@@ -92,17 +88,14 @@ describe("Poll Presenter", () => {
 
       it("sends the next question to players", () => {
         const questions = createPollQuestions();
-        const { actions } = renderPresenter({ questions });
+        const { sentPresenterMessages } = renderPresenter({ questions });
 
         fireEvent.click(screen.getByTestId("next-question"));
 
-        expect(actions).toContainEqual({
-          type: GAME_MESSAGE_PRESENTER,
-          message: {
-            questionId: "question-2",
-            answers: questions[1].answers,
-            question: "second question",
-          },
+        expect(sentPresenterMessages()).toContainEqual({
+          questionId: "question-2",
+          answers: questions[1].answers,
+          question: "second question",
         });
       });
 

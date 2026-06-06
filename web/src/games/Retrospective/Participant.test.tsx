@@ -1,6 +1,5 @@
 import { screen, act, fireEvent } from "@testing-library/react";
 import { Participant } from "./Participant";
-import { GAME_MESSAGE_CLIENT } from "store/lobby/types";
 import {
   createCategories,
   receiveGameMessage,
@@ -43,11 +42,11 @@ describe("Retrospective Participant", () => {
       };
 
       it("sends the idea to the chosen category", () => {
-        const { actions } = submitIdea("do more pairing", "Stop");
+        const { sentClientMessages } = submitIdea("do more pairing", "Stop");
 
-        expect(actions).toContainEqual({
-          type: GAME_MESSAGE_CLIENT,
-          message: { category: 1, message: "do more pairing" },
+        expect(sentClientMessages()).toContainEqual({
+          category: 1,
+          message: "do more pairing",
         });
       });
 
@@ -60,13 +59,11 @@ describe("Retrospective Participant", () => {
 
     describe("and the idea is empty", () => {
       it("does not send anything", () => {
-        const { actions } = renderWithCategories();
+        const { sentClientMessages } = renderWithCategories();
 
         fireEvent.click(screen.getByRole("button", { name: "Start" }));
 
-        expect(
-          actions.filter((action) => action.type === GAME_MESSAGE_CLIENT)
-        ).toHaveLength(0);
+        expect(sentClientMessages()).toHaveLength(0);
       });
     });
   });
