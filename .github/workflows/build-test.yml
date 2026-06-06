@@ -12,7 +12,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         dotnet: [9.0]
-        node: [20]
+        node: [22]
         browser: [chromium]
 
     runs-on: ${{ matrix.os }}
@@ -76,7 +76,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         dotnet: [9.0]
-        node: [20]
+        node: [22]
 
     runs-on: ${{ matrix.os }}
 
@@ -98,6 +98,10 @@ jobs:
 
       - name: Install node dependencies
         run: npm ci
+        working-directory: ./web
+
+      - name: Run frontend unit tests
+        run: npm test
         working-directory: ./web
 
       - name: Type check frontend

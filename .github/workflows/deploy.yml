@@ -11,48 +11,58 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout git repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
 
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 3.1.301
+          dotnet-version: 9.0.x
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
 
       - name: Install dotnet tools
         run: dotnet tool restore
 
-      - name: Install C# dependencies
-        run: dotnet restore
+      - name: Get version
+        run: echo "semantic_version=$(dotnet nbgv get-version -v AssemblyInformationalVersion | tr + -)" >> $GITHUB_ENV
 
-      - name: Setup Node
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12
+      - run: echo "semantic version is ${{ env.semantic_version }}"
+
+      - name: Set frontend version
+        run: |
+          echo "{ \"simpleVersion\": \"$(dotnet nbgv get-version -v SimpleVersion)\" }" > web/src/version.json
 
       - name: Install node dependencies
-        run: npm i
-        working-directory: ./DigitalIcebreakers/ClientApp
+        run: npm ci
+        working-directory: ./web
 
-      - run: npm run set-version
-        working-directory: ./DigitalIcebreakers/ClientApp
-        name: update client app version
+      - name: Build frontend
+        run: npm run build
+        working-directory: ./web
+
+      - name: Publish backend
+        run: dotnet publish DigitalIcebreakers/DigitalIcebreakers.csproj --configuration Release --output publish
+
+      - name: Copy frontend into publish output
+        run: |
+          mkdir -p publish/web
+          cp -r web/dist publish/web/dist
 
       - name: Login to Docker Hub
-        uses: docker/login-action@v1
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: push container
-        run: dotnet tye push -v Debug
-
-      - name: get version
+      - name: Build and push container
         run: |
-          echo "semantic_version=$(dotnet nbgv get-version -v AssemblyInformationalVersion | tr + -)" >> $GITHUB_ENV
-
-      - run: echo "semantic version is ${{ env.semantic_version }}"
+          docker build --tag staff0rd/digitalicebreakers:${{ env.semantic_version }} .
+          docker push staff0rd/digitalicebreakers:${{ env.semantic_version }}
 
       - uses: octokit/request-action@v2.x
         with:

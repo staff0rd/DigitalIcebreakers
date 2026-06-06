@@ -1,5 +1,10 @@
 {
   "version": 1,
   "isRoot": true,
-  "tools": {}
+  "tools": {
+    "nbgv": {
+      "version": "3.9.50",
+      "commands": ["nbgv"]
+    }
+  }
 }

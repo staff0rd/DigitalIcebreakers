@@ -6,10 +6,8 @@ test.describe('Given a Presenter When refreshed', () => {
     expect(player).toBeDefined();
     
     await presenter.page.reload();
-    await presenter.page.waitForTimeout(100);
-    
+
     const connectionIcon = presenter.page.getByTestId('connection-status').first();
-    const status = await connectionIcon.getAttribute('data-status');
-    expect(status).toBe('Connected');
+    await expect(connectionIcon).toHaveAttribute('data-status', 'Connected');
   });
 });

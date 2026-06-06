@@ -24,6 +24,7 @@ run:
       - --workers=1
       - --timeout=15000
       - --retries=2
+      - --global-timeout=300000
     cwd: web
 commit:
   push: true

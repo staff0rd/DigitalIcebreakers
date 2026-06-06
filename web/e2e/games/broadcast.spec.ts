@@ -5,8 +5,7 @@ test.describe("Broadcast Tests", () => {
     await presenter.startBroadcast();
     await presenter.page.getByRole("textbox").fill("abcde");
 
-    const text = await player.page.getByTestId("client-text").textContent();
-    expect(text).toBe("abcde");
+    await expect(player.page.getByTestId("client-text")).toHaveText("abcde");
   });
 
   test("Broadcasted text appears on player after refresh", async ({
@@ -17,8 +16,6 @@ test.describe("Broadcast Tests", () => {
     await presenter.page.getByRole("textbox").fill("abc");
     await player.page.reload({ waitUntil: "domcontentloaded" });
     await presenter.page.getByRole("textbox").fill("abcde");
-    await player.page.waitForTimeout(300);
-    const text = await player.page.getByTestId("client-text").textContent();
-    expect(text).toBe("abcde");
+    await expect(player.page.getByTestId("client-text")).toHaveText("abcde");
   });
 });

@@ -7,7 +7,7 @@ export class BrowserFactory {
   private contexts: BrowserContext[] = [];
 
   constructor(baseURL?: string) {
-    this.baseURL = baseURL || process.env.BASE_URL || "http://localhost:5173";
+    this.baseURL = baseURL || process.env.BASE_URL || "http://localhost:5273";
   }
 
   async createPresenter(browser: Browser): Promise<Presenter> {
@@ -16,6 +16,7 @@ export class BrowserFactory {
     const page = await context.newPage();
 
     await page.goto(this.baseURL);
+    await this.waitForConnected(page);
     await page.getByRole("button", { name: "Present" }).click();
     await page.getByRole("button", { name: "Create" }).click();
 
@@ -61,11 +62,24 @@ export class BrowserFactory {
     playerName: string = "test-user"
   ): Promise<void> {
     await page.goto(lobbyUrl);
+    // invokes made before the SignalR connection is up are silently dropped
+    await this.waitForConnected(page);
     const textBox = page.getByRole("textbox");
     await textBox.waitFor({ state: "visible" });
-    await page.waitForTimeout(100);
     await textBox.fill(playerName);
     await page.getByTestId("join-lobby-button").click();
+    // joining is only complete once the register form unmounts; interacting
+    // earlier can target inputs that are about to be replaced by the game view
+    await page
+      .getByTestId("join-lobby-button")
+      .waitFor({ state: "detached" });
+  }
+
+  private async waitForConnected(page: Page): Promise<void> {
+    await page
+      .locator('[data-testid="connection-status"][data-status="Connected"]')
+      .first()
+      .waitFor({ state: "attached" });
   }
 
   async createPlayerByJoinCode(

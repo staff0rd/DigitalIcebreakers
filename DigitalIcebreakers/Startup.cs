@@ -12,12 +12,15 @@ namespace DigitalIcebreakers
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            Environment = env;
         }
 
         public IConfiguration Configuration { get; }
+
+        public IWebHostEnvironment Environment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -26,15 +29,16 @@ namespace DigitalIcebreakers
 
             services.AddSignalR(options =>
             {
-                options.EnableDetailedErrors = true;
+                options.EnableDetailedErrors = Environment.IsDevelopment();
                 options.ClientTimeoutInterval = TimeSpan.FromSeconds(4);
                 options.KeepAliveInterval = TimeSpan.FromSeconds(2);
             });
 
-            // In production, the Vite build files will be served from this directory
+            // In production, the publish output packages the Vite build at web/dist
+            // (relative to the content root); in development the Vite dev server is proxied instead
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "../web/dist";
+                configuration.RootPath = "web/dist";
             });
 
             services.Configure<AppSettings>(Configuration);

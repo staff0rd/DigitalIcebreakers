@@ -1,0 +1,3 @@
+# whitelist: only the pre-built publish output is sent as build context
+*
+!publish

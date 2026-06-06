@@ -1,8 +1,12 @@
 ﻿using DigitalIcebreakers.Games;
 using DigitalIcebreakers.Hubs;
 using DigitalIcebreakers.Logging;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -56,6 +60,16 @@ namespace DigitalIcebreakers.Test
         public static Player GetPlayer(Guid id, bool isPresenter = false)
         {
             return new Player { ConnectionId = id.ToString(), Id = id, ExternalId = id, IsPresenter = isPresenter, Name = id.ToString() };
+        }
+
+        public static HubOptions GetConfiguredHubOptions(string environmentName)
+        {
+            var env = new Mock<IWebHostEnvironment>();
+            env.SetupGet(p => p.EnvironmentName).Returns(environmentName);
+            var startup = new Startup(new ConfigurationBuilder().Build(), env.Object);
+            var services = new ServiceCollection();
+            startup.ConfigureServices(services);
+            return services.BuildServiceProvider().GetRequiredService<IOptions<HubOptions>>().Value;
         }
     }
 }

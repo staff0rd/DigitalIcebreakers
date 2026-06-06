@@ -185,7 +185,6 @@ export const reactionMessageHandler = (
     }
   } else {
     // Handle client messages (shape updates)
-    // The Redux reducer used to replace the entire player state with action.payload
     if (Array.isArray(message)) {
       // Direct array of shapes sent from presenter
       return {

@@ -16,7 +16,7 @@ export default function Navbar(props) {
   const toggleDrawer = useSetAtom(toggleDrawerAtom);
   const classes = useStyles();
   return (
-    <Box sx={{ display: { md: "none", sx: "block" } }}>
+    <Box sx={{ display: { md: "none", xs: "block" } }}>
       <div className={classes.header}>
         <IconButton
           sx={{ color: "white" }}

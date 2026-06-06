@@ -22,16 +22,23 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: "list",
+  reporter: [
+    ["list"],
+    ["html", { open: "never" }],
+    ["json", { outputFile: "test-results/e2e-results.json" }],
+    ["./e2e/progressReporter.ts"],
+  ],
   /* Test timeout */
   timeout: process.env.CI ? 30000 : 5000,
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: process.env.BASE_URL || "http://localhost:5173",
+    // 5273, not the Vite default 5173: reuseExistingServer only checks the URL
+    // responds, so on 5173 it happily reuses any other project's dev server
+    baseURL: process.env.BASE_URL || "http://localhost:5273",
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: "on-first-retry",
+    trace: "retain-on-failure",
   },
 
   /* Configure projects for major browsers */
@@ -45,8 +52,8 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: [
     {
-      command: "npm run dev",
-      url: "http://localhost:5173",
+      command: "npm run dev -- --port 5273 --strictPort",
+      url: "http://localhost:5273",
       reuseExistingServer: !process.env.CI,
     },
     {
