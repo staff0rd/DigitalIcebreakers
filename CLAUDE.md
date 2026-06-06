@@ -15,22 +15,22 @@ Digital Icebreakers is a real-time interactive presentation platform where prese
 ```bash
 cd web
 npm install              # Install dependencies
-npm run dev             # Start dev server (port 3000)
+npm run dev             # Start dev server (port 5173)
 npm run build           # Build for production
 npm run preview         # Preview production build
 npm run lint            # Run ESLint
-npm run typecheck       # Run TypeScript compiler check
+npm run check-types     # Run TypeScript compiler check
 npm test                # Run Vitest unit tests
 npm run test:watch      # Run tests in watch mode
-npm run test:e2e        # Run Playwright e2e tests
-npm run test:e2e:ui     # Run e2e tests with UI
+npm run e2e             # Run Playwright e2e tests
+npm run e2e:headed      # Run e2e tests headed
 ```
 
 ### Backend (.NET Core)
 
 ```bash
 cd DigitalIcebreakers
-dotnet run              # Start backend server (port 5000)
+ASPNETCORE_ENVIRONMENT=Development ASPNETCORE_URLS=http://0.0.0.0:5050 dotnet run  # Start backend server (port 5050; 5000 is squatted by macOS AirPlay, and without Development env the server 500s)
 dotnet build            # Build the project
 dotnet test             # Run unit tests
 ```
@@ -38,6 +38,7 @@ dotnet test             # Run unit tests
 ### Combined Development
 
 ```bash
+cd web
 npm run dev:all         # Run both frontend and backend concurrently
 ```
 
@@ -62,25 +63,17 @@ Each game follows a consistent pattern:
 
 - `GameClient.tsx` - Participant view (receives updates, sends responses)
 - `GamePresenter.tsx` - Presenter control interface (initiates actions, sees results)
-- State management (Redux/Jotai atoms)
+- State management (Jotai atoms)
 
-### State Management Migration (Critical)
+### State Management
 
-**Currently migrating from Redux to Jotai** using strangler fig pattern:
-
-**Completed migrations**: YesNoMaybe, Broadcast, NamePicker, Buzzer, DoggosVsKittehs, FistOfFive, Splat, Pong
-
-**Migration pattern**:
-
-1. Create Jotai atoms alongside existing Redux state
-2. Gradually convert components to use atoms
-3. Remove Redux slice once fully migrated
-4. See `/web/REDUX_TO_JOTAI_MIGRATION.md` for detailed plan
+State management is **Jotai** (the Redux-to-Jotai migration is complete; no Redux remains).
 
 **Key atoms locations**:
 
-- Game-specific atoms: `/web/src/games/[gameName]/atoms.ts`
-- Shared atoms: `/web/src/store/atoms/`
+- Game-specific atoms: `/web/src/games/[gameName]/[gameName]Atoms.ts` - register incoming SignalR message handling via `registerGame(name, atom, handler)`
+- Shared atoms (user, lobby, connection, shell): `/web/src/store/atoms/`
+- SignalR atoms and game handler registry: `/web/src/store/jotai/`
 
 ### Core Domain Models
 
@@ -109,7 +102,7 @@ Each game follows a consistent pattern:
 
 - **Unit Tests**: Vitest for component and utility testing
 - **E2E Tests**: Playwright covering full game workflows
-- **Test Files**: `*.test.tsx` for unit tests, `/web/src/e2e/` for e2e tests
+- **Test Files**: `*.test.tsx` for unit tests, `/web/e2e/` for e2e specs
 
 ### Backend Tests
 
@@ -121,8 +114,8 @@ Each game follows a consistent pattern:
 Always run tests after changes:
 
 ```bash
-npm run test           # Frontend unit tests
-npm run test:e2e       # Frontend e2e tests
+npm test               # Frontend unit tests
+npm run e2e            # Frontend e2e tests
 dotnet test            # Backend tests
 ```
 
@@ -133,7 +126,7 @@ dotnet test            # Backend tests
 1. Create backend hub in `/DigitalIcebreakers/Games/[GameName]/`
 2. Register hub in `Program.cs`
 3. Create frontend components in `/web/src/games/[gameName]/`
-4. Use Jotai atoms for state management (not Redux)
+4. Use Jotai atoms for state management
 5. Follow existing game patterns for SignalR communication
 6. Add e2e tests covering presenter and client workflows
 
@@ -143,12 +136,6 @@ dotnet test            # Backend tests
 - **Hub → Participants**: State updates, game events
 - **Participants → Hub**: Responses, votes, inputs
 - **Groups**: Use lobby-based SignalR groups for targeted messaging
-
-### State Management Rules
-
-- **New code**: Use Jotai atoms exclusively
-- **Existing Redux code**: Migrate gradually when touching files
-- **Avoid**: Adding new Redux slices or reducers
 
 ## Key Files to Understand
 
@@ -174,21 +161,18 @@ dotnet test            # Backend tests
 
 All changes must follow a TDD approach. Every line of production code must be covered by a test (that first fails). Do not write production code or changes without first writing a (vi)test that requires that code.
 
-**For Redux-to-Jotai migrations specifically:**
-1. **Test existing behavior first** - Write BDD tests that verify the current Redux behavior works
-2. **Convert tests to expect Jotai behavior** - Same behavior, different state management approach
-3. **Make tests pass with minimal atoms** - Only write the atoms needed to make the behavior tests pass
-4. **Never test atoms directly** - Test user interactions and observable outcomes
-
 ### BDD only
 
 Do not write unit tests or test implementation. All tests must test the behaviour of the application, not the internal implementation.
 
-**Migration testing focus:**
 - Test component behavior (what users see and do)
 - Test state changes through user interactions
-- Test message handling through component behavior
-- Never test atoms, reducers, or internal state directly
+- Test message handling through component behavior (use `initializeMockSignalR` from `/web/src/store/jotai/signalRTestHelpers.ts` to simulate SignalR traffic)
+
+**Testing atoms:**
+
+- **Never test atoms directly** - test user interactions and observable outcomes; atoms are implementation detail
+- **Write minimal atoms** - only the atoms needed to make the behavior tests pass
 
 ### Testing style
 
