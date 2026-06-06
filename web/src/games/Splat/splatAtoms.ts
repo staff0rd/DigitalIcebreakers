@@ -11,11 +11,10 @@ export const splatAtom = atom<SplatState>({
 
 const handleSplatMessage = (
   currentState: SplatState,
-  message: any,
-  isPresenter: boolean
+  message: any
 ): SplatState => {
-  if (typeof message === 'object' && message !== null && 'count' in message) {
-    return { count: message.count };
+  if (message?.payload === 'down') {
+    return { count: currentState.count + 1 };
   }
   return currentState;
 };
