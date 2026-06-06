@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import { Box } from "@mui/material";
 import { guid } from "util/guid";
-import { presenterMessageAtom } from "store/jotai/signalRAtoms";
+import { presenterMessageAtom } from "store/jotai/transportAtoms";
 import { ResponseCount } from "games/shared/Poll/components/ResponseCount";
 import { Buttons } from "./Buttons";
 import { Responses } from "./Responses";

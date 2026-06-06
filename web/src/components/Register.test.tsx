@@ -6,13 +6,13 @@ import { describe, it, expect } from "vitest";
 import Register from "./Register";
 import { userAtom } from "../store/atoms/userAtoms";
 import { lobbyAtom, initialLobbyState } from "../store/atoms/lobbyAtoms";
-import { initializeMockSignalR } from "../store/jotai/signalRTestHelpers";
+import { initializeMockTransport } from "../store/jotai/transportTestHelpers";
 
 const renderRegister = ({ name = "" }: { name?: string } = {}) => {
   const jotaiStore = createStore();
   jotaiStore.set(userAtom, { id: "user-1", name, isRegistered: false });
   jotaiStore.set(lobbyAtom, { ...initialLobbyState, joiningLobbyId: "abcd" });
-  const signalR = initializeMockSignalR(jotaiStore);
+  const signalR = initializeMockTransport(jotaiStore);
   render(
     <ThemeProvider theme={createTheme({})}>
       <JotaiProvider store={jotaiStore}>
@@ -37,11 +37,10 @@ describe("Register", () => {
   });
 
   it("registers the entered name when joining", () => {
-    const { connection } = renderRegister();
+    const { transport } = renderRegister();
     typeName("Alice");
     join();
-    expect(connection.invoke).toHaveBeenCalledWith(
-      "connectToLobby",
+    expect(transport.connectToLobby).toHaveBeenCalledWith(
       expect.objectContaining({
         id: "user-1",
         name: "Alice",
@@ -53,10 +52,10 @@ describe("Register", () => {
 
   describe("when the entered name is too short", () => {
     it("does not register", () => {
-      const { connection } = renderRegister();
+      const { transport } = renderRegister();
       typeName("ab");
       join();
-      expect(connection.invoke).not.toHaveBeenCalled();
+      expect(transport.connectToLobby).not.toHaveBeenCalled();
     });
   });
 });

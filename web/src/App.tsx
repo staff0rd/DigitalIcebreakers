@@ -5,10 +5,10 @@ import { Events } from "./Events";
 import { Provider as JotaiProvider, createStore } from "jotai";
 import { Player } from "./Player";
 import {
-  initializeSignalR,
+  initializeTransport,
   connectionConnectAtom,
-} from "./store/jotai/signalRAtoms";
-import { connectionFactory } from "./store/connectionFactory";
+} from "./store/jotai/transportAtoms";
+import { createTransport } from "./store/transport/transportFactory";
 import { userAtom } from "./store/atoms/userAtoms";
 
 import { Theme } from "@mui/material/styles";
@@ -54,7 +54,7 @@ export default class App extends Component<{}, AppState> {
       players: [],
     };
 
-    initializeSignalR(this.jotaiStore, connectionFactory);
+    initializeTransport(this.jotaiStore, createTransport());
 
     this.jotaiStore.set(userAtom, {
       id: this.user.id,

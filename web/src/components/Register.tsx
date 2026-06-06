@@ -4,7 +4,7 @@ import { userAtom } from "../store/atoms/userAtoms";
 import {
   setUserNameAtom,
   goToDefaultUrlAtom,
-} from "../store/jotai/signalRAtoms";
+} from "../store/jotai/transportAtoms";
 import GridItem from "../layout/components/Grid/GridItem";
 import GridContainer from "../layout/components/Grid/GridContainer";
 import CustomInput from "../layout/components/CustomInput/CustomInput";

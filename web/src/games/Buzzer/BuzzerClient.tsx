@@ -1,6 +1,6 @@
 import { Box, Button } from "@mui/material";
 import { useSetAtom } from "jotai";
-import { clientMessageAtom } from "../../store/jotai/signalRAtoms";
+import { clientMessageAtom } from "../../store/jotai/transportAtoms";
 
 const BuzzerClient = () => {
   const sendClientMessage = useSetAtom(clientMessageAtom);

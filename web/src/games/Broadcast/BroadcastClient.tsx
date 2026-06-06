@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from "jotai";
 import Button from "../../layout/components/CustomButtons/Button";
 import Notifications from "@mui/icons-material/Notifications";
-import { clientMessageAtom } from "../../store/jotai/signalRAtoms";
+import { clientMessageAtom } from "../../store/jotai/transportAtoms";
 import { broadcastAtom } from "./broadcastAtoms";
 import { Box } from "@mui/material";
 

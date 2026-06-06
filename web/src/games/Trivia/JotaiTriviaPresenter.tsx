@@ -1,6 +1,6 @@
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useEffect } from "react";
-import { presenterMessageAtom } from "store/jotai/signalRAtoms";
+import { presenterMessageAtom } from "store/jotai/transportAtoms";
 import { lobbyAtom } from "store/atoms/lobbyAtoms";
 import { Box, IconButton } from "@mui/material";
 import NavigateBefore from "@mui/icons-material/NavigateBefore";

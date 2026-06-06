@@ -2,17 +2,34 @@ import { Browser, BrowserContext, Page } from "@playwright/test";
 import { Presenter } from "./presenter";
 import { Player } from "./player";
 
+export type BrowserFactoryOptions = {
+  transport?: "signalr" | "firebase";
+};
+
 export class BrowserFactory {
   private baseURL: string;
   private contexts: BrowserContext[] = [];
+  private options: BrowserFactoryOptions;
 
-  constructor(baseURL?: string) {
+  constructor(baseURL?: string, options: BrowserFactoryOptions = {}) {
     this.baseURL = baseURL || process.env.BASE_URL || "http://localhost:5273";
+    this.options = options;
+  }
+
+  private async newContext(browser: Browser): Promise<BrowserContext> {
+    const context = await browser.newContext();
+    this.contexts.push(context);
+    const transport = this.options.transport;
+    if (transport) {
+      await context.addInitScript(
+        `window.localStorage.setItem("transport", "${transport}")`
+      );
+    }
+    return context;
   }
 
   async createPresenter(browser: Browser): Promise<Presenter> {
-    const context = await browser.newContext();
-    this.contexts.push(context);
+    const context = await this.newContext(browser);
     const page = await context.newPage();
 
     await page.goto(this.baseURL);
@@ -36,8 +53,7 @@ export class BrowserFactory {
     lobbyUrl: string,
     playerName: string = "test-user"
   ): Promise<Player> {
-    const context = await browser.newContext();
-    this.contexts.push(context);
+    const context = await this.newContext(browser);
     const page = await context.newPage();
 
     await this.joinLobby(lobbyUrl, page, playerName);
@@ -87,8 +103,7 @@ export class BrowserFactory {
     joinCode: string,
     playerName: string = "test-user"
   ): Promise<Player> {
-    const context = await browser.newContext();
-    this.contexts.push(context);
+    const context = await this.newContext(browser);
     const page = await context.newPage();
 
     await page.goto(this.baseURL);

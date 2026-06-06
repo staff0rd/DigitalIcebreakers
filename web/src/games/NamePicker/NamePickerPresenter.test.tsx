@@ -3,7 +3,7 @@ import { Provider as JotaiProvider, createStore } from "jotai";
 import { describe, it, expect, vi } from "vitest";
 import NamePickerPresenter from "./NamePickerPresenter";
 import { lobbyAtom, initialLobbyState } from "store/atoms/lobbyAtoms";
-import { initializeMockSignalR } from "store/jotai/signalRTestHelpers";
+import { initializeMockTransport } from "store/jotai/transportTestHelpers";
 import { Player } from "Player";
 
 vi.mock("../pixi/Pixi", () => ({
@@ -17,7 +17,7 @@ vi.mock("../pixi/Pixi", () => ({
 const renderPresenter = ({ players = [] }: { players?: Player[] } = {}) => {
   const jotaiStore = createStore();
   jotaiStore.set(lobbyAtom, { ...initialLobbyState, players });
-  initializeMockSignalR(jotaiStore);
+  initializeMockTransport(jotaiStore);
   return render(
     <JotaiProvider store={jotaiStore}>
       <NamePickerPresenter />

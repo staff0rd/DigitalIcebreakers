@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
 import { Colors, ColorUtils } from "../../Colors";
 import { Pixi } from "../pixi/Pixi";
-import { presenterMessageAtom } from "store/jotai/signalRAtoms";
+import { presenterMessageAtom } from "store/jotai/transportAtoms";
 import { pick, between } from "Random";
 import { namePickerAtom } from "./namePickerAtoms";
 import { lobbyAtom } from "store/atoms/lobbyAtoms";

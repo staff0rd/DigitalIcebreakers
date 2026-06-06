@@ -6,7 +6,7 @@ import { MemoryRouter } from "react-router";
 import { ReactElement } from "react";
 import { ConnectionStatus } from "../ConnectionStatus";
 import { NavigationHandler } from "../components/NavigationHandler";
-import { initializeMockSignalR } from "./jotai/signalRTestHelpers";
+import { initializeMockTransport } from "./jotai/transportTestHelpers";
 import { userAtom } from "./atoms/userAtoms";
 import { connectionStatusAtom } from "./atoms/connectionAtoms";
 import { UserState } from "./user/types";
@@ -33,7 +33,7 @@ export const renderLobbyApp = (
     connectionStatusAtom,
     options.connectionStatus ?? ConnectionStatus.Connected
   );
-  const signalR = initializeMockSignalR(jotaiStore);
+  const signalR = initializeMockTransport(jotaiStore);
 
   const result = render(
     <ThemeProvider theme={createTheme({})}>

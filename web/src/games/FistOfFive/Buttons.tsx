@@ -7,7 +7,7 @@ import { saveAs } from "file-saver";
 import Button from "../../layout/components/CustomButtons/Button";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import { presenterMessageAtom } from "../../store/jotai/signalRAtoms";
+import { presenterMessageAtom } from "../../store/jotai/transportAtoms";
 import { useSetAtom } from "jotai";
 import { fistOfFiveAtom } from "./fistOfFiveAtoms";
 

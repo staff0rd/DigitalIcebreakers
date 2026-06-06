@@ -4,7 +4,7 @@ import { ThemeProvider } from "@mui/styles";
 import { Provider as JotaiProvider, createStore } from "jotai";
 import { ReactElement } from "react";
 import { getGameHandler } from "store/jotai/gameMessageHandlers";
-import { initializeMockSignalR } from "store/jotai/signalRTestHelpers";
+import { initializeMockTransport } from "store/jotai/transportTestHelpers";
 import { GameMessage } from "games/GameMessage";
 import {
   Category,
@@ -41,7 +41,7 @@ export const renderRetrospective = (
   options: RenderRetrospectiveOptions = {}
 ) => {
   const jotaiStore = createStore();
-  const signalR = initializeMockSignalR(jotaiStore);
+  const signalR = initializeMockTransport(jotaiStore);
   if (options.presenter || options.participantCategories) {
     jotaiStore.set(retrospectiveAtom, {
       presenter: { ideas: [], categories: [], ...options.presenter },

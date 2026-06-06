@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
-import { presenterMessageAtom } from "store/jotai/signalRAtoms";
+import { presenterMessageAtom } from "store/jotai/transportAtoms";
 import { ContentContainer } from "components/ContentContainer";
 import { TextField, Box } from "@mui/material";
 import { broadcastAtom } from "./broadcastAtoms";

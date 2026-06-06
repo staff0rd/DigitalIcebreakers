@@ -3,8 +3,8 @@ import { act, render } from "@testing-library/react";
 import { Provider as JotaiProvider, createStore } from "jotai";
 import { describe, it, expect, vi } from "vitest";
 import SplatPresenter from "./SplatPresenter";
-import { setLobbyGameAtom } from "../../store/jotai/signalRAtoms";
-import { initializeMockSignalR } from "../../store/jotai/signalRTestHelpers";
+import { setLobbyGameAtom } from "../../store/jotai/transportAtoms";
+import { initializeMockTransport } from "../../store/jotai/transportTestHelpers";
 
 vi.mock("pixi.js", () => ({
   Graphics: vi.fn(() => {
@@ -52,7 +52,7 @@ const playerPress = (payload: string) => ({
 
 const renderSplatPresenter = () => {
   const jotaiStore = createStore();
-  const { emit } = initializeMockSignalR(jotaiStore);
+  const { emit } = initializeMockTransport(jotaiStore);
   render(
     <JotaiProvider store={jotaiStore}>
       <SplatPresenter />

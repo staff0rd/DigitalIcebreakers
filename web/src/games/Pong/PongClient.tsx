@@ -1,6 +1,6 @@
 import { Button, Box } from "@mui/material";
 import { useAtom, useSetAtom } from "jotai";
-import { clientMessageAtom } from "../../store/jotai/signalRAtoms";
+import { clientMessageAtom } from "../../store/jotai/transportAtoms";
 import { pongAtom } from "./pongAtoms";
 import { ColorUtils } from "../../Colors";
 

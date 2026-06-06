@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { clientMessageAtom } from "../../store/jotai/signalRAtoms";
+import { clientMessageAtom } from "../../store/jotai/transportAtoms";
 import { ContentContainer } from "../../components/ContentContainer";
 import Grid from "@mui/material/GridLegacy";
 

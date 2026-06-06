@@ -24,12 +24,11 @@ describe("lobby flow", () => {
 
   describe("creating a lobby", () => {
     it("sends the lobby name and user to the server", () => {
-      const { connection, user } = renderLobbyApp(<Admin />, {
+      const { transport, user } = renderLobbyApp(<Admin />, {
         route: "/create-lobby",
       });
       fireEvent.click(screen.getByTestId("create-lobby-button"));
-      expect(connection.invoke).toHaveBeenCalledWith(
-        "createLobby",
+      expect(transport.createLobby).toHaveBeenCalledWith(
         "My Lobby",
         expect.objectContaining({ id: user.id })
       );
@@ -64,15 +63,14 @@ describe("lobby flow", () => {
 
   describe("joining a lobby", () => {
     it("connects to the lobby with the entered code", () => {
-      const { connection, user } = renderLobbyApp(<Admin />, {
+      const { transport, user } = renderLobbyApp(<Admin />, {
         route: "/join-lobby",
       });
       fireEvent.change(screen.getByRole("textbox"), {
         target: { value: "wxyz" },
       });
       fireEvent.click(screen.getByTestId("join-lobby"));
-      expect(connection.invoke).toHaveBeenCalledWith(
-        "connectToLobby",
+      expect(transport.connectToLobby).toHaveBeenCalledWith(
         expect.objectContaining({ id: user.id }),
         "wxyz"
       );
@@ -80,18 +78,14 @@ describe("lobby flow", () => {
 
     describe("when the code is not four characters", () => {
       it("does not connect", () => {
-        const { connection } = renderLobbyApp(<Admin />, {
+        const { transport } = renderLobbyApp(<Admin />, {
           route: "/join-lobby",
         });
         fireEvent.change(screen.getByRole("textbox"), {
           target: { value: "ab" },
         });
         fireEvent.click(screen.getByTestId("join-lobby"));
-        expect(connection.invoke).not.toHaveBeenCalledWith(
-          "connectToLobby",
-          expect.anything(),
-          expect.anything()
-        );
+        expect(transport.connectToLobby).not.toHaveBeenCalled();
       });
     });
   });
@@ -165,11 +159,11 @@ describe("lobby flow", () => {
 
   describe("starting a new game", () => {
     it("sends the chosen game to the server", () => {
-      const { emit, connection } = renderLobbyApp(<Admin />);
+      const { emit, transport } = renderLobbyApp(<Admin />);
       confirmLobby(emit);
       fireEvent.click(screen.getAllByText("New Activity")[0]);
       fireEvent.click(screen.getByTestId("game-broadcast"));
-      expect(connection.invoke).toHaveBeenCalledWith("newGame", "broadcast");
+      expect(transport.newGame).toHaveBeenCalledWith("broadcast");
     });
 
     describe("when the server starts the game", () => {
@@ -227,11 +221,11 @@ describe("lobby flow", () => {
 
   describe("closing the lobby", () => {
     it("tells the server to close the lobby", async () => {
-      const { emit, connection } = renderLobbyApp(<Admin />);
+      const { emit, transport } = renderLobbyApp(<Admin />);
       confirmLobby(emit);
       fireEvent.click(screen.getAllByText("Close Lobby")[0]);
       fireEvent.click(await screen.findByText("Close"));
-      expect(connection.invoke).toHaveBeenCalledWith("closelobby");
+      expect(transport.closeLobby).toHaveBeenCalled();
     });
 
     describe("when the server closes the lobby", () => {

@@ -4,7 +4,7 @@ import { Colors, ColorUtils } from "../../Colors";
 import { ShapeType } from "./ShapeType";
 import { shuffle } from "../../Random";
 import { gsap } from "gsap";
-import { presenterMessageAtom } from "store/jotai/signalRAtoms";
+import { presenterMessageAtom } from "store/jotai/transportAtoms";
 import Button from "../../layout/components/CustomButtons/Button";
 import Table from "../../layout/components/Table/Table";
 import { ContentContainer } from "../../components/ContentContainer";

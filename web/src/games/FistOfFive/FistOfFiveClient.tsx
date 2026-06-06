@@ -1,4 +1,4 @@
-import { clientMessageAtom } from "../../store/jotai/signalRAtoms";
+import { clientMessageAtom } from "../../store/jotai/transportAtoms";
 import { ContentContainer } from "../../components/ContentContainer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";

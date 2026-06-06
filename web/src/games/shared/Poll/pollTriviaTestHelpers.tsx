@@ -4,7 +4,7 @@ import { ThemeProvider } from "@mui/styles";
 import { Provider as JotaiProvider, createStore } from "jotai";
 import { ReactElement } from "react";
 import { getGameHandler } from "store/jotai/gameMessageHandlers";
-import { initializeMockSignalR } from "store/jotai/signalRTestHelpers";
+import { initializeMockTransport } from "store/jotai/transportTestHelpers";
 import { lobbyAtom, initialLobbyState } from "store/atoms/lobbyAtoms";
 import { Player } from "Player";
 import { Answer } from "./types/Answer";
@@ -52,7 +52,7 @@ export const renderPollTrivia = (
   options: RenderPollTriviaOptions = {}
 ) => {
   const jotaiStore = createStore();
-  const signalR = initializeMockSignalR(jotaiStore);
+  const signalR = initializeMockTransport(jotaiStore);
   jotaiStore.set(lobbyAtom, {
     ...initialLobbyState,
     players: options.players ?? [],

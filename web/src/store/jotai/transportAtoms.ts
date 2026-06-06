@@ -1,4 +1,3 @@
-import { HubConnection } from "@microsoft/signalr";
 import { atom, createStore } from "jotai";
 import { ConnectionStatus } from "../../ConnectionStatus";
 import { ReconnectPayload } from "../connection/types";
@@ -11,30 +10,29 @@ import {
   playerLeftAtom,
 } from "../atoms/lobbyAtoms";
 import { getGameHandler, isGameRegistered } from "./gameMessageHandlers";
+import { Transport } from "../transport/Transport";
 
 type JotaiStore = ReturnType<typeof createStore>;
 
 let storeRef: JotaiStore | null = null;
-let connectionRef: HubConnection | null = null;
+let transportRef: Transport | null = null;
 
 const store = (): JotaiStore => {
   if (!storeRef) {
-    throw new Error("SignalR has not been initialized");
+    throw new Error("Transport has not been initialized");
   }
   return storeRef;
 };
 
-const connection = (): HubConnection => {
-  if (!connectionRef) {
-    throw new Error("SignalR has not been initialized");
+const transport = (): Transport => {
+  if (!transportRef) {
+    throw new Error("Transport has not been initialized");
   }
-  return connectionRef;
+  return transportRef;
 };
 
-const invoke = (methodName: string, ...params: any[]) => {
-  connection()
-    .invoke(methodName, ...params)
-    .catch((err) => console.log(err));
+const send = (result: Promise<void>) => {
+  result.catch((err) => console.log(err));
 };
 
 const connectionRetrySeconds = [0, 1, 4, 9, 16, 25, 36, 49];
@@ -75,8 +73,8 @@ export const clearLobbyAtom = atom(null, (_get, set) => {
 export const setLobbyGameAtom = atom(null, (get, set, game: string) => {
   set(lobbyAtom, { ...get(lobbyAtom), currentGame: game });
   const isPresenter = get(lobbyAtom).isPresenter;
-  connection().off("gameMessage");
-  connection().on("gameMessage", (args: any) => {
+  transport().off("gameMessage");
+  transport().on("gameMessage", (args) => {
     if (isGameRegistered(game)) {
       const gameHandler = getGameHandler(game);
       if (gameHandler) {
@@ -96,12 +94,12 @@ export const connectionConnectAtom = atom(
       if (store().get(connectionStatusAtom) === ConnectionStatus.NotConnected) {
         bumpConnectionTimeout();
         store().set(updateConnectionStatusAtom, ConnectionStatus.Pending);
-        connection()
+        transport()
           .start()
           .then(() => {
             connectionTimeout = 0;
-            connection()
-              .invoke("connect", store().get(userAtom), lobbyId)
+            transport()
+              .connect(store().get(userAtom), lobbyId)
               .catch(() => {
                 store().set(connectionConnectAtom, lobbyId);
               });
@@ -143,35 +141,37 @@ export const setUserNameAtom = atom(null, (get, set, name: string) => {
   const user = { ...get(userAtom), name, isRegistered: true };
   set(userAtom, user);
   const lobby = get(lobbyAtom);
-  invoke("connectToLobby", user, lobby.id || lobby.joiningLobbyId);
+  send(
+    transport().connectToLobby(user, lobby.id || lobby.joiningLobbyId || "")
+  );
 });
 
 export const joinLobbyAtom = atom(null, (get, set, id: string) => {
   set(lobbyAtom, { ...get(lobbyAtom), joiningLobbyId: id });
   if (get(connectionStatusAtom) === ConnectionStatus.Connected) {
-    invoke("connectToLobby", get(userAtom), id);
+    send(transport().connectToLobby(get(userAtom), id));
   }
 });
 
 export const createLobbyAtom = atom(null, (get, set, name: string) => {
   set(lobbyAtom, { ...get(lobbyAtom), isPresenter: true, name });
-  invoke("createLobby", name, get(userAtom));
+  send(transport().createLobby(name, get(userAtom)));
 });
 
 export const closeLobbyAtom = atom(null, () => {
-  invoke("closelobby");
+  send(transport().closeLobby());
 });
 
 export const startNewGameAtom = atom(null, (_get, _set, name: string) => {
-  invoke("newGame", name);
+  send(transport().newGame(name));
 });
 
 export const presenterMessageAtom = atom(null, (_get, _set, message: any) => {
-  invoke("hubMessage", JSON.stringify({ admin: message }));
+  send(transport().sendPresenterMessage(message));
 });
 
 export const clientMessageAtom = atom(null, (_get, _set, message: any) => {
-  invoke("hubMessage", JSON.stringify({ client: message }));
+  send(transport().sendClientMessage(message));
 });
 
 const onReconnect = (response: ReconnectPayload) => {
@@ -209,35 +209,35 @@ const onReconnect = (response: ReconnectPayload) => {
   }
 };
 
-export const initializeSignalR = (
+export const initializeTransport = (
   jotaiStore: JotaiStore,
-  connectionFactory: () => HubConnection
+  appTransport: Transport
 ) => {
   storeRef = jotaiStore;
-  connectionRef = connectionFactory();
+  transportRef = appTransport;
   connectionTimeout = 0;
 
-  connection().on("reconnect", onReconnect);
-  connection().on("joined", (user) => {
+  transport().on("reconnect", onReconnect);
+  transport().on("joined", (user) => {
     store().set(playerJoinedAtom, user);
   });
-  connection().on("left", (user) => {
+  transport().on("left", (user) => {
     store().set(playerLeftAtom, user);
   });
-  connection().on("players", (players) => {
+  transport().on("players", (players) => {
     store().set(lobbyAtom, { ...store().get(lobbyAtom), players });
   });
-  connection().onclose(() => {
+  transport().on("connectionclosed", () => {
     store().set(updateConnectionStatusAtom, ConnectionStatus.NotConnected);
   });
-  connection().on("closelobby", () => {
+  transport().on("closelobby", () => {
     store().set(clearLobbyAtom);
   });
-  connection().on("connected", () => {
+  transport().on("connected", () => {
     store().set(updateConnectionStatusAtom, ConnectionStatus.Connected);
   });
-  connection().on("newgame", (name) => {
-    connection().off("gameMessage");
+  transport().on("newgame", (name) => {
+    transport().off("gameMessage");
     store().set(setLobbyGameAtom, name);
   });
 };

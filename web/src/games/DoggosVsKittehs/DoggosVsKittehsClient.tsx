@@ -2,7 +2,7 @@ import { useState } from "react";
 import doggo from "./doggo.jpeg";
 import kitteh from "./kitteh.jpg";
 import { useSetAtom } from "jotai";
-import { clientMessageAtom } from "../../store/jotai/signalRAtoms";
+import { clientMessageAtom } from "../../store/jotai/transportAtoms";
 import { List, ListItem, ListItemButton, Box } from "@mui/material";
 
 const DoggosVsKittehsClient = () => {

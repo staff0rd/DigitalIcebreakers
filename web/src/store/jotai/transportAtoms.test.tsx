@@ -19,8 +19,8 @@ import {
   goToDefaultUrlAtom,
   clientMessageAtom,
   presenterMessageAtom,
-} from "./signalRAtoms";
-import { initializeMockSignalR } from "./signalRTestHelpers";
+} from "./transportAtoms";
+import { initializeMockTransport } from "./transportTestHelpers";
 
 type SignalRAppOptions = {
   user?: Partial<UserState>;
@@ -41,7 +41,7 @@ const createSignalRApp = (options: SignalRAppOptions = {}) => {
     options.connectionStatus ?? ConnectionStatus.NotConnected
   );
   jotaiStore.set(lobbyAtom, { ...initialLobbyState, ...options.lobby });
-  return { jotaiStore, ...initializeMockSignalR(jotaiStore) };
+  return { jotaiStore, ...initializeMockTransport(jotaiStore) };
 };
 
 const listenForNavigation = () => {
@@ -160,12 +160,11 @@ describe("when connected to an old lobby", () => {
 describe("when connection achieved", () => {
   describe("when is joining lobby", () => {
     it("should join lobby", () => {
-      const { jotaiStore, connection } = createSignalRApp({
+      const { jotaiStore, transport } = createSignalRApp({
         lobby: { joiningLobbyId: "some-lobby" },
       });
       jotaiStore.set(updateConnectionStatusAtom, ConnectionStatus.Connected);
-      expect(connection.invoke).toHaveBeenCalledWith(
-        "connectToLobby",
+      expect(transport.connectToLobby).toHaveBeenCalledWith(
         expect.objectContaining({ id: "user-1" }),
         "some-lobby"
       );
@@ -185,13 +184,12 @@ describe("when connection achieved", () => {
 
 describe("when registering a user name", () => {
   it("connects to the lobby as a registered user with the new name", () => {
-    const { jotaiStore, connection } = createSignalRApp({
+    const { jotaiStore, transport } = createSignalRApp({
       user: { id: "user-1" },
       lobby: { joiningLobbyId: "abcd" },
     });
     jotaiStore.set(setUserNameAtom, "Alice");
-    expect(connection.invoke).toHaveBeenCalledWith(
-      "connectToLobby",
+    expect(transport.connectToLobby).toHaveBeenCalledWith(
       expect.objectContaining({
         id: "user-1",
         name: "Alice",
@@ -204,7 +202,7 @@ describe("when registering a user name", () => {
 
 describe("when reconnecting with a server-side identity", () => {
   it("uses the reconnected identity for subsequent lobby actions", () => {
-    const { jotaiStore, emit, connection } = createSignalRApp({
+    const { jotaiStore, emit, transport } = createSignalRApp({
       user: { isRegistered: true },
       lobby: { joiningLobbyId: "new-lobby" },
       connectionStatus: ConnectionStatus.Connected,
@@ -218,8 +216,7 @@ describe("when reconnecting with a server-side identity", () => {
       isRegistered: true,
     });
     jotaiStore.set(createLobbyAtom, "My lobby");
-    expect(connection.invoke).toHaveBeenCalledWith(
-      "createLobby",
+    expect(transport.createLobby).toHaveBeenCalledWith(
       "My lobby",
       expect.objectContaining({ id: "player-9", name: "Bob" })
     );

@@ -3,7 +3,7 @@ import { Button } from "../pixi/Button";
 import { Pixi } from "../pixi/Pixi";
 import { Colors } from "../../Colors";
 import { useSetAtom } from "jotai";
-import { clientMessageAtom } from "../../store/jotai/signalRAtoms";
+import { clientMessageAtom } from "../../store/jotai/transportAtoms";
 import { useResizeListener } from "../pixi/useResizeListener";
 import * as PIXI from "pixi.js";
 

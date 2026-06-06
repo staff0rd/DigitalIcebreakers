@@ -6,13 +6,13 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { ReactionPresenter } from "./ReactionPresenter";
 import { reactionAtom, reactionMessageHandler } from "./atoms";
 import { lobbyAtom, initialLobbyState } from "store/atoms/lobbyAtoms";
-import { initializeMockSignalR } from "store/jotai/signalRTestHelpers";
+import { initializeMockTransport } from "store/jotai/transportTestHelpers";
 import { Player } from "Player";
 
 const renderPresenter = ({ players = [] }: { players?: Player[] } = {}) => {
   const jotaiStore = createStore();
   jotaiStore.set(lobbyAtom, { ...initialLobbyState, players });
-  initializeMockSignalR(jotaiStore);
+  initializeMockTransport(jotaiStore);
   const result = render(
     <ThemeProvider theme={createTheme({})}>
       <JotaiProvider store={jotaiStore}>

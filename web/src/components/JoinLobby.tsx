@@ -7,7 +7,7 @@ import Card from "../layout/components/Card/Card";
 import CardBody from "../layout/components/Card/CardBody";
 import CardFooter from "../layout/components/Card/CardFooter";
 import { useSetAtom } from "jotai";
-import { joinLobbyAtom } from "../store/jotai/signalRAtoms";
+import { joinLobbyAtom } from "../store/jotai/transportAtoms";
 import CardTitle from "../layout/components/Card/CardTitle";
 import { ContentContainer } from "./ContentContainer";
 import { useParams } from "react-router";

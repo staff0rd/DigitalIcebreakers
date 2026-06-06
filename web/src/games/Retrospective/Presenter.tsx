@@ -9,7 +9,7 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { retrospectiveAtom } from "./retrospectiveAtoms";
 import { ideasByCategory } from "./ideasByCategory";
 import SetCategories from "./SetCategories";
-import { presenterMessageAtom } from "store/jotai/signalRAtoms";
+import { presenterMessageAtom } from "store/jotai/transportAtoms";
 import makeStyles from "@mui/styles/makeStyles";
 
 const useStyles = makeStyles((theme) => ({

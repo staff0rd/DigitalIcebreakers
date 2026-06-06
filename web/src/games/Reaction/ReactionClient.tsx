@@ -2,7 +2,7 @@ import { Colors } from "../../Colors";
 import { Shape } from "./Shape";
 import { ShapeType } from "./ShapeType";
 import { useAtomValue, useSetAtom } from "jotai";
-import { clientMessageAtom } from "../../store/jotai/signalRAtoms";
+import { clientMessageAtom } from "../../store/jotai/transportAtoms";
 import { reactionAtom, selectShapeAtom } from "./atoms";
 import { Box } from "@mui/material";
 import { ShapeRenderer } from "./ShapeRenderer";

@@ -1,6 +1,6 @@
 import Button from "../../layout/components/CustomButtons/Button";
 import { useSetAtom } from "jotai";
-import { clientMessageAtom } from "../../store/jotai/signalRAtoms";
+import { clientMessageAtom } from "../../store/jotai/transportAtoms";
 import makeStyles from "@mui/styles/makeStyles";
 
 const useStyles = makeStyles(() => ({

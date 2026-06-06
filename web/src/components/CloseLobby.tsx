@@ -1,6 +1,6 @@
 import Button from "../layout/components/CustomButtons/Button";
 import { useSetAtom } from "jotai";
-import { closeLobbyAtom } from "../store/jotai/signalRAtoms";
+import { closeLobbyAtom } from "../store/jotai/transportAtoms";
 import GridItem from "../layout/components/Grid/GridItem";
 import GridContainer from "../layout/components/Grid/GridContainer";
 import Card from "../layout/components/Card/Card";

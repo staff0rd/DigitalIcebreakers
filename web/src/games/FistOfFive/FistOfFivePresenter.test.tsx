@@ -5,7 +5,7 @@ import { Provider as JotaiProvider, createStore } from "jotai";
 import { describe, it, expect } from "vitest";
 import FistOfFivePresenter from "./FistOfFivePresenter";
 import { lobbyAtom, initialLobbyState } from "store/atoms/lobbyAtoms";
-import { initializeMockSignalR } from "store/jotai/signalRTestHelpers";
+import { initializeMockTransport } from "store/jotai/transportTestHelpers";
 import { Player } from "Player";
 
 const createPlayers = (count: number): Player[] =>
@@ -17,7 +17,7 @@ const createPlayers = (count: number): Player[] =>
 const renderPresenter = ({ players = [] }: { players?: Player[] } = {}) => {
   const jotaiStore = createStore();
   jotaiStore.set(lobbyAtom, { ...initialLobbyState, players });
-  initializeMockSignalR(jotaiStore);
+  initializeMockTransport(jotaiStore);
   return render(
     <ThemeProvider theme={createTheme({})}>
       <JotaiProvider store={jotaiStore}>

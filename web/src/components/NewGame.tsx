@@ -1,6 +1,6 @@
 import Games from "../games/Games";
 import { useSetAtom } from "jotai";
-import { startNewGameAtom } from "../store/jotai/signalRAtoms";
+import { startNewGameAtom } from "../store/jotai/transportAtoms";
 import { ContentContainer } from "./ContentContainer";
 import Card from "../layout/components/Card/Card";
 import CardFooter from "../layout/components/Card/CardFooter";
