@@ -25,3 +25,5 @@ run:
       - --timeout=15000
       - --retries=2
     cwd: web
+commit:
+  push: true
