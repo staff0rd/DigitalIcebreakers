@@ -6,9 +6,10 @@
   "scripts": {
     "dev": "concurrently -k -n vite,firebase -c blue,yellow npm:dev:vite npm:dev:emulators",
     "dev:vite": "vite",
-    "dev:emulators": "npm run --silent kill-stale-emulators && firebase emulators:start --only auth,database --project demo-digitalicebreakers",
+    "dev:emulators": "npm run --silent ensure-java && npm run --silent kill-stale-emulators && firebase emulators:start --only auth,database --project demo-digitalicebreakers",
     "kill-stale-emulators": "lsof -ti :9000 -ti :9099 | xargs kill 2>/dev/null || true",
-    "dev:all": "cd .. && ASPNETCORE_ENVIRONMENT=Development ASPNETCORE_URLS=http://0.0.0.0:5050 dotnet run --project DigitalIcebreakers & npm run dev",
+    "ensure-java": "command -v java >/dev/null 2>&1 || { echo 'Java is required by the Firebase emulator. Install it with: brew install openjdk && sudo ln -sfn /opt/homebrew/opt/openjdk/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk.jdk'; exit 1; }",
+    "test:rules": "npm run --silent ensure-java && firebase emulators:exec --only database --project demo-rules --config firebase.rules-test.json \"vitest run --config vitest.rules.config.ts\"",
     "check-types": "tsc -b --noEmit",
     "check-types:e2e": "tsc --project tsconfig.e2e.json --noEmit",
     "build": "tsc -b && vite build",
@@ -28,7 +29,6 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@fontsource/roboto": "^5.2.5",
-    "@microsoft/signalr": "^8.0.7",
     "@mui/icons-material": "^7.0.2",
     "@mui/material": "^7.0.2",
     "@mui/styles": "^6.4.11",
@@ -51,6 +51,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
+    "@firebase/rules-unit-testing": "^5.0.1",
     "@playwright/test": "^1.53.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",

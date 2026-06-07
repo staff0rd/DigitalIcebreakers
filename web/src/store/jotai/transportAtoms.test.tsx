@@ -37,13 +37,13 @@ registerGame(
   { resetState: () => ({ log: ["fresh"] }) }
 );
 
-type SignalRAppOptions = {
+type TransportAppOptions = {
   user?: Partial<UserState>;
   lobby?: Partial<LobbyState>;
   connectionStatus?: ConnectionStatus;
 };
 
-const createSignalRApp = (options: SignalRAppOptions = {}) => {
+const createTransportApp = (options: TransportAppOptions = {}) => {
   const jotaiStore = createStore();
   jotaiStore.set(userAtom, {
     id: "user-1",
@@ -80,7 +80,7 @@ const renderWithJotai = (
 describe("real-time game message routing", () => {
   describe("when a game is in progress", () => {
     it("updates the game's client UI from incoming game messages", () => {
-      const { jotaiStore, emit } = createSignalRApp();
+      const { jotaiStore, emit } = createTransportApp();
       renderWithJotai(<PongClient />, jotaiStore);
       act(() => jotaiStore.set(setLobbyGameAtom, "pong"));
       emit("gameMessage", "team:0");
@@ -91,7 +91,7 @@ describe("real-time game message routing", () => {
 
   describe("when the server starts a new game", () => {
     it("routes subsequent game messages to the new game", () => {
-      const { jotaiStore, emit } = createSignalRApp();
+      const { jotaiStore, emit } = createTransportApp();
       renderWithJotai(<PongClient />, jotaiStore);
       emit("newgame", "pong");
       emit("gameMessage", "team:1");
@@ -116,7 +116,7 @@ describe("mirroring game state", () => {
 
   describe("when a presenter reconnects with mirrored state", () => {
     it("restores the game state", () => {
-      const { jotaiStore, emit } = createSignalRApp({
+      const { jotaiStore, emit } = createTransportApp({
         lobby: { isPresenter: true },
         connectionStatus: ConnectionStatus.Connected,
       });
@@ -133,7 +133,7 @@ describe("mirroring game state", () => {
 
   describe("when a player reconnects with mirrored state", () => {
     it("restores the game state", () => {
-      const { jotaiStore, emit } = createSignalRApp({
+      const { jotaiStore, emit } = createTransportApp({
         user: { isRegistered: true },
         connectionStatus: ConnectionStatus.Connected,
       });
@@ -147,7 +147,7 @@ describe("mirroring game state", () => {
 
   describe("when the presenter's game state changes", () => {
     it("publishes the state as presenter state", () => {
-      const { jotaiStore, transport } = createSignalRApp({
+      const { jotaiStore, transport } = createTransportApp({
         lobby: { isPresenter: true },
       });
       act(() => jotaiStore.set(setLobbyGameAtom, "test-game"));
@@ -161,7 +161,7 @@ describe("mirroring game state", () => {
 
   describe("when a player's game state changes", () => {
     it("publishes the state as player state", () => {
-      const { jotaiStore, transport } = createSignalRApp();
+      const { jotaiStore, transport } = createTransportApp();
       act(() => jotaiStore.set(setLobbyGameAtom, "test-game"));
       act(() => jotaiStore.set(testGameAtom, { log: ["picked"] }));
       expect(transport.publishPlayerState).toHaveBeenCalledWith({
@@ -173,7 +173,7 @@ describe("mirroring game state", () => {
 
   describe("when reconnecting to a lobby with no game in progress", () => {
     it("stops publishing the previous game's state", () => {
-      const { jotaiStore, emit, transport } = createSignalRApp({
+      const { jotaiStore, emit, transport } = createTransportApp({
         user: { isRegistered: true },
         connectionStatus: ConnectionStatus.Connected,
       });
@@ -188,7 +188,7 @@ describe("mirroring game state", () => {
 
   describe("when a new game starts", () => {
     it("resets the game state", () => {
-      const { jotaiStore, emit } = createSignalRApp();
+      const { jotaiStore, emit } = createTransportApp();
       jotaiStore.set(testGameAtom, { log: ["stale"] });
       emit("newgame", "test-game");
       expect(jotaiStore.get(testGameAtom)).toEqual({ log: ["fresh"] });
@@ -198,13 +198,13 @@ describe("mirroring game state", () => {
 
 describe("sending game messages", () => {
   it("sends client messages to the hub", () => {
-    const { jotaiStore, sentClientMessages } = createSignalRApp();
+    const { jotaiStore, sentClientMessages } = createTransportApp();
     jotaiStore.set(clientMessageAtom, "down");
     expect(sentClientMessages()).toEqual(["down"]);
   });
 
   it("sends presenter messages to the hub", () => {
-    const { jotaiStore, sentPresenterMessages } = createSignalRApp();
+    const { jotaiStore, sentPresenterMessages } = createTransportApp();
     jotaiStore.set(presenterMessageAtom, { canAnswer: true });
     expect(sentPresenterMessages()).toEqual([{ canAnswer: true }]);
   });
@@ -214,7 +214,7 @@ describe("when joining a lobby", () => {
   describe("when not yet registered", () => {
     describe("when player", () => {
       it("should not set lobby", () => {
-        const { jotaiStore, emit } = createSignalRApp({
+        const { jotaiStore, emit } = createTransportApp({
           user: { isRegistered: false },
           lobby: { joiningLobbyId: "new-lobby" },
           connectionStatus: ConnectionStatus.Connected,
@@ -225,7 +225,7 @@ describe("when joining a lobby", () => {
     });
     describe("when presenter", () => {
       it("should set lobby", () => {
-        const { jotaiStore, emit } = createSignalRApp({
+        const { jotaiStore, emit } = createTransportApp({
           user: { isRegistered: false },
           lobby: { joiningLobbyId: "new-lobby", isPresenter: true },
           connectionStatus: ConnectionStatus.Connected,
@@ -237,7 +237,7 @@ describe("when joining a lobby", () => {
   });
 
   it("should allow case insensitive join code", () => {
-    const { jotaiStore, emit } = createSignalRApp({
+    const { jotaiStore, emit } = createTransportApp({
       user: { isRegistered: true },
       lobby: { joiningLobbyId: "aaaa" },
       connectionStatus: ConnectionStatus.Connected,
@@ -258,7 +258,7 @@ describe("when joining a lobby", () => {
 
 describe("when connected to an old lobby", () => {
   it("should not update to old lobby", () => {
-    const { jotaiStore, emit } = createSignalRApp({
+    const { jotaiStore, emit } = createTransportApp({
       lobby: { joiningLobbyId: "new-lobby" },
       connectionStatus: ConnectionStatus.Connected,
     });
@@ -270,7 +270,7 @@ describe("when connected to an old lobby", () => {
 describe("when connection achieved", () => {
   describe("when is joining lobby", () => {
     it("should join lobby", () => {
-      const { jotaiStore, transport } = createSignalRApp({
+      const { jotaiStore, transport } = createTransportApp({
         lobby: { joiningLobbyId: "some-lobby" },
       });
       jotaiStore.set(updateConnectionStatusAtom, ConnectionStatus.Connected);
@@ -282,7 +282,7 @@ describe("when connection achieved", () => {
   });
 
   it("shows the user as connected", () => {
-    const { jotaiStore } = createSignalRApp();
+    const { jotaiStore } = createTransportApp();
     jotaiStore.set(updateConnectionStatusAtom, ConnectionStatus.Connected);
     renderWithJotai(<ConnectionIcon />, jotaiStore);
     expect(screen.getByTestId("connection-status")).toHaveAttribute(
@@ -294,7 +294,7 @@ describe("when connection achieved", () => {
 
 describe("when registering a user name", () => {
   it("connects to the lobby as a registered user with the new name", () => {
-    const { jotaiStore, transport } = createSignalRApp({
+    const { jotaiStore, transport } = createTransportApp({
       user: { id: "user-1" },
       lobby: { joiningLobbyId: "abcd" },
     });
@@ -312,7 +312,7 @@ describe("when registering a user name", () => {
 
 describe("when reconnecting with a server-side identity", () => {
   it("uses the reconnected identity for subsequent lobby actions", () => {
-    const { jotaiStore, emit, transport } = createSignalRApp({
+    const { jotaiStore, emit, transport } = createTransportApp({
       user: { isRegistered: true },
       lobby: { joiningLobbyId: "new-lobby" },
       connectionStatus: ConnectionStatus.Connected,
@@ -336,7 +336,7 @@ describe("when reconnecting with a server-side identity", () => {
 describe("when navigating to the default url", () => {
   describe("when joining a lobby unregistered", () => {
     it("navigates to register", () => {
-      const { jotaiStore } = createSignalRApp({
+      const { jotaiStore } = createTransportApp({
         user: { isRegistered: false },
         lobby: { joiningLobbyId: "abcd" },
       });
@@ -348,7 +348,7 @@ describe("when navigating to the default url", () => {
 
   describe("when registered with a game in progress", () => {
     it("navigates to the game", () => {
-      const { jotaiStore } = createSignalRApp({
+      const { jotaiStore } = createTransportApp({
         user: { isRegistered: true },
         lobby: { joiningLobbyId: "abcd", currentGame: "poll" },
       });
@@ -361,7 +361,7 @@ describe("when navigating to the default url", () => {
 
 describe("when the server closes the lobby", () => {
   it("clears the lobby and navigates to lobby-closed", () => {
-    const { jotaiStore, emit } = createSignalRApp({
+    const { jotaiStore, emit } = createTransportApp({
       lobby: { id: "abcd", name: "My Lobby", isPresenter: true },
     });
     const paths = listenForNavigation();

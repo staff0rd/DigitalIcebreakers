@@ -11,7 +11,6 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        dotnet: [9.0]
         node: [22]
         browser: [chromium]
 
@@ -20,27 +19,11 @@ jobs:
     steps:
       - name: Checkout git repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ matrix.dotnet }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-
-      - name: Install dotnet tools
-        run: dotnet tool restore
-
-      - name: Install C# dependencies
-        run: dotnet restore
-
-      - name: Run C# build
-        run: dotnet build --no-restore
 
       - name: Install frontend dependencies
         run: npm ci
@@ -64,18 +47,15 @@ jobs:
         working-directory: ./web
 
       - name: run end-to-end tests
-        env:
-          ASPNETCORE_URLS: http://localhost:5000
-          ASPNETCORE_ENVIRONMENT: Development
         run: npm run e2e
         working-directory: ./web
+
   build:
     name: Build ${{ matrix.os }} and Test
     if: github.event.pull_request.merged != true
     strategy:
       matrix:
         os: [ubuntu-latest]
-        dotnet: [9.0]
         node: [22]
 
     runs-on: ${{ matrix.os }}
@@ -83,13 +63,6 @@ jobs:
     steps:
       - name: Checkout git repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ matrix.dotnet }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -102,6 +75,10 @@ jobs:
 
       - name: Run frontend unit tests
         run: npm test
+        working-directory: ./web
+
+      - name: Run security-rules tests
+        run: npm run test:rules
         working-directory: ./web
 
       - name: Type check frontend
@@ -119,16 +96,3 @@ jobs:
       - name: Lint E2E tests
         run: npm run lint:e2e
         working-directory: ./web
-
-      - name: Install dotnet tools
-        run: dotnet tool restore
-
-      - name: Install C# dependencies
-        run: dotnet restore
-
-      - name: Run C# build
-        run: dotnet build --configuration Release --no-restore
-
-      - name: Run C# tests
-        run: dotnet test --no-restore --verbosity normal
-        working-directory: ./DigitalIcebreakers.Test

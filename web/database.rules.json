@@ -1,6 +1,39 @@
 {
   "rules": {
-    ".read": true,
-    ".write": true
+    "lobbies": {
+      "$code": {
+        ".read": "auth != null",
+        ".write": "auth != null && ((!data.exists() && newData.child('presenterUid').val() === auth.uid) || (data.exists() && data.child('presenterUid').val() === auth.uid) || (!newData.exists() && (!root.child('lobbyActivity').child($code).exists() || root.child('lobbyActivity').child($code).val() <= now - 3600000)))",
+        "players": {
+          "$playerId": {
+            ".write": "auth != null && (data.exists() ? data.child('uid').val() === auth.uid : newData.child('uid').val() === auth.uid)"
+          }
+        },
+        "playerState": {
+          "$playerId": {
+            ".write": "auth != null && root.child('lobbies').child($code).child('players').child($playerId).child('uid').val() === auth.uid"
+          }
+        },
+        "messages": {
+          "toPresenter": {
+            "$messageId": {
+              ".write": "auth != null && !data.exists() && newData.exists() && root.child('lobbies').child($code).child('players').child(newData.child('senderId').val()).child('uid').val() === auth.uid"
+            }
+          }
+        }
+      }
+    },
+    "playerLobbies": {
+      "$playerId": {
+        ".read": "auth != null && (!data.exists() || data.child('uid').val() === auth.uid)",
+        ".write": "auth != null && (data.exists() ? data.child('uid').val() === auth.uid : newData.child('uid').val() === auth.uid)"
+      }
+    },
+    "lobbyActivity": {
+      ".read": "auth != null",
+      "$code": {
+        ".write": "auth != null && (!root.child('lobbies').child($code).exists() || root.child('lobbies').child($code).child('presenterUid').val() === auth.uid || (!newData.exists() && data.val() <= now - 3600000))"
+      }
+    }
   }
 }

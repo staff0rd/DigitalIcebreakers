@@ -16,6 +16,12 @@ run:
       - run
       - check-types
     cwd: web
+  - name: verify:rules
+    command: npm
+    args:
+      - run
+      - test:rules
+    cwd: web
   - name: verify:e2e
     command: npx
     args:

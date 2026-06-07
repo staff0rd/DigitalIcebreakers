@@ -22,7 +22,9 @@
   },
   "include": [
     "vite.config.ts",
+    "vitest.rules.config.ts",
     "playwright.config.ts",
-    "e2e/**/*.ts"
+    "e2e/**/*.ts",
+    "rules/**/*.ts"
   ]
 }

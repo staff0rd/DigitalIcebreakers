@@ -1,4 +1,4 @@
-import { test, expect } from "../fixtures/firebase";
+import { test, expect } from "../fixtures/base";
 
 test.describe("Game state over Firebase", () => {
   test("presenter refresh restores aggregated votes", async ({

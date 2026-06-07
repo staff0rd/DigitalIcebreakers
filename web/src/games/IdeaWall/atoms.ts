@@ -180,7 +180,7 @@ export const bringCardToFrontAtom = atom(
   }
 );
 
-// Message handler for SignalR integration
+// Message handler registered with the transport
 const ideaWallMessageHandler = (
   currentState: IdeaWallState,
   message: any,

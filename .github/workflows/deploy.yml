@@ -12,46 +12,40 @@ jobs:
     steps:
       - name: Checkout git repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 9.0.x
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
 
-      - name: Install dotnet tools
-        run: dotnet tool restore
-
       - name: Get version
-        run: echo "semantic_version=$(dotnet nbgv get-version -v AssemblyInformationalVersion | tr + -)" >> $GITHUB_ENV
+        run: echo "semantic_version=1.0.${{ github.run_number }}" >> $GITHUB_ENV
 
       - run: echo "semantic version is ${{ env.semantic_version }}"
 
       - name: Set frontend version
         run: |
-          echo "{ \"simpleVersion\": \"$(dotnet nbgv get-version -v SimpleVersion)\" }" > web/src/version.json
+          echo "{ \"simpleVersion\": \"${{ env.semantic_version }}\" }" > web/src/version.json
 
       - name: Install node dependencies
         run: npm ci
         working-directory: ./web
 
       - name: Build frontend
+        # Production Firebase config is baked into the static build; without
+        # VITE_FIREBASE_DATABASE_URL the app falls back to the local emulator
+        env:
+          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
+          VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
+          VITE_FIREBASE_DATABASE_URL: ${{ secrets.VITE_FIREBASE_DATABASE_URL }}
         run: npm run build
         working-directory: ./web
 
-      - name: Publish backend
-        run: dotnet publish DigitalIcebreakers/DigitalIcebreakers.csproj --configuration Release --output publish
-
-      - name: Copy frontend into publish output
-        run: |
-          mkdir -p publish/web
-          cp -r web/dist publish/web/dist
+      - name: Deploy database security rules
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: npx firebase-tools deploy --only database --project ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
+        working-directory: ./web
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3

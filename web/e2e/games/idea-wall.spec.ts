@@ -1,4 +1,4 @@
-import { test, expect } from "../fixtures/firebase";
+import { test, expect } from "../fixtures/base";
 
 test.describe("IdeaWall Tests", () => {
   test("Ideas are collected and displayed", async ({ presenter, browser, browserFactory }) => {

@@ -2,29 +2,16 @@ name: Deploy existing
 
 on:
   workflow_dispatch:
+    inputs:
+      semantic_version:
+        description: Existing image tag to deploy (e.g. 1.0.42)
+        required: true
 
 jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout git repository
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
-
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 3.1.301
-
-      - name: Install dotnet tools
-        run: dotnet tool restore
-
-      - name: get version
-        run: |
-          echo "semantic_version=$(dotnet nbgv get-version -v AssemblyInformationalVersion | tr + -)" >> $GITHUB_ENV
-      - run: echo "semantic version is ${{ env.semantic_version }}"
       - uses: octokit/request-action@v2.x
         with:
           route: POST /repos/{owner}/{repo}/dispatches
@@ -32,6 +19,6 @@ jobs:
           repo: deploy
           event_type: digital-icebreakers
           client_payload: |
-            semantic_version: ${{ env.semantic_version }}
+            semantic_version: ${{ inputs.semantic_version }}
         env:
           GITHUB_TOKEN: ${{ secrets.DEPLOY_REPO_TOKEN }}

@@ -1,4 +1,4 @@
-import { test, expect } from "../fixtures/firebase";
+import { test, expect } from "../fixtures/base";
 
 test.describe("NamePicker Tests", () => {
   test("One player is selected from multiple players", async ({

@@ -25,6 +25,7 @@ import {
 const CODE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 const CODE_LENGTH = 4;
 const MAX_CODE_ATTEMPTS = 50;
+const IDLE_LOBBY_TIMEOUT_MS = 60 * 60 * 1000;
 
 const randomCode = () =>
   Array.from(
@@ -65,6 +66,11 @@ type LobbyRecord = {
   };
 };
 
+type PlayerLobbyRecord = {
+  code: string;
+  uid: string;
+};
+
 type AttachedLobby = {
   code: string;
   player: PlayerRecord;
@@ -87,13 +93,17 @@ export class FirebaseTransport implements Transport {
   private startPromise?: Promise<void>;
   private uid = "";
   private generateCode: () => string;
+  private now: () => number;
   private attached?: AttachedLobby;
 
-  constructor(options: { generateCode?: () => string } = {}) {
+  constructor(
+    options: { generateCode?: () => string; now?: () => number } = {}
+  ) {
     const { db, auth } = getFirebaseClient();
     this.db = db;
     this.auth = auth;
     this.generateCode = options.generateCode ?? randomCode;
+    this.now = options.now ?? Date.now;
   }
 
   start(): Promise<void> {
@@ -113,8 +123,8 @@ export class FirebaseTransport implements Transport {
   async connect(user: UserState, lobbyId?: string): Promise<void> {
     await this.start();
     const indexRef = ref(this.db, `playerLobbies/${user.id}`);
-    const storedCode = (await get(indexRef)).val() as string | null;
-    const code = (lobbyId ?? storedCode ?? "").toUpperCase();
+    const stored = (await get(indexRef)).val() as PlayerLobbyRecord | null;
+    const code = (lobbyId ?? stored?.code ?? "").toUpperCase();
     if (!code) {
       this.emit("connected");
       return;
@@ -133,6 +143,7 @@ export class FirebaseTransport implements Transport {
   async createLobby(name: string, user: UserState): Promise<void> {
     await this.start();
     await this.closeOwnLobby(user);
+    await this.sweepIdleLobbies();
     const code = await this.uniqueCode();
     const player: PlayerRecord = {
       id: user.id,
@@ -148,12 +159,16 @@ export class FirebaseTransport implements Transport {
       currentGame: null,
       players: { [user.id]: player },
     };
+    // Activity first: rules only allow non-presenters to touch lobbyActivity
+    // while the lobby does not exist yet, and a crash here leaves a sweepable
+    // orphan rather than an unsweepable lobby
+    await set(ref(this.db, `lobbyActivity/${code}`), serverTimestamp());
     await set(ref(this.db, `lobbies/${code}`), {
       ...lobby,
       createdAt: serverTimestamp(),
       presenterUid: this.uid,
     });
-    await set(ref(this.db, `playerLobbies/${user.id}`), code);
+    await this.storePlayerLobby(user.id, code);
     this.attach(code, lobby, player);
   }
 
@@ -194,24 +209,26 @@ export class FirebaseTransport implements Transport {
       ref(this.db, `lobbies/${code}/players/${user.id}`),
       player as unknown as Record<string, unknown>
     );
-    await set(ref(this.db, `playerLobbies/${user.id}`), code);
+    await this.storePlayerLobby(user.id, code);
     lobby.players = { ...lobby.players, [user.id]: player };
     this.attach(code, lobby, player);
   }
 
   async closeLobby(): Promise<void> {
     if (!this.attached) return;
-    await remove(ref(this.db, `lobbies/${this.attached.code}`));
+    await this.removeLobby(this.attached.code);
   }
 
   async newGame(name: string): Promise<void> {
     if (!this.attached) return;
-    await update(ref(this.db, `lobbies/${this.attached.code}`), {
+    const code = this.attached.code;
+    await update(ref(this.db, `lobbies/${code}`), {
       currentGame: { name, startedAt: serverTimestamp() },
       messages: null,
       presenterState: null,
       playerState: null,
     });
+    await set(ref(this.db, `lobbyActivity/${code}`), serverTimestamp());
   }
 
   async publishPresenterState(state: unknown): Promise<void> {
@@ -275,16 +292,43 @@ export class FirebaseTransport implements Transport {
   }
 
   private async closeOwnLobby(user: UserState): Promise<void> {
-    const storedCode = (
+    const stored = (
       await get(ref(this.db, `playerLobbies/${user.id}`))
-    ).val() as string | null;
-    if (!storedCode) return;
+    ).val() as PlayerLobbyRecord | null;
+    if (!stored?.code) return;
     const lobby = (
-      await get(ref(this.db, `lobbies/${storedCode}`))
+      await get(ref(this.db, `lobbies/${stored.code}`))
     ).val() as LobbyRecord | null;
     if (lobby?.presenterId === user.id) {
-      await remove(ref(this.db, `lobbies/${storedCode}`));
+      await this.removeLobby(stored.code);
     }
+  }
+
+  private async removeLobby(code: string): Promise<void> {
+    await update(ref(this.db), {
+      [`lobbies/${code}`]: null,
+      [`lobbyActivity/${code}`]: null,
+    });
+  }
+
+  private async storePlayerLobby(playerId: string, code: string) {
+    // uid included so rules can scope the entry to its owner
+    await set(ref(this.db, `playerLobbies/${playerId}`), {
+      code,
+      uid: this.uid,
+    } satisfies PlayerLobbyRecord);
+  }
+
+  private async sweepIdleLobbies(): Promise<void> {
+    const activity = (await get(ref(this.db, "lobbyActivity"))).val() as Record<
+      string,
+      number
+    > | null;
+    const cutoff = this.now() - IDLE_LOBBY_TIMEOUT_MS;
+    const stale = Object.entries(activity ?? {}).filter(
+      ([, lastActive]) => typeof lastActive === "number" && lastActive <= cutoff
+    );
+    await Promise.all(stale.map(([code]) => this.removeLobby(code)));
   }
 
   private async uniqueCode(): Promise<string> {

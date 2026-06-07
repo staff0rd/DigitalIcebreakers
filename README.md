@@ -1,6 +1,6 @@
 # Digital Icebreakers
 
-![Digital Icebreakers](https://raw.githubusercontent.com/staff0rd/DigitalIcebreakers/master/DigitalIcebreakers/ClientApp/public/img/digital-icebreakers.jpg)
+![Digital Icebreakers](web/public/img/digital-icebreakers.jpg)
 
 Digital Icebreakers is a platform for presenters and audiences to collaborate, play, and experiment together.
 
@@ -8,51 +8,51 @@ Digital Icebreakers is a platform for presenters and audiences to collaborate, p
 
 A presenter creates a _Lobby_ and audience members join by pointing their phone cameras at the presenter's screen and scanning the QR code. The presenter can then guide the audience through games and experiences by clicking _New Activity_. Try it out on [digitalicebreakers.com](https://digitalicebreakers.com).
 
-## Build
+## Architecture
 
-1. Clone this repo
-1. Install [.NET Core 3.1 SDK](https://dot.net)
-1. Run `ASPNETCORE_URLS=http://0.0.0.0:5000 ASPNETCORE_ENVIRONMENT=Development dotnet run --project DigitalIcebreakers`
+A React SPA backed by Firebase Realtime Database — there is no application server. The presenter's browser is the game-state authority: it aggregates player input (votes, answers, paddle speeds), balances teams, and publishes results back to RTDB for players. Anonymous Firebase auth identifies clients; [security rules](web/database.rules.json) ensure only the lobby creator can write presenter-owned paths and players can only write their own input. Idle lobbies are cleaned up after an hour.
 
-## Infrastructure overview
+In development everything runs against the local Firebase emulator — no Firebase project or credentials required.
 
-![Infrastructure diagram](/docs/overview.png)
+## Getting started
 
-## Game Architecture
+Prerequisites: [Node 22+](https://nodejs.org) and Java (required by the Firebase emulator; on macOS `brew install openjdk`).
 
-A `Lobby` is created and owned by the `Presenter`. Participants may join as `Client`s. A `Presenter` controls which `Game` is currently running, and can close the `Lobby` at any time, ejecting all off the `Clients`. A `Client`'s experience is guided by the `Presenter`.
+```bash
+cd web
+npm install
+npm run dev    # vite dev server (5173) + firebase emulators (9000/9099)
+```
 
-### Creating your own Game
+Open http://localhost:5173, click _Present_ → _Create_, then open the QR-code link in a second (incognito) window to join as a player.
 
-A `Game` consists of two parts:
+## Testing
 
-1. C# code that controls the `Game`'s messaging between the `Presenter`, `Client`s and `System`.
-1. TypeScript-based React components that control the view and actions of the `Presenter` and `Clients`.
+```bash
+npm test             # unit tests (vitest)
+npm run test:rules   # database security-rules tests (runs against the emulator)
+npm run e2e          # end-to-end tests (playwright; starts its own servers)
+```
 
-I will create a game called _Splat_ to illustrate what is required for a (rather trivial) end-to-end game. The `Game` should be entirely implemented within the `DigitalIcebreakers` folder and project. _Splat_ will have one button on `Client` views. On press, the `Presenter` view will choose a random point and color, and begin expanding a filled circle centered on the point. On release, the circle will disappear.
+## Creating your own game
 
-#### Implement the Backend
+A game is two React components registered in `web/src/games/Games.ts`:
 
-1. Add `Splat.cs` to `DigitalIcebreakers/Games`. I've just copied `Buzzer.cs` because the messaging is the same - I've just changed the class name and set the `Name` property.
-1. Add the `Splat` constructor to `GameHub.GetGame` .
+1. `[GameName]Client.tsx` — the player view; sends input with `sendClientMessage`.
+2. `[GameName]Presenter.tsx` — the presenter view; receives player messages and owns the game state.
 
-#### Implement the Frontend
+Game state lives in Jotai atoms (`[gameName]Atoms.ts`) which register a handler for incoming messages via `registerGame(name, atom, handler)`. Copy an existing game — `Buzzer` is the simplest — and follow the same pattern. Add an e2e spec under `web/e2e/games/` covering the presenter and client workflows.
 
-1. Add a folder called `DigitalIcebreakers/ClientApp/src/games/Splat`, and inside it implement:
-   1. `SplatClient.tsx`. I've just copied `BuzzerClient` and updated the name, because the UI for the `Client` is identical. This component uses pixi.js to render a button and forwards the press and release events to the SignalR hub.
-   1. `SplatPresenter.tsx`. Again I copied `BuzzerPresenter`, switched it to extend `PixiView`, removed `render()` as we don't need it for `PixiView` and implemented the response to up/down button presses.
-1. Add a record to `DigitalIcebreakers/ClientApp/src/games/Games.tsx` for `Splat`, setting it's name and importing the `Presenter` and `Client` components.
+## Deployment
 
-#### Running & Testing
-
-In Visual Studio Code, you can hit F5 and this will compile both the `Backend` and `Frontend` and launch a browser. Once the site loads, click Host > Create, and move the window to half of your screen. Right-click the URL at the top of the page and select _Open Link in Incognito Window_ - this new window will connect as a `Client`. On the first window click _New Activity > Splat_. You should see the `Client` window update with button - clicking the button will update the `Presenter`.
+Pushes to `master` build the frontend, deploy the database rules, and publish a static nginx container. The workflow expects these repository secrets: `VITE_FIREBASE_API_KEY`, `VITE_FIREBASE_PROJECT_ID`, `VITE_FIREBASE_DATABASE_URL`, `FIREBASE_TOKEN`, `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`, `DEPLOY_REPO_TOKEN`.
 
 ## Contributing
 
 - Jump in and build your own games & experiences immediately!
 - Suggest new features and/or games
 - Post feedback on your experience while using Digital Icebreakers with your group/talk/presentation
-- If you want to make architectural improvements (of which many are needed), start a conversation first to improve the likelihood your PR is merged.
+- If you want to make architectural improvements, start a conversation first to improve the likelihood your PR is merged.
 
 ## Help
 

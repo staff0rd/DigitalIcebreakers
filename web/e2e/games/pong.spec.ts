@@ -1,4 +1,4 @@
-import { test, expect } from "../fixtures/firebase";
+import { test, expect } from "../fixtures/base";
 import { Player } from "../helpers/player";
 import { Presenter } from "../helpers/presenter";
 

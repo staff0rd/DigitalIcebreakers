@@ -66,6 +66,14 @@ export const flushDelayedChildReplay = () => {
 
 resetFakeFirebase();
 
+// Server timestamps resolve against this clock; tests advance it to simulate
+// time passing (e.g. a lobby going idle)
+export const advanceFakeClock = (ms: number) => {
+  clock += ms;
+};
+
+export const fakeNow = () => clock;
+
 // Real RTDB push keys are generated client-side, so concurrent writers can
 // produce a key that sorts below one another client already delivered; tests
 // use this to simulate that interleaving

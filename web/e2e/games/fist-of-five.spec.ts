@@ -1,4 +1,4 @@
-import { test, expect } from "../fixtures/firebase";
+import { test, expect } from "../fixtures/base";
 
 test.describe("Fist of Five Tests", () => {
   test("Average score is calculated", async ({ presenter, browser, browserFactory }) => {

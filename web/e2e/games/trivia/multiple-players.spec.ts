@@ -1,4 +1,4 @@
-import { test, expect } from "../../fixtures/firebase";
+import { test, expect } from "../../fixtures/base";
 
 test.describe('Given Trivia with multiple players', () => {
   const CORRECT_ANSWER_ID = 'fa9cb6a8-a1e4-3337-f987-0cbca07bb88d';

@@ -6,154 +6,76 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Digital Icebreakers is a real-time interactive presentation platform where presenters create lobbies for audience participation through QR codes. The platform enables collaborative games and activities during presentations.
 
-**Architecture**: Full-stack web application with ASP.NET Core backend and React frontend, using SignalR for real-time communication.
+**Architecture**: React SPA with Firebase Realtime Database as the transport — there is no application server. The presenter's browser is the game-state authority: it aggregates player input, balances teams, and publishes results back to RTDB. Development and tests run entirely against the local Firebase emulator (requires Java).
 
 ## Development Commands
 
-### Frontend (React + Vite)
+All commands run from `web/`:
 
 ```bash
-cd web
 npm install              # Install dependencies
-npm run dev             # Start dev server (port 5173)
-npm run build           # Build for production
-npm run preview         # Preview production build
-npm run lint            # Run ESLint
-npm run check-types     # Run TypeScript compiler check
-npm test                # Run Vitest unit tests
-npm run test:watch      # Run tests in watch mode
-npm run e2e             # Run Playwright e2e tests
-npm run e2e:headed      # Run e2e tests headed
-```
-
-### Backend (.NET Core)
-
-```bash
-cd DigitalIcebreakers
-ASPNETCORE_ENVIRONMENT=Development ASPNETCORE_URLS=http://0.0.0.0:5050 dotnet run  # Start backend server (port 5050; 5000 is squatted by macOS AirPlay, and without Development env the server 500s)
-dotnet build            # Build the project
-dotnet test             # Run unit tests
-```
-
-### Combined Development
-
-```bash
-cd web
-npm run dev:all         # Run both frontend and backend concurrently
+npm run dev              # Start vite (port 5173) + firebase emulators (db 9000, auth 9099)
+npm run build            # Build for production
+npm run lint             # Run ESLint
+npm run check-types      # Run TypeScript compiler check
+npm test                 # Run Vitest unit tests
+npm run test:watch       # Run tests in watch mode
+npm run test:rules       # Run database security-rules tests (spawns its own emulator on port 9100)
+npm run e2e              # Run Playwright e2e tests (starts vite on 5273 + emulators)
+npm run e2e:headed       # Run e2e tests headed
 ```
 
 ## Code Architecture
 
-### Real-time Communication
+### Transport
 
-- **SignalR Hub**: `/DigitalIcebreakers/Hubs/GameHub.cs` - Central hub for all real-time communication
-- **Connection Management**: Handles presenter-participant connections and lobby management
-- **Message Flow**: Presenter actions → SignalR → All participants in lobby
+- `web/src/store/transport/Transport.ts` — transport interface (lobby lifecycle, presence, game messages, state mirrors)
+- `web/src/store/transport/FirebaseTransport.ts` — the only implementation: anonymous auth, collision-checked 4-char lobby codes, onDisconnect presence, per-lobby message channels, presenter/player state mirrors with replay cursors, idle-lobby sweep
+- `web/src/store/transport/fakeFirebase.ts` — in-memory firebase fake used by transport unit tests (multiple clients, one database, no emulator)
+- `web/src/store/jotai/transportAtoms.ts` — binds the transport to Jotai; `initializeTransport(store, transport)` is called from `App.tsx`
+
+### RTDB data layout
+
+- `lobbies/{code}` — `name`, `presenterId`, `presenterUid`, `currentGame`, `players/{playerId}`, `presenterState`, `playerState/{playerId}`, `messages/{toPresenter,toPlayers}`
+- `playerLobbies/{playerId}` — `{code, uid}` index for refresh/rejoin
+- `lobbyActivity/{code}` — timestamp, touched on create/newGame; lobbies idle >1h are swept when someone creates a lobby
+
+Security rules live in `web/database.rules.json` (tests in `web/rules/database.rules.test.ts`): only the lobby creator (`presenterUid`) can write presenter-owned paths; players can only write their own player record, state, and `toPresenter` messages; anyone can delete a stale lobby.
 
 ### Game Architecture Pattern
 
-Each game follows a consistent pattern:
+Each game lives in `web/src/games/[GameName]/`:
 
-**Backend** (`/DigitalIcebreakers/Games/[GameName]/`):
+- `[GameName]Client.tsx` — participant view (sends input, receives presenter updates)
+- `[GameName]Presenter.tsx` — presenter view (owns game state, aggregates player messages)
+- `[gameName]Atoms.ts` — Jotai atoms; register incoming message handling via `registerGame(name, atom, handler)`; presenter-side aggregation happens in these handlers
 
-- `[GameName]GameHub.cs` - SignalR message handlers and game logic
-- Domain models for game state and player data
-
-**Frontend** (`/web/src/games/[gameName]/`):
-
-- `GameClient.tsx` - Participant view (receives updates, sends responses)
-- `GamePresenter.tsx` - Presenter control interface (initiates actions, sees results)
-- State management (Jotai atoms)
+Games are registered in `web/src/games/Games.ts`.
 
 ### State Management
 
-State management is **Jotai** (the Redux-to-Jotai migration is complete; no Redux remains).
+State management is **Jotai**.
 
-**Key atoms locations**:
+- Game-specific atoms: `web/src/games/[gameName]/[gameName]Atoms.ts`
+- Shared atoms (user, lobby, connection, shell): `web/src/store/atoms/`
+- Transport atoms and game handler registry: `web/src/store/jotai/`
 
-- Game-specific atoms: `/web/src/games/[gameName]/[gameName]Atoms.ts` - register incoming SignalR message handling via `registerGame(name, atom, handler)`
-- Shared atoms (user, lobby, connection, shell): `/web/src/store/atoms/`
-- SignalR atoms and game handler registry: `/web/src/store/jotai/`
+### Reconnect / late join
 
-### Core Domain Models
-
-- **Lobby**: Central concept - each presentation session
-- **Player**: Participant in a lobby
-- **Game**: Specific activity within a lobby
-- **SignalR Groups**: Used for lobby-based message broadcasting
-
-### Frontend Structure
-
-- **Components**: Material-UI based, organized by feature
-- **Layout**: Consistent presenter/client layout patterns
-- **Real-time**: SignalR connection managed at app level, passed to games
-- **Routing**: React Router for navigation between games and views
-
-### Backend Structure
-
-- **Hub-based**: All real-time logic in SignalR hubs
-- **Dependency Injection**: Services registered in Program.cs
-- **Logging**: Structured logging with Serilog
-- **Data Access**: Dapper for database operations (PostgreSQL)
+Presenter and player state mirror to RTDB as `{json, cursor}`; on rejoin the mirror is restored and the message log replays after the cursor, so presenter refresh keeps the lobby and late joiners see current game state.
 
 ## Testing Strategy
 
-### Frontend Tests
+- **Unit tests**: Vitest, `*.test.ts(x)` alongside source; transport tests run against the in-memory fake
+- **Rules tests**: `web/rules/`, run with `npm run test:rules` against a real database emulator
+- **E2E tests**: Playwright specs in `web/e2e/` covering presenter + client workflows per game
 
-- **Unit Tests**: Vitest for component and utility testing
-- **E2E Tests**: Playwright covering full game workflows
-- **Test Files**: `*.test.tsx` for unit tests, `/web/e2e/` for e2e specs
+## Key Files
 
-### Backend Tests
-
-- **Unit Tests**: Located in `/DigitalIcebreakers.Test/`
-- **Integration Tests**: Test SignalR hubs and database interactions
-
-### Running Tests
-
-Always run tests after changes:
-
-```bash
-npm test               # Frontend unit tests
-npm run e2e            # Frontend e2e tests
-dotnet test            # Backend tests
-```
-
-## Development Guidelines
-
-### Adding New Games
-
-1. Create backend hub in `/DigitalIcebreakers/Games/[GameName]/`
-2. Register hub in `Program.cs`
-3. Create frontend components in `/web/src/games/[gameName]/`
-4. Use Jotai atoms for state management
-5. Follow existing game patterns for SignalR communication
-6. Add e2e tests covering presenter and client workflows
-
-### SignalR Communication
-
-- **Presenter → Hub**: Actions like starting games, advancing states
-- **Hub → Participants**: State updates, game events
-- **Participants → Hub**: Responses, votes, inputs
-- **Groups**: Use lobby-based SignalR groups for targeted messaging
-
-## Key Files to Understand
-
-### Backend Entry Points
-
-- `/DigitalIcebreakers/Program.cs` - App configuration and DI setup
-- `/DigitalIcebreakers/Hubs/GameHub.cs` - Main SignalR hub
-
-### Frontend Entry Points
-
-- `/web/src/main.tsx` - App entry point
-- `/web/src/App.tsx` - Main app component with routing
-- `/web/src/layout/` - Shared layout components
-
-### Configuration
-
-- `/web/vite.config.ts` - Frontend build configuration with SignalR proxy
-- `/DigitalIcebreakers/appsettings.json` - Backend configuration
+- `web/src/main.tsx` / `web/src/App.tsx` — app entry, transport initialization, routing
+- `web/src/layout/` — shared layout components
+- `web/firebase.json` — emulator config used by `npm run dev` and e2e
+- `web/playwright.config.ts` — e2e web servers (vite on 5273 + emulators)
 
 ## Workflow
 
@@ -167,7 +89,7 @@ Do not write unit tests or test implementation. All tests must test the behaviou
 
 - Test component behavior (what users see and do)
 - Test state changes through user interactions
-- Test message handling through component behavior (use `initializeMockSignalR` from `/web/src/store/jotai/signalRTestHelpers.ts` to simulate SignalR traffic)
+- Test message handling through component behavior (use `initializeMockTransport` from `web/src/store/jotai/transportTestHelpers.ts` to simulate transport traffic)
 
 **Testing atoms:**
 

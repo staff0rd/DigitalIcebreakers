@@ -1,7 +1,9 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { FirebaseTransport } from "./FirebaseTransport";
 import {
+  advanceFakeClock,
   delayNextChildReplay,
+  fakeNow,
   flushDelayedChildReplay,
   resetFakeFirebase,
   setNextPushCounter,
@@ -31,9 +33,10 @@ type RecordedEvents = {
 };
 
 const createClient = (codes?: string[]) => {
-  const transport = new FirebaseTransport(
-    codes ? { generateCode: () => codes.shift() ?? "" } : {}
-  );
+  const transport = new FirebaseTransport({
+    now: fakeNow,
+    ...(codes ? { generateCode: () => codes.shift() ?? "" } : {}),
+  });
   const events: RecordedEvents = {
     reconnect: [],
     players: [],
@@ -406,6 +409,71 @@ describe("firebase transport", () => {
       await presenter.transport.closeLobby();
       expect(presenter.events.closelobby).toBe(1);
       expect(player.events.closelobby).toBe(1);
+    });
+  });
+
+  describe("idle lobbies", () => {
+    const ONE_HOUR = 60 * 60 * 1000;
+
+    const createAnotherLobby = async (code: string) => {
+      const other = createClient([code]);
+      await other.transport.start();
+      await other.transport.createLobby(
+        "Other Lobby",
+        createUser({ id: "presenter-other" })
+      );
+    };
+
+    describe("when idle for over an hour", () => {
+      it("are closed when another lobby is created", async () => {
+        const { code } = await createLobby();
+        const { player } = await joinAsPlayer(code);
+        advanceFakeClock(ONE_HOUR);
+
+        await createAnotherLobby("BBBB");
+
+        expect(player.events.closelobby).toBe(1);
+      });
+
+      it("cannot be rejoined", async () => {
+        const { code } = await createLobby();
+        const { user } = await joinAsPlayer(code);
+        advanceFakeClock(ONE_HOUR);
+        await createAnotherLobby("BBBB");
+
+        const rejoining = createClient();
+        await rejoining.transport.start();
+        await rejoining.transport.connect(user);
+
+        expect(rejoining.events.reconnect).toHaveLength(0);
+        expect(rejoining.events.connected).toBe(1);
+      });
+    });
+
+    describe("when recently created", () => {
+      it("stay open when another lobby is created", async () => {
+        const { code } = await createLobby();
+        const { player } = await joinAsPlayer(code);
+        advanceFakeClock(ONE_HOUR / 2);
+
+        await createAnotherLobby("BBBB");
+
+        expect(player.events.closelobby).toBe(0);
+      });
+    });
+
+    describe("when a game was started within the hour", () => {
+      it("stay open when another lobby is created", async () => {
+        const { presenter, code } = await createLobby();
+        const { player } = await joinAsPlayer(code);
+        advanceFakeClock(ONE_HOUR * 0.75);
+        await presenter.transport.newGame("buzzer");
+        advanceFakeClock(ONE_HOUR * 0.5);
+
+        await createAnotherLobby("BBBB");
+
+        expect(player.events.closelobby).toBe(0);
+      });
     });
   });
 

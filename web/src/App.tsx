@@ -8,7 +8,7 @@ import {
   initializeTransport,
   connectionConnectAtom,
 } from "./store/jotai/transportAtoms";
-import { createTransport } from "./store/transport/transportFactory";
+import { FirebaseTransport } from "./store/transport/FirebaseTransport";
 import { userAtom } from "./store/atoms/userAtoms";
 
 import { Theme } from "@mui/material/styles";
@@ -54,7 +54,7 @@ export default class App extends Component<{}, AppState> {
       players: [],
     };
 
-    initializeTransport(this.jotaiStore, createTransport());
+    initializeTransport(this.jotaiStore, new FirebaseTransport());
 
     this.jotaiStore.set(userAtom, {
       id: this.user.id,

@@ -1,4 +1,4 @@
-import { test, expect } from "../fixtures/firebase";
+import { test, expect } from "../fixtures/base";
 
 test.describe("Reaction Tests", () => {
   test("round flow: client shapes disabled after selection, presenter shows counts, new round re-enables shapes", async ({
@@ -50,7 +50,7 @@ test.describe("Reaction Tests", () => {
       `presenter-shape-${shapeId}`
     );
 
-    // Wait for SignalR message to update the choice count
+    // Wait for the transport message to update the choice count
     await expect(presenterShape).toHaveAttribute("data-choice-count", "1");
 
     // Wait for the round to end automatically (2 seconds timeout)
@@ -139,7 +139,7 @@ test.describe("Reaction Tests", () => {
     );
     const playerNameElement = wrongPresenterShape.locator("text=test-user");
 
-    // Wait for SignalR message to propagate and player name to appear
+    // Wait for the transport message to propagate and player name to appear
     await expect(playerNameElement).toBeVisible();
   });
 

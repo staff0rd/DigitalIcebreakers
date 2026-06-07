@@ -2,29 +2,17 @@ import { Browser, BrowserContext, Page } from "@playwright/test";
 import { Presenter } from "./presenter";
 import { Player } from "./player";
 
-export type BrowserFactoryOptions = {
-  transport?: "signalr" | "firebase";
-};
-
 export class BrowserFactory {
   private baseURL: string;
   private contexts: BrowserContext[] = [];
-  private options: BrowserFactoryOptions;
 
-  constructor(baseURL?: string, options: BrowserFactoryOptions = {}) {
+  constructor(baseURL?: string) {
     this.baseURL = baseURL || process.env.BASE_URL || "http://localhost:5273";
-    this.options = options;
   }
 
   private async newContext(browser: Browser): Promise<BrowserContext> {
     const context = await browser.newContext();
     this.contexts.push(context);
-    const transport = this.options.transport;
-    if (transport) {
-      await context.addInitScript(
-        `window.localStorage.setItem("transport", "${transport}")`
-      );
-    }
     return context;
   }
 
@@ -78,7 +66,7 @@ export class BrowserFactory {
     playerName: string = "test-user"
   ): Promise<void> {
     await page.goto(lobbyUrl);
-    // invokes made before the SignalR connection is up are silently dropped
+    // sends made before the transport connection is up are silently dropped
     await this.waitForConnected(page);
     // target the register form's name field specifically: the lobby route
     // briefly shows the join-code view, whose code input would otherwise
