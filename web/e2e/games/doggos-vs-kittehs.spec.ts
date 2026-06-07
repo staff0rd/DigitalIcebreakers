@@ -1,4 +1,4 @@
-import { test, expect } from "../fixtures/base";
+import { test, expect } from "../fixtures/firebase";
 
 test.describe("Doggos vs Kittehs", () => {
   test("players can vote for doggos or kittehs and presenter sees results", async ({

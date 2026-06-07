@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "concurrently -k -n vite,firebase -c blue,yellow npm:dev:vite npm:dev:emulators",
     "dev:vite": "vite",
-    "dev:emulators": "firebase emulators:start --only auth,database --project demo-digitalicebreakers",
+    "dev:emulators": "npm run --silent kill-stale-emulators && firebase emulators:start --only auth,database --project demo-digitalicebreakers",
+    "kill-stale-emulators": "lsof -ti :9000 -ti :9099 | xargs kill 2>/dev/null || true",
     "dev:all": "cd .. && ASPNETCORE_ENVIRONMENT=Development ASPNETCORE_URLS=http://0.0.0.0:5050 dotnet run --project DigitalIcebreakers & npm run dev",
     "check-types": "tsc -b --noEmit",
     "check-types:e2e": "tsc --project tsconfig.e2e.json --noEmit",

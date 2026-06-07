@@ -4,12 +4,12 @@ import { Graph } from "../pixi/Graph";
 import { Pixi } from "../pixi/Pixi";
 import { useResizeListener } from "../pixi/useResizeListener";
 import { useAtomValue } from "jotai";
-import { yesNoMaybeAtom } from "./yesNoMaybeAtoms";
+import { yesNoMaybeResultsAtom } from "./yesNoMaybeAtoms";
 import * as PIXI from "pixi.js";
 
 const YesNoMaybePresenter = () => {
   const [pixi, setPixi] = useState<PIXI.Application>();
-  const state = useAtomValue(yesNoMaybeAtom);
+  const state = useAtomValue(yesNoMaybeResultsAtom);
 
   const init = (app?: PIXI.Application) => {
     if (app) {

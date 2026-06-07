@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect } from "react";
+import { ChangeEvent } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
 import { presenterMessageAtom } from "store/jotai/transportAtoms";
 import { ContentContainer } from "components/ContentContainer";
@@ -10,15 +10,6 @@ export const BroadcastPresenter = () => {
   const setBroadcastState = useSetAtom(broadcastAtom);
   const { dings, text } = broadcastState.presenter;
   const sendPresenterMessage = useSetAtom(presenterMessageAtom);
-
-  useEffect(() => {
-    // Reset state on mount
-    setBroadcastState({
-      client: { text: "" },
-      presenter: { text: "", dings: 0 },
-    });
-    sendPresenterMessage("");
-  }, [setBroadcastState, sendPresenterMessage]);
 
   const updateClientText = (e: ChangeEvent<HTMLInputElement>) => {
     const newText = e.target.value;

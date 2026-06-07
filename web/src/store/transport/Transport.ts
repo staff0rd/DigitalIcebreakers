@@ -25,6 +25,8 @@ export interface Transport {
   newGame(name: string): Promise<void>;
   sendPresenterMessage(message: unknown): Promise<void>;
   sendClientMessage(message: unknown): Promise<void>;
+  publishPresenterState(state: unknown): Promise<void>;
+  publishPlayerState(state: unknown): Promise<void>;
   on<E extends TransportEvent>(
     event: E,
     handler: TransportEventHandlers[E]

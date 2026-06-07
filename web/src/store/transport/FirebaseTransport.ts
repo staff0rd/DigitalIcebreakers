@@ -41,17 +41,25 @@ type PlayerRecord = {
   uid: string;
 };
 
+type MirrorRecord = {
+  json: string;
+  cursor?: string;
+};
+
 type LobbyRecord = {
   name: string;
   presenterId: string;
   currentGame?: { name: string } | null;
   players?: Record<string, PlayerRecord>;
+  presenterState?: MirrorRecord;
+  playerState?: Record<string, MirrorRecord>;
 };
 
 type AttachedLobby = {
   code: string;
   player: PlayerRecord;
   unsubscribes: (() => void)[];
+  lastMessageKey: string;
 };
 
 const visiblePlayers = (
@@ -178,7 +186,31 @@ export class FirebaseTransport implements Transport {
     await update(ref(this.db, `lobbies/${this.attached.code}`), {
       currentGame: { name, startedAt: serverTimestamp() },
       messages: null,
+      presenterState: null,
+      playerState: null,
     });
+  }
+
+  async publishPresenterState(state: unknown): Promise<void> {
+    if (!this.attached) return;
+    await set(ref(this.db, `lobbies/${this.attached.code}/presenterState`), {
+      json: JSON.stringify(state ?? null),
+      cursor: this.attached.lastMessageKey,
+    });
+  }
+
+  async publishPlayerState(state: unknown): Promise<void> {
+    if (!this.attached) return;
+    await set(
+      ref(
+        this.db,
+        `lobbies/${this.attached.code}/playerState/${this.attached.player.id}`
+      ),
+      {
+        json: JSON.stringify(state ?? null),
+        cursor: this.attached.lastMessageKey,
+      }
+    );
   }
 
   async sendPresenterMessage(message: unknown): Promise<void> {
@@ -247,7 +279,17 @@ export class FirebaseTransport implements Transport {
   private attach(code: string, lobby: LobbyRecord, player: PlayerRecord) {
     this.detach();
     const unsubscribes: (() => void)[] = [];
-    this.attached = { code, player, unsubscribes };
+    const mirror = player.isPresenter
+      ? lobby.presenterState
+      : lobby.playerState?.[player.id];
+    const attached: AttachedLobby = {
+      code,
+      player,
+      unsubscribes,
+      // Replay resumes after the last message reflected in the mirrored state
+      lastMessageKey: mirror?.cursor ?? "",
+    };
+    this.attached = attached;
 
     this.emit("reconnect", {
       playerId: player.id,
@@ -258,6 +300,9 @@ export class FirebaseTransport implements Transport {
       players: visiblePlayers(lobby.players, lobby.presenterId),
       currentGame: lobby.currentGame?.name ?? "",
       isRegistered: player.isRegistered,
+      ...(player.isPresenter
+        ? { presenterState: mirror ? JSON.parse(mirror.json) : undefined }
+        : { playerState: mirror ? JSON.parse(mirror.json) : undefined }),
     } satisfies ReconnectPayload);
 
     const connectedRef = ref(
@@ -316,6 +361,13 @@ export class FirebaseTransport implements Transport {
       : `lobbies/${code}/messages/toPlayers`;
     unsubscribes.push(
       onChildAdded(ref(this.db, messagesPath), (snapshot) => {
+        const key = snapshot.key ?? "";
+        // Push keys are chronologically ordered, so anything at or before the
+        // mirror's cursor is already reflected in the restored state
+        if (attached.lastMessageKey && key <= attached.lastMessageKey) {
+          return;
+        }
+        attached.lastMessageKey = key;
         const message = snapshot.val() as {
           json: string;
           senderId?: string;

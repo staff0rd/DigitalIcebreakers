@@ -71,6 +71,16 @@ export class SignalRTransport implements Transport {
     );
   }
 
+  // State mirroring is a Firebase-transport concern; the .NET backend keeps
+  // game state server-side
+  publishPresenterState(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  publishPlayerState(): Promise<void> {
+    return Promise.resolve();
+  }
+
   on<E extends TransportEvent>(
     event: E,
     handler: TransportEventHandlers[E]

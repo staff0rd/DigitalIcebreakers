@@ -77,6 +77,55 @@ describe("Poll Presenter", () => {
       });
     });
 
+    describe("when a player's answer arrives as a single response", () => {
+      it("displays the response in the chart", () => {
+        const result = renderPresenter();
+        act(() => {
+          receiveGameMessage(
+            result.jotaiStore,
+            "poll",
+            {
+              id: "player-1",
+              name: "Player 1",
+              payload: { questionId: "question-1", answerId: "answer-1" },
+            },
+            true
+          );
+        });
+
+        fireEvent.click(screen.getByTestId("show-responses"));
+
+        expect(
+          screen.getByTestId("answer-answer-1").querySelector(".count")
+        ).toHaveTextContent("1");
+      });
+    });
+
+    describe("when a new poll starts", () => {
+      it("clears responses but keeps the questions", () => {
+        const result = renderPresenter();
+        act(() => {
+          receiveGameMessage(
+            result.jotaiStore,
+            "poll",
+            {
+              id: "player-1",
+              name: "Player 1",
+              payload: { questionId: "question-1", answerId: "answer-1" },
+            },
+            true
+          );
+        });
+
+        result.emit("newgame", "poll");
+
+        expect(screen.getByText("first question")).toBeInTheDocument();
+        expect(
+          screen.getByText("0 of 2 participants have responded")
+        ).toBeInTheDocument();
+      });
+    });
+
     describe("when advancing to the next question", () => {
       it("displays the next question", () => {
         renderPresenter();

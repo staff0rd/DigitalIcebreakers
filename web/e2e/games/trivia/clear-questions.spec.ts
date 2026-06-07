@@ -1,4 +1,4 @@
-import { test, expect } from "../../fixtures/base";
+import { test, expect } from "../../fixtures/firebase";
 
 test.describe("Given Trivia When clearing questions", () => {
   test.beforeEach(async ({ presenter }) => {

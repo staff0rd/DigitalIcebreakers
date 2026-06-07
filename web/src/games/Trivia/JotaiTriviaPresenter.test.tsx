@@ -156,6 +156,30 @@ describe("Trivia Presenter", () => {
         ).toHaveTextContent("2");
       });
 
+      describe("when an answer arrives as a single response", () => {
+        it("displays the response in the chart", () => {
+          const result = renderPresenter();
+          act(() => {
+            receiveGameMessage(
+              result.jotaiStore,
+              "trivia",
+              {
+                id: "player-1",
+                name: "Player 1",
+                payload: { questionId: "question-1", answerId: "answer-1" },
+              },
+              true
+            );
+          });
+
+          fireEvent.click(screen.getByTestId("show-responses"));
+
+          expect(
+            screen.getByTestId("answer-answer-1").querySelector(".count")
+          ).toHaveTextContent("1");
+        });
+      });
+
       describe("when showing the scoreboard", () => {
         const showScoreBoard = () => {
           const result = renderPresenter();

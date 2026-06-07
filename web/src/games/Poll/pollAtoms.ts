@@ -6,6 +6,7 @@ import { PollPlayerState } from "../shared/Poll/types/PlayerState";
 import { Question } from "../shared/Poll/types/Question";
 import { SelectedAnswer } from "../shared/Poll/types/SelectedAnswer";
 import { GameMessage } from "../GameMessage";
+import { shuffle } from "Random";
 
 export interface PollState {
   presenter: PollPresenterState;
@@ -141,10 +142,11 @@ const handlePollMessage = (
   }
 
   if (isPresenter) {
-    const { id: playerId, name: playerName, payload: answers } =
-      message as GameMessage<SelectedAnswer[]>;
+    const { id: playerId, name: playerName, payload } =
+      message as GameMessage<SelectedAnswer[] | SelectedAnswer>;
+    const answers = Array.isArray(payload) ? payload : payload ? [payload] : [];
 
-    if (playerId && playerName && Array.isArray(answers) && answers.length) {
+    if (playerId && playerName && answers.length) {
       const updatedQuestions = currentState.presenter.questions.map(
         (question) => {
           const answerForThisQuestion = answers.find(
@@ -186,13 +188,20 @@ const handlePollMessage = (
   const payload = message as AvailableAnswersPayload;
 
   if (payload.questionId && payload.answers) {
+    // A re-broadcast of the current question (e.g. presenter refresh) must
+    // not discard the player's selection or lock
+    if (payload.questionId === currentState.player.questionId) {
+      return currentState;
+    }
     return {
       ...currentState,
       player: {
         ...currentState.player,
         questionId: payload.questionId,
         question: payload.question || "",
-        answers: payload.answers || [],
+        // The presenter broadcasts one answer order for everyone, so each
+        // player shuffles locally
+        answers: shuffle([...payload.answers]),
         selectedAnswerId: payload.selectedAnswerId,
         answerLocked: !!payload.selectedAnswerId,
       },
@@ -202,4 +211,24 @@ const handlePollMessage = (
   return currentState;
 };
 
-registerGame("poll", pollStateAtom, handlePollMessage);
+const initialPlayerState = (): PollState["player"] => ({
+  questionId: "",
+  question: "",
+  answers: [],
+  selectedAnswerId: undefined,
+  answerLocked: false,
+});
+
+registerGame("poll", pollStateAtom, handlePollMessage, {
+  resetState: (current) => ({
+    presenter: {
+      questions: current.presenter.questions.map((question) => ({
+        ...question,
+        responses: [],
+      })),
+      currentQuestionId: current.presenter.currentQuestionId,
+      showResponses: false,
+    },
+    player: initialPlayerState(),
+  }),
+});

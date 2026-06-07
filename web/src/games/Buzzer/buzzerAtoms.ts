@@ -32,4 +32,6 @@ const buzzerMessageHandler = (
         return [...currentState, { id: playerId, name: playerName, state: payload }];
       };
 
-registerGame("buzzer", buzzerAtom, buzzerMessageHandler);
+registerGame("buzzer", buzzerAtom, buzzerMessageHandler, {
+  resetState: () => [],
+});

@@ -18,6 +18,8 @@ export const createMockTransport = (): MockTransport => {
     newGame: vi.fn(() => Promise.resolve()),
     sendPresenterMessage: vi.fn(() => Promise.resolve()),
     sendClientMessage: vi.fn(() => Promise.resolve()),
+    publishPresenterState: vi.fn(() => Promise.resolve()),
+    publishPlayerState: vi.fn(() => Promise.resolve()),
     on: vi.fn(),
     off: vi.fn(),
     emit: (eventName: string, payload?: unknown) => {

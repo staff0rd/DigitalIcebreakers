@@ -9,6 +9,10 @@ beforeEach(() => {
   window.localStorage.clear();
 });
 
+afterEach(() => {
+  vi.restoreAllMocks();
+});
+
 const availableAnswers = () => ({
   questionId: "question-1",
   question: "favourite colour?",
@@ -77,6 +81,67 @@ describe("Poll Client", () => {
           )
         );
       });
+
+      describe("and the same question is broadcast again", () => {
+        it("keeps the answer locked", () => {
+          const result = lockInAnswer();
+
+          act(() => {
+            receiveGameMessage(
+              result.jotaiStore,
+              "poll",
+              availableAnswers(),
+              false
+            );
+          });
+
+          ["red", "blue"].forEach((name) =>
+            expect(screen.getByRole("button", { name })).toHaveAttribute(
+              "aria-disabled",
+              "true"
+            )
+          );
+        });
+      });
+
+      describe("and a different question is broadcast", () => {
+        it("lets the player answer again", () => {
+          const result = lockInAnswer();
+
+          act(() => {
+            receiveGameMessage(
+              result.jotaiStore,
+              "poll",
+              {
+                questionId: "question-2",
+                question: "favourite shape?",
+                answers: [{ id: "answer-3", text: "circle" }],
+              },
+              false
+            );
+          });
+
+          expect(
+            screen.getByRole("button", { name: "circle" })
+          ).not.toHaveAttribute("aria-disabled", "true");
+        });
+      });
+    });
+  });
+
+  describe("when a question arrives", () => {
+    it("presents the answers in a shuffled order", () => {
+      vi.spyOn(Math, "random").mockReturnValue(0);
+      const result = renderPollTrivia(<PollClient />);
+
+      act(() => {
+        receiveGameMessage(result.jotaiStore, "poll", availableAnswers(), false);
+      });
+
+      const answers = [
+        ...result.container.querySelectorAll(".answer"),
+      ].map((answer) => answer.textContent);
+      expect(answers).toEqual(["blue", "red"]);
     });
   });
 });

@@ -6,6 +6,7 @@ import { TriviaPlayerState } from "../shared/Poll/types/PlayerState";
 import { Question } from "../shared/Poll/types/Question";
 import { SelectedAnswer } from "../shared/Poll/types/SelectedAnswer";
 import { GameMessage } from "../GameMessage";
+import { shuffle } from "Random";
 
 export interface TriviaState {
   presenter: TriviaPresenterState;
@@ -167,10 +168,11 @@ const handleTriviaMessage = (
   }
 
   if (isPresenter) {
-    const { id: playerId, name: playerName, payload: answers } =
-      message as GameMessage<SelectedAnswer[]>;
+    const { id: playerId, name: playerName, payload } =
+      message as GameMessage<SelectedAnswer[] | SelectedAnswer>;
+    const answers = Array.isArray(payload) ? payload : payload ? [payload] : [];
 
-    if (playerId && playerName && Array.isArray(answers) && answers.length) {
+    if (playerId && playerName && answers.length) {
       const updatedQuestions = currentState.presenter.questions.map(
         (question) => {
           const answerForThisQuestion = answers.find(
@@ -222,13 +224,20 @@ const handleTriviaMessage = (
   }
 
   if ("questionId" in payload && payload.questionId && payload.answers) {
+    // A re-broadcast of the current question (e.g. presenter refresh) must
+    // not discard the player's selection or lock
+    if (payload.questionId === currentState.player.questionId) {
+      return currentState;
+    }
     return {
       ...currentState,
       player: {
         ...currentState.player,
         questionId: payload.questionId,
         question: payload.question || "",
-        answers: payload.answers || [],
+        // The presenter broadcasts one answer order for everyone, so each
+        // player shuffles locally
+        answers: shuffle([...payload.answers]),
         selectedAnswerId: payload.selectedAnswerId,
         answerLocked: !!payload.selectedAnswerId,
       },
@@ -238,4 +247,26 @@ const handleTriviaMessage = (
   return currentState;
 };
 
-registerGame("trivia", triviaStateAtom, handleTriviaMessage);
+const initialPlayerState = (): TriviaState["player"] => ({
+  questionId: "",
+  question: "",
+  answers: [],
+  selectedAnswerId: undefined,
+  answerLocked: false,
+  canAnswer: false,
+});
+
+registerGame("trivia", triviaStateAtom, handleTriviaMessage, {
+  resetState: (current) => ({
+    presenter: {
+      questions: current.presenter.questions.map((question) => ({
+        ...question,
+        responses: [],
+      })),
+      currentQuestionId: current.presenter.currentQuestionId,
+      showResponses: false,
+      showScoreBoard: false,
+    },
+    player: initialPlayerState(),
+  }),
+});

@@ -1,10 +1,7 @@
 import { useState } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
 import { userAtom } from "../store/atoms/userAtoms";
-import {
-  setUserNameAtom,
-  goToDefaultUrlAtom,
-} from "../store/jotai/transportAtoms";
+import { setUserNameAtom } from "../store/jotai/transportAtoms";
 import GridItem from "../layout/components/Grid/GridItem";
 import GridContainer from "../layout/components/Grid/GridContainer";
 import CustomInput from "../layout/components/CustomInput/CustomInput";
@@ -19,7 +16,6 @@ const Register = () => {
   const initialName = useAtomValue(userAtom).name || "";
   const [name, setName] = useState<string>(initialName);
   const setUserName = useSetAtom(setUserNameAtom);
-  const goToDefaultUrl = useSetAtom(goToDefaultUrlAtom);
 
   const isValid = () => {
     return name.trim().length > 2;
@@ -27,8 +23,9 @@ const Register = () => {
 
   const onSubmit = (e: any) => {
     if (isValid()) {
+      // The reconnect that follows registration navigates to the right view;
+      // navigating optimistically here races it and can override it
       setUserName(name);
-      goToDefaultUrl();
     }
   };
 

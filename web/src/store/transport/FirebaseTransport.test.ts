@@ -215,6 +215,114 @@ describe("firebase transport", () => {
     });
   });
 
+  describe("playing a game after a refresh", () => {
+    it("delivers presenter messages sent before the player joined", async () => {
+      const { presenter, code } = await createLobby();
+      await presenter.transport.newGame("broadcast");
+      await presenter.transport.sendPresenterMessage("hello");
+      await presenter.transport.sendPresenterMessage("hello audience");
+      const { player } = await joinAsPlayer(code);
+      expect(player.events.gameMessage).toEqual(["hello", "hello audience"]);
+    });
+
+    it("restores the presenter's published state on refresh", async () => {
+      const { presenterUser, code } = await createLobby();
+      const { player } = await joinAsPlayer(code);
+      await player.transport.sendClientMessage("down");
+
+      const original = createClient();
+      await original.transport.start();
+      await original.transport.connect(presenterUser);
+      await original.transport.publishPresenterState({ count: 7 });
+
+      const refreshed = createClient();
+      await refreshed.transport.start();
+      await refreshed.transport.connect(presenterUser);
+      expect(refreshed.events.reconnect[0].presenterState).toEqual({
+        count: 7,
+      });
+    });
+
+    it("does not replay messages already reflected in the published state", async () => {
+      const { presenter, presenterUser, code } = await createLobby();
+      const { player } = await joinAsPlayer(code);
+      await presenter.transport.newGame("splat");
+      await player.transport.sendClientMessage("down");
+      await presenter.transport.publishPresenterState({ count: 1 });
+
+      const refreshed = createClient();
+      await refreshed.transport.start();
+      await refreshed.transport.connect(presenterUser);
+      expect(refreshed.events.gameMessage).toEqual([]);
+    });
+
+    it("replays messages that arrived after the state was published", async () => {
+      const { presenter, presenterUser, code } = await createLobby();
+      const { player, user } = await joinAsPlayer(code, { name: "Alice" });
+      await presenter.transport.newGame("splat");
+      await player.transport.sendClientMessage("down");
+      await presenter.transport.publishPresenterState({ count: 1 });
+      await player.transport.sendClientMessage("up");
+
+      const refreshed = createClient();
+      await refreshed.transport.start();
+      await refreshed.transport.connect(presenterUser);
+      expect(refreshed.events.gameMessage).toEqual([
+        { payload: "up", id: user.id, name: "Alice" },
+      ]);
+    });
+
+    it("restores a player's published state on refresh", async () => {
+      const { code } = await createLobby();
+      const { player, user } = await joinAsPlayer(code);
+      await player.transport.publishPlayerState({ selectedAnswerId: "a-1" });
+
+      const refreshed = createClient();
+      await refreshed.transport.start();
+      await refreshed.transport.connect(user);
+      expect(refreshed.events.reconnect[0].playerState).toEqual({
+        selectedAnswerId: "a-1",
+      });
+    });
+
+    it("does not replay presenter messages already reflected in a player's published state", async () => {
+      const { presenter, code } = await createLobby();
+      const { player, user } = await joinAsPlayer(code);
+      await presenter.transport.newGame("broadcast");
+      await presenter.transport.sendPresenterMessage("hello");
+      await player.transport.publishPlayerState({ text: "hello" });
+      await presenter.transport.sendPresenterMessage("hello audience");
+
+      const refreshed = createClient();
+      await refreshed.transport.start();
+      await refreshed.transport.connect(user);
+      expect(refreshed.events.gameMessage).toEqual(["hello audience"]);
+    });
+
+    describe("when a new game starts", () => {
+      it("clears published state", async () => {
+        const { presenter, presenterUser, code } = await createLobby();
+        const { player, user } = await joinAsPlayer(code);
+        await presenter.transport.newGame("splat");
+        await presenter.transport.publishPresenterState({ count: 5 });
+        await player.transport.publishPlayerState({ selectedAnswerId: "a" });
+        await presenter.transport.newGame("buzzer");
+
+        const refreshedPresenter = createClient();
+        await refreshedPresenter.transport.start();
+        await refreshedPresenter.transport.connect(presenterUser);
+        expect(
+          refreshedPresenter.events.reconnect[0].presenterState
+        ).toBeUndefined();
+
+        const refreshedPlayer = createClient();
+        await refreshedPlayer.transport.start();
+        await refreshedPlayer.transport.connect(user);
+        expect(refreshedPlayer.events.reconnect[0].playerState).toBeUndefined();
+      });
+    });
+  });
+
   describe("closing the lobby", () => {
     it("tells everyone the lobby is closed", async () => {
       const { presenter, code } = await createLobby();

@@ -6,9 +6,16 @@ export type GameMessageHandler<TState = unknown> = (
   isPresenter: boolean
 ) => TState;
 
+export type GameRegistrationOptions<TState = unknown> = {
+  // Applied when a new game starts, so stale state from a previous round of
+  // the same game does not leak into the fresh one
+  resetState?: (current: TState) => TState;
+};
+
 export type GameAtomWithHandler<TState = unknown> = {
   atom: WritableAtom<TState, [TState], void>;
   messageHandler: GameMessageHandler<TState>;
+  resetState?: (current: TState) => TState;
 };
 
 // Registry for game atoms and their message handlers
@@ -18,9 +25,14 @@ export const gameRegistry: Record<string, GameAtomWithHandler> = {};
 export const registerGame = <TState>(
   gameName: string,
   atom: WritableAtom<TState, [TState], void>,
-  messageHandler: GameMessageHandler<TState>
+  messageHandler: GameMessageHandler<TState>,
+  options: GameRegistrationOptions<TState> = {}
 ) => {
-  gameRegistry[gameName] = { atom, messageHandler } as GameAtomWithHandler;
+  gameRegistry[gameName] = {
+    atom,
+    messageHandler,
+    resetState: options.resetState,
+  } as GameAtomWithHandler;
 };
 
 // Get game handler

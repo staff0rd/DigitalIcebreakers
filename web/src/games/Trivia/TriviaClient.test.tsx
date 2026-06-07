@@ -9,6 +9,10 @@ beforeEach(() => {
   window.localStorage.clear();
 });
 
+afterEach(() => {
+  vi.restoreAllMocks();
+});
+
 const availableAnswers = () => ({
   questionId: "question-1",
   question: "first question",
@@ -93,6 +97,49 @@ describe("Trivia Client", () => {
           )
         );
       });
+
+      describe("and the same question is broadcast again", () => {
+        it("keeps the answer locked", () => {
+          const result = lockInAnswer();
+
+          receive(result, availableAnswers());
+
+          ["correct", "wrong"].forEach((name) =>
+            expect(screen.getByRole("button", { name })).toHaveAttribute(
+              "aria-disabled",
+              "true"
+            )
+          );
+        });
+      });
+
+      describe("and a different question is broadcast", () => {
+        it("lets the player answer again", () => {
+          const result = lockInAnswer();
+
+          receive(result, {
+            questionId: "question-2",
+            question: "second question",
+            answers: [{ id: "answer-3", text: "yes" }],
+          });
+
+          expect(
+            screen.getByRole("button", { name: "yes" })
+          ).not.toHaveAttribute("aria-disabled", "true");
+        });
+      });
+    });
+
+    it("presents the answers in a shuffled order", () => {
+      vi.spyOn(Math, "random").mockReturnValue(0);
+      const result = renderClient();
+
+      receive(result, { canAnswer: true }, availableAnswers());
+
+      const answers = [
+        ...result.container.querySelectorAll(".answer"),
+      ].map((answer) => answer.textContent);
+      expect(answers).toEqual(["wrong", "correct"]);
     });
   });
 

@@ -59,7 +59,7 @@ const renderSplatPresenter = () => {
     </JotaiProvider>
   );
   act(() => jotaiStore.set(setLobbyGameAtom, "splat"));
-  return { emit, app: fakeApps[fakeApps.length - 1] };
+  return { emit, app: fakeApps[fakeApps.length - 1], jotaiStore };
 };
 
 describe("SplatPresenter", () => {
@@ -92,6 +92,24 @@ describe("SplatPresenter", () => {
       emit("gameMessage", playerPress("up"));
 
       expect(app.stage.children).toHaveLength(0);
+    });
+  });
+
+  describe("when a new game starts", () => {
+    it("starts with no splats", () => {
+      const { emit, jotaiStore } = renderSplatPresenter();
+      emit("gameMessage", playerPress("down"));
+      emit("gameMessage", playerPress("down"));
+
+      emit("newgame", "splat");
+
+      render(
+        <JotaiProvider store={jotaiStore}>
+          <SplatPresenter />
+        </JotaiProvider>
+      );
+      const freshApp = fakeApps[fakeApps.length - 1];
+      expect(freshApp.stage.children).toHaveLength(0);
     });
   });
 });

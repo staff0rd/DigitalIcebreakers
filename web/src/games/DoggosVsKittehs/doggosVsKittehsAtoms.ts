@@ -3,38 +3,44 @@ import {
   registerGame,
   GameMessageHandler,
 } from "../../store/jotai/gameMessageHandlers";
+import { lobbyAtom } from "../../store/atoms/lobbyAtoms";
+
+// 0 = doggos, 1 = kittehs
+export type DoggosVsKittehsVote = "0" | "1";
 
 export interface DoggosVsKittehsState {
-  yes: number;
-  no: number;
-  maybe: number;
+  votes: Record<string, DoggosVsKittehsVote>;
 }
 
-interface ServerState {
-  doggos: number;
-  kittehs: number;
-  undecided: number;
-}
+export const doggosVsKittehsAtom = atom<DoggosVsKittehsState>({ votes: {} });
 
-export const doggosVsKittehsAtom = atom<DoggosVsKittehsState>({
-  yes: 0,
-  no: 0,
-  maybe: 0,
+export const doggosVsKittehsResultsAtom = atom((get) => {
+  const votes = Object.values(get(doggosVsKittehsAtom).votes);
+  const doggos = votes.filter((vote) => vote === "0").length;
+  const kittehs = votes.filter((vote) => vote === "1").length;
+  const undecided = Math.max(
+    get(lobbyAtom).players.length - doggos - kittehs,
+    0
+  );
+  return { doggos, kittehs, undecided };
 });
 
-// Message handler for doggos-vs-kittehs game
-const doggosVsKittehsMessageHandler: GameMessageHandler<DoggosVsKittehsState> = (
-  currentState,
-  message
-) => {
-  // Extract the payload from the wrapped message
-  const serverState = message.payload as ServerState;
-  return {
-    yes: serverState.doggos,
-    no: serverState.kittehs,
-    maybe: serverState.undecided,
-  };
+const doggosVsKittehsMessageHandler: GameMessageHandler<
+  DoggosVsKittehsState
+> = (currentState, message, isPresenter) => {
+  if (!isPresenter) {
+    return currentState;
+  }
+  const { payload, id } = message ?? {};
+  if ((payload === "0" || payload === "1") && id) {
+    return { votes: { ...currentState.votes, [id]: payload } };
+  }
+  return currentState;
 };
 
-// Register the game with its handler
-registerGame("doggos-vs-kittehs", doggosVsKittehsAtom, doggosVsKittehsMessageHandler);
+registerGame(
+  "doggos-vs-kittehs",
+  doggosVsKittehsAtom,
+  doggosVsKittehsMessageHandler,
+  { resetState: () => ({ votes: {} }) }
+);

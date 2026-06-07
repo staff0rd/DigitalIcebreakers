@@ -9,4 +9,6 @@ export type ReconnectPayload = {
   players: Player[];
   currentGame: string;
   isRegistered: boolean;
+  presenterState?: unknown;
+  playerState?: unknown;
 };

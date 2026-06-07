@@ -1,4 +1,4 @@
-import { test, expect } from "../fixtures/base";
+import { test, expect } from "../fixtures/firebase";
 
 test.describe("YesNoMaybe Tests", () => {
   test("Vote counts update when players vote", async ({

@@ -1,4 +1,4 @@
-import { test, expect } from "../fixtures/base";
+import { test, expect } from "../fixtures/firebase";
 
 test.describe("Broadcast Tests", () => {
   test("Broadcasted text appears on player", async ({ presenter, player }) => {

@@ -33,15 +33,20 @@ const namePickerMessageHandler: GameMessageHandler<NamePickerState> = (
     // Presenter doesn't receive game messages in this game
     return currentState;
   } else {
-    // Client receives the selected player ID
+    // The presenter announces { id } for a pick and {} for a reset
     return {
       ...currentState,
       player: {
-        selectedId: message,
+        selectedId: message?.id,
       },
     };
   }
 };
 
 // Register the game with its handler
-registerGame("name-picker", namePickerAtom, namePickerMessageHandler);
+registerGame("name-picker", namePickerAtom, namePickerMessageHandler, {
+  resetState: () => ({
+    presenter: { shouldPick: false },
+    player: { selectedId: undefined },
+  }),
+});

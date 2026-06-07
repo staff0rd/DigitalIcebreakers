@@ -66,9 +66,17 @@ export const goToDefaultUrlAtom = atom(null, (get, set) => {
 });
 
 export const clearLobbyAtom = atom(null, (_get, set) => {
+  stopMirroringGameState();
   set(lobbyAtom, initialLobbyState);
   set(navigateAtom, "/lobby-closed");
 });
+
+let unsubscribeGameState: (() => void) | null = null;
+
+const stopMirroringGameState = () => {
+  unsubscribeGameState?.();
+  unsubscribeGameState = null;
+};
 
 export const setLobbyGameAtom = atom(null, (get, set, game: string) => {
   set(lobbyAtom, { ...get(lobbyAtom), currentGame: game });
@@ -84,6 +92,20 @@ export const setLobbyGameAtom = atom(null, (get, set, game: string) => {
       }
     }
   });
+  stopMirroringGameState();
+  const gameHandler = getGameHandler(game);
+  if (gameHandler) {
+    const { atom: gameAtom } = gameHandler;
+    // Mirror game state to the transport so refresh/late-join can restore it
+    unsubscribeGameState = store().sub(gameAtom, () => {
+      const state = store().get(gameAtom);
+      send(
+        isPresenter
+          ? transport().publishPresenterState(state)
+          : transport().publishPlayerState(state)
+      );
+    });
+  }
   set(goToDefaultUrlAtom);
 });
 
@@ -202,6 +224,13 @@ const onReconnect = (response: ReconnectPayload) => {
 
       if (response.currentGame) {
         store().set(setLobbyGameAtom, response.currentGame);
+        const restored = response.isPresenter
+          ? response.presenterState
+          : response.playerState;
+        const gameHandler = getGameHandler(response.currentGame);
+        if (restored !== undefined && gameHandler) {
+          store().set(gameHandler.atom, restored);
+        }
       } else {
         store().set(goToDefaultUrlAtom);
       }
@@ -216,6 +245,7 @@ export const initializeTransport = (
   storeRef = jotaiStore;
   transportRef = appTransport;
   connectionTimeout = 0;
+  stopMirroringGameState();
 
   transport().on("reconnect", onReconnect);
   transport().on("joined", (user) => {
@@ -239,5 +269,12 @@ export const initializeTransport = (
   transport().on("newgame", (name) => {
     transport().off("gameMessage");
     store().set(setLobbyGameAtom, name);
+    const gameHandler = getGameHandler(name);
+    if (gameHandler?.resetState) {
+      store().set(
+        gameHandler.atom,
+        gameHandler.resetState(store().get(gameHandler.atom))
+      );
+    }
   });
 };

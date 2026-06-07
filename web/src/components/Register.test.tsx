@@ -50,6 +50,19 @@ describe("Register", () => {
     );
   });
 
+  it("waits for the lobby to confirm the join before navigating", () => {
+    // Navigating optimistically races the reconnect's navigation to /game and
+    // can strand the player on the home view
+    const paths: string[] = [];
+    window.addEventListener("navigate-action", (event) =>
+      paths.push((event as CustomEvent).detail.path)
+    );
+    renderRegister();
+    typeName("Alice");
+    join();
+    expect(paths).toEqual([]);
+  });
+
   describe("when the entered name is too short", () => {
     it("does not register", () => {
       const { transport } = renderRegister();

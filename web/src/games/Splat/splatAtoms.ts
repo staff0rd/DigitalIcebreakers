@@ -19,4 +19,6 @@ const handleSplatMessage = (
   return currentState;
 };
 
-registerGame('splat', splatAtom, handleSplatMessage);
+registerGame('splat', splatAtom, handleSplatMessage, {
+  resetState: () => ({ count: 0 }),
+});

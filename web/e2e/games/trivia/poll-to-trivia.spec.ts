@@ -1,4 +1,4 @@
-import { test, expect } from '../../fixtures/base';
+import { test, expect } from "../../fixtures/firebase";
 
 test.describe('Given Poll When switching to Trivia', () => {
   test.beforeEach(async ({ presenter, player }) => {

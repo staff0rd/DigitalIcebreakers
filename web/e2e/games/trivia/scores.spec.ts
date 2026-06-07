@@ -1,4 +1,4 @@
-import { test, expect } from "../../fixtures/base";
+import { test, expect } from "../../fixtures/firebase";
 
 test.describe("Given Trivia When clicking scores", () => {
   test("Then scoreboard is displayed", async ({

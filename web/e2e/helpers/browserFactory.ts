@@ -80,7 +80,10 @@ export class BrowserFactory {
     await page.goto(lobbyUrl);
     // invokes made before the SignalR connection is up are silently dropped
     await this.waitForConnected(page);
-    const textBox = page.getByRole("textbox");
+    // target the register form's name field specifically: the lobby route
+    // briefly shows the join-code view, whose code input would otherwise
+    // swallow a generic textbox fill before the register view mounts
+    const textBox = page.locator("#user-name");
     await textBox.waitFor({ state: "visible" });
     await textBox.fill(playerName);
     await page.getByTestId("join-lobby-button").click();

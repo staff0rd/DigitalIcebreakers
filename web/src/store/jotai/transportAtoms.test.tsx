@@ -21,6 +21,21 @@ import {
   presenterMessageAtom,
 } from "./transportAtoms";
 import { initializeMockTransport } from "./transportTestHelpers";
+import { atom } from "jotai";
+import { registerGame } from "./gameMessageHandlers";
+
+type TestGameState = { log: string[] };
+
+const testGameAtom = atom<TestGameState>({ log: [] });
+
+registerGame(
+  "test-game",
+  testGameAtom,
+  (state: TestGameState, message: unknown) => ({
+    log: [...state.log, JSON.stringify(message)],
+  }),
+  { resetState: () => ({ log: ["fresh"] }) }
+);
 
 type SignalRAppOptions = {
   user?: Partial<UserState>;
@@ -82,6 +97,86 @@ describe("real-time game message routing", () => {
       emit("gameMessage", "team:1");
       expect(jotaiStore.get(lobbyAtom).currentGame).toBe("pong");
       expect(screen.getByRole("button", { name: /up/i })).toBeInTheDocument();
+    });
+  });
+});
+
+describe("mirroring game state", () => {
+  const reconnectPayload = (overrides: Record<string, unknown> = {}) => ({
+    lobbyId: "AAAA",
+    lobbyName: "lobby",
+    playerId: "user-1",
+    playerName: "Alice",
+    players: [],
+    currentGame: "test-game",
+    isRegistered: true,
+    isPresenter: false,
+    ...overrides,
+  });
+
+  describe("when a presenter reconnects with mirrored state", () => {
+    it("restores the game state", () => {
+      const { jotaiStore, emit } = createSignalRApp({
+        lobby: { isPresenter: true },
+        connectionStatus: ConnectionStatus.Connected,
+      });
+      emit(
+        "reconnect",
+        reconnectPayload({
+          isPresenter: true,
+          presenterState: { log: ["restored"] },
+        })
+      );
+      expect(jotaiStore.get(testGameAtom)).toEqual({ log: ["restored"] });
+    });
+  });
+
+  describe("when a player reconnects with mirrored state", () => {
+    it("restores the game state", () => {
+      const { jotaiStore, emit } = createSignalRApp({
+        user: { isRegistered: true },
+        connectionStatus: ConnectionStatus.Connected,
+      });
+      emit(
+        "reconnect",
+        reconnectPayload({ playerState: { log: ["mine"] } })
+      );
+      expect(jotaiStore.get(testGameAtom)).toEqual({ log: ["mine"] });
+    });
+  });
+
+  describe("when the presenter's game state changes", () => {
+    it("publishes the state as presenter state", () => {
+      const { jotaiStore, transport } = createSignalRApp({
+        lobby: { isPresenter: true },
+      });
+      act(() => jotaiStore.set(setLobbyGameAtom, "test-game"));
+      act(() => jotaiStore.set(testGameAtom, { log: ["splat"] }));
+      expect(transport.publishPresenterState).toHaveBeenCalledWith({
+        log: ["splat"],
+      });
+      expect(transport.publishPlayerState).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("when a player's game state changes", () => {
+    it("publishes the state as player state", () => {
+      const { jotaiStore, transport } = createSignalRApp();
+      act(() => jotaiStore.set(setLobbyGameAtom, "test-game"));
+      act(() => jotaiStore.set(testGameAtom, { log: ["picked"] }));
+      expect(transport.publishPlayerState).toHaveBeenCalledWith({
+        log: ["picked"],
+      });
+      expect(transport.publishPresenterState).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("when a new game starts", () => {
+    it("resets the game state", () => {
+      const { jotaiStore, emit } = createSignalRApp();
+      jotaiStore.set(testGameAtom, { log: ["stale"] });
+      emit("newgame", "test-game");
+      expect(jotaiStore.get(testGameAtom)).toEqual({ log: ["fresh"] });
     });
   });
 });

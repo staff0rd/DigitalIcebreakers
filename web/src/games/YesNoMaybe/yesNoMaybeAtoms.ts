@@ -3,27 +3,44 @@ import {
   registerGame,
   GameMessageHandler,
 } from "../../store/jotai/gameMessageHandlers";
+import { lobbyAtom } from "../../store/atoms/lobbyAtoms";
+
+// 0 = yes, 1 = no
+export type YesNoMaybeVote = "0" | "1";
 
 export interface YesNoMaybeState {
-  yes: number;
-  no: number;
-  maybe: number;
+  votes: Record<string, YesNoMaybeVote>;
 }
 
-export const yesNoMaybeAtom = atom<YesNoMaybeState>({
-  yes: 0,
-  no: 0,
-  maybe: 0,
+export const yesNoMaybeAtom = atom<YesNoMaybeState>({ votes: {} });
+
+export const yesNoMaybeResultsAtom = atom((get) => {
+  const votes = Object.values(get(yesNoMaybeAtom).votes);
+  const yes = votes.filter((vote) => vote === "0").length;
+  const no = votes.filter((vote) => vote === "1").length;
+  const maybe = Math.max(get(lobbyAtom).players.length - yes - no, 0);
+  return { yes, no, maybe };
 });
 
-// Message handler for yes-no-maybe game
+export const resetVotesAtom = atom(null, (_get, set) => {
+  set(yesNoMaybeAtom, { votes: {} });
+});
+
 const yesNoMaybeMessageHandler: GameMessageHandler<YesNoMaybeState> = (
   currentState,
-  message
+  message,
+  isPresenter
 ) => {
-  // Extract the payload from the wrapped message
-  return message.payload as YesNoMaybeState;
+  if (!isPresenter) {
+    return currentState;
+  }
+  const { payload, id } = message ?? {};
+  if ((payload === "0" || payload === "1") && id) {
+    return { votes: { ...currentState.votes, [id]: payload } };
+  }
+  return currentState;
 };
 
-// Register the game with its handler
-registerGame("yes-no-maybe", yesNoMaybeAtom, yesNoMaybeMessageHandler);
+registerGame("yes-no-maybe", yesNoMaybeAtom, yesNoMaybeMessageHandler, {
+  resetState: () => ({ votes: {} }),
+});

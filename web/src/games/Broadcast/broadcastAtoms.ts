@@ -52,4 +52,9 @@ const broadcastMessageHandler: GameMessageHandler<BroadcastState> = (
 };
 
 // Register the game with its handler
-registerGame("broadcast", broadcastAtom, broadcastMessageHandler);
+registerGame("broadcast", broadcastAtom, broadcastMessageHandler, {
+  resetState: () => ({
+    client: { text: "" },
+    presenter: { text: "", dings: 0 },
+  }),
+});
