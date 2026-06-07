@@ -19,6 +19,13 @@ jobs:
         with:
           node-version-file: .nvmrc
 
+      - name: Setup Java
+        # firebase-tools requires JDK 21+ for the database emulator
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
       - name: Set frontend version
         run: |
           echo "{ \"simpleVersion\": \"${GITHUB_SHA::7}\" }" > web/src/version.json
