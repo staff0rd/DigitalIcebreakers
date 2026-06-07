@@ -22,7 +22,7 @@ run:
       - run
       - test:rules
     cwd: web
-  - name: verify:e2e
+  - name: e2e
     command: npx
     args:
       - playwright

@@ -43,10 +43,6 @@ A game is two React components registered in `web/src/games/Games.ts`:
 
 Game state lives in Jotai atoms (`[gameName]Atoms.ts`) which register a handler for incoming messages via `registerGame(name, atom, handler)`. Copy an existing game — `Buzzer` is the simplest — and follow the same pattern. Add an e2e spec under `web/e2e/games/` covering the presenter and client workflows.
 
-## Deployment
-
-Pushes to `master` build the frontend, deploy the database rules, and publish a static nginx container. The workflow expects these repository secrets: `VITE_FIREBASE_API_KEY`, `VITE_FIREBASE_PROJECT_ID`, `VITE_FIREBASE_DATABASE_URL`, `FIREBASE_TOKEN`, `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`, `DEPLOY_REPO_TOKEN`.
-
 ## Contributing
 
 - Jump in and build your own games & experiences immediately!
