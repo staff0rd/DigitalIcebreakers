@@ -30,15 +30,21 @@ const Redirect = () => {
   const location = useLocation();
   const navigate = useNavigate();
   useEffect(() => {
-    if (location.pathname.length === 5) {
-      console.log(
-        `redirecting to /join-lobby${location.pathname} from ${location.pathname}`
-      );
-      navigate(`/join-lobby${location.pathname}`);
-      return;
-    }
-    console.log("redirecting to / from " + location.pathname);
-    navigate("/");
+    // Defer and cancel on unmount: this route matches transiently while lobby
+    // state changes re-shape the route table mid-navigation, and a stale
+    // redirect fired from that mount would override the real navigation
+    const timer = setTimeout(() => {
+      // history.pushState applies synchronously even though the router render
+      // is deferred (react-router v7 transitions), so a changed URL means a
+      // later navigation already won and this mount is stale
+      if (window.location.pathname !== location.pathname) return;
+      if (location.pathname.length === 5) {
+        navigate(`/join-lobby${location.pathname}`);
+        return;
+      }
+      navigate("/");
+    });
+    return () => clearTimeout(timer);
   }, [location, navigate]);
 
   return <></>;
@@ -59,16 +65,25 @@ const AppRoutes = () => {
 };
 
 const LobbyCodeRedirect = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   const { lobbyCode } = useParams();
 
   useEffect(() => {
-    if (lobbyCode && lobbyCode.length === 4) {
-      navigate(`/join-lobby/${lobbyCode}`);
-    } else {
-      navigate("/");
-    }
-  }, [lobbyCode, navigate]);
+    // Deferred, cancelled on unmount, and stale-guarded for the same reason
+    // as Redirect above: /:lobbyCode matches transiently (e.g. /register the
+    // instant lobby.id lands) and its navigate("/") would override the /game
+    // navigation
+    const timer = setTimeout(() => {
+      if (window.location.pathname !== location.pathname) return;
+      if (lobbyCode && lobbyCode.length === 4) {
+        navigate(`/join-lobby/${lobbyCode}`);
+      } else {
+        navigate("/");
+      }
+    });
+    return () => clearTimeout(timer);
+  }, [location, lobbyCode, navigate]);
 
   return null;
 };
