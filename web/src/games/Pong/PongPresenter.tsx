@@ -4,12 +4,15 @@ import ReactAnimationFrame from "./ReactAnimationFrame";
 import { BaseGame, BaseGameProps } from "../BaseGame";
 import { between } from "../../Random";
 import { Pixi } from "../pixi/Pixi";
-import { useAtom, useSetAtom } from "jotai";
-import { 
-  pongAtom, 
-  rightScoresAtom, 
-  leftScoresAtom 
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import {
+  pongAtom,
+  pongTeamsAtom,
+  syncTeamsAtom,
+  rightScoresAtom,
+  leftScoresAtom,
 } from "./pongAtoms";
+import { lobbyAtom } from "../../store/atoms/lobbyAtoms";
 import React from "react";
 import { Typography, Box } from "@mui/material";
 
@@ -252,8 +255,16 @@ class PongPresenterCore extends BaseGame<PongPresenterProps, {}> {
           {this.props.score[0]}-{this.props.score[1]}
         </Typography>
         <div style={{ display: "none" }}>
-          <span id="red-team" data-count={this.props.rightTeam}></span>
-          <span id="blue-team" data-count={this.props.leftTeam}></span>
+          <span
+            id="red-team"
+            data-count={this.props.rightTeam}
+            data-speed={this.props.rightSpeed}
+          ></span>
+          <span
+            id="blue-team"
+            data-count={this.props.leftTeam}
+            data-speed={this.props.leftSpeed}
+          ></span>
         </div>
         <Pixi
           backgroundColor={Colors.Background}
@@ -267,15 +278,27 @@ class PongPresenterCore extends BaseGame<PongPresenterProps, {}> {
 // Wrapper component that uses Jotai hooks
 const PongPresenterWrapper = (props: BaseGameProps) => {
   const [state] = useAtom(pongAtom);
+  const { leftSpeed, rightSpeed, leftCount, rightCount } =
+    useAtomValue(pongTeamsAtom);
+  const players = useAtomValue(lobbyAtom).players;
+  const syncTeams = useSetAtom(syncTeamsAtom);
   const rightScores = useSetAtom(rightScoresAtom);
   const leftScores = useSetAtom(leftScoresAtom);
-  
-  const presenterState = state.presenter;
-  
+
+  React.useEffect(() => {
+    syncTeams(players);
+  }, [players, syncTeams]);
+
+  const { leftTeam, rightTeam, ...presenterConfig } = state.presenter;
+
   return (
     <PongPresenterCore
       {...props}
-      {...presenterState}
+      {...presenterConfig}
+      leftSpeed={leftSpeed}
+      rightSpeed={rightSpeed}
+      leftTeam={leftCount}
+      rightTeam={rightCount}
       rightScores={rightScores}
       leftScores={leftScores}
     />

@@ -4,15 +4,20 @@ import { ThemeProvider } from "@mui/styles";
 import { Provider as JotaiProvider, createStore } from "jotai";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { ReactionPresenter } from "./ReactionPresenter";
-import { reactionAtom, reactionMessageHandler } from "./atoms";
+import { reactionAtom } from "./atoms";
 import { lobbyAtom, initialLobbyState } from "store/atoms/lobbyAtoms";
+import { setLobbyGameAtom } from "store/jotai/transportAtoms";
 import { initializeMockTransport } from "store/jotai/transportTestHelpers";
 import { Player } from "Player";
 
 const renderPresenter = ({ players = [] }: { players?: Player[] } = {}) => {
   const jotaiStore = createStore();
-  jotaiStore.set(lobbyAtom, { ...initialLobbyState, players });
-  initializeMockTransport(jotaiStore);
+  jotaiStore.set(lobbyAtom, {
+    ...initialLobbyState,
+    isPresenter: true,
+    players,
+  });
+  const { emit } = initializeMockTransport(jotaiStore);
   const result = render(
     <ThemeProvider theme={createTheme({})}>
       <JotaiProvider store={jotaiStore}>
@@ -20,24 +25,26 @@ const renderPresenter = ({ players = [] }: { players?: Player[] } = {}) => {
       </JotaiProvider>
     </ThemeProvider>
   );
+  act(() => jotaiStore.set(setLobbyGameAtom, "reaction"));
 
   const chooseShape = (playerId: string, shapeId: number) =>
-    act(() => {
-      jotaiStore.set(
-        reactionAtom,
-        reactionMessageHandler(
-          jotaiStore.get(reactionAtom),
-          { id: playerId, payload: { selectedId: shapeId } },
-          true
-        )
-      );
-    });
+    act(() =>
+      emit("gameMessage", { id: playerId, name: playerId, payload: shapeId })
+    );
 
   const currentShapeId = () =>
     jotaiStore.get(reactionAtom).presenter.shape!.id;
 
-  return { ...result, jotaiStore, chooseShape, currentShapeId };
+  const otherShapeId = () =>
+    jotaiStore
+      .get(reactionAtom)
+      .presenter.shapes.find((s) => s.id !== currentShapeId())!.id;
+
+  return { ...result, jotaiStore, chooseShape, currentShapeId, otherShapeId };
 };
+
+const presenterShape = (shapeId: number) =>
+  screen.getByTestId(`presenter-shape-${shapeId}`);
 
 describe("Reaction Presenter", () => {
   beforeEach(() => {
@@ -58,9 +65,47 @@ describe("Reaction Presenter", () => {
       });
       const shapeId = currentShapeId();
       chooseShape("p1", shapeId);
-      expect(
-        screen.getByTestId(`presenter-shape-${shapeId}`)
-      ).toHaveAttribute("data-first-player", "Alice");
+      expect(presenterShape(shapeId)).toHaveAttribute(
+        "data-first-player",
+        "Alice"
+      );
+    });
+  });
+
+  describe("when a player tries to change their selection", () => {
+    it("keeps only their first choice", () => {
+      const { chooseShape, currentShapeId, otherShapeId } = renderPresenter({
+        players: [{ id: "p1", name: "Alice" }],
+      });
+      const first = currentShapeId();
+      const second = otherShapeId();
+
+      chooseShape("p1", first);
+      chooseShape("p1", second);
+
+      expect(presenterShape(first)).toHaveAttribute("data-choice-count", "1");
+      expect(presenterShape(second)).toHaveAttribute("data-choice-count", "0");
+    });
+  });
+
+  describe("when two players pick the same shape", () => {
+    it("credits the first to arrive and counts both", () => {
+      const { chooseShape, currentShapeId } = renderPresenter({
+        players: [
+          { id: "p1", name: "Alice" },
+          { id: "p2", name: "Bob" },
+        ],
+      });
+      const shapeId = currentShapeId();
+
+      chooseShape("p2", shapeId);
+      chooseShape("p1", shapeId);
+
+      expect(presenterShape(shapeId)).toHaveAttribute(
+        "data-first-player",
+        "Bob"
+      );
+      expect(presenterShape(shapeId)).toHaveAttribute("data-choice-count", "2");
     });
   });
 

@@ -38,10 +38,12 @@ describe("Retrospective Presenter", () => {
       expect(screen.getAllByText("Waiting for audience...")).toHaveLength(3);
     });
 
-    it("sends the categories to participants", () => {
+    it("sends the categories to participants in the shape they consume", () => {
       const { sentPresenterMessages } = selectPreset();
 
-      expect(sentPresenterMessages()).toContainEqual(createCategories());
+      expect(sentPresenterMessages()).toContainEqual({
+        categories: createCategories(),
+      });
     });
   });
 

@@ -1,4 +1,4 @@
-import { test, expect } from "../fixtures/base";
+import { test, expect } from "../fixtures/firebase";
 
 test.describe("Reaction Tests", () => {
   test("round flow: client shapes disabled after selection, presenter shows counts, new round re-enables shapes", async ({

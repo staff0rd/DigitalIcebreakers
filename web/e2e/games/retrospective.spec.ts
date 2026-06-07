@@ -1,4 +1,4 @@
-import { test, expect } from "../fixtures/base";
+import { test, expect } from "../fixtures/firebase";
 
 test.describe("Retrospective Tests", () => {
   test("Custom section can have ideas", async ({ presenter, player }) => {

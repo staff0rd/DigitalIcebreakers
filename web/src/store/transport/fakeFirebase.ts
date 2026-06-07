@@ -14,6 +14,7 @@ type ChildListener = {
   path: string;
   cb: (snapshot: FakeSnapshot) => void;
   knownKeys: Set<string>;
+  heldPaths?: string[];
 };
 
 type Listener = ValueListener | ChildListener;
@@ -32,6 +33,7 @@ let disconnectOps: DisconnectOp[] = [];
 let pushCounter = 0;
 let uidCounter = 0;
 let clock = 0;
+let delayNextReplay = false;
 
 export const resetFakeFirebase = () => {
   data = { ".info": { connected: true } };
@@ -40,6 +42,26 @@ export const resetFakeFirebase = () => {
   pushCounter = 0;
   uidCounter = 0;
   clock = 0;
+  delayNextReplay = false;
+};
+
+// The real SDK's initial replay for a fresh onChildAdded listener is a server
+// round trip, so a live message written just after subscribing can be
+// delivered BEFORE the replay of older children; tests use these to simulate
+// that misordering
+export const delayNextChildReplay = () => {
+  delayNextReplay = true;
+};
+
+export const flushDelayedChildReplay = () => {
+  for (const listener of [...listeners]) {
+    if (listener.type !== "childAdded" || !listener.heldPaths) continue;
+    const held = listener.heldPaths;
+    listener.heldPaths = undefined;
+    for (const path of held) {
+      listener.cb(snapshot(path));
+    }
+  }
 };
 
 resetFakeFirebase();
@@ -141,9 +163,18 @@ const subscribe = (listener: Listener) => {
       value && typeof value === "object"
         ? Object.keys(value as Record<string, unknown>)
         : [];
+    const hold = delayNextReplay && keys.length > 0;
+    if (hold) {
+      delayNextReplay = false;
+      listener.heldPaths = [];
+    }
     for (const key of keys) {
       listener.knownKeys.add(key);
-      listener.cb(snapshot(`${listener.path}/${key}`));
+      if (hold) {
+        listener.heldPaths!.push(`${listener.path}/${key}`);
+      } else {
+        listener.cb(snapshot(`${listener.path}/${key}`));
+      }
     }
   }
   return () => {

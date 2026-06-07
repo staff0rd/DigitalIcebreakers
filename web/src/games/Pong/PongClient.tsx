@@ -1,12 +1,11 @@
 import { Button, Box } from "@mui/material";
-import { useAtom, useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { clientMessageAtom } from "../../store/jotai/transportAtoms";
-import { pongAtom } from "./pongAtoms";
+import { pongTeamViewAtom } from "./pongAtoms";
 import { ColorUtils } from "../../Colors";
 
 export const PongClient = () => {
-  const [state] = useAtom(pongAtom);
-  const { releasedColor, team } = state.client;
+  const { releasedColor, team } = useAtomValue(pongTeamViewAtom);
   const sendClientMessage = useSetAtom(clientMessageAtom);
 
   const handleMouseDown = (action: string) => () => {

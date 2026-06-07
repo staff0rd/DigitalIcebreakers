@@ -30,7 +30,7 @@ export const Presenter = () => {
   const { ideas, categories } = useAtomValue(retrospectiveAtom).presenter;
 
   useEffect(() => {
-    if (categories.length) sendPresenterMessage(categories);
+    if (categories.length) sendPresenterMessage({ categories });
   }, [categories]);
 
   return (

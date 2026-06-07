@@ -154,27 +154,27 @@ export const toggleAutoAgainAtom = atom(
   }
 );
 
-// Message handler for SignalR integration
 export const reactionMessageHandler = (
   currentState: ReactionState,
   message: any,
   isPresenter: boolean
 ): ReactionState => {
   if (isPresenter) {
-    // Handle presenter messages (player choices)
-    if (message.payload && typeof message.payload.selectedId === 'number') {
+    // Players send their chosen shape id; only their first choice counts, and
+    // arrival order at the presenter decides who was first on each shape
+    if (typeof message?.payload === 'number') {
       const newChoice = {
         id: message.id,
-        choice: message.payload.selectedId,
+        choice: message.payload,
       } as Choice;
-      
+
       const choices = [...currentState.presenter.choices];
       if (!choices.find((p: Choice) => p.id === newChoice.id)) {
         if (!choices.find((p) => p.choice === newChoice.choice))
           newChoice.isFirst = true;
         choices.push(newChoice);
       }
-      
+
       return {
         ...currentState,
         presenter: {
@@ -184,30 +184,19 @@ export const reactionMessageHandler = (
       };
     }
   } else {
-    // Handle client messages (shape updates)
+    // The presenter broadcasts the new round's shapes as an array
     if (Array.isArray(message)) {
-      // Direct array of shapes sent from presenter
       return {
         ...currentState,
         player: {
           ...currentState.player,
           shapes: message,
-          selectedId: undefined, // Reset selection on new round
-        },
-      };
-    } else if (message.shapes) {
-      // Wrapped in shapes property
-      return {
-        ...currentState,
-        player: {
-          ...currentState.player,
-          shapes: message.shapes,
-          selectedId: undefined, // Reset selection on new round
+          selectedId: undefined,
         },
       };
     }
   }
-  
+
   return currentState;
 };
 

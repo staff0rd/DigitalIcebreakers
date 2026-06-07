@@ -1,10 +1,10 @@
-import { test, expect } from "../fixtures/base";
+import { test, expect } from "../fixtures/firebase";
 import { Player } from "../helpers/player";
 import { Presenter } from "../helpers/presenter";
 
 test.describe("Pong Tests", () => {
   test("Teams are even", async ({ presenter, browser, browserFactory }) => {
-    test.setTimeout(10_000);
+    test.setTimeout(30_000);
     await presenter.startPong();
 
     // Create 6 players
@@ -42,12 +42,15 @@ test.describe("Pong Tests", () => {
     await teamsShouldBe(presenter, 1, 1);
 
     // Verify remaining players are on different teams
-    const teams = [
-      await players[0].page.getByTestId("team").textContent(),
-      await players[4].page.getByTestId("team").textContent(),
-    ];
-    expect(teams).toContain("red");
-    expect(teams).toContain("blue");
+    await expect
+      .poll(async () => {
+        const teams = [
+          await players[0].page.getByTestId("team").textContent(),
+          await players[4].page.getByTestId("team").textContent(),
+        ];
+        return teams.sort();
+      })
+      .toEqual(["blue", "red"]);
 
     // Clean up remaining players
     for (const player of players) {
@@ -62,8 +65,7 @@ async function assertTeam(players: Player[], expectedTeams: string[]) {
   for (let i = 0; i < expectedTeams.length; i++) {
     const expected = expectedTeams[i];
     if (expected) {
-      const actual = await players[i].page.getByTestId("team").textContent();
-      expect(actual).toBe(expected);
+      await expect(players[i].page.getByTestId("team")).toHaveText(expected);
     }
   }
 }
@@ -73,18 +75,12 @@ async function teamsShouldBe(
   expectedBlue: number,
   expectedRed: number
 ) {
-  await presenter.page.waitForTimeout(50);
-  const blueCount = await getPlayerCount(presenter, "blue-team");
-  const redCount = await getPlayerCount(presenter, "red-team");
-  expect(blueCount).toBe(expectedBlue);
-  expect(redCount).toBe(expectedRed);
-}
-
-async function getPlayerCount(
-  presenter: Presenter,
-  teamId: string
-): Promise<number> {
-  const element = presenter.page.locator(`#${teamId}`);
-  const count = await element.getAttribute("data-count");
-  return parseInt(count || "0");
+  await expect(presenter.page.locator("#blue-team")).toHaveAttribute(
+    "data-count",
+    `${expectedBlue}`
+  );
+  await expect(presenter.page.locator("#red-team")).toHaveAttribute(
+    "data-count",
+    `${expectedRed}`
+  );
 }

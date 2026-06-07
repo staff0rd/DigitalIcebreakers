@@ -1,6 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { FirebaseTransport } from "./FirebaseTransport";
 import {
+  delayNextChildReplay,
+  flushDelayedChildReplay,
   resetFakeFirebase,
   setNextPushCounter,
   simulateClientDisconnect,
@@ -171,6 +173,42 @@ describe("firebase transport", () => {
         expect(player.events.reconnect).toHaveLength(0);
       });
     });
+
+    describe("when the player rejoins the lobby they are already in", () => {
+      it("does not replay delivered messages and still delivers new ones once", async () => {
+        const { presenter, code } = await createLobby();
+        const { player, user } = await joinAsPlayer(code);
+        await presenter.transport.newGame("pong");
+        await presenter.transport.sendPresenterMessage("first");
+
+        await player.transport.connectToLobby(user, code);
+        await presenter.transport.sendPresenterMessage("second");
+
+        expect(player.events.gameMessage).toEqual(["first", "second"]);
+        expect(player.events.reconnect).toHaveLength(1);
+      });
+    });
+
+    describe("when an unregistered player registers", () => {
+      it("re-confirms the lobby with their registration", async () => {
+        const { code } = await createLobby();
+        const { player, user } = await joinAsPlayer(code, {
+          isRegistered: false,
+          name: "",
+        });
+
+        await player.transport.connectToLobby(
+          { ...user, isRegistered: true, name: "Alice" },
+          code
+        );
+
+        expect(player.events.reconnect).toHaveLength(2);
+        expect(player.events.reconnect[1]).toMatchObject({
+          isRegistered: true,
+          playerName: "Alice",
+        });
+      });
+    });
   });
 
   describe("starting a game", () => {
@@ -247,6 +285,20 @@ describe("firebase transport", () => {
       await presenter.transport.sendPresenterMessage("hello audience");
       const { player } = await joinAsPlayer(code);
       expect(player.events.gameMessage).toEqual(["hello", "hello audience"]);
+    });
+
+    it("delivers messages in send order when the initial replay lags behind live messages", async () => {
+      const { presenter, code } = await createLobby();
+      await presenter.transport.newGame("pong");
+      await presenter.transport.sendPresenterMessage("first");
+      await presenter.transport.sendPresenterMessage("second");
+
+      delayNextChildReplay();
+      const { player } = await joinAsPlayer(code);
+      await presenter.transport.sendPresenterMessage("third");
+      flushDelayedChildReplay();
+
+      expect(player.events.gameMessage).toEqual(["first", "second", "third"]);
     });
 
     it("restores the presenter's published state on refresh", async () => {

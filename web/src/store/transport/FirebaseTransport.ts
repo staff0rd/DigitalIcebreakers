@@ -46,6 +46,12 @@ type MirrorRecord = {
   cursor?: string;
 };
 
+type MessageRecord = {
+  json: string;
+  senderId?: string;
+  senderName?: string;
+};
+
 type LobbyRecord = {
   name: string;
   presenterId: string;
@@ -53,6 +59,10 @@ type LobbyRecord = {
   players?: Record<string, PlayerRecord>;
   presenterState?: MirrorRecord;
   playerState?: Record<string, MirrorRecord>;
+  messages?: {
+    toPresenter?: Record<string, MessageRecord>;
+    toPlayers?: Record<string, MessageRecord>;
+  };
 };
 
 type AttachedLobby = {
@@ -150,6 +160,19 @@ export class FirebaseTransport implements Transport {
   async connectToLobby(user: UserState, lobbyId: string): Promise<void> {
     await this.start();
     const code = lobbyId.toUpperCase();
+    // Rejoining the lobby we are already attached to must be a no-op: a
+    // re-attach would restore our own published mirror over newer local state
+    // and its stale cursor can permanently skip messages that arrived between
+    // the snapshot and the new subscription
+    if (
+      this.attached &&
+      this.attached.code === code &&
+      this.attached.player.id === user.id &&
+      this.attached.player.isRegistered === !!user.isRegistered &&
+      this.attached.player.name === (user.name || "")
+    ) {
+      return;
+    }
     const lobbySnapshot = await get(ref(this.db, `lobbies/${code}`));
     const lobby = lobbySnapshot.val() as LobbyRecord | null;
     if (!lobby) {
@@ -360,37 +383,53 @@ export class FirebaseTransport implements Transport {
       })
     );
 
+    const deliver = (key: string, message: MessageRecord) => {
+      // Skip only the replay of messages at or before the mirror's cursor:
+      // those are already reflected in the restored state. Later messages
+      // must never be skipped — push keys are client-generated, so concurrent
+      // senders can produce keys below ones already delivered
+      if (mirrorCursor && key <= mirrorCursor) {
+        return;
+      }
+      if (key > attached.lastMessageKey) {
+        attached.lastMessageKey = key;
+      }
+      const payload = JSON.parse(message.json);
+      if (player.isPresenter) {
+        this.emit("gameMessage", {
+          payload,
+          id: message.senderId,
+          name: message.senderName,
+        });
+      } else {
+        this.emit("gameMessage", payload);
+      }
+    };
+
+    // Replay existing messages from the lobby snapshot in key order, then
+    // dedupe them out of the subscription. The SDK's own initial replay is a
+    // server round trip, so a live message pushed just after subscribing can
+    // be delivered BEFORE older children — replaying older full-state
+    // broadcasts over the newest one
+    const replayedMessages =
+      (player.isPresenter
+        ? lobby.messages?.toPresenter
+        : lobby.messages?.toPlayers) ?? {};
+    const replayedKeys = new Set(Object.keys(replayedMessages));
+    [...replayedKeys]
+      .sort()
+      .forEach((key) => deliver(key, replayedMessages[key]));
+
     const messagesPath = player.isPresenter
       ? `lobbies/${code}/messages/toPresenter`
       : `lobbies/${code}/messages/toPlayers`;
     unsubscribes.push(
       onChildAdded(ref(this.db, messagesPath), (snapshot) => {
         const key = snapshot.key ?? "";
-        // Skip only the initial replay of messages at or before the mirror's
-        // cursor: those are already reflected in the restored state. Live
-        // messages must never be skipped — push keys are client-generated, so
-        // concurrent senders can produce keys below ones already delivered
-        if (mirrorCursor && key <= mirrorCursor) {
+        if (replayedKeys.has(key)) {
           return;
         }
-        if (key > attached.lastMessageKey) {
-          attached.lastMessageKey = key;
-        }
-        const message = snapshot.val() as {
-          json: string;
-          senderId?: string;
-          senderName?: string;
-        };
-        const payload = JSON.parse(message.json);
-        if (player.isPresenter) {
-          this.emit("gameMessage", {
-            payload,
-            id: message.senderId,
-            name: message.senderName,
-          });
-        } else {
-          this.emit("gameMessage", payload);
-        }
+        deliver(key, snapshot.val() as MessageRecord);
       })
     );
   }
