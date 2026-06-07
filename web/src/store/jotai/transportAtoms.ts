@@ -232,6 +232,9 @@ const onReconnect = (response: ReconnectPayload) => {
           store().set(gameHandler.atom, restored);
         }
       } else {
+        // No game running in this lobby; a mirror subscription left over from
+        // a previous lobby's game must not publish stale state here
+        stopMirroringGameState();
         store().set(goToDefaultUrlAtom);
       }
     }

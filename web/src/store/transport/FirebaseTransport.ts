@@ -282,12 +282,13 @@ export class FirebaseTransport implements Transport {
     const mirror = player.isPresenter
       ? lobby.presenterState
       : lobby.playerState?.[player.id];
+    // Replay resumes after the last message reflected in the mirrored state
+    const mirrorCursor = mirror?.cursor ?? "";
     const attached: AttachedLobby = {
       code,
       player,
       unsubscribes,
-      // Replay resumes after the last message reflected in the mirrored state
-      lastMessageKey: mirror?.cursor ?? "",
+      lastMessageKey: mirrorCursor,
     };
     this.attached = attached;
 
@@ -346,8 +347,11 @@ export class FirebaseTransport implements Transport {
       })
     );
 
+    // Watch a leaf, not the lobby root: a root listener re-downloads the whole
+    // lobby (every message, mirror and player) on each change just to learn
+    // whether the lobby still exists
     unsubscribes.push(
-      onValue(ref(this.db, `lobbies/${code}`), (snapshot) => {
+      onValue(ref(this.db, `lobbies/${code}/name`), (snapshot) => {
         if (!snapshot.exists()) {
           this.detach();
           remove(ref(this.db, `playerLobbies/${player.id}`));
@@ -362,12 +366,16 @@ export class FirebaseTransport implements Transport {
     unsubscribes.push(
       onChildAdded(ref(this.db, messagesPath), (snapshot) => {
         const key = snapshot.key ?? "";
-        // Push keys are chronologically ordered, so anything at or before the
-        // mirror's cursor is already reflected in the restored state
-        if (attached.lastMessageKey && key <= attached.lastMessageKey) {
+        // Skip only the initial replay of messages at or before the mirror's
+        // cursor: those are already reflected in the restored state. Live
+        // messages must never be skipped — push keys are client-generated, so
+        // concurrent senders can produce keys below ones already delivered
+        if (mirrorCursor && key <= mirrorCursor) {
           return;
         }
-        attached.lastMessageKey = key;
+        if (key > attached.lastMessageKey) {
+          attached.lastMessageKey = key;
+        }
         const message = snapshot.val() as {
           json: string;
           senderId?: string;

@@ -13,7 +13,8 @@ test.describe("Fist of Five Tests", () => {
     await players[1].page.getByRole("button", { name: "5" }).click();
     await players[1].page.getByRole("button", { name: "Lock In & Send" }).click();
 
-    const score = await presenter.page.getByTestId("average-score").textContent();
-    expect(score).toBe("3");
+    // Retrying assertion: the element renders before the votes land, so a
+    // one-shot read can see a stale average while votes are still in flight
+    await expect(presenter.page.getByTestId("average-score")).toHaveText("3");
   });
 });

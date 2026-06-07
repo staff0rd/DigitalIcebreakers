@@ -171,6 +171,21 @@ describe("mirroring game state", () => {
     });
   });
 
+  describe("when reconnecting to a lobby with no game in progress", () => {
+    it("stops publishing the previous game's state", () => {
+      const { jotaiStore, emit, transport } = createSignalRApp({
+        user: { isRegistered: true },
+        connectionStatus: ConnectionStatus.Connected,
+      });
+      act(() => jotaiStore.set(setLobbyGameAtom, "test-game"));
+      emit("reconnect", reconnectPayload({ currentGame: "" }));
+      act(() => jotaiStore.set(testGameAtom, { log: ["stale"] }));
+      expect(transport.publishPlayerState).not.toHaveBeenCalledWith({
+        log: ["stale"],
+      });
+    });
+  });
+
   describe("when a new game starts", () => {
     it("resets the game state", () => {
       const { jotaiStore, emit } = createSignalRApp();

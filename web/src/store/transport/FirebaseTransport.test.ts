@@ -1,6 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { FirebaseTransport } from "./FirebaseTransport";
-import { resetFakeFirebase, simulateClientDisconnect } from "./fakeFirebase";
+import {
+  resetFakeFirebase,
+  setNextPushCounter,
+  simulateClientDisconnect,
+} from "./fakeFirebase";
 import { ReconnectPayload } from "../connection/types";
 import { Player } from "../../Player";
 import { UserState } from "../user/types";
@@ -195,6 +199,26 @@ describe("firebase transport", () => {
       await player.transport.sendClientMessage("down");
       expect(presenter.events.gameMessage).toEqual([
         { payload: "down", id: user.id, name: "Alice" },
+      ]);
+    });
+
+    it("delivers concurrent client messages whose keys arrive out of order", async () => {
+      const { presenter, code } = await createLobby();
+      const { player: first, user: firstUser } = await joinAsPlayer(code, {
+        name: "Alice",
+      });
+      const { player: second, user: secondUser } = await joinAsPlayer(code, {
+        name: "Bob",
+      });
+      await presenter.transport.newGame("trivia");
+      setNextPushCounter(10);
+      await first.transport.sendClientMessage("a");
+      // Bob's client generated its push key concurrently, sorting below Alice's
+      setNextPushCounter(5);
+      await second.transport.sendClientMessage("b");
+      expect(presenter.events.gameMessage).toEqual([
+        { payload: "a", id: firstUser.id, name: "Alice" },
+        { payload: "b", id: secondUser.id, name: "Bob" },
       ]);
     });
 

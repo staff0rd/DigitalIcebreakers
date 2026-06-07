@@ -44,6 +44,13 @@ export const resetFakeFirebase = () => {
 
 resetFakeFirebase();
 
+// Real RTDB push keys are generated client-side, so concurrent writers can
+// produce a key that sorts below one another client already delivered; tests
+// use this to simulate that interleaving
+export const setNextPushCounter = (next: number) => {
+  pushCounter = next - 1;
+};
+
 const segments = (path: string) => path.split("/").filter(Boolean);
 
 const getAt = (path: string): unknown =>
