@@ -33,7 +33,7 @@ export const renderLobbyApp = (
     connectionStatusAtom,
     options.connectionStatus ?? ConnectionStatus.Connected
   );
-  const signalR = initializeMockTransport(jotaiStore);
+  const transport = initializeMockTransport(jotaiStore);
 
   const result = render(
     <ThemeProvider theme={createTheme({})}>
@@ -46,7 +46,7 @@ export const renderLobbyApp = (
     </ThemeProvider>
   );
 
-  return { ...result, ...signalR, jotaiStore, user };
+  return { ...result, ...transport, jotaiStore, user };
 };
 
 type ReconnectOverrides = {

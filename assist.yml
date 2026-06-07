@@ -32,5 +32,13 @@ run:
       - --retries=2
       - --global-timeout=300000
     cwd: web
+  - name: verify:build
+    command: npx
+    args:
+      - vite
+      - build
+      - --logLevel
+      - error
+    cwd: web
 commit:
   push: true

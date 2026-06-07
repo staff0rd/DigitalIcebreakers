@@ -52,7 +52,7 @@ export const renderPollTrivia = (
   options: RenderPollTriviaOptions = {}
 ) => {
   const jotaiStore = createStore();
-  const signalR = initializeMockTransport(jotaiStore);
+  const transport = initializeMockTransport(jotaiStore);
   jotaiStore.set(lobbyAtom, {
     ...initialLobbyState,
     players: options.players ?? [],
@@ -99,7 +99,7 @@ export const renderPollTrivia = (
       </ThemeProvider>
     ),
     jotaiStore,
-    ...signalR,
+    ...transport,
   };
 };
 

@@ -331,6 +331,17 @@ describe("idle lobby cleanup", () => {
     );
   });
 
+  it("denies taking over a stale lobby in a single write", async () => {
+    await seedLobby({ idleFor: ONE_HOUR + 1000 });
+    await assertFails(
+      set(ref(db(OTHER_UID), "lobbies/AAAA"), {
+        name: "Hijacked Lobby",
+        presenterId: "attacker-1",
+        presenterUid: OTHER_UID,
+      })
+    );
+  });
+
   it("denies deleting a recently active lobby", async () => {
     await seedLobby({ idleFor: ONE_HOUR / 2 });
     await assertFails(

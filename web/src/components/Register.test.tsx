@@ -12,7 +12,7 @@ const renderRegister = ({ name = "" }: { name?: string } = {}) => {
   const jotaiStore = createStore();
   jotaiStore.set(userAtom, { id: "user-1", name, isRegistered: false });
   jotaiStore.set(lobbyAtom, { ...initialLobbyState, joiningLobbyId: "abcd" });
-  const signalR = initializeMockTransport(jotaiStore);
+  const transport = initializeMockTransport(jotaiStore);
   render(
     <ThemeProvider theme={createTheme({})}>
       <JotaiProvider store={jotaiStore}>
@@ -20,7 +20,7 @@ const renderRegister = ({ name = "" }: { name?: string } = {}) => {
       </JotaiProvider>
     </ThemeProvider>
   );
-  return { ...signalR, jotaiStore };
+  return { ...transport, jotaiStore };
 };
 
 const typeName = (name: string) =>
