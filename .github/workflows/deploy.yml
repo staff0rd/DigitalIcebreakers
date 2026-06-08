@@ -80,12 +80,16 @@ jobs:
 
       - name: Deploy database security rules
         # Only when the rules actually changed — keeps Firebase credentials out
-        # of every routine static deploy. FIREBASE_TOKEN auth here is deprecated
-        # and pending migration to a service account.
+        # of every routine static deploy. Authenticates firebase-tools with a
+        # scoped service-account key (GOOGLE_APPLICATION_CREDENTIALS) rather than
+        # the deprecated FIREBASE_TOKEN.
         if: steps.changes.outputs.rules == 'true'
         env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-        run: npx firebase-tools deploy --only database --project ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/firebase-key.json"
+          export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/firebase-key.json"
+          npx firebase-tools deploy --only database --project ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
         working-directory: ./web
 
       - name: Deploy to Netlify
