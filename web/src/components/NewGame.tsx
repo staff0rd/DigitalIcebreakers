@@ -5,10 +5,8 @@ import { ContentContainer } from "./ContentContainer";
 import Card from "../layout/components/Card/Card";
 import CardFooter from "../layout/components/Card/CardFooter";
 import CardBody from "../layout/components/Card/CardBody";
-import CardIcon from "../layout/components/Card/CardIcon";
 import GridContainer from "../layout/components/Grid/GridContainer";
 import GridItem from "../layout/components/Grid/GridItem";
-import FiberNew from "@mui/icons-material/FiberNew";
 import makeStyles from "@mui/styles/makeStyles";
 import { grayColor } from "../layout/assets/jss/material-dashboard-react";
 import Button from "../layout/components/CustomButtons/Button";
@@ -36,12 +34,6 @@ const useStyles = makeStyles(() => ({
       lineHeight: 1,
     },
   },
-  icon: {
-    display: "flex",
-    position: "absolute",
-    right: 0,
-    width: "24px",
-  },
 }));
 
 const NewGame = () => {
@@ -59,11 +51,6 @@ const NewGame = () => {
         {Games.map((g) => (
           <GridItem xs={12} sm={12} md={4}>
             <Card>
-              {g.isNew && (
-                <CardIcon className={classes.icon} color="info">
-                  <FiberNew />
-                </CardIcon>
-              )}
               <CardBody>
                 <h2 className={classes.cardTitle}>{g.title}</h2>
                 <p className={classes.cardCategory}>{g.description}</p>

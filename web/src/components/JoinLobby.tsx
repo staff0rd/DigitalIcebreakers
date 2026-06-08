@@ -7,6 +7,7 @@ import Card from "../layout/components/Card/Card";
 import CardBody from "../layout/components/Card/CardBody";
 import CardFooter from "../layout/components/Card/CardFooter";
 import { useSetAtom } from "jotai";
+import CircularProgress from "@mui/material/CircularProgress";
 import { joinLobbyAtom } from "../store/jotai/transportAtoms";
 import CardTitle from "../layout/components/Card/CardTitle";
 import { ContentContainer } from "./ContentContainer";
@@ -41,6 +42,30 @@ export default function Join() {
       joinLobby(lobbyCode!);
     }
   };
+
+  // A deep link auto-joins via the effect above and routes on to Register/game,
+  // so its code-entry form is never meant to be used. Stay on the connecting
+  // indicator for the whole mount; rendering the form would flash it the moment
+  // the connection lands, before the reconnect navigates away.
+  if (id) {
+    return (
+      <ContentContainer>
+        <GridContainer>
+          <GridItem xs={12} sm={12} md={8}>
+            <Card>
+              <CardTitle title="Joining" subTitle="Connecting to the lobby" />
+              <CardBody>
+                <CircularProgress
+                  color="secondary"
+                  data-testid="join-connecting"
+                />
+              </CardBody>
+            </Card>
+          </GridItem>
+        </GridContainer>
+      </ContentContainer>
+    );
+  }
 
   return (
     <ContentContainer>

@@ -58,5 +58,19 @@ describe("shell", () => {
         );
       });
     });
+
+    it("shows the menu button in a colour that contrasts with the page", () => {
+      renderLobbyApp(<Admin />);
+      expect(screen.getByLabelText("open drawer")).not.toHaveStyle({
+        color: "rgb(255, 255, 255)",
+      });
+    });
+
+    it("stacks the menu button above full-bleed game content", () => {
+      renderLobbyApp(<Admin />);
+      expect(screen.getByLabelText("open drawer")).toHaveStyle({
+        zIndex: "1100",
+      });
+    });
   });
 });

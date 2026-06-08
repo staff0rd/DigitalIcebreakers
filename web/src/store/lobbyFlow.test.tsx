@@ -1,6 +1,7 @@
 import { screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import Admin from "../layout/layouts/Admin";
+import { ConnectionStatus } from "../ConnectionStatus";
 import {
   renderLobbyApp,
   createReconnectPayload,
@@ -87,6 +88,41 @@ describe("lobby flow", () => {
         fireEvent.click(screen.getByTestId("join-lobby"));
         expect(transport.connectToLobby).not.toHaveBeenCalled();
       });
+    });
+  });
+
+  describe("joining a lobby via a deep link", () => {
+    describe("when the connection is not yet established", () => {
+      it("shows a connecting indicator instead of the code-entry form", () => {
+        renderLobbyApp(<Admin />, {
+          route: "/join-lobby/abcd",
+          connectionStatus: ConnectionStatus.Pending,
+        });
+        expect(screen.getByTestId("join-connecting")).toBeInTheDocument();
+        expect(screen.queryByTestId("join-lobby")).not.toBeInTheDocument();
+      });
+    });
+
+    describe("when the connection is established", () => {
+      it("keeps showing the connecting indicator while it auto-joins", () => {
+        renderLobbyApp(<Admin />, {
+          route: "/join-lobby/abcd",
+          connectionStatus: ConnectionStatus.Connected,
+        });
+        expect(screen.getByTestId("join-connecting")).toBeInTheDocument();
+        expect(screen.queryByTestId("join-lobby")).not.toBeInTheDocument();
+      });
+    });
+  });
+
+  describe("when entering a code manually without a connection", () => {
+    it("still shows the code-entry form", () => {
+      renderLobbyApp(<Admin />, {
+        route: "/join-lobby",
+        connectionStatus: ConnectionStatus.Pending,
+      });
+      expect(screen.getByTestId("join-lobby")).toBeInTheDocument();
+      expect(screen.queryByTestId("join-connecting")).not.toBeInTheDocument();
     });
   });
 

@@ -7,6 +7,18 @@
       "request": "launch",
       "command": "npm run dev",
       "cwd": "${workspaceFolder}/web"
+    },
+    {
+      "name": "Dev (vite → real Firebase)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run dev:vite",
+      "cwd": "${workspaceFolder}/web",
+      "env": {
+        "VITE_FIREBASE_API_KEY": "AIzaSyATipYWYvg5AqvZYIMoDKg6Cbz0wq17JT0",
+        "VITE_FIREBASE_PROJECT_ID": "digital-icebreakers",
+        "VITE_FIREBASE_DATABASE_URL": "https://digital-icebreakers-default-rtdb.asia-southeast1.firebasedatabase.app"
+      }
     }
   ]
 }
