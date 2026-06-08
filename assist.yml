@@ -11,10 +11,10 @@ run:
       - test
     cwd: web
   - name: verify:typecheck
-    command: npm
+    command: sh
     args:
-      - run
-      - check-types
+      - -c
+      - npm run check-types && npm run check-types:e2e
     cwd: web
   - name: verify:rules
     command: npm
@@ -42,3 +42,4 @@ run:
     cwd: web
 commit:
   push: true
+  pull: true
