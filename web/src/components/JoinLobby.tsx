@@ -1,0 +1,106 @@
+import { useEffect, useState } from "react";
+import GridItem from "../layout/components/Grid/GridItem";
+import GridContainer from "../layout/components/Grid/GridContainer";
+import CustomInput from "../layout/components/CustomInput/CustomInput";
+import Button from "../layout/components/CustomButtons/Button";
+import Card from "../layout/components/Card/Card";
+import CardBody from "../layout/components/Card/CardBody";
+import CardFooter from "../layout/components/Card/CardFooter";
+import { useSetAtom } from "jotai";
+import CircularProgress from "@mui/material/CircularProgress";
+import { joinLobbyAtom } from "../store/jotai/transportAtoms";
+import CardTitle from "../layout/components/Card/CardTitle";
+import { ContentContainer } from "./ContentContainer";
+import { useParams } from "react-router";
+
+export default function Join() {
+  const joinLobby = useSetAtom(joinLobbyAtom);
+  const { id } = useParams();
+
+  const [lobbyCode, setLobbyCode] = useState<string>("");
+
+  useEffect(() => {
+    setLobbyCode(id || "");
+    if (id) {
+      join(id);
+    }
+  }, [id]);
+
+  const isValid = (code: string | undefined) => {
+    return code && code.trim().length === 4;
+  };
+
+  const handleChange: React.ChangeEventHandler<
+    HTMLTextAreaElement | HTMLInputElement
+  > = (e) => {
+    setLobbyCode(e.target.value);
+    console.log(e.target.value, lobbyCode);
+  };
+
+  const join = (lobbyCode: string | undefined) => {
+    if (isValid(lobbyCode)) {
+      joinLobby(lobbyCode!);
+    }
+  };
+
+  // A deep link auto-joins via the effect above and routes on to Register/game,
+  // so its code-entry form is never meant to be used. Stay on the connecting
+  // indicator for the whole mount; rendering the form would flash it the moment
+  // the connection lands, before the reconnect navigates away.
+  if (id) {
+    return (
+      <ContentContainer>
+        <GridContainer>
+          <GridItem xs={12} sm={12} md={8}>
+            <Card>
+              <CardTitle title="Joining" subTitle="Connecting to the lobby" />
+              <CardBody>
+                <CircularProgress
+                  color="secondary"
+                  data-testid="join-connecting"
+                />
+              </CardBody>
+            </Card>
+          </GridItem>
+        </GridContainer>
+      </ContentContainer>
+    );
+  }
+
+  return (
+    <ContentContainer>
+      <GridContainer>
+        <GridItem xs={12} sm={12} md={8}>
+          <Card>
+            <CardTitle title="Join" subTitle="Join an existing lobby" />
+            <CardBody>
+              <GridContainer>
+                <GridItem xs={12} sm={12} md={6}>
+                  <CustomInput
+                    labelText="Lobby code"
+                    id="lobby-code"
+                    formControlProps={{
+                      fullWidth: true,
+                    }}
+                    value={lobbyCode}
+                    onChange={(e) => handleChange(e)}
+                    error={!isValid(lobbyCode)}
+                  />
+                </GridItem>
+              </GridContainer>
+            </CardBody>
+            <CardFooter>
+              <Button
+                data-testid="join-lobby"
+                color="primary"
+                onClick={() => join(lobbyCode)}
+              >
+                Join
+              </Button>
+            </CardFooter>
+          </Card>
+        </GridItem>
+      </GridContainer>
+    </ContentContainer>
+  );
+}

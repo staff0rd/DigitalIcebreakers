@@ -1,39 +1,24 @@
 {
-  // Use IntelliSense to learn about possible attributes.
-  // Hover to view descriptions of existing attributes.
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
     {
-      "name": ".NET Core Launch (web)",
-      "type": "coreclr",
+      "name": "Dev (vite + emulators)",
+      "type": "node-terminal",
       "request": "launch",
-      "preLaunchTask": "build",
-      "program": "${workspaceFolder}/DigitalIcebreakers/bin/Debug/netcoreapp3.1/DigitalIcebreakers.dll",
-      "args": [],
-      "cwd": "${workspaceFolder}/DigitalIcebreakers",
-      "stopAtEntry": false,
-      "serverReadyAction": {
-        "action": "openExternally",
-        "pattern": "^\\s*Now listening on:\\s+(https?://\\S+)"
-      },
-      "env": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "http://0.0.0.0:5000",
-        "POSTGRES_USER": "postgres",
-        "POSTGRES_PASSWORD": "example",
-        "POSTGRES_HOST": "localhost",
-        "POSTGRES_DATABASE": "digital_icebreakers"
-      },
-      "sourceFileMap": {
-        "/Views": "${workspaceFolder}/Views"
-      }
+      "command": "npm run dev",
+      "cwd": "${workspaceFolder}/web"
     },
     {
-      "name": ".NET Core Attach",
-      "type": "coreclr",
-      "request": "attach",
-      "processId": "${command:pickProcess}"
+      "name": "Dev (vite → real Firebase)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run dev:vite",
+      "cwd": "${workspaceFolder}/web",
+      "env": {
+        "VITE_FIREBASE_API_KEY": "AIzaSyATipYWYvg5AqvZYIMoDKg6Cbz0wq17JT0",
+        "VITE_FIREBASE_PROJECT_ID": "digital-icebreakers",
+        "VITE_FIREBASE_DATABASE_URL": "https://digital-icebreakers-default-rtdb.asia-southeast1.firebasedatabase.app"
+      }
     }
   ]
 }

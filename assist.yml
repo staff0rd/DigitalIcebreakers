@@ -1,0 +1,45 @@
+run:
+  - name: verify:lint
+    command: npm
+    args:
+      - run
+      - lint
+    cwd: web
+  - name: verify:test
+    command: npm
+    args:
+      - test
+    cwd: web
+  - name: verify:typecheck
+    command: sh
+    args:
+      - -c
+      - npm run check-types && npm run check-types:e2e
+    cwd: web
+  - name: verify:rules
+    command: npm
+    args:
+      - run
+      - test:rules
+    cwd: web
+  - name: e2e
+    command: npx
+    args:
+      - playwright
+      - test
+      - --workers=1
+      - --timeout=15000
+      - --retries=2
+      - --global-timeout=300000
+    cwd: web
+  - name: verify:build
+    command: npx
+    args:
+      - vite
+      - build
+      - --logLevel
+      - error
+    cwd: web
+commit:
+  push: true
+  pull: true

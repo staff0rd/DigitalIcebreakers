@@ -1,0 +1,91 @@
+import { Changelog } from "./Changelog";
+import { GithubFork } from "./GithubFork";
+import makeStyles from "@mui/styles/makeStyles";
+import { ContentContainer } from "./ContentContainer";
+import Button from "../layout/components/CustomButtons/Button";
+import { useNavigate } from "react-router";
+import { Typography } from "@mui/material";
+import Grid from "@mui/material/GridLegacy";
+
+const useStyles = makeStyles((theme) => ({
+  imageContainer: {
+    backgroundColor: "#191919",
+    textAlign: "center",
+  },
+  image: {
+    maxHeight: "320px",
+    maxWidth: "100%",
+  },
+  buttonContainer: {
+    display: "flex",
+    justifyContent: "center",
+    marginBottom: theme.spacing(2),
+  },
+  joinButton: {
+    marginLeft: theme.spacing(2),
+  },
+}));
+
+export const Home = () => {
+  const classes = useStyles();
+  const navigate = useNavigate();
+  return (
+    <>
+      <GithubFork />
+      <div className={classes.imageContainer}>
+        <img
+          className={classes.image}
+          alt="Digital Icebreakers"
+          src="img/digital-icebreakers.jpg"
+        />
+      </div>
+      <ContentContainer>
+        <div className={classes.buttonContainer}>
+          <Button
+            color="primary"
+            size="lg"
+            onClick={() => navigate("/create-lobby")}
+            data-testid="present-button"
+          >
+            Present
+          </Button>
+          <Button
+            className={classes.joinButton}
+            color="primary"
+            size="lg"
+            onClick={() => navigate("/join-lobby")}
+          >
+            Join
+          </Button>
+        </div>
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={6}>
+            <Typography variant="h4">Feedback</Typography>
+            <Typography variant="body1">
+              Feature requests, suggestions, bugs &amp; feedback to{" "}
+              <a href="https://github.com/staff0rd/digitalicebreakers/issues">
+                backlog
+              </a>{" "}
+              or{" "}
+              <a href="mailto:me@staffordwilliams.com">
+                me@staffordwilliams.com
+              </a>
+            </Typography>
+            <Typography sx={{ mt: 2 }} variant="h4">
+              How it works
+            </Typography>
+            <Typography variant="body1">
+              A presenter creates a Lobby and audience members join by pointing
+              their phone cameras at the presenter's screen and scanning the QR
+              code. The presenter can then guide the audience through games and
+              experiences by clicking New Activity.
+            </Typography>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Changelog />
+          </Grid>
+        </Grid>
+      </ContentContainer>
+    </>
+  );
+};
