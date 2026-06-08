@@ -52,13 +52,16 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: [
     {
-      command: "npm run dev:vite -- --port 5273 --strictPort",
+      // --mode e2e loads .env.e2e, pointing the app at the dedicated e2e
+      // emulator ports (9200/9299) so a running `npm run dev` session
+      // (9000/9099) is never disturbed.
+      command: "npm run dev:vite -- --port 5273 --strictPort --mode e2e",
       url: "http://localhost:5273",
       reuseExistingServer: !process.env.CI,
     },
     {
-      command: "npm run dev:emulators",
-      url: "http://localhost:9099",
+      command: "npm run dev:emulators:e2e",
+      url: "http://localhost:9299",
       reuseExistingServer: !process.env.CI,
     },
   ],

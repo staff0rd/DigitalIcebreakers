@@ -70,6 +70,8 @@ Presenter and player state mirror to RTDB as `{json, cursor}`; on rejoin the mir
 - **Rules tests**: `web/rules/`, run with `npm run test:rules` against a real database emulator
 - **E2E tests**: Playwright specs in `web/e2e/` covering presenter + client workflows per game
 
+> **Never change the e2e timeouts** (`--timeout`, `--global-timeout`, `--retries`, or the `timeout` in `playwright.config.ts`). Inflating them only masks misconfigured or genuinely-broken tests and burns time on runs that should have failed fast. If the suite doesn't fit, fix the test or the test environment (e.g. port/state isolation) — not the clock.
+
 ## Key Files
 
 - `web/src/main.tsx` / `web/src/App.tsx` — app entry, transport initialization, routing
