@@ -14,6 +14,14 @@ jobs:
       - name: Checkout git repository
         uses: actions/checkout@v4
 
+      - name: Detect database rules changes
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            rules:
+              - 'web/database.rules.json'
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -71,6 +79,10 @@ jobs:
         working-directory: ./web
 
       - name: Deploy database security rules
+        # Only when the rules actually changed — keeps Firebase credentials out
+        # of every routine static deploy. FIREBASE_TOKEN auth here is deprecated
+        # and pending migration to a service account.
+        if: steps.changes.outputs.rules == 'true'
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         run: npx firebase-tools deploy --only database --project ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
