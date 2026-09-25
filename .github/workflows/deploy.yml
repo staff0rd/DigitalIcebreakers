@@ -37,6 +37,7 @@ jobs:
       - name: Set frontend version
         run: |
           echo "{ \"simpleVersion\": \"${GITHUB_SHA::7}\" }" > web/src/version.json
+          echo -n "${GITHUB_SHA::7}" > web/public/version.txt
 
       - name: Install node dependencies
         run: npm ci
@@ -91,3 +92,17 @@ jobs:
       - name: Deploy to Netlify
         run: npx netlify-cli deploy --no-build --dir=dist --prod -s ${{ secrets.NETLIFY_SITE_ID }} --auth ${{ secrets.NETLIFY_AUTH_TOKEN }} --message "Deployed commit ${{ github.sha }}"
         working-directory: ./web
+
+      - name: Smoke check live domain serves this commit
+        run: |
+          expected="${GITHUB_SHA::7}"
+          for attempt in 1 2 3 4 5 6; do
+            actual=$(curl -fsS "https://digitalicebreakers.com/version.txt?cb=$attempt-$GITHUB_RUN_ID" || true)
+            if [ "$actual" = "$expected" ]; then
+              echo "digitalicebreakers.com is serving $expected"
+              exit 0
+            fi
+            echo "Attempt $attempt: expected body '$expected', got '${actual:0:40}'"
+            sleep 10
+          done
+          exit 1
